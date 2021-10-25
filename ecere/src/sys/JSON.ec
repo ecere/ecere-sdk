@@ -422,7 +422,7 @@ private:
             Container array = null;
             if(type && eClass_IsDerived(type, class(Map)))
             {
-               result = GetMap(type, (Map *)&array);
+               result = GetECONMap(type, (Map *)&array);
             }
             else if(!type || eClass_IsDerived(type, class(Container)))
             {
@@ -813,7 +813,7 @@ private:
       return result;
    }
 
-   JSONResult GetMap(Class type, Map * map)
+   JSONResult GetECONMap(Class type, Map * map)
    {
       JSONResult result = syntaxError;
       SkipEmpty();
@@ -843,14 +843,9 @@ private:
             if(itemResult == success)
             {
                String s = keyProp ? ((void * (*)(void *))(void *)keyProp.Get)(value.p) : null;
-               if(s)
-               {
-                  ((void *(*)(void *, uint64))(void *)map->Add)(*map, (uint64)(uintptr)value.p);
-                  // Must free String keys here
-                  delete s;
-               }
-               else
-                  result = syntaxError;
+               ((void *(*)(void *, uint64))(void *)map->Add)(*map, (uint64)(uintptr)value.p);
+               // Must free String keys here
+               delete s;
             }
             else
             {
@@ -1929,7 +1924,6 @@ private:
       if(result == syntaxError)
          return result;
       if(!type) return success;
-      result = syntaxError;
 
       // TOFIX: How to swiftly handle classes with base data type?
       if(type == class(double) || !strcmp(type.dataTypeString, "double"))
