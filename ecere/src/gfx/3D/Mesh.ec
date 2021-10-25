@@ -484,28 +484,38 @@ public:
 
    void ComputeNormals(void)
    {
-      ComputeNormals2(true);
+      ComputeNormals2(true, true);
    }
 
-   void ComputeNormals2(bool computeTangents)
+   void ComputeNormals2(bool computeNormals, bool computeTangents)
    {
       int c;
-      int * numShared = new0 int[nVertices];
+      //int * numShared = new0 int[nVertices];
       double * weightSum = new0 double[nVertices];
       PrimitiveGroup group;
 
-      if(Allocate({ normals = true, tangents = texCoords != null && computeTangents }, nVertices, displaySystem))
+      if(Allocate({ interleaved = flags.interleaved,
+         normals = true, tangents = (texCoords != null || (flags.texCoords1 && flags.interleaved)) &&
+         computeTangents }, nVertices, displaySystem))
       {
 #ifdef NORMALS_MERGE_VERTICES
          Map<uint, uint> ixMap { };
          Map<SharedVertex, uint> vMap { };
 #endif
-         Vector3Df * normals = this.normals;
+         float * vertices = (float *)this.vertices;
+         float * normals = flags.interleaved ? vertices + 3 : (float *)this.normals;
+         float * texCoords = flags.interleaved ? vertices + 5 : (float *)this.texCoords;
+         uint vStride = flags.interleaved ? 8 : 3, tStride = flags.interleaved ? 8 : 2;
          Vector3Df * tangents = this.tangents;
-         Pointf * texCoords = this.texCoords;
          int i;
-         Vector3Df * vertices = this.vertices;
-         FillBytes(normals, 0, nVertices * sizeof(Vector3Df));
+         if(computeNormals)
+         {
+            if(vStride == 3)
+               FillBytes(normals, 0, nVertices * sizeof(Vector3Df));
+            else
+               for(i = 0; i < nVertices; i++)
+                  memset(&normals[i * vStride], 0, sizeof(Vector3Df));
+         }
          if(tangents)
             FillBytes(tangents, 0, 2*nVertices * sizeof(Vector3Df));
          for(group = groups.first; group; group = group.next)
@@ -514,9 +524,10 @@ public:
             int offset = 0;
             int strip = 0;
             int nPoints, nIndex;
-            uint16 * indices16 = group.indices;
-            uint32 * indices32 = group.indices32;
-            bool i32bit = group.type.indices32bit;
+            bool i32Bit = group.type.indices32bit;
+            uint32 * indices32 = i32Bit ?
+               (group.type.sharedIndices && this.indices ? this.indices + group.baseIndex : group.indices32) : null;
+            uint16 * indices16 = i32Bit ? null : group.indices;
 
             if(group.type.primitiveType == triangles)
                nIndex = nPoints = 3;
@@ -539,37 +550,51 @@ public:
             else
                continue;
             */
-            for(c = offset; c<group.nIndices; c += nIndex)
+            for(c = offset; c < group.nIndices; c += nIndex)
             {
                Plane plane;
                Vector3Df planeNormal;
 
                if(group.type.primitiveType == triFan)
                {
+                  // TODO: Tangents not handled here, compute weights not done here
                   uint ix0 = indices16[0];
                   uint ix1 = indices16[c];
                   uint ix2 = indices16[c-1];
-                  plane.FromPointsf(vertices[ix0], vertices[ix1], vertices[ix2]);
+                  plane.FromPointsf(
+                     (Vector3Df *)&vertices[ix0 * vStride],
+                     (Vector3Df *)&vertices[ix1 * vStride],
+                     (Vector3Df *)&vertices[ix2 * vStride]);
                   planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                  normals[ix0].Add(normals[ix0], planeNormal); numShared[ix0]++;
-                  normals[ix1].Add(normals[ix1], planeNormal); numShared[ix1]++;
-                  normals[ix2].Add(normals[ix2], planeNormal); numShared[ix2]++;
+                  if(computeNormals)
+                  {
+                     ((Vector3Df *)&normals[ix0 * vStride])->Add((Vector3Df *)&normals[ix0 * vStride], planeNormal); //numShared[ix0]++;
+                     ((Vector3Df *)&normals[ix1 * vStride])->Add((Vector3Df *)&normals[ix1 * vStride], planeNormal); //numShared[ix1]++;
+                     ((Vector3Df *)&normals[ix2 * vStride])->Add((Vector3Df *)&normals[ix2 * vStride], planeNormal); //numShared[ix2]++;
+                  }
                   weightSum[ix0] += 1.0;  // TODO: Review weightSums
                   weightSum[ix1] += 1.0;
                   weightSum[ix2] += 1.0;
                }
                else if(group.type.primitiveType == triStrip || group.type.primitiveType == quadStrip)
                {
+                  // TODO: Tangents not handled here, compute weights not done here
                   uint ix0 = indices16[c-1-strip];
                   uint ix1 = indices16[c-2+strip];
                   uint ix2 = indices16[c];
-                  plane.FromPointsf(vertices[ix0], vertices[ix1], vertices[ix2]);
+                  plane.FromPointsf(
+                     (Vector3Df *)&vertices[ix0 * vStride],
+                     (Vector3Df *)&vertices[ix1 * vStride],
+                     (Vector3Df *)&vertices[ix2 * vStride]);
                   planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                  normals[ix0].Add(normals[ix0], planeNormal); numShared[ix0]++;
-                  normals[ix1].Add(normals[ix1], planeNormal); numShared[ix1]++;
-                  normals[ix2].Add(normals[ix2], planeNormal); numShared[ix2]++;
+                  if(computeNormals)
+                  {
+                     ((Vector3Df *)&normals[ix0 * vStride])->Add((Vector3Df *)&normals[ix0 * vStride], planeNormal); //numShared[ix0]++;
+                     ((Vector3Df *)&normals[ix1 * vStride])->Add((Vector3Df *)&normals[ix1 * vStride], planeNormal); //numShared[ix1]++;
+                     ((Vector3Df *)&normals[ix2 * vStride])->Add((Vector3Df *)&normals[ix2 * vStride], planeNormal); //numShared[ix2]++;
+                  }
                   weightSum[ix0] += 1.0;  // TODO: Review weightSums
                   weightSum[ix1] += 1.0;
                   weightSum[ix2] += 1.0;
@@ -580,16 +605,17 @@ public:
                {
                   if(group.type.vertexRange)
                   {
-                     plane.FromPointsf(vertices[c+2],
-                                       vertices[c+1],
-                                       vertices[c]);
+                     // TODO: Tangents not handled here, compute weights not done here
+                     plane.FromPointsf((Vector3Df *)&vertices[(c+2) * vStride],
+                                       (Vector3Df *)&vertices[(c+1) * vStride],
+                                       (Vector3Df *)&vertices[ c    * vStride]);
                      planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                     for(i = c; i<c+nIndex; i++)
+                     for(i = c; i < c+nIndex; i++)
                      {
                         uint ix = i;
-                        normals[ix].Add(normals[ix], planeNormal);
-                        numShared[ix]++;
+                        ((Vector3Df *)&normals[ix * vStride])->Add((Vector3Df *)&normals[ix * vStride], planeNormal);
+                        //numShared[ix]++;
                         weightSum[ix] += 1.0;   // TODO: Review weightSums
                         weightSum[ix] += 1.0;
                         weightSum[ix] += 1.0;
@@ -600,57 +626,74 @@ public:
                   {
                      Vector3D edges[4], rEdges[4];
                      double weights[4];
-                     computeNormalWeights(nIndex, vertices, indices32, i32bit, c, weights, edges, rEdges);
+                     computeNormalWeights(nIndex, vertices, vStride, indices32, i32Bit, c, weights, edges, rEdges);
 
-                     plane.FromPointsf(vertices[i32bit ? indices32[c+2] : indices16[c+2]],
-                                       vertices[i32bit ? indices32[c+1] : indices16[c+1]],
-                                       vertices[i32bit ? indices32[c  ] : indices16[c  ]]);
+                     plane.FromPointsf((Vector3Df *)&vertices[vStride * (i32Bit ? indices32[c+2] : indices16[c+2])],
+                                       (Vector3Df *)&vertices[vStride * (i32Bit ? indices32[c+1] : indices16[c+1])],
+                                       (Vector3Df *)&vertices[vStride * (i32Bit ? indices32[c  ] : indices16[c  ])]);
                      planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                     for(i = c; i<c+nIndex; i++)
+                     /*
+                     if(group.material.flags.doubleSided && plane.d < 0)
                      {
-                        int index = i32bit ? indices32[i] : indices16[i];
+                        planeNormal.x *= -1;
+                        planeNormal.y *= -1;
+                        planeNormal.z *= -1;
+                     }
+                     */
+
+                     for(i = c; i < c + nIndex; i++)
+                     {
+                        uint index = i32Bit ? indices32[i] : indices16[i];
                         int v = i - c;
                         double w = weights[v];
 
 #ifdef NORMALS_MERGE_VERTICES
-                        index = resolveIndex(index, vMap, ixMap, vertices[index], plane);
+                        index = resolveIndex(index, vMap, ixMap, (Vector3Df *)&vertices[vStride * index], plane);
 #endif
 
-                        //normals[index].Add(normals[index], planeNormal);
-                        normals[index].x += planeNormal.x * w;
-                        normals[index].y += planeNormal.y * w;
-                        normals[index].z += planeNormal.z * w;
+                        if(computeNormals)
+                        {
+                           //normals[index].Add(normals[index], planeNormal);
+                           normals[index * vStride + 0] += planeNormal.x * w;
+                           normals[index * vStride + 1] += planeNormal.y * w;
+                           normals[index * vStride + 2] += planeNormal.z * w;
+                        }
                         weightSum[index] += w;
                         //numShared[index] ++;
 
                         if(tangents)
                         {
-                           uint ix0 = index;
+                           uint ix0 = i32Bit ? indices32[i] : indices16[i]; //index;
                            uint prev = v ? i - 1 : c + nIndex-1;
                            uint next = v < nIndex-1 ? i + 1 : c;
-                           uint ix1 = i32bit ? indices32[next] : indices16[next];
-                           uint ix2 = i32bit ? indices32[prev] : indices16[prev];
-                           Vector3Df * p0 = &vertices [ix0], * p1 = &vertices [ix1], * p2 = &vertices[ix2];
-                           Pointf    * t0 = &texCoords[ix0], * t1 = &texCoords[ix1], * t2 = &texCoords[ix2];
+                           uint ix1 = i32Bit ? indices32[next] : indices16[next];
+                           uint ix2 = i32Bit ? indices32[prev] : indices16[prev];
+
+                           Vector3Df * p0 = (Vector3Df *)&vertices[vStride * ix0];
+                           Vector3Df * p1 = (Vector3Df *)&vertices[vStride * ix1];
+                           Vector3Df * p2 = (Vector3Df *)&vertices[vStride * ix2];
+                           Pointf    * t0 = (void *)&texCoords[tStride * ix0];   // FIXME: (Pointf *) causes bad .sym
+                           Pointf    * t1 = (void *)&texCoords[tStride * ix1];
+                           Pointf    * t2 = (void *)&texCoords[tStride * ix2];
                            Vector3D v01 { p1->x - p0->x, p1->y - p0->y, p1->z - p0->z };
                            Vector3D v02 { p2->x - p0->x, p2->y - p0->y, p2->z - p0->z };
                            Pointf t01 { t1->x - t0->x, t1->y - t0->y };
                            Pointf t02 { t2->x - t0->x, t2->y - t0->y };
-                           //if(Abs(t01.x) > 0.99) t01.x = 0;
-                           //if(Abs(t02.x) > 0.99) t02.x = 0;
 
-                           double f = w / (t01.x * t02.y - t02.x * t01.y);
-                           Vector3Df * tan1 = &tangents[index*2+0];
-                           Vector3Df * tan2 = &tangents[index*2+1];
-
-                           tan1->x += f * (v01.x * t02.y - v02.x * t01.y);
-                           tan1->y += f * (v01.y * t02.y - v02.y * t01.y);
-                           tan1->z += f * (v01.z * t02.y - v02.z * t01.y);
-
-                           tan2->x += f * (v02.x * t01.x - v01.x * t02.x);
-                           tan2->y += f * (v02.y * t01.x - v01.y * t02.x);
-                           tan2->z += f * (v02.z * t01.x - v01.z * t02.x);
+                           float ff = (t01.x * t02.y - t02.x * t01.y);
+                           if(ff)
+                           {
+                              float f = (float)(w / ff);
+                              Vector3Df * tan1 = &tangents[index*2+0];
+                              Vector3Df * tan2 = &tangents[index*2+1];
+                              tan1->x += f * (v01.x * t02.y - v02.x * t01.y);
+                              tan1->y += f * (v01.y * t02.y - v02.y * t01.y);
+                              tan1->z += f * (v01.z * t02.y - v02.z * t01.y);
+                              tan2->x += f * (v01.x * t02.y - v02.x * t01.y);
+                              tan2->y += f * (v01.y * t02.y - v02.y * t01.y);
+                              tan2->z += f * (v01.z * t02.y - v02.z * t01.y);
+                           }
                         }
                      }
                   }
@@ -662,12 +705,19 @@ public:
          {
             int i;
             PrimitiveSingle * primitive = &primitives[c];
-
             Plane plane;
             Vector3Df planeNormal;
-            plane.FromPointsf(vertices[primitive->indices[2]],
-                              vertices[primitive->indices[1]],
-                              vertices[primitive->indices[0]]);
+            bool i32Bit = primitive->type.indices32bit;
+            double weights[4];
+            Vector3D edges[4], rEdges[4];
+            uint32 * indices32 = i32Bit ?                                 // baseIndex set but not used for Singles?
+               (primitive->type.sharedIndices && this.indices ? this.indices /*+ primitive->baseIndex*/ : primitive->indices32) :
+               null;
+            uint16 * indices16 = i32Bit ? null : primitive->indices;
+
+            plane.FromPointsf((Vector3Df *)&vertices[vStride * indices32[2]],
+                              (Vector3Df *)&vertices[vStride * indices32[1]],
+                              (Vector3Df *)&vertices[vStride * indices32[0]]);
             planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
             if(primitive->material.flags.doubleSided && plane.d < 0)
@@ -676,21 +726,75 @@ public:
                planeNormal.y *= -1;
                planeNormal.z *= -1;
             }
+                         // baseIndex set but not used for Singles?
+            computeNormalWeights(primitive->nIndices, vertices, vStride, indices32,
+               i32Bit, 0 /*primitive->baseIndex*/, weights, edges, rEdges);
 
             for(i = 0; i<primitive->nIndices; i++)
             {
                uint ix = primitive->indices[i];
-               normals[ix].Add(normals[ix], planeNormal);
-               numShared[ix]++;
+               double w = weights[i];
+               uint index = i32Bit ? indices32[i] : indices16[i];
+
+#ifdef NORMALS_MERGE_VERTICES
+               index = resolveIndex(index, vMap, ixMap, (Vector3Df *)&vertices[vStride * index], plane);
+#endif
+
+               weightSum[ix] += w;  // TODO: Review weightSums
+
+               if(computeNormals)
+               {
+                  ((Vector3Df *)&normals[vStride * ix])->Add((Vector3Df *)&normals[vStride * ix], planeNormal);
+               }
+
+               if(tangents)
+               {
+                  uint ix0 = i;
+                  uint prev = i ? i - 1 : primitive->nIndices-1;
+                  uint next = i < primitive->nIndices-1 ? i + 1 : 0;
+                  uint ix1 = i32Bit ? indices32[next] : indices16[next];
+                  uint ix2 = i32Bit ? indices32[prev] : indices16[prev];
+                  Vector3Df * p0 = (Vector3Df *)&vertices[vStride * ix0];
+                  Vector3Df * p1 = (Vector3Df *)&vertices[vStride * ix1];
+                  Vector3Df * p2 = (Vector3Df *)&vertices[vStride * ix2];
+                  Pointf    * t0 = (void *)&texCoords[tStride * ix0];   // FIXME: (Pointf *) causes bad .sym
+                  Pointf    * t1 = (void *)&texCoords[tStride * ix1];
+                  Pointf    * t2 = (void *)&texCoords[tStride * ix2];
+                  Vector3D v01 { p1->x - p0->x, p1->y - p0->y, p1->z - p0->z };
+                  Vector3D v02 { p2->x - p0->x, p2->y - p0->y, p2->z - p0->z };
+                  Pointf t01 { t1->x - t0->x, t1->y - t0->y };
+                  Pointf t02 { t2->x - t0->x, t2->y - t0->y };
+                  float ff = t01.x * t02.y - t02.x * t01.y;
+                  if(ff)
+                  {
+                     float f = (float)(w / ff);
+                     Vector3Df * tan1 = &tangents[index*2+0];
+                     Vector3Df * tan2 = &tangents[index*2+1];
+
+                     tan1->x += f * (v01.x * t02.y - v02.x * t01.y);
+                     tan1->y += f * (v01.y * t02.y - v02.y * t01.y);
+                     tan1->z += f * (v01.z * t02.y - v02.z * t01.y);
+
+                     tan2->x += f * (v02.x * t01.x - v01.x * t02.x);
+                     tan2->x += f * (v02.y * t01.x - v01.y * t02.x);
+                     tan2->x += f * (v02.z * t01.x - v01.z * t02.x);
+                  }
+               }
+               //numShared[ix]++;
             }
          }
 
          for(c = 0; c<nVertices; c++)
          {
             float s = (float)(1.0 / weightSum[c]); // numShared[c]
-            Vector3Df * n = &normals[c];
-            n->Scale(n, s), n->Normalize(n);
-            if(tangents)
+            if(!weightSum[c])
+               s = 1.0; // Unused vertices following merging?
+            if(computeNormals)
+            {
+               Vector3Df * n = (Vector3Df *)&normals[vStride * c];
+               n->Scale(n, s), n->Normalize(n);
+            }
+            if(computeTangents && tangents)
             {
                Vector3Df * t1 = &tangents[2*c], * t2 = &tangents[2*c+1];
                t1->Scale(t1, s), t1->Normalize(t1);
@@ -699,18 +803,29 @@ public:
          }
 
 #ifdef NORMALS_MERGE_VERTICES
-         for(i = 0; i < nVertices; i++)
+         if(computeNormals)
+            for(i = 0; i < nVertices; i++)
+            {
+               uint ix = ixMap[i];
+               *(Vector3Df *)&normals[i * vStride] = *(Vector3Df *)&normals[ix * vStride];
+            }
+
+         if(computeTangents && tangents)
          {
-            uint ix = ixMap[i];
-            normals[i] = normals[ix];
+            for(i = 0; i < nVertices; i++)
+            {
+               uint ix = ixMap[i];
+               tangents[2*i] = tangents[2*ix];
+               tangents[2*i+1] = tangents[2*ix+1];
+            }
          }
          delete ixMap;
          delete vMap;
 #endif
 
-         delete numShared;
+         //delete numShared;
          delete weightSum;
-         Unlock({ normals = true, tangents = true });
+         Unlock({ interleaved = flags.interleaved, normals = computeNormals, tangents = computeTangents });
       }
    }
 
@@ -1258,7 +1373,7 @@ private:
    int baseIndex, nIndices;
 };
 
-void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)
+void computeNormalWeights(int n, float * vertices, uint vStride, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)
 {
    int i;
    for(i = 0; i < n; i++)
@@ -1272,7 +1387,7 @@ void computeNormalWeights(int n, Vector3Df * vertices, uint * indices, bool ix32
          else
             ix0 = ((uint16*)indices)[base+ix0], ix1 = ((uint16*)indices)[base+ix1];
       }
-      p0 = &vertices[ix0], p1 = &vertices[ix1];
+      p0 = (Vector3Df *)&vertices[ix0 * vStride], p1 = (Vector3Df *)&vertices[ix1 * vStride];
       edges[i] = { p1->x - p0->x, p1->y - p0->y, p1->z - p0->z };
       edges[i].Normalize(edges[i]);
       rEdges[i].Scale(edges[i], -1);

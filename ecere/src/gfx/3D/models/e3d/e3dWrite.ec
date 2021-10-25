@@ -341,7 +341,7 @@ static void writeTriFaces32(E3DWriteContext ctx, File f, Mesh mesh)
       int i, gn = g.nIndices;
       if(g.type.indices32bit)
       {
-         uint32 * indices = g.indices32;
+         uint32 * indices = g.type.sharedIndices && mesh.indices ? mesh.indices + g.baseIndex : g.indices32;
          for(i = 0; i < gn; i++)
             f.Write(&indices[i], sizeof(uint32), 1);
       }
