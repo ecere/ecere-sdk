@@ -2818,13 +2818,13 @@ class CodeEditor : Window
       printf("classes.count: %d\n", globalContext.classes.count);
 #endif
 
-      if(ide.workspace)
       {
-         CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(ide.workspace.activeCompiler);
-         SetTargetBits(ide.workspace.bitDepth ? ide.workspace.bitDepth : GetHostBits());
+         CompilerConfig compiler = ideConfig.compilers.GetCompilerConfig(
+            ide.workspace ? ide.workspace.activeCompiler : ideSettings.defaultCompiler);
+         SetTargetBits(ide.workspace && ide.workspace.bitDepth ? ide.workspace.bitDepth : GetHostBits());
          delete compiler;
       }
-      this.privateModule = __ecere_COM_Initialize((bool)(false | ((GetTargetBits() == sizeof(uintptr) *8) ? 0 : GetTargetBits() == 64 ? 2 : 4)), 1, null);
+      this.privateModule = __ecere_COM_Initialize((bool)(false | ((!GetTargetBits() || GetTargetBits() == sizeof(uintptr) *8) ? 0 : GetTargetBits() == 64 ? 2 : 4)), 1, null);
       ((SyntaxHighlighting)editBox.syntaxHighlighting).privateModule = this.privateModule;
 
       SetPrivateModule(privateModule);
