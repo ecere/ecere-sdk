@@ -6185,7 +6185,7 @@ _class->structSize = 0;
 else if(type == 0 || type == 5)
 {
 if(type == 5 && _class->structSize != _class->offset + size)
-printf("ERROR: inconsistent nohead class struct size\n");
+printf("ERROR: inconsistent nohead class struct size for %s\n", _class->name);
 _class->structSize = _class->offset + size;
 _class->typeSize = sizeof(void *);
 }
