@@ -558,9 +558,9 @@ public:
                if(group.type.primitiveType == triFan)
                {
                   // TODO: Tangents not handled here, compute weights not done here
-                  uint ix0 = indices16[0];
-                  uint ix1 = indices16[c];
-                  uint ix2 = indices16[c-1];
+                  uint ix0 = (i32Bit ? indices32[0] : indices16[0]);
+                  uint ix1 = (i32Bit ? indices32[c] : indices16[c]);
+                  uint ix2 = (i32Bit ? indices32[c-1] : indices16[c-1]);
                   plane.FromPointsf(
                      (Vector3Df *)&vertices[ix0 * vStride],
                      (Vector3Df *)&vertices[ix1 * vStride],
@@ -580,9 +580,9 @@ public:
                else if(group.type.primitiveType == triStrip || group.type.primitiveType == quadStrip)
                {
                   // TODO: Tangents not handled here, compute weights not done here
-                  uint ix0 = indices16[c-1-strip];
-                  uint ix1 = indices16[c-2+strip];
-                  uint ix2 = indices16[c];
+                  uint ix0 = (i32Bit ? indices32[c-1-strip] : indices16[c-1-strip]);
+                  uint ix1 = (i32Bit ? indices32[c-2+strip] : indices16[c-2+strip]);
+                  uint ix2 = (i32Bit ? indices32[c]         : indices16[c]);
                   plane.FromPointsf(
                      (Vector3Df *)&vertices[ix0 * vStride],
                      (Vector3Df *)&vertices[ix1 * vStride],
@@ -715,9 +715,9 @@ public:
                null;
             uint16 * indices16 = i32Bit ? null : primitive->indices;
 
-            plane.FromPointsf((Vector3Df *)&vertices[vStride * indices32[2]],
-                              (Vector3Df *)&vertices[vStride * indices32[1]],
-                              (Vector3Df *)&vertices[vStride * indices32[0]]);
+            plane.FromPointsf((Vector3Df *)&vertices[vStride * (i32Bit ? indices32[2] : indices16[2])],
+                              (Vector3Df *)&vertices[vStride * (i32Bit ? indices32[1] : indices16[1])],
+                              (Vector3Df *)&vertices[vStride * (i32Bit ? indices32[0] : indices16[0])]);
             planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
             if(primitive->material.flags.doubleSided && plane.d < 0)
