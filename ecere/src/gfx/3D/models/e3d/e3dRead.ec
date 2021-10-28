@@ -150,8 +150,11 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                cData = new byte[cSize]; //size];
                f.Read(cData, 1, cSize); //bEnd - pos);
                tmp.buffer = decodeLZMA(cData, cSize, size, null);
-               tmp.size = size;
-               readBlocks(ctx, tmp, displaySystem, containerType, 0, size, subData);
+               if(tmp.buffer)
+               {
+                  tmp.size = size;
+                  readBlocks(ctx, tmp, displaySystem, containerType, 0, size, subData);
+               }
                delete cData;
                delete tmp;
                break;
