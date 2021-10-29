@@ -13,7 +13,7 @@ static __attribute__((unused)) void dummy() { int a = 0; a.OnGetDataFromString(n
 private:
 
 #define BINARY(o, name, m, t)                                        \
-   static bool name(FieldValue value, const FieldValue val1, const FieldValue val2)   \
+   static bool name(FlexyField value, const FlexyField val1, const FlexyField val2)   \
    {                                                                    \
       value.m = val1.m o val2.m;                               \
       value.type = { type = t };                                     \
@@ -21,7 +21,7 @@ private:
    }
 
 #define BINARY_DIVIDEINT(o, name, m, t) \
-   static bool name(FieldValue value, const FieldValue val1, const FieldValue val2)   \
+   static bool name(FlexyField value, const FlexyField val1, const FlexyField val2)   \
    {                                                                 \
       value.m = (val2.m ? ((val1.m o val2.m)) : 0);             \
       value.type = { type = t };                                     \
@@ -30,7 +30,7 @@ private:
 
 
 #define BINARY_LOGICAL(o, name, m, t)                                        \
-   static bool name(FieldValue value, const FieldValue val1, const FieldValue val2)   \
+   static bool name(FlexyField value, const FlexyField val1, const FlexyField val2)   \
    {                                                                    \
       value.i = val1.m o val2.m;                               \
       value.type = { type = integer };                                     \
@@ -38,7 +38,7 @@ private:
    }
 
 #define UNARY(o, name, m, t) \
-   static bool name(FieldValue value, const FieldValue val1)                \
+   static bool name(FlexyField value, const FlexyField val1)                \
    {                                                              \
       value.m = (o val1.m);                                   \
       value.type = { type = t };                                     \
@@ -46,7 +46,7 @@ private:
    }
 
 #define UNARY_LOGICAL(o, name, m, t) \
-   static bool name(FieldValue value, const FieldValue val1)                \
+   static bool name(FlexyField value, const FlexyField val1)                \
    {                                                              \
       value.i = (o val1.m);                                   \
       value.type = { type = integer };                                     \
@@ -207,18 +207,18 @@ Array<String> splitIdentifier(const String s)
    return values;
 }
 
-CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
+CMSSExpression simplifyResolved(FlexyField val, CMSSExpression e)
 {
    // Handling some conversions here...
    Class destType = e.destType;
    if(destType && e.expType != destType)
    {
       if(destType == class(float) || destType == class(double))
-         convertFieldValue(val, real, val);
+         convertFieldValue(val, {real}, val);
       else if(destType == class(String))
-         convertFieldValue(val, text, val);
+         convertFieldValue(val, {text}, val);
       else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
-         convertFieldValue(val, integer, val);
+         convertFieldValue(val, {integer}, val);
    }
 
    if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
@@ -304,7 +304,7 @@ public:
    Class expType;
 
    //virtual float compute();
-   public virtual ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass);
+   public virtual ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass);
 
    CMSSExpression ::parse(CMSSLexer lexer)
    {
@@ -416,7 +416,7 @@ static CMSSExpression parseUnaryExpression(CMSSLexer lexer)
 public class CMSSExpConstant : CMSSExpression
 {
 public:
-   FieldValue constant;
+   FlexyField constant;
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
@@ -501,7 +501,7 @@ public:
       return e;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       value = constant;
       switch(value.type.type)
@@ -544,7 +544,7 @@ public:
       // s[len] = 0;
       return { string = s };
    }
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       value.s = string;
       value.type.type = text;
@@ -590,7 +590,7 @@ public:
       return { identifier = CMSSIdentifier::parse(lexer) };
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       //Class c = destType ? destType : class(FieldValue); //filler
       //bool *(* onGetDataFromString)(Class, void *, const char *) = destType._vTbl[__ecereVMethodID_class_OnGetDataFromString];
@@ -693,15 +693,15 @@ public:
       return exp;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass) //float
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass) //float
    {
       ExpFlags flags { };
       if(exp1 && exp2)
       {
-         FieldValue val1 { };
-         FieldValue val2 { };
+         FlexyField val1 { };
+         FlexyField val2 { };
          ExpFlags flags1, flags2;
-         FieldType type;
+         FieldTypeEx type {};
          OpTable * tbl;
 
          // TODO: Review this (inheritance of parent expression dest type?)
@@ -711,15 +711,18 @@ public:
          flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
 
          if(op >= stringStartsWith && op <= stringNotContains)
-            type = text;
+            type.type = text;
          else
-            type = (val1.type.type == real || val2.type.type == real) ? real :
+         {
+            type.type = (val1.type.type == real || val2.type.type == real) ? real :
                    (val1.type.type == integer || val2.type.type == integer) ? integer : text;
+            type.isDateTime = (val1.type.isDateTime || val2.type.isDateTime);
+         }
          tbl = &opTables[type];
 
          flags = flags1 | flags2;
 
-         if(flags1.resolved && val1.type.type != type)
+         if(flags1.resolved && val1.type.type != type.type)
             convertFieldValue(val1, type, val1);
 
          if(op == in)
@@ -731,19 +734,19 @@ public:
             }
             if(l && l._class == class(CMSSExpList))
             {
-               FieldValue v { type = { type = nil } };
+               FlexyField v { type = { type = nil } };
                for(e : l.list)
                {
                   CMSSExpression ne = e;
-                  FieldValue v2 { type = { type = nil } };
+                  FlexyField v2 { type = { type = nil } };
                   ExpFlags f2 = ne.compute(v2, evaluator, computeType, stylesClass);
                   if(flags1.resolved)
                   {
                      if(f2.resolved)
                      {
-                        if(v2.type.type != type)
+                        if(v2.type.type != type.type)
                            convertFieldValue(v2, type, v2);
-                        if(v2.type.type == type)
+                        if(v2.type.type == type.type)
                         {
                            tbl->Equ(v, val1, v2);
                            if(v.i)
@@ -766,7 +769,7 @@ public:
                val1 = { type = { integer }, i = 0 };
             if(!flags2.resolved)
                val2 = { type = { integer }, i = 0 };
-            if(val2.type.type != type)
+            if(val2.type.type != type.type)
                convertFieldValue(val2, type, val2);
 
             if(val1.type.type == val2.type.type)
@@ -812,7 +815,7 @@ public:
       }
       else if(exp2)
       {
-         FieldValue val2 { };
+         FlexyField val2 { };
          ExpFlags flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
          OpTable * tbl = &opTables[val2.type.type];
          flags = flags2;
@@ -852,7 +855,7 @@ public:
       return CMSSExpBrackets { list = list.copy(), expType = expType, destType = destType };
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags = 0;
       if(list)
@@ -916,10 +919,10 @@ public:
       return exp;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags = 0;
-      FieldValue condValue { };
+      FlexyField condValue { };
       ExpFlags flagsCond = condition.compute(condValue, evaluator, computeType, stylesClass);
       if(flagsCond.resolved)
       {
@@ -938,8 +941,8 @@ public:
       else
       {
          CMSSExpression last = expList.lastIterator.data;   // CMSS Only currently supports a single expression...
-         FieldValue val1 { };
-         FieldValue val2 { };
+         FlexyField val1 { };
+         FlexyField val2 { };
          ExpFlags flags1 = last ? last.compute(val1, evaluator, computeType, stylesClass) : 0;
          ExpFlags flags2 = elseExp ? elseExp.compute(val2, evaluator, computeType, stylesClass) : 0;
 
@@ -993,7 +996,7 @@ public:
          lexer.readToken();
       return exp;
    }
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
       //value = exp.compute;
@@ -1032,10 +1035,10 @@ public:
       lexer.readToken();
       return { exp = e, member = CMSSIdentifier::parse(lexer) };
    }
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
-      FieldValue val { };
+      FlexyField val { };
       ExpFlags expFlg = exp.compute(val, evaluator, computeType, stylesClass);
       if(expFlg.resolved && evaluator != null && exp.expType)
       {
@@ -1088,15 +1091,15 @@ public:
       return exp;
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
 
       value.type.type = nil;
       if(exp)
       {
-         FieldValue expValue { type = { nil } };
-         FieldValue args[50]; // Max 50 args for now?
+         FlexyField expValue { type = { nil } };
+         FlexyField args[50]; // Max 50 args for now?
          int numArgs = 0;
 
          if(computeType == preprocessing)
@@ -1185,7 +1188,7 @@ public:
       }
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
       bool resolved = true;
@@ -1214,7 +1217,7 @@ public:
       for(e : elements)
       {
          CMSSExpression exp = e;
-         FieldValue v { };
+         FlexyField v { };
          ExpFlags flg;
          if(type)
          {
@@ -1325,7 +1328,7 @@ public:
       }
    }
 
-   ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
+   ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags = 0; //can an instance be resolved entirely to a constant? -- we resolve it to a 'blob' FieldValue
 
@@ -1386,12 +1389,12 @@ public:
       return flags;
    }
 
-   void setMemberValue(const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class c)
+   void setMemberValue(const String idsString, StylesMask mask, bool createSubInstance, const FlexyField value, Class c)
    {
       setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), null, null);
    }
 
-   void setMemberValue2(const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class c, ECCSSEvaluator evaluator, Class stylesClass)
+   void setMemberValue2(const String idsString, StylesMask mask, bool createSubInstance, const FlexyField value, Class c, ECCSSEvaluator evaluator, Class stylesClass)
    {
       setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), evaluator, stylesClass);
    }
@@ -1618,12 +1621,12 @@ public:
       return mInit ? mInit.initializer : null;
    }
 
-   void setMemberValue(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc)
+   void setMemberValue(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FlexyField value, Class uc)
    {
       setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), null, null);
    }
 
-   void setMemberValue2(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc, ECCSSEvaluator evaluator, Class stylesClass)
+   void setMemberValue2(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FlexyField value, Class uc, ECCSSEvaluator evaluator, Class stylesClass)
    {
       setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), evaluator, stylesClass);
    }
@@ -1695,11 +1698,11 @@ public:
       }
    }
 
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
+   bool changeStyle(StylesMask msk, const FlexyField value, Class c, ECCSSEvaluator evaluator, bool isNested, Class uc)
    {
       const String idString = msk ? evaluator.evaluatorClass.stringFromMask(msk, c) : null;
       CMSSExpression e = expressionFromValue(value, uc);
-      FieldValue v { };
+      FlexyField v { };
 
       setMember2(c, idString, msk, !isNested, e, evaluator, c);
       e.compute(v, evaluator, preprocessing, c); // REVIEW: use of c for stylesClass here...
@@ -1938,7 +1941,7 @@ public:
             CMSSExpression e = initializer;
             if(e)
             {
-               FieldValue val { };
+               FlexyField val { };
                e.destType = destType;
                if(e._class == class(CMSSExpInstance))
                   ((CMSSExpInstance)e).targetMask = stylesMask;
@@ -2526,15 +2529,15 @@ struct OpTable
 {
 public:
    // binary arithmetic
-   bool (* Add)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Sub)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Mul)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Div)(FieldValue, const FieldValue, const FieldValue);
-   bool (* DivInt)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Mod)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Add)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Sub)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Mul)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Div)(FlexyField, const FlexyField, const FlexyField);
+   bool (* DivInt)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Mod)(FlexyField, const FlexyField, const FlexyField);
 
    // unary arithmetic
-   bool (* Neg)(FieldValue, const FieldValue);
+   bool (* Neg)(FlexyField, const FlexyField);
 
    // unary arithmetic increment and decrement
    //bool (* Inc)(FieldValue, FieldValue);
@@ -2564,29 +2567,29 @@ public:
    bool (* RShiftAsign)(FieldValue, FieldValue, FieldValue);*/
 
    // unary logical negation
-   bool (* Not)(FieldValue, const FieldValue);
+   bool (* Not)(FlexyField, const FlexyField);
 
    // binary logical equality
-   bool (* Equ)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Nqu)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Equ)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Nqu)(FlexyField, const FlexyField, const FlexyField);
 
    // binary logical
-   bool (* And)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Or)(FieldValue, const FieldValue, const FieldValue);
+   bool (* And)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Or)(FlexyField, const FlexyField, const FlexyField);
 
    // binary logical relational
-   bool (* Grt)(FieldValue, const FieldValue, const FieldValue);
-   bool (* Sma)(FieldValue, const FieldValue, const FieldValue);
-   bool (* GrtEqu)(FieldValue, const FieldValue, const FieldValue);
-   bool (* SmaEqu)(FieldValue, const FieldValue, const FieldValue);
+   bool (* Grt)(FlexyField, const FlexyField, const FlexyField);
+   bool (* Sma)(FlexyField, const FlexyField, const FlexyField);
+   bool (* GrtEqu)(FlexyField, const FlexyField, const FlexyField);
+   bool (* SmaEqu)(FlexyField, const FlexyField, const FlexyField);
 
    // text specific
-   bool (* StrCnt)(FieldValue, const FieldValue, const FieldValue);
-   bool (* StrSrt)(FieldValue, const FieldValue, const FieldValue);
-   bool (* StrEnd)(FieldValue, const FieldValue, const FieldValue);
-   bool (* StrNotCnt)(FieldValue, const FieldValue, const FieldValue);
-   bool (* StrNotSrt)(FieldValue, const FieldValue, const FieldValue);
-   bool (* StrNotEnd)(FieldValue, const FieldValue, const FieldValue);
+   bool (* StrCnt)(FlexyField, const FlexyField, const FlexyField);
+   bool (* StrSrt)(FlexyField, const FlexyField, const FlexyField);
+   bool (* StrEnd)(FlexyField, const FlexyField, const FlexyField);
+   bool (* StrNotCnt)(FlexyField, const FlexyField, const FlexyField);
+   bool (* StrNotSrt)(FlexyField, const FlexyField, const FlexyField);
+   bool (* StrNotEnd)(FlexyField, const FlexyField, const FlexyField);
 };
 
 
@@ -2642,14 +2645,14 @@ OPERATOR_ALL(UNARY_LOGICAL, !, Not) //OPERATOR_ALL
 OPERATOR_NUMERIC(BINARY_LOGICAL, ==, Equ)
 OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
-static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textEqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.i = op1.s && op2.s ? !strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textNqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.i = op1.s && op2.s ? strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
    val.type = { type = integer };
@@ -2667,7 +2670,7 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, >=, GrtEqu)
 OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 
 // text conditions
-static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStrCnt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
 
    result.i = SearchString(val1.s, 0, val2.s, false, false) != null;
@@ -2675,7 +2678,7 @@ static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValu
    return true;
 }
 
-static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStrSrt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strncmp(val1.s, val2.s, lenSub);
@@ -2683,7 +2686,7 @@ static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValu
    return true;
 }
 
-static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStrEnd(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : !strcmp(val1.s + (lenStr-lenSub), val2.s);
@@ -2691,7 +2694,7 @@ static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValu
    return true;
 }
 
-static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStrNotCnt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
 
    result.i = !SearchString(val1.s, 0, val2.s, false, false);
@@ -2699,7 +2702,7 @@ static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldV
    return true;
 }
 
-static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStrNotSrt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub);
@@ -2707,7 +2710,7 @@ static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldV
    return true;
 }
 
-static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStrNotEnd(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
    result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s);
@@ -2715,35 +2718,35 @@ static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldV
    return true;
 }
 
-static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textAdd(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
    result.s = PrintString(val1.s, val2.s);
    result.type = { type = text };
    return true;
 }
 
-static bool textGrt(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textGrt(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.i = strcmp(op1.s, op2.s) > 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textSma(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textSma(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.i = strcmp(op1.s, op2.s) < 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textGrtEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textGrtEqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.i = strcmp(op1.s, op2.s) >= 0;
    val.type = { type = integer };
    return true;
 }
 
-static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool textSmaEqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.i = strcmp(op1.s, op2.s) <= 0;
    val.type = { type = integer };
@@ -2752,43 +2755,48 @@ static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op
 
 #include <float.h>
 
-static bool realDivInt(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool realDivInt(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.r = (int)(op1.r / op2.r + FLT_EPSILON);
    val.type = { type = real };
    return true;
 }
 
-static bool realMod(FieldValue val, const FieldValue op1, const FieldValue op2)
+static bool realMod(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
    val.r = fmod(op1.r, op2.r);
    val.type = { type = real };
    return true;
 }
 
-public void convertFieldValue(const FieldValue src, FieldType type, FieldValue dest)
+public void convertFieldValue(const FlexyField src, FieldTypeEx type, FlexyField dest)
 {
    if(src.type.type == text)
    {
-      if(type == real)
+      if(type.type == real)
       {
-         dest.r = strtod(src.s, null);
+         dest.r = strtod(*&src.s, null);
          dest.type = { real };
       }
-      else if(type == integer)
+      else if(type.type == integer)
       {
-         dest.i = strtoll(src.s, null, 0);
+         dest.i = strtoll(*&src.s, null, 0);
          dest.type = { integer };
       }
    }
    else if(src.type.type == integer)
    {
-      if(type == real)
+      if(type.isDateTime)
       {
-         dest.r = (double)src.i;
+         dest.i = (int64)(SecSince1970)*&src.i;
+         dest.type = { integer };
+      }
+      else if(type.type == real)
+      {
+         dest.r = (double)*&src.i;
          dest.type = { real };
       }
-      else if(type == text)
+      else if(type.type == text)
       {
          dest.s = PrintString(src.i);
          dest.type = { text };
@@ -2796,12 +2804,12 @@ public void convertFieldValue(const FieldValue src, FieldType type, FieldValue d
    }
    else if(src.type.type == real)
    {
-      if(type == integer)
+      if(type.type == integer)
       {
-         dest.i = (int64)src.r;
+         dest.i = (int64)*&src.r;
          dest.type = { integer };
       }
-      else if(type == text)
+      else if(type.type == text)
       {
          dest.s = PrintString(src.r);
          dest.type = { text, mustFree = true };
@@ -2809,12 +2817,12 @@ public void convertFieldValue(const FieldValue src, FieldType type, FieldValue d
    }
    else if(src.type.type == nil)
    {
-      if(type == integer)
+      if(type.type == integer)
       {
          dest.i = 0;
          dest.type = { integer };
       }
-      else if(type == text)
+      else if(type.type == text)
       {
          dest.s = null;
          dest.type = { text };
@@ -2824,15 +2832,15 @@ public void convertFieldValue(const FieldValue src, FieldType type, FieldValue d
       dest = { type = { nil } };
 }
 
-public CMSSExpression expressionFromValue(const FieldValue value, Class c)
+public CMSSExpression expressionFromValue(const FlexyField value, Class c)
 {
    CMSSExpression e = null;
-   if(c && value.type.type == blob && value.b != null)
+   if(c && value.type.type == blob && *&value.b != null)
    {
       if(eClass_IsDerived(c, class(Container)) && c.templateArgs && c.templateArgs[0].dataTypeString)
       {
          // Arrays / Containers
-         Container container = (Container)value.b;
+         Container container = (Container)*&value.b;
          uint count = container.GetCount();
          CMSSList<CMSSExpression> elements { };
          CMSSExpArray array { elements = elements, destType = c };
@@ -2847,7 +2855,7 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
 
          if(type)
          {
-            FieldTypeEx fType { integer };
+            FlexyTypeEx fType { integer };
 
             if(type.type == structClass || type.type == noHeadClass || type.type == normalClass)
                fType.type = blob;
@@ -2861,7 +2869,7 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
             for(i = 0; i < count; i++)
             {
                CMSSExpression ee = null;
-               FieldValue v { type = fType };
+               FlexyField v { type = fType };
 
                it.Next();
 
@@ -2914,7 +2922,7 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
                      type = m.dataTypeClass = eSystem_FindClass(c.module, m.dataTypeString);
                   if(type)
                   {
-                     FieldValue v { type = { integer } };
+                     FlexyField v { type = { integer } };
                      StylesMask mask = 0; //evaluator.evaluatorClass.
                      // TOCHECK: Need a mask here too? Would need evaluator class to determine it...
 
@@ -2930,21 +2938,21 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
                      if(v.type.type == integer)
                      {
                         if(type.typeSize == 4)
-                           v.i = *(int *)((byte *)value.b + m.offset);
+                           v.i = *(int *)((byte *)*&value.b + m.offset);
                         else
-                           v.i = *(int64 *)((byte *)value.b + m.offset);
+                           v.i = *(int64 *)((byte *)*&value.b + m.offset);
                      }
                      else if(v.type.type == real)
                      {
-                        v.r = *(double *)((byte *)value.b + m.offset);
+                        v.r = *(double *)((byte *)*&value.b + m.offset);
                      }
                      else if(v.type.type == text)
                      {
-                        v.s = CopyString(*(String *)((byte *)value.b + m.offset));
+                        v.s = CopyString(*(String *)((byte *)*&value.b + m.offset));
                      }
                      else if(v.type.type == blob)
                      {
-                        v.b = (void *)((byte *)value.b + m.offset);
+                        v.b = (void *)((byte *)*&value.b + m.offset);
                      }
                      // WARNING: We don't have evaluator and stylesClass to properly set targetMask here yet...
                      ei.setMemberValue(m.name, mask, true, v, type);
@@ -2958,9 +2966,9 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
    else
    {
       e =
-         value.type.type == nil || (value.type.type == blob && value.b == null) ?
+         value.type.type == nil || (value.type.type == blob && *&value.b == null) ?
             CMSSExpIdentifier { identifier = { string = CopyString("null") } } :
-         value.type.type == text ? CMSSExpString { string = CopyString(value.s) } :
+         value.type.type == text ? CMSSExpString { string = CopyString(*&value.s) } :
          CMSSExpConstant { destType = c, constant = value };
       if(c && c.type == unitClass && c.base && c.base.type == unitClass && e._class == class(CMSSExpConstant))
       {

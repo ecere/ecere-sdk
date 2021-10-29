@@ -210,7 +210,7 @@ public:
          sqlite3_bind_null(stmt, pos);
    }
 
-   void bind_value(int pos, FieldValue value)
+   void bind_value(int pos, FlexyField value)
    {
       // TODO: 64 bit ints?
       switch(value.type.type)
@@ -238,7 +238,7 @@ public:
          memcpy(s, text, numBytes + 1);
       return s;
    }
-   void column_value(int pos, FieldValue value)
+   void column_value(int pos, FlexyField value)
    {
       switch(column_type(pos))
       {

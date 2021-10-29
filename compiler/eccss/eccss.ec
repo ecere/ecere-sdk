@@ -24,14 +24,14 @@ static int strncpymax(String output, const String input, int count, int max)
    return copied;
 }
 
-static String formatValues(const String format, int numArgs, const FieldValue * values)
+static String formatValues(const String format, int numArgs, const FlexyField * values)
 {
    char output[1024];
    int totalLen = 0;
    int formatLen = format ? strlen(format) : 0;
    const String start = format;
    int arg = 0;
-   const FieldValue * value = &values[arg];
+   const FlexyField * value = &values[arg];
 
    output[0] = '\0';
 
@@ -257,7 +257,7 @@ public struct ECCSSEvaluator
       }
       return expType;
    }
-   virtual void compute(int id, const CMSSIdentifier identifier, bool isFunction, FieldValue value, ExpFlags * flags)
+   virtual void compute(int id, const CMSSIdentifier identifier, bool isFunction, FlexyField value, ExpFlags * flags)
    {
       if(isFunction)
       {
@@ -268,8 +268,8 @@ public struct ECCSSEvaluator
          }
       }
    }
-   virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FieldValue parentVal, FieldValue value, ExpFlags * flags);
-   virtual Class resolveFunction(const FieldValue e, CMSSExpList args, ExpFlags * flags)
+   virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FlexyField parentVal, FlexyField value, ExpFlags * flags);
+   virtual Class resolveFunction(const FlexyField e, CMSSExpList args, ExpFlags * flags)
    {
       Class expType = null;
 
@@ -303,7 +303,7 @@ public struct ECCSSEvaluator
       }
       return expType;
    }
-   virtual Class computeFunction(FieldValue value, const FieldValue e, const FieldValue * args, int numArgs, ExpFlags * flags)
+   virtual Class computeFunction(FlexyField value, const FlexyField e, const FlexyField * args, int numArgs, ExpFlags * flags)
    {
       Class expType = null;
 
@@ -363,7 +363,7 @@ public struct ECCSSEvaluator
       }
       return expType;
    }
-   virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
+   virtual void ::applyStyle(void * object, StylesMask mSet, const FlexyField value, int unit);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
    virtual const String ::stringFromMask(StylesMask mask, Class c) { return null; }
@@ -397,7 +397,7 @@ public:
    }
 
    //NOTE this ignores selectors!
-   bool changeStyle(const String layerID, StylesMask mask, const FieldValue value, Class stylesClass, ECCSSEvaluator evaluator,
+   bool changeStyle(const String layerID, StylesMask mask, const FlexyField value, Class stylesClass, ECCSSEvaluator evaluator,
       bool isNested, Class unitClass)
    {
       bool result = false;
@@ -700,7 +700,7 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
                Class destType = exp.destType;
                if(destType)
                {
-                  FieldValue val { };
+                  FlexyField val { };
                   ExpFlags flag = exp.compute(val, evaluator, runtime, stylesClass);
                   BitMember member = (BitMember)mInit.dataMember;
 
@@ -734,7 +734,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                Class destType = exp.destType;
                if(destType)
                {
-                  FieldValue val { };
+                  FlexyField val { };
                   ExpFlags flag = exp.compute(val, evaluator, runtime, stylesClass);
 
                   if(mInit.dataMember && mInit.dataMember.isProperty)
@@ -989,7 +989,7 @@ public:
          // TODO: Per-record flags for selectors?
          for(s : selectors)
          {
-            FieldValue value { };
+            FlexyField value { };
             CMSSExpression e = s.exp.copy();
             ExpFlags flags = e.compute(value, evaluator, preprocessing, stylesClass);
             if(flags.resolved)
@@ -1064,7 +1064,7 @@ public:
          // TODO: Per-record flags for selectors?
          for(s : selectors)
          {
-            FieldValue value { };
+            FlexyField value { };
             CMSSExpression e = s.exp;
             ExpFlags flags = e.compute(value, evaluator, preprocessing, stylesClass);
             if(flags.resolved)
@@ -1124,7 +1124,7 @@ public:
    }
 
    // NOTE: isNested means this is a nested rule, and we want to set top.sub = as opposed to top = { sub = }
-   bool changeStyle(StylesMask msk, const FieldValue value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
+   bool changeStyle(StylesMask msk, const FlexyField value, Class c, ECCSSEvaluator evaluator, bool isNested, Class unitClass)
    {
       if(msk)
       {
@@ -1256,7 +1256,7 @@ public:
          for(s = selectors.list.first; s; s = s.next)
          {
             StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
-            FieldValue value { };
+            FlexyField value { };
             CMSSExpression e = sel.exp;
             ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
             flags |= sFlags;
@@ -1306,7 +1306,7 @@ public:
                   }
                   else
                   {
-                     FieldValue value { };
+                     FlexyField value { };
                      f = e.compute(value, evaluator, runtime, e.destType);
                   }
                   if(fm && (f | flags) & ~ExpFlags { resolved = true })
@@ -1333,7 +1333,7 @@ public:
          for(s = selectors.list.first; s; s = s.next)
          {
             StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
-            FieldValue value { };
+            FlexyField value { };
             CMSSExpression e = sel.exp;
             ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
             flags |= sFlags;
@@ -1424,7 +1424,7 @@ public:
             else
             {
                // New more generic approach for colormaps etc. with blob, which could eventually work for GEs as well?
-               FieldValue value { };
+               FlexyField value { };
                ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
                if(object)
                   evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
@@ -1434,18 +1434,18 @@ public:
       }
       else if(e && !inst)
       {
-         FieldValue value { };
+         FlexyField value { };
          ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
          Class destType = e.destType;
          Class expType = e.expType;
          if(mFlg.resolved && destType && expType != destType)
          {
             if(destType == class(float) || destType == class(double))
-               convertFieldValue(value, real, value);
+               convertFieldValue(value, {real}, value);
             else if(destType == class(String))
-               convertFieldValue(value, text, value);
+               convertFieldValue(value, {text}, value);
             else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
-               convertFieldValue(value, integer, value);
+               convertFieldValue(value, {integer}, value);
          }
          if(object)
             evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
