@@ -630,6 +630,8 @@ static const char * OnGetString(Class _class, void * data, char * tempString, vo
                memberType = m.dataTypeClass = eSystem_FindClass(module, "int");
 
             onGetString = memberType._vTbl[__ecereVMethodID_class_OnGetString];
+            if(!onGetString)
+               onGetString = OnGetString; // REVIEW: How does an enum class not have OnGetString set?
 
             if(m.isProperty)
             {
