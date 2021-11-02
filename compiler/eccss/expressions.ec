@@ -718,7 +718,7 @@ public:
                    (val1.type.type == integer || val2.type.type == integer) ? integer : text;
             type.isDateTime = (val1.type.isDateTime || val2.type.isDateTime);
          }
-         tbl = &opTables[type];
+         tbl = &opTables[type.type];
 
          flags = flags1 | flags2;
 
@@ -2794,6 +2794,13 @@ public void convertFieldValue(const FlexyField src, FieldTypeEx type, FlexyField
 {
    if(src.type.type == text)
    {
+      if(type.isDateTime)
+      {
+         DateTime dt {};
+         dt.OnGetDataFromString(*&src.s);
+         dest.i = (int64)(SecSince1970)dt;
+         dest.type = { integer };
+      }
       if(type.type == real)
       {
          dest.r = strtod(*&src.s, null);
@@ -2835,6 +2842,11 @@ public void convertFieldValue(const FlexyField src, FieldTypeEx type, FlexyField
          dest.s = PrintString(src.r);
          dest.type = { text, mustFree = true };
       }
+   }
+   else if(src.type.type == array)
+   {
+      dest.a = *&src.a;
+      dest.type = { array };
    }
    else if(src.type.type == nil)
    {
