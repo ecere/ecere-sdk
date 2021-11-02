@@ -26,7 +26,13 @@ static byte * decodeLZMA(byte * data, uint encodedSize, uint size, void * option
       size_t encSize = encodedSize;
       size_t destLen = size;
       if(LzmaUncompress(uncompressed, &destLen, data + LZMA_PROPS_SIZE, &encSize, data, LZMA_PROPS_SIZE) != SZ_OK)
-         return null;
+      {
+         // delete uncompressed buffer upon failure to avoid memory leaks
+         delete uncompressed;
+#ifdef _DEBUG
+         PrintLn("WARNING: E3D: lzma block could not be decoded!");
+#endif
+      }
    }
    return uncompressed;
 }
