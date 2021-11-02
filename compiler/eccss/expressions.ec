@@ -999,6 +999,27 @@ public:
    ExpFlags compute(FlexyField value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       ExpFlags flags { };
+      FlexyField val {};
+      flags |= exp.compute(val, evaluator, computeType, stylesClass);
+
+      if(flags.resolved && evaluator != null && exp.expType)
+      {
+         if(index.GetCount())
+         {
+            FlexyField indexVal { };
+            flags |= index.lastIterator.data.compute(indexVal, evaluator, computeType, stylesClass);
+            if(val.type.type == array)
+            {
+               if(indexVal.i >= 0 && indexVal.i < val.a.count)
+                  value = val.a[indexVal.i];
+               else
+                  value = { type = { nil } };
+            }
+            else
+               value = val;
+            value.type.mustFree = false;
+         }
+      }
       //value = exp.compute;
       return flags;
    }
