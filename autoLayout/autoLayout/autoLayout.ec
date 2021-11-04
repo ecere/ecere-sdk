@@ -27,7 +27,7 @@ enum Direction { horizontal, vertical };
 enum HVAlignment : Alignment { bottom = right, top = left };
 enum SelfAlignment : HVAlignment { inherit };
 
-FontResource defaultFont { "Tahoma", 8.25f };
+FontResource defaultFont1 { "Tahoma", 8.25f };
 
 class Element
 {
@@ -91,7 +91,7 @@ private:
          Element e = this;
          FontResource font;
          while(e && !e.font) e = e.parent;
-         font = e ? e.font : defaultFont;
+         font = e ? e.font : defaultFont1;
          displaySystem.LoadResource(font);
          fontObject = font.font;
       }
