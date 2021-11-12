@@ -159,3 +159,92 @@ uint32 vecfPack10i(Vector3Df src, Vector3Df v2)
    }
    return sum;
 }
+
+enum TextureExtensionAction {keep, strip, add};
+
+enum TextureEmbeddingMethod {embed, reference, refAndWrite};
+
+struct E3DOptions
+{
+   Map<uint, Bitmap> texturesByID;
+   const String texturesPath;
+   TextureExtensionAction extAction;
+   TextureEmbeddingMethod embedAs;
+   // Not currently resolving IDs globally for materials...
+   AVLTree<Material> materials;
+
+   bool positiveYUp;
+   int resolution;
+   bool compressedTextures;
+   bool skipTexturesProcessing;
+
+   Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
+   void *getTextureContext;
+   File (*getTextureCallback)(void *context, const String name, int width, int height, const String format);
+
+   void * lookupTextureContext;
+   void (* saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
+};
+
+class E3DContext : struct
+{
+   Map<uint, Bitmap> texturesByID;
+   const String texturesPath;
+
+
+
+   AVLTree<Material> materials;
+
+   bool positiveYUp;
+   int resolution;
+   bool compressedTextures;
+   bool skipTexturesProcessing;
+
+   const String path;
+   Mutex saveCompressedMutex;
+   int curTextureID;
+   void *getTextureContext;
+   File (*getTextureCallback)(void *context, const String name, int width, int height, const String format);
+
+   Map<uint, Material> materialsByID { };   // Right now this is per E3D... Support supplying optional materials map? Resolve later?
+   Map<uint, Mesh> meshesByID { };
+   Map<uint, bool> meshOwned { };
+
+   void (*saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
+}
+
+class E3DWriteContext : struct
+{
+    // To keep IDs consistent between models.
+   Map<uint, Bitmap> texturesByID;
+   String texturesPath;  // intended to be copied from E3DOptions::texturesPath
+   TextureExtensionAction extAction;
+   TextureEmbeddingMethod embedAs;
+
+
+
+   Array<Material> materials { };
+   char path[MAX_LOCATION];
+   Map<uintptr, int> texturesToID { };
+   Map<uintptr, Array<FacesMaterial>> meshFaceMaterials { };
+   Array<Mesh> allMeshes { };
+   Map<uintptr, int> meshToID { };
+   Array<Bitmap> textures { };
+   Array<bool> texUsePNG { };
+   int firstTexture;
+   AVLTree<int> texUsed { };
+
+   ~E3DWriteContext()
+   {
+      materials.RemoveAll();
+      allMeshes.RemoveAll();
+      meshFaceMaterials.Free();
+      meshToID.Free();
+      delete texturesPath;
+
+      // NOTE: These may have been kept around to re-use textures...
+      textures.RemoveAll();
+      texturesToID.Free();
+      texUsePNG.Free();
+   }
+};
