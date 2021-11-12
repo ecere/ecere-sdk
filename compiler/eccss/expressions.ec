@@ -15,7 +15,7 @@ private:
 #define BINARY(o, name, m, t)                                        \
    static bool name(FlexyField value, const FlexyField val1, const FlexyField val2)   \
    {                                                                    \
-      value.m = val1.m o val2.m;                               \
+      value.m = *&val1.m o *&val2.m;                               \
       value.type = { type = t };                                     \
       return true;                                                \
    }
@@ -23,7 +23,7 @@ private:
 #define BINARY_DIVIDEINT(o, name, m, t) \
    static bool name(FlexyField value, const FlexyField val1, const FlexyField val2)   \
    {                                                                 \
-      value.m = (val2.m ? ((val1.m o val2.m)) : 0);             \
+      value.m = (*&val2.m ? ((*&val1.m o *&val2.m)) : 0);             \
       value.type = { type = t };                                     \
       return true;                                                \
    }
@@ -32,7 +32,7 @@ private:
 #define BINARY_LOGICAL(o, name, m, t)                                        \
    static bool name(FlexyField value, const FlexyField val1, const FlexyField val2)   \
    {                                                                    \
-      value.i = val1.m o val2.m;                               \
+      value.i = *&val1.m o *&val2.m;                               \
       value.type = { type = integer };                                     \
       return true;                                                \
    }
@@ -40,7 +40,7 @@ private:
 #define UNARY(o, name, m, t) \
    static bool name(FlexyField value, const FlexyField val1)                \
    {                                                              \
-      value.m = (o val1.m);                                   \
+      value.m = (o *&val1.m);                                   \
       value.type = { type = t };                                     \
       return true;                                                \
    }
@@ -48,7 +48,7 @@ private:
 #define UNARY_LOGICAL(o, name, m, t) \
    static bool name(FlexyField value, const FlexyField val1)                \
    {                                                              \
-      value.i = (o val1.m);                                   \
+      value.i = (o *&val1.m);                                   \
       value.type = { type = integer };                                     \
       return true;                                                \
    }
@@ -2668,14 +2668,14 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
 static bool textEqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.i = op1.s && op2.s ? !strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
+   val.i = *&op1.s && *&op2.s ? !strcmpi(*&op1.s, *&op2.s) : !*&op1.s && !*&op2.s ? 1 : 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textNqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.i = op1.s && op2.s ? strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
+   val.i = *&op1.s && *&op2.s ? strcmpi(*&op1.s, *&op2.s) : !*&op1.s && !*&op2.s ? 0 : 1;
    val.type = { type = integer };
    return true;
 }
@@ -2694,23 +2694,23 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 static bool textStrCnt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
 
-   result.i = SearchString(val1.s, 0, val2.s, false, false) != null;
+   result.i = SearchString(*&val1.s, 0, *&val2.s, false, false) != null;
    result.type = { type = integer };
    return true;
 }
 
 static bool textStrSrt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : !strncmp(val1.s, val2.s, lenSub);
+   int lenStr = strlen(*&val1.s), lenSub = strlen(*&val2.s);
+   result.i = lenSub > lenStr ? 0 : !strncmp(*&val1.s, *&val2.s, lenSub);
    result.type = { type = integer };
    return true;
 }
 
 static bool textStrEnd(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : !strcmp(val1.s + (lenStr-lenSub), val2.s);
+   int lenStr = strlen(*&val1.s), lenSub = strlen(*&val2.s);
+   result.i = lenSub > lenStr ? 0 : !strcmp(*&val1.s + (lenStr-lenSub), *&val2.s);
    result.type = { type = integer };
    return true;
 }
@@ -2718,58 +2718,59 @@ static bool textStrEnd(FlexyField result, const FlexyField val1, const FlexyFiel
 static bool textStrNotCnt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
 
-   result.i = !SearchString(val1.s, 0, val2.s, false, false);
+   result.i = !SearchString(*&val1.s, 0, *&val2.s, false, false);
    result.type = { type = integer };
    return true;
 }
 
 static bool textStrNotSrt(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub);
+   int lenStr = strlen(*&val1.s), lenSub = strlen(*&val2.s);
+   result.i = lenSub > lenStr ? 0 : strncmp(*&val1.s, *&val2.s, lenSub);
    result.type = { type = integer };
    return true;
 }
 
 static bool textStrNotEnd(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s);
+   int lenStr = strlen(*&val1.s), lenSub = strlen(*&val2.s);
+   result.i = lenSub > lenStr ? 0 : strcmp(*&val1.s + (lenStr-lenSub), *&val2.s);
    result.type = { type = integer };
    return true;
 }
 
 static bool textAdd(FlexyField result, const FlexyField val1, const FlexyField val2)
 {
-   result.s = PrintString(val1.s, val2.s);
+   String s1 = *&val1.s, s2 = *&val2.s;
+   result.s = PrintString(s1, s2);
    result.type = { type = text };
    return true;
 }
 
 static bool textGrt(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.i = strcmp(op1.s, op2.s) > 0;
+   val.i = strcmp(*&op1.s, *&op2.s) > 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textSma(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.i = strcmp(op1.s, op2.s) < 0;
+   val.i = strcmp(*&op1.s, *&op2.s) < 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textGrtEqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.i = strcmp(op1.s, op2.s) >= 0;
+   val.i = strcmp(*&op1.s, *&op2.s) >= 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textSmaEqu(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.i = strcmp(op1.s, op2.s) <= 0;
+   val.i = strcmp(*&op1.s, *&op2.s) <= 0;
    val.type = { type = integer };
    return true;
 }
@@ -2778,14 +2779,14 @@ static bool textSmaEqu(FlexyField val, const FlexyField op1, const FlexyField op
 
 static bool realDivInt(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.r = (int)(op1.r / op2.r + FLT_EPSILON);
+   val.r = (int)(*&op1.r / *&op2.r + FLT_EPSILON);
    val.type = { type = real };
    return true;
 }
 
 static bool realMod(FlexyField val, const FlexyField op1, const FlexyField op2)
 {
-   val.r = fmod(op1.r, op2.r);
+   val.r = fmod(*&op1.r, *&op2.r);
    val.type = { type = real };
    return true;
 }
@@ -2826,7 +2827,8 @@ public void convertFieldValue(const FlexyField src, FieldTypeEx type, FlexyField
       }
       else if(type.type == text)
       {
-         dest.s = PrintString(src.i);
+         int64 i = *&src.i;
+         dest.s = PrintString(i);
          dest.type = { text };
       }
    }
@@ -2839,7 +2841,8 @@ public void convertFieldValue(const FlexyField src, FieldTypeEx type, FlexyField
       }
       else if(type.type == text)
       {
-         dest.s = PrintString(src.r);
+         double r = *&src.r;
+         dest.s = PrintString(r);
          dest.type = { text, mustFree = true };
       }
    }

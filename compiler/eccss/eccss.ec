@@ -76,9 +76,9 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
                   switch(value->type.type)
                   {
                      default:
-                     case integer: width = (int)value->i; break;
-                     case text:    width = strtol(value->s, null, 0); break;
-                     case real:    width = (int)value->r; break;
+                     case integer: width = (int)*&value->i; break;
+                     case text:    width = strtol(*&value->s, null, 0); break;
+                     case real:    width = (int)*&value->r; break;
                   }
                   value = &values[++arg];
                }
@@ -97,9 +97,9 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
                      switch(value->type.type)
                      {
                         default:
-                        case integer: precision = (int)value->i; break;
-                        case text:    precision = strtol(value->s, null, 0); break;
-                        case real:    precision = (int)value->r; break;
+                        case integer: precision = (int)*&value->i; break;
+                        case text:    precision = strtol(*&value->s, null, 0); break;
+                        case real:    precision = (int)*&value->r; break;
                      }
                      value = &values[++arg];
                   }
@@ -135,8 +135,8 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
 
                if(type == text && value->type.type == text && argFormat[0] == '%' && argFormat[1] == 's')
                {
-                  if(value->s)
-                     totalLen += strncpymax(output + totalLen, value->s, strlen(value->s), sizeof(output) - totalLen);
+                  if(*&value->s)
+                     totalLen += strncpymax(output + totalLen, *&value->s, strlen(*&value->s), sizeof(output) - totalLen);
                }
                else
                {
@@ -152,9 +152,9 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
                            switch(value->type.type)
                            {
                               default:
-                              case integer: intValue = (int)value->i; break;
-                              case real:    intValue = (int)value->r; break;
-                              case text:    intValue = value->s ? strtol(value->s, null, 0) : 0; break;
+                              case integer: intValue = (int)*&value->i; break;
+                              case real:    intValue = (int)*&value->r; break;
+                              case text:    intValue = *&value->s ? strtol(*&value->s, null, 0) : 0; break;
                            }
                            if(argWidth && argPrecision)
                               numArgs = sprintf(argString, argFormat, width, precision, intValue);
@@ -177,9 +177,9 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
                            switch(value->type.type)
                            {
                               default:
-                              case integer: doubleValue = (double)value->i; break;
-                              case real:    doubleValue = value->r; break;
-                              case text:    doubleValue = value->s ? strtod(value->s, null) : 0; break;
+                              case integer: doubleValue = (double)*&value->i; break;
+                              case real:    doubleValue = *&value->r; break;
+                              case text:    doubleValue = *&value->s ? strtod(*&value->s, null) : 0; break;
                            }
                            if(argWidth && argPrecision)
                               numArgs = sprintf(argString, argFormat, width, precision, doubleValue);
@@ -201,9 +201,9 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
                         switch(value->type.type)
                         {
                            default:
-                           case integer: strValue = (sprintf(temp, FORMAT64D, value->i), temp); break;
-                           case real:    strValue = value->r.OnGetString(temp, null, null); break;
-                           case text:    strValue = value->s ? value->s : ""; break;
+                           case integer: strValue = (sprintf(temp, FORMAT64D, *&value->i), temp); break;
+                           case real:    strValue = *&value->r.OnGetString(temp, null, null); break;
+                           case text:    strValue = *&value->s ? *&value->s : ""; break;
                            case nil:     strValue = ""; break;
                         }
                         if(argWidth && argPrecision)
@@ -275,7 +275,7 @@ public struct ECCSSEvaluator
 
       if(e.type.type == integer)
       {
-         ECCSSFunctionIndex fnIndex = (ECCSSFunctionIndex)e.i;
+         ECCSSFunctionIndex fnIndex = (ECCSSFunctionIndex)*&e.i;
          switch(fnIndex)
          {
             case strlwr:
@@ -309,7 +309,7 @@ public struct ECCSSEvaluator
 
       if(e.type.type == integer)
       {
-         ECCSSFunctionIndex fnIndex = (ECCSSFunctionIndex)e.i;
+         ECCSSFunctionIndex fnIndex = (ECCSSFunctionIndex)*&e.i;
          switch(fnIndex)
          {
             case strlwr:
@@ -318,7 +318,7 @@ public struct ECCSSEvaluator
                if(numArgs >= 1 && args[0].type.type == text)
                {
                   value.type = { type = text, mustFree = true };
-                  value.s = CopyString(args[0].s);
+                  value.s = CopyString(*&args[0].s);
                   if(fnIndex == strlwr)
                      strupr(value.s);
                   else
@@ -330,22 +330,22 @@ public struct ECCSSEvaluator
             {
                if(numArgs >= 3 && args[0].type.type == text && args[1].type.type == text && args[2].type.type == text)
                {
-                  String n = SearchString(args[0].s, 0, args[1].s, false, false);
+                  String n = SearchString(*&args[0].s, 0, *&args[1].s, false, false);
                   if(n)
                   {
-                     int len = strlen(args[0].s);
-                     int startLen = (uint)(n - args[0].s);
-                     int replacedLen = strlen(args[1].s);
-                     int replacingLen = strlen(args[2].s);
+                     int len = strlen(*&args[0].s);
+                     int startLen = (uint)(n - *&args[0].s);
+                     int replacedLen = strlen(*&args[1].s);
+                     int replacingLen = strlen(*&args[2].s);
                      int remainingLen = len - startLen - replacedLen;
                      value.s = new char[startLen + replacingLen + 1];
-                     memcpy(value.s, args[0].s, startLen);
-                     memcpy(value.s + startLen, args[2].s, replacingLen);
-                     memcpy(value.s + startLen + replacingLen, args[0].s + startLen + replacedLen, remainingLen);
+                     memcpy(value.s, *&args[0].s, startLen);
+                     memcpy(value.s + startLen, *&args[2].s, replacingLen);
+                     memcpy(value.s + startLen + replacingLen, *&args[0].s + startLen + replacedLen, remainingLen);
                      value.s[startLen + replacingLen] = 0;
                   }
                   else
-                     value.s = CopyString(args[0].s);
+                     value.s = CopyString(*&args[0].s);
                   value.type = { text, true };
                }
                break;
@@ -355,7 +355,7 @@ public struct ECCSSEvaluator
                if(numArgs >= 1 && args[0].type.type == text)
                {
                   value.type = { text, true };
-                  value.s = formatValues(args[0].s, numArgs-1, &args[1]);
+                  value.s = formatValues(*&args[0].s, numArgs-1, &args[1]);
                }
                break;
             }
@@ -746,41 +746,42 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
                      {
                         void (* setInt)(void * o, int v) = (void *)prop.Set;
-                        setInt(object, val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0);
+                        setInt(object, val.type.type == integer ? (int)*&val.i : val.type.type == real ? (int)*&val.r : 0);
                      }
                      else if(destType == class(int64) ||
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
                      {
                         void (* setInt64)(void * o, int64 v) = (void *)prop.Set;
-                        setInt64(object, val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0);
+                        setInt64(object, val.type.type == integer ? (int64)*&val.i : val.type.type == real ? (int64)*&val.r : 0);
                      }
                      else if(destType == class(double))
                      {
                         void (* setDouble)(void * o, double v) = (void *)prop.Set;
-                        setDouble(object, val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0);
+                        setDouble(object, val.type.type == integer ? (double)*&val.i : val.type.type == real ? *&val.r : 0);
                      }
                      else if(destType == class(float))
                      {
                         void (* setFloat)(void * o, float v) = (void *)prop.Set;
-                        setFloat(object, val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0);
+                        setFloat(object, val.type.type == integer ? (float)*&val.i : val.type.type == real ? (float)*&val.r : 0);
                      }
                      else if(destType == class(String))
                      {
                         void (* setString)(void * o, String v) = (void *)prop.Set;
-                        String s =
-                           (val.type.type == text)    ? (val.type.mustFree ? val.s : CopyString(val.s)) :
-                           (val.type.type == real)    ? PrintString(val.r) :
-                           (val.type.type == integer) ? PrintString(val.i) : null;
+                        String s = val.type.type == text ? (val.type.mustFree ? *&val.s : CopyString(*&val.s))  : null;
+                        double s2 = val.type.type == real ? *&val.r : 0;
+                        int64 s3 = val.type.type == integer ? *&val.i : 0;
+                        if(s2) s = PrintString(s2);
+                        if(s3) s = PrintString(s3);
                         setString(object, s);
                         delete s;
                      }
                      else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance))
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
-                        setInstance(object,  (Instance)(uintptr)val.i);
+                        setInstance(object,  (Instance)(uintptr)*&val.i);
 
                         if(destType.type == normalClass)
-                           ; //eInstance_DecRef((Instance)(uintptr)val.i);
+                           ; //eInstance_DecRef((Instance)(uintptr)*&val.i);
                         else if(destType.type == noHeadClass)
                         {
                            // TODO: base classes destructors?
@@ -797,7 +798,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
-                        setInstance(object,  (void *)(uintptr)val.i);
+                        setInstance(object,  (void *)(uintptr)*&val.i);
                      }
                      else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpArray))
                      {
@@ -842,24 +843,24 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                   {
                      if(destType == class(int) || destType == class(bool) || destType == class(Color) ||
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int)))
-                        *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)val.i : val.type.type == real ? (int)val.r : 0;
+                        *(int *)((byte *)object + mInit.offset) = val.type.type == integer ? (int)*&val.i : val.type.type == real ? (int)*&val.r : 0;
                      else if(destType == class(int64) ||
                         ((destType.type == enumClass || destType.type == bitClass) && destType.typeSize == sizeof(int64)))
-                        *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)val.i : val.type.type == real ? (int64)val.r : 0;
+                        *(int64 *)((byte *)object + mInit.offset) = val.type.type == integer ? (int64)*&val.i : val.type.type == real ? (int64)*&val.r : 0;
                      // TODO: Better units handling
                      else if(destType == class(double) || destType == class(Radians) || destType == class(Meters))
-                        *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0;
+                        *(double *)((byte *)object + mInit.offset) = val.type.type == integer ? (double)*&val.i : val.type.type == real ? *&val.r : 0;
                      else if(destType == class(Degrees))
                      {
                         *(double *)((byte *)object + mInit.offset) =
-                           Pi / 180 * (val.type.type == integer ? (double)val.i : val.type.type == real ? val.r : 0);
+                           Pi / 180 * (val.type.type == integer ? (double)*&val.i : val.type.type == real ? *&val.r : 0);
                      }
                      else if(destType == class(float))
-                        *(float *)((byte *)object + mInit.offset) = val.type.type == integer ? (float)val.i : val.type.type == real ? (float)val.r : 0;
+                        *(float *)((byte *)object + mInit.offset) = val.type.type == integer ? (float)*&val.i : val.type.type == real ? (float)*&val.r : 0;
                      else if(destType == class(String))
                      {
                         *(String *)((byte *)object + mInit.offset) =
-                           (val.type.type == text)    ? (val.type.mustFree ? val.s : CopyString(val.s))  :
+                           (val.type.type == text)    ? (val.type.mustFree ? *&val.s : CopyString(*&val.s))  :
                            (val.type.type == real)    ? PrintString(val.r) :
                            (val.type.type == integer) ? PrintString(val.i) : null;
                      }
@@ -867,11 +868,11 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      {
                         // TOFIX: We should probably be deleting existance value here?
 
-                        *(Instance *)((byte *)object + mInit.offset) = (Instance)(uintptr)val.i;
+                        *(Instance *)((byte *)object + mInit.offset) = (Instance)(uintptr)*&val.i;
                      }
                      else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
                      {
-                        memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
+                        memcpy((byte *)object + mInit.offset, (void *)(uintptr)*&val.i, destType.structSize);
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
