@@ -103,29 +103,6 @@ void freeE3DObjectMaterials(Object object)
 // Right now this is global and requires a lock... Support supplying optional textures ID map ?
 static Mutex texMutex { };
 
-class E3DContext : struct
-{
-   Map<uint, Bitmap> texturesByID;
-   AVLTree<Material> materials;
-   const String texturesQuery;
-   bool positiveYUp;
-   int resolution;
-   bool compressedTextures;
-   bool skipTexturesProcessing;
-
-   Mutex saveCompressedMutex;
-   int curTextureID;
-   const String path;
-   void *getTextureContext;
-   File (*getTextureCallback)(void *context, const String name, int width, int height, const String format);
-
-   Map<uint, Material> materialsByID { };   // Right now this is per E3D... Support supplying optional materials map? Resolve later?
-   Map<uint, Mesh> meshesByID { };
-   Map<uint, bool> meshOwned { };
-
-   void (*saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
-}
-
 static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data)
 {
    Object object = data; // data is most often the Mesh...
@@ -794,26 +771,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
    indent--;
 }
 
-struct E3DOptions
-{
-   Map<uint, Bitmap> texturesByID;
-   AVLTree<Material> materials;    // Not currently resolving IDs globally for materials...
-   const String texturesQuery;
-   bool positiveYUp;
-   int resolution;
-   bool compressedTextures;
-   bool skipTexturesProcessing;
-
-   Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
-   void *getTextureContext;
-   File (*getTextureCallback)(void *context, const String name, int width, int height, const String format);
-
-   void * lookupTextureContext;
-   uint (* lookupTextureCB)(void * context, const String model, const String path, uint texID);
-
-   void (* saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
-};
-
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
 {
    uint64 pos = pbStart;
@@ -975,7 +932,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
    {
       ctx.texturesByID = options.texturesByID ? options.texturesByID : { };
       ctx.materials = options.materials;
-      ctx.texturesQuery = options.texturesQuery;
+      ctx.texturesPath = options.texturesPath;
       ctx.positiveYUp = options.positiveYUp;
       ctx.resolution = options.resolution;
       ctx.compressedTextures = options.compressedTextures;

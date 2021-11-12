@@ -22,7 +22,9 @@ public class E3DFormat : ObjectFormat
       File f = FileOpen(fileName, write);
       if(f)
       {
-         E3DWriteContext ctx { texturesByID = options ? ((E3DOptions *)options)->texturesByID : null };
+         E3DOptions *opts = (E3DOptions *)options;
+         E3DWriteContext ctx {texturesPath = opts ? CopyString(opts->texturesPath) : null,
+             texturesByID = opts ? opts->texturesByID : null };
 
          StripLastDirectory(fileName, ctx.path);
          if(ctx.texturesByID && ctx.texturesByID.count)
@@ -59,7 +61,7 @@ public class E3DFormat : ObjectFormat
       {
          ctx.texturesByID = options.texturesByID;
          ctx.materials = options.materials;
-         ctx.texturesQuery = options.texturesQuery;
+         ctx.texturesPath = options.texturesPath;
          ctx.positiveYUp = options.positiveYUp;
          ctx.resolution = options.resolution;
          ctx.compressedTextures = options.compressedTextures;

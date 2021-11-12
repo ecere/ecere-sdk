@@ -20,36 +20,6 @@ static bool compressed = true;
 #include <LzmaLib.h>
 #undef Bool
 
-class E3DWriteContext : struct
-{
-   char path[MAX_LOCATION];
-   Map<uintptr, int> texturesToID { };
-   Map<uintptr, Array<FacesMaterial>> meshFaceMaterials { };
-   Array<Material> materials { };
-   Array<Mesh> allMeshes { };
-   Map<uintptr, int> meshToID { };
-   Array<Bitmap> textures { };
-   Array<bool> texUsePNG { };
-   int firstTexture;
-   AVLTree<int> texUsed { };
-
-   // To keep IDs consistent between models.
-   Map<uint, Bitmap> texturesByID;
-
-   ~E3DWriteContext()
-   {
-      materials.RemoveAll();
-      allMeshes.RemoveAll();
-      meshFaceMaterials.Free();
-      meshToID.Free();
-
-      // NOTE: These may have been kept around to re-use textures...
-      textures.RemoveAll();
-      texturesToID.Free();
-      texUsePNG.Free();
-   }
-};
-
 static byte * encodeLZMA(byte * data, uint size, uint * encodedSize, void * options)
 {
    size_t destLen = (unsigned long)(size + size / 1000 + 12);
@@ -667,18 +637,30 @@ static int maxTexSize;
 static void writeTexture(E3DWriteContext ctx, File f, TextureInfo info)
 {
    writeE3DBlock(ctx, f, textureID, &info.id, writeInt);
-   if(externalTextures)
+   if(externalTextures || ctx.texturesPath)
    {
       char name[256];
       const char * ext = info.usePNG ? "png" : "jpg";
-
-      if(maxTexSize && info.texture.width > maxTexSize && info.texture.height > maxTexSize)
-         sprintf(name, "textures/%d-%d.%s", info.id, maxTexSize, ext);
+      // This must change to a callback or rely on a value in the context to
+      // decide wether to actually write the external textures or not however,
+      // other formats (e.g.: in assimp.ec) would need to be updated in the same
+      // way. For now, althoug it is a magic value, we will consider
+      // ctx.texturesPrefix == "." as a sign that we do not want to really output
+      // the textures and only the file name without extension and resolution
+      // should be stored in the model.
+      bool writeExternalTextures = !(ctx.texturesPath && !strcmp(ctx.texturesPath, "."));  // Should we also check for ""?
+      if(!writeExternalTextures)
+         sprintf(name, "%d", info.id);
+      else if(maxTexSize && info.texture.width > maxTexSize && info.texture.height > maxTexSize)
+         // Currently any value of ctx.texturesPrefix other than "." is used as the path to the modelID (even "")
+         sprintf(name, "%s/%d-%d.%s", ctx.texturesPath ? ctx.texturesPath: "textures", info.id, maxTexSize, ext);
       else
-         sprintf(name, "textures/%d.%s", info.id, ext);
+         sprintf(name, "%s/%d.%s", ctx.texturesPath ? ctx.texturesPath: "textures", info.id, ext);
+
       writeE3DBlock(ctx,f, textureName, name, writeString);
 
-      if(info.id - 1 >= ctx.firstTexture)
+      // TODO: review this condition if externalTextures is switched to true;
+      if(writeExternalTextures && info.id - 1 >= ctx.firstTexture)
       {
          for(maxTexSize : [0, 512, 256])
          {
