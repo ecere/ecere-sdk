@@ -56,37 +56,40 @@ static void OutputIdentifier(Identifier id, File f)
    f.Puts((id && id.string) ? id.string : "(null identifier)");
 }
 
-static void OutputOperator(int op, File f)
+char * GetOperatorString(char s[10], int op)
 {
    switch(op)
    {
-      case INC_OP: f.Puts("++"); break;
-      case DEC_OP: f.Puts("--");break;
-      case SIZEOF: f.Puts("sizeof "); break;
-      case LEFT_OP: f.Puts("<<"); break;
-      case RIGHT_OP: f.Puts(">>"); break;
-      case LE_OP: f.Puts("<="); break;
-      case GE_OP: f.Puts(">="); break;
-      case EQ_OP: f.Puts("=="); break;
-      case NE_OP: f.Puts("!="); break;
-      case AND_OP: f.Puts("&&"); break;
-      case OR_OP: f.Puts("||"); break;
-	   case MUL_ASSIGN: f.Puts("*="); break;
-	   case DIV_ASSIGN: f.Puts("/="); break;
-	   case MOD_ASSIGN: f.Puts("%="); break;
-	   case ADD_ASSIGN: f.Puts("+="); break;
-	   case SUB_ASSIGN: f.Puts("-="); break;
-	   case LEFT_ASSIGN: f.Puts("<<="); break;
-	   case RIGHT_ASSIGN: f.Puts(">>="); break;
-	   case AND_ASSIGN: f.Puts("&="); break;
-	   case XOR_ASSIGN: f.Puts("^="); break;
-	   case OR_ASSIGN: f.Puts("|="); break;
+      case INC_OP: strcpy(s, "++"); break;
+      case DEC_OP: strcpy(s, "--");break;
+      case SIZEOF: strcpy(s, "sizeof "); break;
+      case LEFT_OP: strcpy(s, "<<"); break;
+      case RIGHT_OP: strcpy(s, ">>"); break;
+      case LE_OP: strcpy(s, "<="); break;
+      case GE_OP: strcpy(s, ">="); break;
+      case EQ_OP: strcpy(s, "=="); break;
+      case NE_OP: strcpy(s, "!="); break;
+      case AND_OP: strcpy(s, "&&"); break;
+      case OR_OP: strcpy(s, "||"); break;
+	   case MUL_ASSIGN: strcpy(s, "*="); break;
+	   case DIV_ASSIGN: strcpy(s, "/="); break;
+	   case MOD_ASSIGN: strcpy(s, "%="); break;
+	   case ADD_ASSIGN: strcpy(s, "+="); break;
+	   case SUB_ASSIGN: strcpy(s, "-="); break;
+	   case LEFT_ASSIGN: strcpy(s, "<<="); break;
+	   case RIGHT_ASSIGN: strcpy(s, ">>="); break;
+	   case AND_ASSIGN: strcpy(s, "&="); break;
+	   case XOR_ASSIGN: strcpy(s, "^="); break;
+	   case OR_ASSIGN: strcpy(s, "|="); break;
       case '&': case '*': case '+': case '-': case '~': case '!': case '/': case '%':
       case '<': case '>': case '|': case '^': case '=':
-         f.Putc((char)op);
+         s[0] = (char)op;
+         s[1] = 0;
          break;
-      case DELETE: f.Puts("delete "); break;
+      case DELETE: strcpy(s, "delete "); break;
+      default: s[0] = 0;
    }
+   return s;
 }
 
 public void OutputTypeName(TypeName type, File f, bool typeName)
@@ -207,7 +210,10 @@ public void OutputExpression(Expression exp, File f)
             if(exp.op.exp2)
                f.Puts(" ");
          }
-         OutputOperator(exp.op.op, f);
+         {
+            char s[10];
+            f.Puts(GetOperatorString(s, exp.op.op));
+         }
          if(exp.op.exp2)
          {
             if(exp.op.exp1 || (exp.op.exp2.type == opExp && !exp.op.exp2.op.exp1 && exp.op.exp2.op.op == exp.op.op))

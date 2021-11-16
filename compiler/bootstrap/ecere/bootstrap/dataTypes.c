@@ -2564,6 +2564,8 @@ memberType = m->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(
 if(!memberType)
 memberType = m->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, "int");
 onGetString = memberType->_vTbl[__ecereVMethodID_class_OnGetString];
+if(!onGetString)
+onGetString = (void *)(__ecereNameSpace__ecere__com__OnGetString);
 if(m->isProperty)
 {
 struct __ecereNameSpace__ecere__com__Property * prop = (struct __ecereNameSpace__ecere__com__Property *)m;

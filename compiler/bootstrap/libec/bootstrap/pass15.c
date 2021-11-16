@@ -285,6 +285,8 @@ extern char *  strstr(const char * , const char * );
 
 extern unsigned int __ecereNameSpace__ecere__sys__UTF8GetChar(const char *  string, int *  numBytes);
 
+extern char *  GetOperatorString(char s[10], int op);
+
 extern unsigned int (* __ecereProp_float_Get_isInf)(float this);
 
 extern int (* __ecereProp_float_Get_signBit)(float this);
@@ -16612,7 +16614,11 @@ PrintExpression(exp->__anon1.op.exp2, expString);
 if(type1 && type1->kind == 13)
 {
 if(exp->__anon1.op.op == MUL_ASSIGN || exp->__anon1.op.op == DIV_ASSIGN || exp->__anon1.op.op == MOD_ASSIGN || exp->__anon1.op.op == LEFT_ASSIGN || exp->__anon1.op.op == RIGHT_ASSIGN || exp->__anon1.op.op == AND_ASSIGN || exp->__anon1.op.op == OR_ASSIGN)
-Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "operator %s illegal on pointer\n", (((void *)0))), exp->__anon1.op.op);
+{
+char s[10];
+
+Compiler_Error(__ecereNameSpace__ecere__GetTranslatedString("ec", "operator %s illegal on pointer\n", (((void *)0))), GetOperatorString(s, exp->__anon1.op.op));
+}
 else if(exp->__anon1.op.op == '=')
 {
 if(exp->__anon1.op.exp2->destType)

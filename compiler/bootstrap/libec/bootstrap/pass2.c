@@ -3085,6 +3085,8 @@ FreeType((parentExp ? parentExp : newExp)->destType);
 if(checkedExp->expType)
 checkedExp->expType->refCount++;
 }
+if(memberExp->__anon1.member.exp == parentExp)
+nullMemberExp = 1;
 __ecereMethod___ecereNameSpace__ecere__sys__OldList_Insert((&*arguments), (((void *)0)), parentExp ? parentExp : newExp);
 }
 else
