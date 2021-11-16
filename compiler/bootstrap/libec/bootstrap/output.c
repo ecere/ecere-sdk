@@ -160,6 +160,8 @@ extern char *  strstr(const char * , const char * );
 
 extern int strcmp(const char * , const char * );
 
+extern char *  strcpy(char * , const char * );
+
 extern char *  GetIncludeFileFromID(int id);
 
 extern char *  strchr(const char * , int);
@@ -169,8 +171,6 @@ extern char *  __ecereNameSpace__ecere__sys__StripLastDirectory(const char *  st
 extern char *  __ecereNameSpace__ecere__sys__PathCat(char *  string, const char *  addedPath);
 
 extern void __ecereNameSpace__ecere__sys__ChangeCh(char *  string, char ch1, char ch2);
-
-extern char *  strcpy(char * , const char * );
 
 struct ModuleImport;
 
@@ -215,6 +215,98 @@ const char * t, * s = str;
 
 while((t = strstr(s, "::")))
 s = t + 2;
+return s;
+}
+
+char * GetOperatorString(char s[10], int op)
+{
+switch(op)
+{
+case INC_OP:
+strcpy(s, "++");
+break;
+case DEC_OP:
+strcpy(s, "--");
+break;
+case SIZEOF:
+strcpy(s, "sizeof ");
+break;
+case LEFT_OP:
+strcpy(s, "<<");
+break;
+case RIGHT_OP:
+strcpy(s, ">>");
+break;
+case LE_OP:
+strcpy(s, "<=");
+break;
+case GE_OP:
+strcpy(s, ">=");
+break;
+case EQ_OP:
+strcpy(s, "==");
+break;
+case NE_OP:
+strcpy(s, "!=");
+break;
+case AND_OP:
+strcpy(s, "&&");
+break;
+case OR_OP:
+strcpy(s, "||");
+break;
+case MUL_ASSIGN:
+strcpy(s, "*=");
+break;
+case DIV_ASSIGN:
+strcpy(s, "/=");
+break;
+case MOD_ASSIGN:
+strcpy(s, "%=");
+break;
+case ADD_ASSIGN:
+strcpy(s, "+=");
+break;
+case SUB_ASSIGN:
+strcpy(s, "-=");
+break;
+case LEFT_ASSIGN:
+strcpy(s, "<<=");
+break;
+case RIGHT_ASSIGN:
+strcpy(s, ">>=");
+break;
+case AND_ASSIGN:
+strcpy(s, "&=");
+break;
+case XOR_ASSIGN:
+strcpy(s, "^=");
+break;
+case OR_ASSIGN:
+strcpy(s, "|=");
+break;
+case '&':
+case '*':
+case '+':
+case '-':
+case '~':
+case '!':
+case '/':
+case '%':
+case '<':
+case '>':
+case '|':
+case '^':
+case '=':
+s[0] = (char)op;
+s[1] = 0;
+break;
+case DELETE:
+strcpy(s, "delete ");
+break;
+default:
+s[0] = 0;
+}
 return s;
 }
 
@@ -264,8 +356,6 @@ extern void __ecereNameSpace__ecere__com__eInstance_SetMethod(struct __ecereName
 extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
-
-extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
 
 int __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(struct __ecereNameSpace__ecere__com__Instance * this, const char *  format, ...);
 
@@ -1216,301 +1306,6 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
 __internal_VirtualMethod ? __internal_VirtualMethod(f, (id && id->string) ? id->string : "(null identifier)") : (unsigned int)1;
 }));
-}
-
-static void OutputOperator(int op, struct __ecereNameSpace__ecere__com__Instance * f)
-{
-switch(op)
-{
-case INC_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "++") : (unsigned int)1;
-}));
-break;
-case DEC_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "--") : (unsigned int)1;
-}));
-break;
-case SIZEOF:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "sizeof ") : (unsigned int)1;
-}));
-break;
-case LEFT_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "<<") : (unsigned int)1;
-}));
-break;
-case RIGHT_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, ">>") : (unsigned int)1;
-}));
-break;
-case LE_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "<=") : (unsigned int)1;
-}));
-break;
-case GE_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, ">=") : (unsigned int)1;
-}));
-break;
-case EQ_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "==") : (unsigned int)1;
-}));
-break;
-case NE_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "!=") : (unsigned int)1;
-}));
-break;
-case AND_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "&&") : (unsigned int)1;
-}));
-break;
-case OR_OP:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "||") : (unsigned int)1;
-}));
-break;
-case MUL_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "*=") : (unsigned int)1;
-}));
-break;
-case DIV_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "/=") : (unsigned int)1;
-}));
-break;
-case MOD_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "%=") : (unsigned int)1;
-}));
-break;
-case ADD_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "+=") : (unsigned int)1;
-}));
-break;
-case SUB_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "-=") : (unsigned int)1;
-}));
-break;
-case LEFT_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "<<=") : (unsigned int)1;
-}));
-break;
-case RIGHT_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, ">>=") : (unsigned int)1;
-}));
-break;
-case AND_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "&=") : (unsigned int)1;
-}));
-break;
-case XOR_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "^=") : (unsigned int)1;
-}));
-break;
-case OR_ASSIGN:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "|=") : (unsigned int)1;
-}));
-break;
-case '&':
-case '*':
-case '+':
-case '-':
-case '~':
-case '!':
-case '/':
-case '%':
-case '<':
-case '>':
-case '|':
-case '^':
-case '=':
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, char ch);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, char ch))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, (char)op) : (unsigned int)1;
-}));
-break;
-case DELETE:
-(__extension__ ({
-unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
-
-__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
-struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
-
-__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
-})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
-__internal_VirtualMethod ? __internal_VirtualMethod(f, "delete ") : (unsigned int)1;
-}));
-break;
-}
 }
 
 void __ecereUnregisterModule_output(struct __ecereNameSpace__ecere__com__Instance * module)
@@ -2551,6 +2346,7 @@ struct __ecereNameSpace__ecere__com__Class __attribute__((unused)) * class;
 
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("SetMemoryGuard", "void SetMemoryGuard(bool b)", SetMemoryGuard, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetMemoryGuard", "bool GetMemoryGuard(void)", GetMemoryGuard, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOperatorString", "char * GetOperatorString(char s[10], int op)", GetOperatorString, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputTypeName", "void OutputTypeName(TypeName type, ecere::sys::File f, bool typeName)", OutputTypeName, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExpression", "void OutputExpression(Expression exp, ecere::sys::File f)", OutputExpression, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OutputExtDecl", "void OutputExtDecl(ExtDecl extDecl, ecere::sys::File f)", OutputExtDecl, module, 2);
@@ -4767,7 +4563,20 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(f, " ") : (unsigned int)1;
 }));
 }
-OutputOperator(exp->__anon1.op.op, f);
+{
+char s[10];
+
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, const char *  string))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = f;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__sys__File->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts]);
+__internal_VirtualMethod ? __internal_VirtualMethod(f, GetOperatorString(s, exp->__anon1.op.op)) : (unsigned int)1;
+}));
+}
 if(exp->__anon1.op.exp2)
 {
 if(exp->__anon1.op.exp1 || (exp->__anon1.op.exp2->type == 4 && !exp->__anon1.op.exp2->__anon1.op.exp1 && exp->__anon1.op.exp2->__anon1.op.op == exp->__anon1.op.op))

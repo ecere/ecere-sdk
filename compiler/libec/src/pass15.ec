@@ -8663,9 +8663,13 @@ void ProcessExpressionType(Expression exp)
 
                if(type1 && type1.kind == pointerType)
                {
-                  if(exp.op.op == MUL_ASSIGN || exp.op.op == DIV_ASSIGN ||exp.op.op == MOD_ASSIGN ||exp.op.op == LEFT_ASSIGN ||exp.op.op == RIGHT_ASSIGN ||
+                  if(exp.op.op == MUL_ASSIGN || exp.op.op == DIV_ASSIGN || exp.op.op == MOD_ASSIGN ||
+                     exp.op.op == LEFT_ASSIGN || exp.op.op == RIGHT_ASSIGN ||
                      exp.op.op == AND_ASSIGN || exp.op.op == OR_ASSIGN)
-                     Compiler_Error($"operator %s illegal on pointer\n", exp.op.op);
+                  {
+                     char s[10];
+                     Compiler_Error($"operator %s illegal on pointer\n", GetOperatorString(s, exp.op.op));
+                  }
                   else if(exp.op.op == '=')
                   {
                      if(exp.op.exp2.destType) FreeType(exp.op.exp2.destType);
