@@ -767,11 +767,10 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      else if(destType == class(String))
                      {
                         void (* setString)(void * o, String v) = (void *)prop.Set;
-                        String s = val.type.type == text ? (val.type.mustFree ? *&val.s : CopyString(*&val.s))  : null;
-                        double s2 = val.type.type == real ? *&val.r : 0;
-                        int64 s3 = val.type.type == integer ? *&val.i : 0;
-                        if(s2) s = PrintString(s2);
-                        if(s3) s = PrintString(s3);
+                        String s = null;
+                        if(val.type.type == text) { const String vs = *&val.s; s = val.type.mustFree ? (void *)vs : CopyString(vs); }
+                        else if(val.type.type == real) { double vr = *&val.r; s = PrintString(vr); }
+                        else if(val.type.type == integer) { int64 vi = *&val.i; s = PrintString(vi); }
                         setString(object, s);
                         delete s;
                      }
