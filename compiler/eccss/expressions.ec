@@ -1011,7 +1011,7 @@ public:
             if(val.type.type == array)
             {
                if(indexVal.i >= 0 && indexVal.i < val.a.count)
-                  value = val.a[indexVal.i];
+                  value = val.a[(int)indexVal.i];
                else
                   value = { type = { nil } };
             }
