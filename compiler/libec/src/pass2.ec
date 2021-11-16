@@ -2024,6 +2024,8 @@ static void ProcessExpression(Expression exp)
                               (parentExp ? parentExp : newExp).destType = destType;
                               if(checkedExp.expType) checkedExp.expType.refCount++;
                            }
+                           if(memberExp.member.exp == parentExp)
+                              nullMemberExp = true; // This was still happening and crashing
                            arguments->Insert(null, parentExp ? parentExp : newExp);
                         }
                         else
