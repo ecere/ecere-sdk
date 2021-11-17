@@ -202,7 +202,7 @@ static String formatValues(const String format, int numArgs, const FlexyField * 
                         {
                            default:
                            case integer: strValue = (sprintf(temp, FORMAT64D, *&value->i), temp); break;
-                           case real:    strValue = *&value->r.OnGetString(temp, null, null); break;
+                           case real:    { double r = *&value->r; strValue = r.OnGetString(temp, null, null); break; }
                            case text:    strValue = *&value->s ? *&value->s : ""; break;
                            case nil:     strValue = ""; break;
                         }
