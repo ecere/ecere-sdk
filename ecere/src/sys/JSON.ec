@@ -2934,6 +2934,7 @@ public String PrintObjectNotationString(Class objectType, void * object, ObjectN
       TempFile f { };
       if(WriteONObject(f, objectType, object, 0, onType == econ, null, false, 0, null))
       {
+         f.Putc('\0');
          if(indent>0)
            result =  StringIndent((String)f.buffer, indent * jsonIndentWidth, indentFirst);
          else
