@@ -199,7 +199,7 @@ class ProcessingStage
 
    bool processTasks(int maxTasks)
    {
-      bool result = true;
+      bool result = false;
       int i;
 
       for(i = 0; !maxTasks || i < maxTasks; i++)
@@ -545,7 +545,7 @@ public:
 
    bool processTasks(int stage, int maxTasks)
    {
-      bool result = true;
+      bool result = false;
       int s;
       // Process all tasks marked as 'ready' for a given stage
       for(s = stage ? stage - 1 : 0; stages && s < stages.count; s++)
