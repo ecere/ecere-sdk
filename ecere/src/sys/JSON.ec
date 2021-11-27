@@ -207,6 +207,7 @@ FreeingAVLTree<const String> compactArrays
    "ShortPoint",
    "uint16",
    "uint32",
+   "uint64",
    "PolygonVertexFlags",
    "byte",
    "UMSRowsSpecs",
