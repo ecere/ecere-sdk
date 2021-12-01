@@ -785,7 +785,7 @@ public:
          }
 
          // Transform ray
-         if(display3D.intersecting)
+         if(display3D.intersecting || (!display3D.pickWidth && !display3D.pickHeight) /* Also used for MollerTrumbore */)
          {
             Vector3D p2, tp2;
 
@@ -1679,7 +1679,7 @@ private class Display3D : struct
       int groupIx, uint64 * id)
    {
       Plane * planes = localPickingPlanes;
-      bool useMollerTrumbore = !planes || (!pickWidth && !pickHeight);
+      bool useMollerTrumbore = !planes || (!pickWidth && !pickHeight);   // We need rayLocal to be set for MollerTrumbore
       int c = 0;
       int nIndex = 1, nPoints = 1;
       bool result = false;
