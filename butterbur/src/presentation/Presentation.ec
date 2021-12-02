@@ -142,8 +142,8 @@ public:
 
    void calculate(Presentation topPres, PresentationManager mgr)
    {
-      if(parent != topPres)
-         anchored = parent ? parent.anchored : false;
+      if(parent != topPres && parent && parent.anchored)
+         anchored = true; // TODO: Handle re-parenting?
       rdrFlags = 0;
       // TODO: Avoid looping through hierarchy by properly maintaining multi's 'needUpdate'
       for(oo : subElements)
