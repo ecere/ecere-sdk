@@ -125,6 +125,7 @@ public class MultiPresentation : Presentation
    //virtual void skipUpdate(Presentation e);
 
 public:
+   property List<Presentation> subElements { get { return subElements; } }
    ~MultiPresentation()
    {
       Iterator<Presentation> it { subElements };
