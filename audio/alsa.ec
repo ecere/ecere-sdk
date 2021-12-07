@@ -22,13 +22,13 @@ public void AudioSetBalance(double percent)
 {
    balance = percent;
 }
-
+                                               // TODO: Clarify the range of percent, Acovel invokes this with 0..1 slider values
 public bool AudioSetVolume(VolumeControl type, double percent)
 {
    bool result = false;
    if(type == application)
    {
-      volume = percent;
+      volume = percent * 100;
       result = true;
    }
    else
