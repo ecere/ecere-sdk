@@ -2728,7 +2728,7 @@ private:
          surface.DrawingChar(' ');
          if(this == rootWindow)
          {
-#if !defined(__LUMIN__)
+#if !defined(__LUMIN__) && !defined(__UWP__)
             if(style.drawBehind || background.a)
             {
                int a = background.a;
@@ -2747,7 +2747,11 @@ private:
             surface.SetForeground((background.color.r > 128 || background.color.g > 128) ? black : white);
             */
 #endif
-            if(display.flags.alpha && background.a < 255 && background)
+            if(display.flags.alpha && background.a < 255
+#if !defined(__UWP__)
+               && background
+#endif
+               )
             {
                surface.Area(0,0,clientSize.w, clientSize.h);
                /*if(style.clearDepthBuffer)

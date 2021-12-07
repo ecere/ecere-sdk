@@ -561,7 +561,9 @@ public struct GLAB : GLB
 {
    void use(GLBufferContents contents, int n, int type, uint stride, GLAttribMode mode, const void * pointer)
    {
+#if !defined(__UWP__)   // TODO: This check was commented out for HoloLens, review condition
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
+#endif
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
@@ -680,6 +682,7 @@ public struct GLEAB : GLB
          }
          else if(glCaps_vao && !glabCurVertexArray)
             PrintLn("WARNING (draw): No VAO selected");
+
          if(!glCaps_intAndDouble)
             type = GL_UNSIGNED_SHORT;
 

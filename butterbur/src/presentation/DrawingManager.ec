@@ -104,7 +104,9 @@ public class MDManager : DrawingManager
          md.transformsAB.upload(0, md.commandsCount * md.transformSize * sizeof(float), transforms.array);
          md.transforms = transforms.array;
 
+#if !defined(__UWP__)   // TODO: This check was commented out for HoloLens, review condition
          if(!glCaps_vao || md.lastTransformAB != md.transformsAB.buffer)
+#endif
          {
             GLABBindBuffer(GL_ARRAY_BUFFER, md.transformsAB.buffer);
             if(md.transformSize == 3)
