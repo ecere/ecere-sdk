@@ -171,7 +171,15 @@ static struct EAREntry
 
 static class EDBArchive : Archive
 {
+   // NOTE: This needs to be kept in sync with ecere::sys::EARArchive which is currently private
+private:
    File f;
+
+   // Data layout mismatches for 'f' were happening without these as well:
+   uint64 archiveStart;
+   uint64 rootDir;
+   OldList freeBlocks;
+   bool writeAccess;
 };
 
 static class EDBArchiveDir : ArchiveDir
