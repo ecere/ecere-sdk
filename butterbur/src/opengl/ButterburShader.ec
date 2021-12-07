@@ -89,6 +89,10 @@ public void setupGL(Display display)
       loadedGLExts = true;
       glVersion = 3;
       glMinorVersion = 2;
+#elif defined(__UWP__)
+      loadedGLExts = true;
+      glVersion = 3;
+      glMinorVersion = 2;
 #else
       ogl_LoadFunctions();
       loadedGLExts = true;
@@ -131,6 +135,7 @@ public:
    bool multiDraw:1;
    bool transform3D:1;
    bool squishFactor:1;
+   bool disableStereo:1;
 };
 
 public class CompiledButterburShader : CompiledShader
@@ -435,6 +440,7 @@ public:
       defs.concatf("\n#define NORMALS_INV_SCALE %d",        state.normalsInvScale2   ? 1 : 0);
       defs.concatf("\n#define FULL_3D_TRANSFORM %d",        state.transform3D        ? 1 : 0);
       defs.concatf("\n#define SQUISH_FACTOR %d",            state.squishFactor       ? 1 : 0);
+      defs.concatf("\n#define DISABLE_STEREO %d",           state.disableStereo      ? 1 : 0);
 
       for(i = 0; i < 8; i++)
       {
@@ -798,6 +804,11 @@ public:
          textureLayer = value;
          modifiedUniforms.layer = true;
       }
+   }
+
+   property bool disableStereo
+   {
+      set { ((ButterburShaderBits)state).disableStereo = value; }
    }
 
    property Vector3Df posOffset

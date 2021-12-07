@@ -292,7 +292,13 @@ public:
 #endif
                }
                else
+               {
+#ifdef DEBUG_SHADERS
+                  Log(vertexShaderSource);
+                  Log(fragmentShaderSource);
+#endif
                   PrintLn("Failure (2) to register program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
+               }
             }
             else
                PrintLn("Failure to register program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");

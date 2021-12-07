@@ -354,6 +354,7 @@ public:
       defs.concatf("\n#define TEXTURE_EXTERNAL %d",         state.externalTexture    ? 1 : 0);
       defs.concatf("\n#define BLACKTINT %d",                state.blackTint          ? 1 : 0);
       defs.concatf("\n#define SKIN_BONES %d",               state.bones              ? 1 : 0);
+      defs.concatf("\n#define DISABLE_STEREO %d",           0);
 
       for(i = 0; i < 8; i++)
       {

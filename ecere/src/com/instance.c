@@ -710,7 +710,7 @@ __attribute__((__optimize__("no-finite-math-only")))
 double Double_nan(void) { return NAN; }
 __attribute__((__optimize__("no-finite-math-only")))
 double Double_inf(void) { return INFINITY; }
-
+/*
 #if defined(__clang__) && defined(_MSC_VER)
 
 int strcasecmp(const char * a, const char * b)
@@ -724,3 +724,4 @@ int strncasecmp(const char * a, const char * b, size_t n)
 }
 
 #endif
+*/
