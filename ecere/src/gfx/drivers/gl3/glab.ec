@@ -629,7 +629,7 @@ public struct GLEAB : GLB
          GLFlushMatrices();
 
          //if(!buffer || buffer)  // TOCHECK: Why are we coming here with a 0 buffer?
-#if !defined(__UWP__) && (defined(__LUMIN__) || defined(_GLES3) || (!defined(_GLES) && !defined(_GLES2)))
+#if !defined(__UWP__) && !defined(__EMSCRIPTEN__) && (defined(__LUMIN__) || defined(_GLES3) || (!defined(_GLES) && !defined(_GLES2)))
          if(baseVertex)
             glDrawElementsBaseVertex(primType, count, type, indices, baseVertex);
          else

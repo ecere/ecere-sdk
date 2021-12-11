@@ -479,13 +479,16 @@
          "Options" : {
             "Warnings" : "Normal",
             "Debug" : true,
+            "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ETC2_COMPRESS",
                "ECERE_STATIC",
                "NOBLENDING",
                "ECERE_NOSSL",
                "ECERE_NONET",
-               "_DEBUG"
+               "_DEBUG",
+               "_GLES3",
+               "_GLES3"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic",

@@ -278,7 +278,7 @@ public struct GLArrayTexture
 
    void copy(GLArrayTexture src, uint targetFBO)
    {
-#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
+#if ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))&& !defined(__EMSCRIPTEN__)
       int target = GL_TEXTURE_2D_ARRAY;
       // 4.3+
 #if (!defined(__ANDROID__) || defined(__LUMIN__)) && !defined(__UWP__)
@@ -664,7 +664,7 @@ public struct GLMultiDraw
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
-#if defined(__ANDROID__) || defined(__UWP__)
+#if defined(__ANDROID__) || defined(__UWP__) || defined(__EMSCRIPTEN__)
             // NOTE: glVertexAttribPointer might cause VAOs to be re-validated... Uniforms faster?
             uint baseInstance = cmd->baseInstance;
             GLABBindBuffer(GL_ARRAY_BUFFER, transformsAB.buffer);
@@ -673,11 +673,13 @@ public struct GLMultiDraw
             glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, 0, (void *)(uintptr)(baseInstance * sizeof(uint)));
             GLABBindBuffer(GL_ARRAY_BUFFER, 0);
 
+#if !defined(__EMSCRIPTEN__)
             // OpenGL ES 3.2 has this
             glDrawElementsInstancedBaseVertex(
                drawMode, cmd->count, type,
                (void *)(uintptr)(cmd->firstIndex * ixSize),
                cmd->instanceCount, cmd->baseVertex);
+#endif
 #else
             glDrawElementsInstancedBaseVertexBaseInstance(
                drawMode, cmd->count, type,
@@ -698,11 +700,13 @@ public struct GLMultiDraw
          CheckGLErrors(__FILE__,__LINE__);
    #endif
 
+#if !defined(__EMSCRIPTEN__)
          glMultiDrawElementsIndirect(
             drawMode,
             type,
             glCaps_gpuCommands ? 0 : commands,
             commandsCount, 0);
+#endif
 
    #ifdef _DEBUG
          CheckGLErrors(__FILE__,__LINE__);

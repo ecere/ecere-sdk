@@ -61,7 +61,8 @@
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
-               "CHESS_NONET"
+               "CHESS_NONET",
+               "_GLES3"
             ],
             "TargetFileName" : "chess",
             "Libraries" : [
