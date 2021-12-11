@@ -8,7 +8,7 @@ asm(".symver log,log@GLIBC_2.2.5");
 #define GLSTATS
 #endif
 
-// #define DIAGNOSTICS
+#define DIAGNOSTICS
 #if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__UWP__)
  #define GL_DEBUGGING
 #endif
@@ -1129,6 +1129,8 @@ class OpenGLDisplayDriver : DisplayDriver
               */
 
             emscripten_webgl_init_context_attributes(&attribs);
+            attribs.majorVersion = 2;
+            attribs.minorVersion = 0;
             oglSystem.maxTextureSize = 16384;
 #ifdef _DEBUG
             printf("emscripten_webgl_create_context\n");
@@ -1145,17 +1147,20 @@ class OpenGLDisplayDriver : DisplayDriver
                   w = (int)dw, h = (int)dh;
             #ifdef _DEBUG
                   printf("CreateDisplaySystem\n");
-                  printf("getElementCssSize  %4dx%-4d\n", w, h);
+                  printf("getElementCssSize --displaydriver-- %4dx%-4d\n", w, h);
             #endif
                   if(w && h)
                   {
-                     emscripten_set_canvas_element_size(target, 0, 0); // w, h
+                  // emscripten_set_canvas_element_size(target, 0, 0); // w, h
                      guiApp.desktop.ExternalPosition(0, 0, w, h);
                      if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
                         guiApp.desktop.display.Resize(w, h);
                   }
                }
             }
+
+            PrintLn("We've got OpenGL Version: ", (char*)glGetString(GL_VERSION), "\n");
+            PrintLn("We've got OpenGL Renderer: ", (char*)glGetString(GL_RENDERER), "\n");
 
             /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);*/
@@ -1204,12 +1209,12 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
             glXMakeCurrent(xGlobalDisplay, None, null);
-#if 0
+// #if 0
             // oglSystem.version = ogl_GetMajorVersion();
 #ifdef _DEBUG
             PrintLn("We've got OpenGL Version", (char*)glGetString(GL_VERSION), "\n");
 #endif
-#endif // 0
+// #endif // 0
             result = true;
          }
       }
