@@ -147,6 +147,9 @@ static void frFontUpdateTexture( void *rendererhandle, int *rect, const unsigned
   if( !( state->texture ) )
     return;
 
+#if defined(_GLES) || defined(_GLES2)
+  glformat = GL_ALPHA;
+#else
   if( state->channelcount == 1 )
     glformat = GL_RED;
   else if( state->channelcount == 2 )
@@ -155,17 +158,29 @@ static void frFontUpdateTexture( void *rendererhandle, int *rect, const unsigned
     glformat = GL_RGB;
   else if( state->channelcount == 4 )
     glformat = GL_RGBA;
+/*
+        int glformat =
+   #if ENABLE_GL_LEGACY
+         glCaps_legacyFormats ? GL_ALPHA :
+   #endif
+            GL_RED;
+*/
+#endif
 
   glBindTexture( GL_TEXTURE_2D, (state->texture)->gltex );
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+#if ENABLE_GL_LEGACY
   glPixelStorei( GL_UNPACK_ROW_LENGTH, state->texturewidth );
+#endif
   glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], sizex, sizey, glformat, GL_UNSIGNED_BYTE, data + (rect[1] * state->texturewidth + rect[0]) * state->channelcount);
 
   // BIG BUG HERE: The caller expects the texture to remain bound!!
   //glBindTexture( GL_TEXTURE_2D, 0);
   //glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+#if ENABLE_GL_LEGACY
   glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
+#endif
 
 #if PNG_SUPPORT && 0
   imgImage image;

@@ -1,6 +1,6 @@
 public import IMPORT_STATIC "ecere"
 
-#if defined(__linux__) && !defined(__ANDROID__)
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__)
 asm(".symver log,log@GLIBC_2.2.5");
 #endif
 
@@ -79,7 +79,7 @@ public void setupGL(Display display)
       loadedGLExts = true;
       glVersion = 4;
       glMinorVersion = 5;
-#elif defined(__ANDROID__)
+#elif defined(__ANDROID__) || defined(__EMSCRIPTEN__)
       loadedGLExts = true;
       glVersion = 3;
       glMinorVersion = 2;

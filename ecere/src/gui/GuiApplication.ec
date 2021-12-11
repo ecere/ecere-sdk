@@ -730,7 +730,7 @@ public:
          emscripten_get_element_css_size(target, &dw, &dh);
          w = (int)dw, h = (int)dh;
 #ifdef _DEBUG
-         printf("getElementCssSize  %4dx%-4d\n", w, h);
+         printf("getElementCssSize  --guiapplication--  %4dx%-4d\n", w, h);
          {
             int w, h;
             w = h = 0;
@@ -748,6 +748,30 @@ public:
       }
 #endif
 
+#ifdef __EMSCRIPTEN__
+      printf("before init\n");
+
+
+      /*
+      {
+         // HTMLCanvasElement *canvas;
+         char * id = "canvas";
+         char * text = "test";
+         char * context = "2d";
+         EM_ASM({
+            document.getElementById(UTF8ToString($0)).getContext($1).fillText(UTF8ToString($2), $3, $4);
+         },
+               id, context, text, 32, 164);
+      }
+      */
+      // emscripten_run_script("document.getElementById(UTF8ToString('canvas')).getContext('2d').fillText('test', 32, 164);");
+
+
+
+
+
+
+#endif
       if(Init())
       {
          if(desktop)
@@ -759,8 +783,20 @@ public:
                {
                   if(window.autoCreate && !window.created)
                   {
+#ifdef __EMSCRIPTEN__
+                     printf("   inside window.Create()\n");
+#endif
                      if(window.Create())
+                     {
+#ifdef __EMSCRIPTEN__
+                        printf("      created\n");
+#endif
                         break;
+                     }
+#ifdef __EMSCRIPTEN__
+                     else
+                        printf("      failed?\n");
+#endif
                   }
                }
                if(!window) break;
@@ -768,6 +804,7 @@ public:
          }
 
 #ifdef __EMSCRIPTEN__
+         printf("emscripten_set_main_loop\n");
          emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
 #endif
 
@@ -1668,7 +1705,7 @@ private void emscripten_main_loop_callback()
 #endif
       if(w && h)
       {
-         emscripten_set_canvas_element_size(target, 0, 0); // w, h
+      // emscripten_set_canvas_element_size(target, w, h);
          guiApp.desktop.ExternalPosition(0, 0, w, h);
          if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
             guiApp.desktop.display.Resize(w, h);

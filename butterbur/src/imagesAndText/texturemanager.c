@@ -44,7 +44,11 @@ static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalfo
 
   if( image->format.bytesperpixel == 1 )
   {
+#if defined(_GLES) || defined(_GLES2)
+    glformat = GL_ALPHA;
+#else
     glformat = GL_RED;
+#endif
 #if defined(_GLES3)
     if(internalformat == -1)
        internalformat = GL_R8; // TODO: GL_LUMINANCE and swizzle for ES2
@@ -52,7 +56,11 @@ static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalfo
   }
   else if( image->format.bytesperpixel == 2 )
   {
-    glformat = GL_RG;
+#if !ENABLE_GL_LEGACY && !defined(_GLES) && !defined(_GLES2)
+    glformat = glCaps_legacyFormats ? GL_LUMINANCE_ALPHA : GL_RG;
+#else
+    glformat = GL_LUMINANCE_ALPHA;
+#endif
 #if defined(_GLES3)
     if(internalformat == -1)
        internalformat = GL_RG8; // TODO: GL_LUMINANCE_ALPHA and swizzle for ES2;
