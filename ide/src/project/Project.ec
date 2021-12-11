@@ -609,14 +609,23 @@ void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMetho
          int len = strlen(item);
          bool isVar = item[0] == '$' && item[1] == '(' && item[len - 1] == ')';
          char * tmp = new char[len * 2 + 1];
+         bool wlBypass = flag == _Wl && item[0] == '[' && item[len - 1] == ']';
+         char * buf = wlBypass ? new char[len + 1] : null;
          bool pathType = flag != _D && flag != _Wl && flag != any;
-         EscapeForMake(tmp, item, false, true, !pathType);
+         if(wlBypass)
+         {
+            len -= 2;
+            strncpy(buf, item + 1, len);
+            buf[len] = '\0';
+         }
+         EscapeForMake(tmp, buf ? buf : item, false, true, !pathType);
          if(lineMethod == lineEach)
             f.Puts(" \\\n\t");
          f.Printf(" ");
          if(isVar && pathType)
             f.Printf("$(if %s,", tmp);
-         f.Printf("%s", flagNames[flag]);
+         if(!wlBypass)
+            f.Printf("%s", flagNames[flag]);
          if(flag == _D)
             f.Printf("%s", item);
          else if(pathType)
@@ -626,6 +635,7 @@ void OutputFlags(File f, ToolchainFlag flag, Array<String> list, LineOutputMetho
          if(isVar && pathType)
             f.Printf(",)");
          delete tmp;
+         delete buf;
       }
    }
 }
