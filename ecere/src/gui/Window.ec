@@ -10438,7 +10438,7 @@ class WindowControllerInterface : ControllableWindow
 
    bool OnPostCreate()
    {
-      bool result = controller.OnCreate ? ((bool(*)(Window, WindowController))(void *)controller.OnPostCreate)((Window)controller.controlled, controller) : true;
+      bool result = controller.OnPostCreate ? ((bool(*)(Window, WindowController))(void *)controller.OnPostCreate)((Window)controller.controlled, controller) : true;
       if(result)
       {
          bool(* onPostCreate)(Window) = (void *)controller.windowVTbl[__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnPostCreate];
