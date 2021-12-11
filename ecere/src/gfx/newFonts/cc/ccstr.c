@@ -19,7 +19,7 @@
 #include <errno.h>
 #include <assert.h>
 
-#if defined(__linux__) && !defined(__ANDROID__)
+#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__)
 asm(".symver pow,pow@GLIBC_2.2.5");
 asm(".symver log,log@GLIBC_2.2.5");
 #endif

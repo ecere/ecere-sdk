@@ -534,7 +534,7 @@ EM_BOOL fullscreenchange_callback(int eventType, const EmscriptenFullscreenChang
    if(w && h)
    {
       // emscripten_set_canvas_size(w, h);
-      emscripten_set_canvas_element_size(target, w, h);
+      // emscripten_set_canvas_element_size(target, w, h);
       guiApp.desktop.ExternalPosition(0,0, w, h);
       if(guiApp.desktop.display && guiApp.desktop.display.displaySystem)
          guiApp.desktop.display.Resize(w, h);
@@ -671,11 +671,11 @@ static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void 
       EMSCRIPTEN_EVENT_MOUSELEAVE
       EMSCRIPTEN_EVENT_MOUSEOVER
       EMSCRIPTEN_EVENT_MOUSEOUT
-      EMSCRIPTEN_EVENT_CANVASRESIZED
       EMSCRIPTEN_EVENT_POINTERLOCKERROR
       */
 
       case EMSCRIPTEN_EVENT_RESIZE:
+      case EMSCRIPTEN_EVENT_CANVASRESIZED:
       //case EMSCRIPTEN_EVENT_SCROLL:
       {
          int w = 0, h = 0;
@@ -686,8 +686,9 @@ static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void 
          printf("windowOuter        %4dx%-4d\n", e->windowOuterWidth, e->windowOuterHeight);
 
          emscripten_get_element_css_size(target, &dw, &dh);
-         w = (int)dw, h = (int)dh;
-         printf("getElementCssSize  %4dx%-4d\n", w, h);
+      // w = (int)dw, h = (int)dh;
+         printf("getElementCssSize  --interface--  %4dx%-4d\n", w, h);
+         w = e->windowInnerWidth, h = e->windowInnerHeight;
          if(w && h)
          {
             emscripten_set_canvas_element_size(target, w, h);
@@ -772,7 +773,7 @@ class EmscriptenInterface : Interface
       emReturnTest("emscripten_set_deviceorientation_callback",   emscripten_set_deviceorientation_callback(null, 1, deviceorientation_callback), &okCount);
       emReturnTest("emscripten_set_devicemotion_callback",        emscripten_set_devicemotion_callback(null, 1, devicemotion_callback), &okCount);
 
-      emReturnTest("emscripten_set_orientationchange_callback",   emscripten_set_orientationchange_callback(null, 1, orientationchange_callback), &okCount);
+   // emReturnTest("emscripten_set_orientationchange_callback",   emscripten_set_orientationchange_callback(null, 1, orientationchange_callback), &okCount);
 
       emReturnTest("emscripten_set_touchstart_callback",          emscripten_set_touchstart_callback(window, null, 1, touch_callback), &okCount);
       emReturnTest("emscripten_set_touchend_callback",            emscripten_set_touchend_callback(window, null, 1, touch_callback), &okCount);
@@ -783,7 +784,11 @@ class EmscriptenInterface : Interface
       emReturnTest("emscripten_set_webglcontextrestored_callback",emscripten_set_webglcontextrestored_callback(canvas, null, 1, webglcontext_callback), &okCount);
 
       // emscripten_log(EM_LOG_CONSOLE, "EmscriptenInterface::Initialize OK\n");
+
       printf("AAA EmscriptenInterface::Initialize -- %dxOk\n", okCount);
+      emscripten_run_script("Module.setStatus('Actually Running...');");
+      printf("BBB EmscriptenInterface::Initialize -- is it working?\n");
+      emscripten_run_script("statusElement.innerHTML = 'this is a test'; statusElement.hidden = false;");
       return true;
    }
 

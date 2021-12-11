@@ -15,6 +15,9 @@
 #include "cpuconfig.h"
 
 #include <stdio.h>
+// #include <stdlib.h>
+#include <sys/time.h>
+#include <sys/types.h>
 
 #define OFFSET(s, m) ((unsigned int)(uintptr_t) (&((s *) 0)->m))
 

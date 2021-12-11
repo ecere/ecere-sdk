@@ -14,7 +14,7 @@
 
 #include "cc.h"
 
-#if !defined(__LUMIN__) && !defined(__ANDROID__)
+#if !defined(__LUMIN__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
 #include "cpusimd.h"
 #endif
 
