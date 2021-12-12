@@ -887,6 +887,7 @@ private:
    String moduleVersion;
 
    String lastBuildConfigName;
+   String lastBuildModuleName;
    String lastBuildCompilerName;
 
    Map<String, Map<CIString, NameCollisionInfo>> configsNameCollisions { };
@@ -997,6 +998,7 @@ private:
       delete topNode;
       delete name;
       delete lastBuildConfigName;
+      delete lastBuildModuleName;
       delete lastBuildCompilerName;
       for(map : configsNameCollisions)
          map.Free();
@@ -2154,7 +2156,10 @@ private:
                char targetFileName[MAX_LOCATION];
                targetFileName[0] = '\0';
                CatTargetFileName(targetFileName, compiler, config);
-               ide.outputView.buildBox.Logf("%s (%s) - ", targetFileName, lastBuildConfigName);
+               ide.outputView.buildBox.Logf("%s (%s)", targetFileName, lastBuildConfigName);
+               if(lastBuildModuleName)
+                  ide.outputView.buildBox.Logf(" (%s)", lastBuildModuleName);
+               ide.outputView.buildBox.Log(" - ");
             }
             if(numErrors)
                ide.outputView.buildBox.Logf("%d %s", numErrors, (numErrors > 1) ? $"[e]rrors" : $"[e]rror");
@@ -2264,6 +2269,8 @@ private:
 
       delete lastBuildConfigName;
       lastBuildConfigName = CopyString(config ? config.name : "Common");
+      delete lastBuildModuleName;
+      lastBuildModuleName = moduleName && moduleName[0] ? CopyString(moduleName) : null;
       delete lastBuildCompilerName;
       lastBuildCompilerName = CopyString(compiler.name);
       ProjectLoadLastBuildNamesInfo(this, config);

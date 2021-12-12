@@ -485,9 +485,9 @@
                "ECERE_STATIC",
                "NOBLENDING",
                "ECERE_NOSSL",
-               "ECERE_NONET",
+               "ECERE_YESNET",
+               "ECERE_NOCURL",
                "_DEBUG",
-               "_GLES3",
                "_GLES3"
             ],
             "TargetType" : "StaticLibrary",
@@ -3237,12 +3237,6 @@
                   },
                   {
                      "Name" : "MinEmscripten",
-                     "Options" : {
-                        "ExcludeFromBuild" : true
-                     }
-                  },
-                  {
-                     "Name" : "Emscripten",
                      "Options" : {
                         "ExcludeFromBuild" : true
                      }

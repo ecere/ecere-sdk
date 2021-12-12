@@ -222,4 +222,11 @@ class Test3D : Window
    }
 }
 
-Test3D test3D {};
+#if defined(__EMSCRIPTEN__)
+Test3D test3D { anchor = { left = 0, top = 0 } };
+Test3D test3D { anchor = { left = 0, bottom = 0 } };
+Test3D test3D { anchor = { right = 0, top = 0 } };
+Test3D test3D { anchor = { right = 0, bottom = 0 } };
+#else
+Test3D test3D { };
+#endif
