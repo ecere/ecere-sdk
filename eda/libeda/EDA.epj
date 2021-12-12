@@ -106,6 +106,29 @@
             ],
             "FastMath" : false
          }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "IMPORT_STATIC=static",
+               "ECERE_STATIC"
+            ],
+            "TargetType" : "StaticLibrary",
+            "Libraries" : [
+               "ecereStatic"
+            ],
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse",
+               "-msse2",
+               "-msse3",
+               "-msse4",
+               "-msimd128"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [

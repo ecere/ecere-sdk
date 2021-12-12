@@ -51,7 +51,7 @@
 
    #include <GLES3/gl3.h>
    #include <GLES3/gl32.h>
-   #include <GL/gl.h>
+   #include <GLES/gl.h>
 #else
    #include <GLES2/gl2.h>
 #endif

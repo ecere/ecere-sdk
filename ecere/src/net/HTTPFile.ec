@@ -10,6 +10,7 @@ import "network"
 import "SSLSocket"
 #endif
 
+// #if !defined(__EMSCRIPTEN__)
 #define Size Size_
 #define String String_
 #define Interface Interface_

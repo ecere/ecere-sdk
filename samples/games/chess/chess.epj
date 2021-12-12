@@ -61,10 +61,9 @@
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ECERE_STATIC",
-               "CHESS_NONET",
-               "_GLES3"
+               "CHESS_NONET"
             ],
-            "TargetFileName" : "chess",
+            "TargetFileName" : "index",
             "Libraries" : [
                "ecereStatic",
                "z",
@@ -75,7 +74,14 @@
             "LibraryDirs" : [
                "../../../ecere/obj/emscripten.linux.emscripten"
             ],
-            "FastMath" : true
+            "FastMath" : true,
+            "PostbuildCommands" : [
+               "$(if $(WEB_SERVER_UPLOAD_DIR),$(call mkdir,$(WEB_SERVER_UPLOAD_DIR)/$(MODULE)),)",
+               "$(if $(WEB_SERVER_UPLOAD_DIR),$(if $(wildcard $(WEB_SERVER_UPLOAD_DIR)),$(call cp,$(OBJ)$(TARGET_NAME).html,$(WEB_SERVER_UPLOAD_DIR)/$(MODULE)),),)",
+               "$(if $(WEB_SERVER_UPLOAD_DIR),$(if $(wildcard $(WEB_SERVER_UPLOAD_DIR)),$(call cp,$(OBJ)$(TARGET_NAME).js,$(WEB_SERVER_UPLOAD_DIR)/$(MODULE)),),)",
+               "$(if $(WEB_SERVER_UPLOAD_DIR),$(if $(wildcard $(WEB_SERVER_UPLOAD_DIR)),$(call cp,$(OBJ)$(TARGET_NAME).data,$(WEB_SERVER_UPLOAD_DIR)/$(MODULE)),),)",
+               "$(if $(WEB_SERVER_UPLOAD_DIR),$(if $(wildcard $(WEB_SERVER_UPLOAD_DIR)),$(call cp,$(OBJ)$(TARGET_NAME).wasm,$(WEB_SERVER_UPLOAD_DIR)/$(MODULE)),),)"
+            ]
          }
       }
    ],
@@ -310,8 +316,8 @@
             {
                "Folder" : "shaders",
                "Files" : [
-                  "../../../ecere/src/gfx/drivers/gl3/default.frag",
-                  "../../../ecere/src/gfx/drivers/gl3/default.vert"
+                  "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/default.frag",
+                  "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/default.vert"
                ]
             },
             "$(ECERE_SDK_SRC)/ecere/res/fonts/tahoma.ttf",

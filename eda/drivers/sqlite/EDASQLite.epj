@@ -159,6 +159,26 @@
             ],
             "FastMath" : true
          }
+      },
+      {
+         "Name" : "Emscripten",
+         "Options" : {
+            "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ECERE_STATIC",
+               "IMPORT_STATIC=static"
+            ],
+            "TargetType" : "StaticLibrary",
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse",
+               "-msse2",
+               "-msse3",
+               "-msse4",
+               "-msimd128"
+            ],
+            "FastMath" : true
+         }
       }
    ],
    "Files" : [
@@ -189,6 +209,17 @@
             },
             {
                "Name" : "Lumin",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : false
+                     }
+                  }
+               ]
+            },
+            {
+               "Name" : "Emscripten",
                "Platforms" : [
                   {
                      "Name" : "linux",

@@ -1,4 +1,4 @@
-#if defined(__ANDROID__) || defined(__ODROID__) || defined(__UWP__)
+#if defined(__ANDROID__) || defined(__ODROID__) || defined(__UWP__)//  || defined(__EMSCRIPTEN__)
 
 import "instance"
 
@@ -16,6 +16,7 @@ import "instance"
 #define get _get
 #define set _set
 #include <GLES3/gl32.h>
+// #include <GLES/gl.h>
 #include <EGL/eglext.h>
 #undef get
 #undef set
