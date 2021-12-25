@@ -1321,7 +1321,7 @@ public:
    }
 
    // TOCHECK: Both mask and flags must be returned?
-   public /*private /*static*/ StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg, bool ignoreSelectors)
+   public /*private static*/ StylesMask apply(void * object, StylesMask m, ECCSSEvaluator evaluator, ExpFlags * flg, bool ignoreSelectors)
    {
       ExpFlags flags = 0;
       bool apply = true;
