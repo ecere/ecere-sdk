@@ -559,8 +559,6 @@ class IDEToolbar : ToolBar
    };
 #endif // DEV_GIDISUM
 
-   Button drawOverChildren { this, text = $"Draw Over Children", isCheckbox = true, checked = true; };
-
    void IDEToolbar()
    {
       DataRow row;
@@ -665,12 +663,8 @@ class IDEMainFrame : Window
    {
       if(direct)
       {
-         bool n = ideMainFrame.toolBar.drawOverChildren.checked && !active;
-         if(n != ide.on)
-         {
-            ide.on = n;
-            ide.Update(null);
-         }
+         ide.on = !active;
+         ide.Update(null);
       }
       return true;
    }
