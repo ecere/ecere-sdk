@@ -552,7 +552,7 @@ public struct GLMultiDraw
       BlockEntry block = size ? indexGLMB.allocate(elements, size) : 0;
       int baseIndex = block ? block.start / indexSize : -1;
       if(data && baseIndex != -1)
-         indexGLMB.ab.upload(block.start, size, data);
+         ((GLEAB)indexGLMB.ab).upload(block.start, size, data);
       return baseIndex;
    }
 
