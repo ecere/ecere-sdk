@@ -274,6 +274,20 @@
                         "../../../r/redj-extras/parsers.ec"
                      ]
                   }
+               ],
+               "Configurations" : [
+                  {
+                     "Name" : "Debug",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  },
+                  {
+                     "Name" : "MemoryGuard",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
                ]
             },
             {
