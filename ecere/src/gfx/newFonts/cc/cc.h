@@ -72,7 +72,7 @@ struct timeval
 
 #if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
  #define CC_NOINLINE __attribute__((noinline))
- #define CC_ALWAYSINLINE __attribute__((always_inline))
+ #define CC_ALWAYSINLINE __attribute__((always_inline)) __attribute__((unused))
  #define CC_LIKELY(x) __builtin_expect(!!(x), 1)
  #define CC_UNLIKELY(x) __builtin_expect(!!(x), 0)
  #define CC_UNUSED __attribute__((unused))
