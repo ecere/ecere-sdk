@@ -213,7 +213,6 @@ class ProjectView : Window
    background = white;
    size = { 300 };
    anchor = Anchor { left = 0, top = 0, bottom = 0 };
-   font = { font.faceName, 10 };
    menu = Menu { };
 
    //hasMinimize = true;

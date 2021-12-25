@@ -6518,8 +6518,9 @@ public:
                         if(!menuBar && created)
                         {
                            menuBar =
-                              PopupMenu { this,
-                                 font = { font.faceName, font.size, font.bold, font.italic, font.underline },
+                              PopupMenu
+                              {
+                                 this,
                                  menu = menu, isMenuBar = true, anchor = Anchor { top = 23, left = 1, right = 1 },
                                  interim = false, inactive = true, nonClient = true, size.h = 24
                               };
@@ -7075,7 +7076,7 @@ public:
    void ShowSysMenu(int x, int y)
    {
       Menu menu { };
-      PopupMenu windowMenu { master = this, interim = true, position = { x + 1 - guiApp.desktop.position.x, y + 1 - guiApp.desktop.position.y }, font = { font.faceName, font.size, font.bold, font.italic, font.underline }, menu = menu };
+      PopupMenu windowMenu { master = this, interim = true, position = { x + 1 - guiApp.desktop.position.x, y + 1 - guiApp.desktop.position.y }, menu = menu };
       MenuItem
       {
          menu, $"Restore", r, NotifySelect = MenuWindowRestore,
@@ -8833,11 +8834,15 @@ public:
             }
             if(created && !menuBar)
             {
-               menuBar = PopupMenu { this,
-                  font = { font.faceName, font.size, font.bold, font.italic, font.underline },
-                  menu = menu, isMenuBar = true, inactive = true, nonClient = true,
-                  anchor = Anchor { top = 23, left = 1, right = 1 }, size.h = 24
-               };
+               menuBar =
+                  PopupMenu
+                  {
+                     this, menu = menu,
+                     isMenuBar = true,
+                     anchor = Anchor { top = 23, left = 1, right = 1 },
+                     size.h = 24,
+                     inactive = true, nonClient = true
+                  };
                incref menuBar;
             }
             if(created && !menuBar.created)
@@ -8956,11 +8961,12 @@ public:
          {
             if(!menuBar && style.hasMenuBar && value)
             {
-               menuBar = PopupMenu { this,
-                  font = { font.faceName, font.size, font.bold, font.italic, font.underline },
-                  menu = value, isMenuBar = true, inactive = true, nonClient = true,
-                  anchor = Anchor { left = 1, top = 23, right = 1 }, size.h = 24
-               };
+               menuBar = PopupMenu
+                         {
+                            this, menu = value, isMenuBar = true,
+                            anchor = Anchor { left = 1, top = 23, right = 1 }, size.h = 24,
+                            inactive = true, nonClient = true
+                         };
                incref menuBar;
                menuBar.Create();
             }

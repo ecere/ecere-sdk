@@ -2893,7 +2893,6 @@ private:
          MenuItem { contextMenu, $"Select All\tCtrl+A", a, NotifySelect = itemEditSelectAll.NotifySelect };
 
          popup = PopupMenu { master = this, menu = contextMenu,
-            font = { master.font.faceName, master.font.size, master.font.bold, master.font.italic, master.font.underline },
    /*
             nonClient = true, interim = false, parent = parent,
             position = { x + clientStart.x + parent.clientStart.x + position.x, y + cientStart.y + parent.sy + clientStart.y + position.y };

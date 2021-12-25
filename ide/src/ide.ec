@@ -591,7 +591,6 @@ class IDEMainFrame : Window
    state = maximized;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
 #endif
-   font = { font.faceName, 11 };
 
    bool holding;
 
@@ -727,8 +726,7 @@ class IDEWorkSpace : Window
    hasStatusBar = true;
    isActiveClient = true;
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
-   // ide crash: font.size = 12;
-   menu = Menu { };
+   menu = Menu {  };
 
    FontResource bigFont { $"Inconsolata Condensed", bigFontSize, window = this }; // font = { $"Courier New", 64 };
 
