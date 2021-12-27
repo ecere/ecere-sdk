@@ -28,7 +28,7 @@ namespace gfx::drivers;
 
 #if defined _GLES1
 #define glClampFunction(version) (GL_CLAMP)
-#elif defined(_GLES2) || defined(__UWP__)
+#elif defined(_GLES2) || defined(__UWP__) || defined(__EMSCRIPTEN__)
 #define glClampFunction(version) (GL_CLAMP_TO_EDGE)
 #else
 #define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)
@@ -1092,7 +1092,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
          glDepthFunc(GL_LESS);
          glClearDepth(1.0);
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__EMSCRIPTEN__)
          glDisable(GL_MULTISAMPLE);
 #endif
 
@@ -1451,11 +1451,11 @@ class OpenGLDisplayDriver : DisplayDriver
       }
 #endif
       glDepthFunc(GL_LESS);
-#if !defined(__UWP__)
+#if !defined(__UWP__) && !defined(__EMSCRIPTEN__)
       glClearDepth(1.0);
 #endif
 
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
       glDisable(GL_MULTISAMPLE);
 #endif
 
@@ -3093,7 +3093,7 @@ class OpenGLDisplayDriver : DisplayDriver
       switch(state)
       {
          case antiAlias:
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
             if(value)
                glEnable(GL_MULTISAMPLE);
             else
@@ -3432,7 +3432,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && defined(__EMSCRIPTEN__)
          if(oglDisplay.version >= 2)
             glEnable(GL_MULTISAMPLE);
 #endif
@@ -3515,7 +3515,7 @@ class OpenGLDisplayDriver : DisplayDriver
             glShadeModel(GL_FLAT);
 #endif
          glEnable(GL_BLEND);
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
          if(oglDisplay.version >= 2)
             glDisable(GL_MULTISAMPLE);
 #endif
@@ -4466,7 +4466,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
    void SelectMesh(Display display, Mesh mesh)
    {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__APPLE__) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__APPLE__) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
 #if defined(__WIN32__)
       if(glUnlockArraysEXT)
 #endif
