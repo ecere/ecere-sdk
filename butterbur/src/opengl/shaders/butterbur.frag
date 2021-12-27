@@ -1,5 +1,7 @@
 #if GLSL_FLOAT_PRECISION
 precision highp float;
+precision mediump sampler2D;
+precision mediump sampler2DArray;
 #endif
 
 #if __VERSION__ >= 300
