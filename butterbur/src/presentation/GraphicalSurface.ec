@@ -166,7 +166,7 @@ public class GraphicalSurface : MultiPresentation
          backgroundColor.a / 255.0f);
       glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
       glEnable(GL_MULTISAMPLE);
 #endif
 

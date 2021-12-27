@@ -10,7 +10,11 @@
    #define WIN32_LEAN_AND_MEAN
 #endif
 
-#if defined(__EMSCRIPTEN__) || defined(__ANDROID__) // Moving Android to GLES 2
+#if defined(__EMSCRIPTEN__)
+   #if !defined(_GLES3)
+      #define _GLES3
+   #endif
+#elif defined(__ANDROID__) // Moving Android to GLES 2
    #if !defined(_GLES2)
       #define _GLES2
    #endif

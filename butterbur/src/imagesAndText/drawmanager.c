@@ -169,14 +169,14 @@ static int dmCreateProgram( dmProgram *program, const char *vertexsource, const 
 
 
 const char *dmVertexShaderNormal =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -204,14 +204,14 @@ const char *dmVertexShaderNormal =
 
 
 const char *dmFragmentShaderNormal =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -236,14 +236,14 @@ const char *dmFragmentShaderNormal =
 
 
 const char *dmVertexShaderAlpha =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -271,14 +271,14 @@ const char *dmVertexShaderAlpha =
 
 
 const char *dmFragmentShaderAlpha =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -303,14 +303,14 @@ const char *dmFragmentShaderAlpha =
 
 
 const char *dmVertexShaderAlphaIntensity =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -338,14 +338,14 @@ const char *dmVertexShaderAlphaIntensity =
 
 
 const char *dmFragmentShaderAlphaIntensity =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -372,14 +372,14 @@ const char *dmFragmentShaderAlphaIntensity =
 
 
 const char *dmVertexShaderAlphaIntensityExtColor =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -410,14 +410,14 @@ const char *dmVertexShaderAlphaIntensityExtColor =
 
 
 const char *dmFragmentShaderAlphaIntensityExtColor =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -444,14 +444,14 @@ const char *dmFragmentShaderAlphaIntensityExtColor =
 ;
 
 const char *dmVertexShaderBichrome =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else
@@ -482,14 +482,14 @@ const char *dmVertexShaderBichrome =
 
 
 const char *dmFragmentShaderBichrome =
-#if defined(__UWP__)
+#if defined(_GLES3)
    "#version 300 es\n"
-#elif defined(__EMSCRIPTEN__) || defined(_GLES2)
+#elif defined(_GLES2)
    "#version 100\n"
 #else
    "#version 110\n"
 #endif
-#if defined(_GLES2) || defined(__UWP__)
+#if defined(_GLES2) || defined(_GLES3)
    "#define GLSL_FLOAT_PRECISION   1\n"
    "precision highp float;\n"
 #else

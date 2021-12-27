@@ -10,7 +10,7 @@ asm(".symver log,log@GLIBC_2.2.5");
 
 #if defined _GLES1
 #define glClampFunction(version) (GL_CLAMP)
-#elif defined(_GLES2) || defined(__UWP__)
+#elif defined(_GLES2) || defined(__UWP__) || defined(__EMSCRIPTEN__)
 #define glClampFunction(version) (GL_CLAMP_TO_EDGE)
 #else
 #define glClampFunction(version) (version >= 2 ? GL_CLAMP_TO_EDGE : GL_CLAMP)

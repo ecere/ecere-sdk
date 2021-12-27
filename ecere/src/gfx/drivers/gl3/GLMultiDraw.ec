@@ -146,7 +146,7 @@ public struct GLArrayTexture
 
    void init(int levels, int w, int h, int count)
    {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+#if !defined(_GLES) && !defined(_GLES2)
       int internalFormat = GL_RGBA8;
 #else
       int internalFormat = GL_RGBA;
@@ -156,7 +156,7 @@ public struct GLArrayTexture
 
    void initMaxLevel(int levels, int w, int h, int count)
    {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+#if !defined(_GLES) && !defined(_GLES2)
       int internalFormat = GL_RGBA8;
 #else
       int internalFormat = GL_RGBA;
@@ -636,7 +636,7 @@ public struct GLMultiDraw
       GLFlushMatrices();
 
       // Then render:
-#if defined(__UWP__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))    // ******* Basic Draw Elements *******
+#if defined(__UWP__) || defined(__EMSCRIPTEN__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))    // ******* Basic Draw Elements *******
       {
          int n;
          uint ixSize = type == GL_UNSIGNED_INT ? 4 : 2;
@@ -722,7 +722,7 @@ public struct GLMultiDraw
 
 public void GLMultisampling(bool value)
 {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
    (value ? glEnable : glDisable)(GL_MULTISAMPLE);
 #endif
 }

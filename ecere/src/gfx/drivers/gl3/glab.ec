@@ -432,8 +432,15 @@ public struct GLB
             type == commands ? GL_DRAW_INDIRECT_BUFFER :
 #endif
             type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
-         GLABBindBuffer(glBufferType, buffer);
-         glBufferSubData(glBufferType, offset, size, data);
+         if(size)
+         {
+            GLABBindBuffer(glBufferType, buffer);
+            glBufferSubData(glBufferType, offset, size, data);
+         }
+         else
+         {
+            // PrintLn("GLB::_upload() called with size = 0");
+         }
       }
    }
 
@@ -701,10 +708,10 @@ public struct GLFB
       bool allocateColor = colorFormat && (w != width || h != height);
       bool allocateDepth = depthFormat && (w != width || h != height);
       bool result = false;
-#if defined(_GLES) || defined(_GLES2)
+#if defined(_GLES) || defined(_GLES2) || defined(_GLES3)
       samples = 1;
 #endif
-#if !defined(_GLES) && !defined(_GLES2)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
       int texTarget = samples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 #else
       int texTarget = GL_TEXTURE_2D;
@@ -736,7 +743,7 @@ public struct GLFB
             glBindRenderbuffer(GL_RENDERBUFFER, colorRBO);
          for(s = samples; ; s >>= 1)
          {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
             if(s > 1)
             {
                if(textureFBO)
@@ -800,7 +807,7 @@ public struct GLFB
          if(textureFBO || allocTextures)
          {
             glBindTexture(texTarget, depth);
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
             if(samples > 1)
                glTexImage2DMultisample(texTarget, samples, depthFormat, width, height, GL_FALSE);
             else
@@ -875,7 +882,7 @@ public struct GLFB
 
    void read(Bitmap bitmap, ClearType buffer, bool sRGB)
    {
-#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
       glBindFramebuffer(GL_FRAMEBUFFER, fbo);
       glReadBuffer(buffer == depthBuffer ? GL_DEPTH_ATTACHMENT : GL_COLOR_ATTACHMENT0);
       if(sRGB) glEnable( GL_FRAMEBUFFER_SRGB );
