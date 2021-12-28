@@ -841,7 +841,9 @@ public:
                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
             }
             glActiveTexture(GL_TEXTURE0);
+#if !defined(__UWP__)      // TOCHECK: ANGLE problem with too many shader states?
             state.specularMapping = true;
+#endif
          }
       }
       modifiedUniforms.material = true;

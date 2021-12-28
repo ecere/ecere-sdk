@@ -5,33 +5,45 @@ precision highp float;
 #extension GL_OES_EGL_image_external : enable
 #endif
 
+#if __VERSION__ >= 300
+#define VARYING   in
+#define texture2D texture
+#else
+#define VARYING   varying
+#endif
+
+#if __VERSION__ >= 130
+out vec4 fragColor;
+#define gl_FragColor fragColor
+#endif
+/*
 #if MODERN_GLSL
 #define varying in
 #define texture2D texture
 #define gl_FragColor fragColor
 out vec4 fragColor;
 #endif
-
+*/
 #if ALPHATEST_ON
    uniform float alphaFuncValue;
 #endif
 
 #if LIGHTING_ON
    #if PER_VERTEX_COLOR
-      varying vec4 diffuseColor;
-      varying vec3 ambientColor;
+      VARYING vec4 diffuseColor;
+      VARYING vec3 ambientColor;
    #elif CONSTANT_COLOR
       uniform vec4 matDiffuse;
       uniform vec3 matAmbient;
    #endif
-   varying vec3 tNormal;
+   VARYING vec3 tNormal;
 #if NORMALS_MAPPING
-   varying vec3 tTangent1;
-   varying vec3 tTangent2;
+   VARYING vec3 tTangent1;
+   VARYING vec3 tTangent2;
 #endif
 
 #if ENVIRONMENT_MAPPING || (LIGHTING_ON && ((!NON_LOCAL_VIEWER && MAT_SPECULAR) || (LIGHT0_POSITIONAL || LIGHT1_POSITIONAL || LIGHT2_POSITIONAL || LIGHT3_POSITIONAL || LIGHT4_POSITIONAL || LIGHT5_POSITIONAL || LIGHT6_POSITIONAL || LIGHT7_POSITIONAL)))
-   varying vec3 nnEyeToSurface;
+   VARYING vec3 nnEyeToSurface;
 #endif
 
 #if MAT_SPECULAR
@@ -61,7 +73,7 @@ out vec4 fragColor;
 
    uniform vec3 globalAmbient;
 #elif PER_VERTEX_COLOR
-   varying vec4 fColor;
+   VARYING vec4 fColor;
 #else
    uniform vec4 matDiffuse;
 #endif
@@ -92,9 +104,9 @@ out vec4 fragColor;
 
    #if CUBEMAP_ON
       uniform samplerCube diffuseTex;
-      varying vec3 fTexCoord;
+      VARYING vec3 fTexCoord;
    #else
-      varying vec2 fTexCoord;
+      VARYING vec2 fTexCoord;
    #endif
 
    #if TEXTURE_ON
@@ -120,7 +132,7 @@ out vec4 fragColor;
 
 #if FOG_ON
    uniform vec3 fogColor;
-   varying float fogZ;
+   VARYING float fogZ;
 #endif
 
 #if LIGHTING_ON
