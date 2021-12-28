@@ -184,7 +184,7 @@ public:
 #if ENABLE_GL_SHADERS
       uPrjMatrix        = glGetUniformLocation(program, "projection_matrix");
       uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
-      if(state.textureArray && !state.multiDraw)
+      if(state.texturing && state.textureArray && !state.multiDraw)
          uLayer            = glGetUniformLocation(program, "layer");
       if(state.transform3D)
       {
@@ -721,6 +721,11 @@ public:
 
    void multiDraw(bool on)
    {
+#if defined(__UWP__) || defined(__EMSCRIPTEN__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))    // ******* Basic Draw Elements *******
+      // GLMultiDraw implements this fallback using glDrawElements()
+      on = false;
+#endif
+
       if(((ButterburShaderBits)state).multiDraw != on)
       {
          ((ButterburShaderBits)state).multiDraw = on;
