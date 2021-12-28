@@ -16,6 +16,9 @@
 int eC_Logf(const char * format, ...);
 #endif
 
+// void eC_PrintLn(const char * s);
+void eC_GLABUnbindBuffer(int target);
+
 typedef unsigned int GLCapabilities;
 typedef unsigned int bool;
 #include "gl123es.h"
@@ -866,6 +869,8 @@ printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imagebuffer->
   dmFlushRenderDrawBufferArchaic( dm, drawbuffer, program, vertexcount );
   dm->imagebuffercount = 0;
 
+  eC_GLABUnbindBuffer(GL_ARRAY_BUFFER);
+
   ERRORCHECK();
 
   return;
@@ -1167,6 +1172,8 @@ printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imagebuffer->
   dm->imagebuffercount = 0;
 
   ERRORCHECK();
+
+  eC_GLABUnbindBuffer(GL_ARRAY_BUFFER);
 }
 
 void dmSetFlushCallback( dmContext *dm, void (*flush)( void *flushcontext ), void *flushcontext )
@@ -1233,6 +1240,7 @@ int dmInit( dmContext *dm, int flags )
     drawbuffer->vertexbuffer = malloc( drawbuffer->vertexalloc * vertexsize );
   }
 
+  eC_GLABUnbindBuffer(GL_ARRAY_BUFFER);
   dm->updatecount = 0;
 
   return 1;
@@ -1475,6 +1483,7 @@ void dmFlushImages( dmContext *dm )
    glPopClientAttrib();
 #endif
   }
+  eC_GLABUnbindBuffer(GL_ARRAY_BUFFER);
 
 
   return;

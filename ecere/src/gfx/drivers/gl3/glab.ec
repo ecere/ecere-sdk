@@ -7,6 +7,23 @@ import "OpenGLDisplayDriver"
 
 namespace gfx::drivers;
 
+public void GLABUnbindBuffer(int target)
+{
+   if(glCaps_vertexBuffer)
+   {
+      glBindBuffer(target, 0);
+      if(target == GL_ARRAY_BUFFER)
+         glabCurArrayBuffer = 0;
+      else if(target == GL_ELEMENT_ARRAY_BUFFER)
+         glabCurElementBuffer = 0;
+// NOTE: Actually ES 3.1 is required, separate define?
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+      else if(target == GL_DRAW_INDIRECT_BUFFER)
+         glabCurDrawIndirectBuffer = 0;
+#endif
+   }
+}
+
 // NOTE: Don't call if without vertexBuffer
 public void GLABBindBuffer(int target, uint buffer)
 {
