@@ -601,7 +601,6 @@ public struct GLMultiDraw
 
       // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      // Draw IDs
 
 #ifndef CLIENT_MEM_COMMANDS
       commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
@@ -610,8 +609,7 @@ public struct GLMultiDraw
       if(glCaps_vao) glBindVertexArray(vao);
 
       // Draw IDs
-      /*
-      // if(glCaps_shaders && (!glCaps_vao || lastIDAB != idsAB.buffer))
+      if(glCaps_shaders && (!glCaps_vao || lastIDAB != idsAB.buffer))
       {
          GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
          glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, sizeof(uint), 0);
@@ -619,7 +617,6 @@ public struct GLMultiDraw
          glEnableVertexAttribArray(drawIDAttribute);
          lastIDAB = idsAB.buffer;
       }
-      */
 #endif
       if(glCaps_shaders && (!glCaps_vao || lastVBO != vertexGLMB.ab.buffer))
       {
