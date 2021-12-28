@@ -184,7 +184,8 @@ public:
 #if ENABLE_GL_SHADERS
       uPrjMatrix        = glGetUniformLocation(program, "projection_matrix");
       uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
-      uLayer            = glGetUniformLocation(program, "layer");
+      if(state.textureArray && !state.multiDraw)
+         uLayer            = glGetUniformLocation(program, "layer");
       if(state.transform3D)
       {
          uTransform0       = glGetUniformLocation(program, "transform0");
