@@ -385,4 +385,5 @@ public:
    #if !defined(ECERE_NO3D)
    virtual void setMaterial(Material material, MeshFeatures flags);
    #endif
+   virtual void setupDrawCommand(GLAB ab, uint vertexStride, uint baseVertex, uint drawID, void * transform);
 }
