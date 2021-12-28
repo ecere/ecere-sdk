@@ -705,7 +705,8 @@ public struct GLMultiDraw
       }
 #else
       // ******* Instanced Draws with Base Vertex *******
-      // This path that isn't taken here is the fallback for when MDEI is not available.  TODO: proper condition
+      // This path is the fallback for when MDEI is not available, but there is support for
+      // instanced draw elements with base vertex (OpenGL (ES) 3.2+)
       if(!glCaps_mdei)
       {
          int n;
@@ -717,25 +718,33 @@ public struct GLMultiDraw
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
-#if defined(_GLES3)
-            // NOTE: glVertexAttribPointer might cause VAOs to be re-validated... Uniforms faster?
-            uint baseInstance = cmd->baseInstance;
-            GLABBindBuffer(GL_ARRAY_BUFFER, transformsAB.buffer);
-            glVertexAttribPointer(posOffsetAttribute, transformSize, GL_FLOAT, GL_FALSE, 0, (void *)(uintptr)(baseInstance * 3 * sizeof(float)));
-            GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
-            glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, 0, (void *)(uintptr)(baseInstance * sizeof(uint)));
-            GLABBindBuffer(GL_ARRAY_BUFFER, 0);
+#if !defined(_GLES3)
+            if(glVersion < 4)
+#endif
+            {
+               // NOTE: glVertexAttribPointer might cause VAOs to be re-validated... Uniforms faster?
+               uint baseInstance = cmd->baseInstance;
+               GLABBindBuffer(GL_ARRAY_BUFFER, transformsAB.buffer);
+               glVertexAttribPointer(posOffsetAttribute, transformSize, GL_FLOAT, GL_FALSE, 0, (void *)(uintptr)(baseInstance * 3 * sizeof(float)));
+               GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
+               glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, 0, (void *)(uintptr)(baseInstance * sizeof(uint)));
+               GLABBindBuffer(GL_ARRAY_BUFFER, 0);
 
-            // OpenGL ES 3.2 has this
-            glDrawElementsInstancedBaseVertex(
-               drawMode, cmd->count, type,
-               (void *)(uintptr)(cmd->firstIndex * ixSize),
-               cmd->instanceCount, cmd->baseVertex);
-#else
-            glDrawElementsInstancedBaseVertexBaseInstance(
-               drawMode, cmd->count, type,
-               (void *)(uintptr)(cmd->firstIndex * ixSize),
-               cmd->instanceCount, cmd->baseVertex, cmd->baseInstance);
+               // OpenGL ES 3.2 has this
+               glDrawElementsInstancedBaseVertex(
+                  drawMode, cmd->count, type,
+                  (void *)(uintptr)(cmd->firstIndex * ixSize),
+                  cmd->instanceCount, cmd->baseVertex);
+            }
+#if !defined(_GLES3)
+            else
+            {
+               // This is available on OpenGL 4.2+
+               glDrawElementsInstancedBaseVertexBaseInstance(
+                  drawMode, cmd->count, type,
+                  (void *)(uintptr)(cmd->firstIndex * ixSize),
+                  cmd->instanceCount, cmd->baseVertex, cmd->baseInstance);
+            }
 #endif
          }
    #ifdef _DEBUG
