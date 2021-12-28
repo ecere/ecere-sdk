@@ -677,6 +677,10 @@ public:
    void setColor(float r, float g, float b, float a)
    {
       color[0] = r, color[1] = g, color[2] = b, color[3] = a;
+      diffuse[0] = r, diffuse[1] = g, diffuse[2] = b, diffuse[3] = a;
+      ambient[0] = r, ambient[1] = g, ambient[2] = b;
+
+      ((ButterburShaderBits)state).constantColor = true;
       modifiedUniforms.material = true;
    }
 
