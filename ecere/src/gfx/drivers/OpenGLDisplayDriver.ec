@@ -1209,12 +1209,12 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
             glXMakeCurrent(xGlobalDisplay, None, null);
-// #if 0
+#if 0
             // oglSystem.version = ogl_GetMajorVersion();
 #ifdef _DEBUG
             PrintLn("We've got OpenGL Version", (char*)glGetString(GL_VERSION), "\n");
 #endif
-// #endif // 0
+#endif // 0
             result = true;
          }
       }
