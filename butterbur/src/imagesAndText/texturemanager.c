@@ -56,8 +56,12 @@ static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalfo
   }
   else if( image->format.bytesperpixel == 2 )
   {
-#if !ENABLE_GL_LEGACY && !defined(_GLES) && !defined(_GLES2)
-    glformat = glCaps_legacyFormats ? GL_LUMINANCE_ALPHA : GL_RG;
+#if !defined(_GLES) && !defined(_GLES2)
+    glformat =
+#if ENABLE_GL_LEGACY
+      glCaps_legacyFormats ? GL_LUMINANCE_ALPHA :
+#endif
+         GL_RG;
 #else
     glformat = GL_LUMINANCE_ALPHA;
 #endif
