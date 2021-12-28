@@ -15,8 +15,10 @@ uniform mat4 projection_matrix;
 
 #if 0 //__VERSION__ == 300
 uniform uint drawID1;
-#else
-//ATTRIBUTE uint drawID1;
+#endif
+
+#if TEXTURE_ARRAY && MULTI_DRAW
+ATTRIBUTE uint drawID1;
 #endif
 
 #if SQUISH_FACTOR
@@ -181,5 +183,7 @@ void main(void)
 #endif
 
    //drawID = gl_DrawID;
-   //drawID = drawID1;
+#if TEXTURE_ARRAY && MULTI_DRAW
+   drawID = drawID1;
+#endif
 }

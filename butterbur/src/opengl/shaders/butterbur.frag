@@ -17,7 +17,7 @@ out vec4 fragColor;
 #define gl_FragColor fragColor
 #endif
 
-#if 1 //TEXTURE_ARRAY && !MULTI_DRAW
+#if TEXTURE_ARRAY && !MULTI_DRAW
 uniform uint layer;
 #endif
 
@@ -129,7 +129,7 @@ uniform uint layer;
 #endif
 
 #if MULTI_DRAW
-   //flat in uint drawID;
+   flat in uint drawID;
 #endif
 
 #if TEXTURE_ARRAY
@@ -357,7 +357,7 @@ void main(void)
 
 #if TEXTURE_ARRAY
       #if MULTI_DRAW
-      //uint layer = drawID;  // TODO: Specify per-draw layers using 1D texture or uniform array?
+      uint layer = drawID;  // TODO: Specify per-draw layers using 1D texture or uniform array?
       #endif
 
 #if SQUISH_FACTOR
