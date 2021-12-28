@@ -581,7 +581,7 @@ public:
          glUniform3fv(shader.uFogColor, 1, fogColor);
       }
 
-      if(modifiedUniforms.layer && state.textureArray && !state.multiDraw)
+      if(modifiedUniforms.layer && state.texturing && state.textureArray && !state.multiDraw)
          // TODO: For now we don't have a mechanism for per draw layer...
       {
          glUniform1ui(shader.uLayer, textureLayer);
