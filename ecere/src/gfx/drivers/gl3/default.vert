@@ -1,9 +1,18 @@
+#if __VERSION__ >= 300
+#define ATTRIBUTE in
+#define VARYING   out
+#else
+#define ATTRIBUTE attribute
+#define VARYING   varying
+#endif
+/*
 #if MODERN_GLSL
 #define attribute in
 #define varying out
 #endif
+*/
 
-attribute vec3 vertex;
+ATTRIBUTE vec3 vertex;
 uniform mat4 projection_matrix;
 
 #if MODELVIEW
@@ -11,17 +20,17 @@ uniform mat4 projection_matrix;
 #endif
 
 #if PER_VERTEX_COLOR
-   attribute vec4 color;
+   ATTRIBUTE vec4 color;
 #endif
 
 #if ENVIRONMENT_MAPPING || (LIGHTING_ON && ((!NON_LOCAL_VIEWER && MAT_SPECULAR) || (LIGHT0_POSITIONAL || LIGHT1_POSITIONAL || LIGHT2_POSITIONAL || LIGHT3_POSITIONAL || LIGHT4_POSITIONAL || LIGHT5_POSITIONAL || LIGHT6_POSITIONAL || LIGHT7_POSITIONAL)))
-   varying vec3 nnEyeToSurface;
+   VARYING vec3 nnEyeToSurface;
 #endif
 
 #if LIGHTING_ON
-   attribute vec3 normal;
-   attribute vec3 tangent1;
-   attribute vec3 tangent2;
+   ATTRIBUTE vec3 normal;
+   ATTRIBUTE vec3 tangent1;
+   ATTRIBUTE vec3 tangent2;
 
    uniform float nearPlane;
 #if NORMALS_INV_SCALE
@@ -29,32 +38,32 @@ uniform mat4 projection_matrix;
 #endif
 
    #if PER_VERTEX_COLOR
-      varying vec4 diffuseColor; // w: opacity
-      varying vec3 ambientColor;
+      VARYING vec4 diffuseColor; // w: opacity
+      VARYING vec3 ambientColor;
    #endif
 
-   varying vec3 tNormal;
+   VARYING vec3 tNormal;
    #if NORMALS_MAPPING
-      varying vec3 tTangent1;
-      varying vec3 tTangent2;
+      VARYING vec3 tTangent1;
+      VARYING vec3 tTangent2;
    #endif
 
 #elif PER_VERTEX_COLOR
    uniform vec4 matDiffuse;
-   varying vec4 fColor;
+   VARYING vec4 fColor;
 #endif
 
 #if FOG_ON
    uniform float fogDensity;
-   varying float fogZ;
+   VARYING float fogZ;
 #endif
 
 #if CUBEMAP_ON
-   varying vec3 fTexCoord;
-   attribute vec3 texCoord;
+   VARYING vec3 fTexCoord;
+   ATTRIBUTE vec3 texCoord;
 #elif TEXTURE_ON || NORMALS_MAPPING || SPECULAR_MAPPING || REFLECTION_MAP
-   attribute vec2 texCoord;
-   varying vec2 fTexCoord;
+   ATTRIBUTE vec2 texCoord;
+   VARYING vec2 fTexCoord;
 #endif
 
 void main(void)

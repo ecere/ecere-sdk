@@ -106,7 +106,7 @@ public struct FreeSpots
 };
 
 default:
-#if defined(_GLES3)
+#if defined(_GLES3) && !defined(__UWP__)  // TOCHECK: Whatversion for UWP, WebGL 2?
 int glVersion = 3;
 #elif defined(_GLES2)
 int glVersion = 2;
@@ -478,8 +478,10 @@ public struct GLMultiDraw
       commandsAlloced = size;
       idsAlloced = size;
       idsAB.allocate(size * sizeof(uint), null, streamDraw);
+#ifndef CLIENT_MEM_COMMANDS
       if(glCaps_gpuCommands)
          commandsB.allocate(size * sizeof(GLDrawCommand), null, streamDraw);
+#endif
    }
 
    void resizeCommands(uint size)
@@ -601,7 +603,16 @@ public struct GLMultiDraw
       // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       // Draw IDs
-      if(glCaps_shaders && (!glCaps_vao || lastIDAB != idsAB.buffer))
+
+#ifndef CLIENT_MEM_COMMANDS
+      commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
+#endif
+
+      if(glCaps_vao) glBindVertexArray(vao);
+
+      // Draw IDs
+      /*
+      // if(glCaps_shaders && (!glCaps_vao || lastIDAB != idsAB.buffer))
       {
          GLABBindBuffer(GL_ARRAY_BUFFER, idsAB.buffer);
          glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, sizeof(uint), 0);
@@ -609,6 +620,7 @@ public struct GLMultiDraw
          glEnableVertexAttribArray(drawIDAttribute);
          lastIDAB = idsAB.buffer;
       }
+      */
 #endif
       if(glCaps_shaders && (!glCaps_vao || lastVBO != vertexGLMB.ab.buffer))
       {
