@@ -839,7 +839,7 @@ public:
                Model mdl = (Model)ge;
                Perspective3DManager pm = (Perspective3DManager)dm;
 
-               if(!mdl || mdl.opacity)
+               if(model && (!mdl || mdl.opacity))
                   pm.addModelCommand(model, cTransform);
                break;
             }
