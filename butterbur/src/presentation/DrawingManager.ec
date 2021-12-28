@@ -102,6 +102,7 @@ public class MDManager : DrawingManager
             md.transformsAB.allocate(md.transformSize * sizeof(float) * transformsAlloced, null, streamDraw);
          }
          md.transformsAB.upload(0, md.commandsCount * md.transformSize * sizeof(float), transforms.array);
+         md.transforms = transforms.array;
 
          if(!glCaps_vao || md.lastTransformAB != md.transformsAB.buffer)
          {
@@ -155,7 +156,10 @@ class ShapesManager : MDManager
       texture.set1x1Layer(drawID, color, targetFBO);
 
       if(3 * sizeof(float) * md.commandsCount >= transforms.minAllocSize)
+      {
          transforms.minAllocSize = (md.commandsCount + 8) * 3 *3/2;
+         md.transforms = transforms.array;
+      }
 
       memcpy(transforms.array + 3 * drawID, transform, sizeof(float) * 3);
 
@@ -195,7 +199,10 @@ class Perspective3DManager : MDManager
       texture.set1x1Layer(drawID, color, targetFBO);
 
       if(12 * sizeof(float) * md.commandsCount >= transforms.minAllocSize)
+      {
          transforms.minAllocSize = (md.commandsCount + 8) * 12 *3/2;
+         md.transforms = transforms.array;
+      }
 
       memcpy(transforms.array + 12 * drawID, transform, sizeof(float) * 12);
 
