@@ -1,3 +1,7 @@
+#if GLSL_FLOAT_PRECISION
+precision highp float;
+#endif
+
 #if __VERSION__ >= 300
 #define ATTRIBUTE in
 #define VARYING   out
@@ -12,7 +16,7 @@ uniform mat4 projection_matrix;
 #if 0 //__VERSION__ == 300
 uniform uint drawID1;
 #else
-ATTRIBUTE uint drawID1;
+//ATTRIBUTE uint drawID1;
 #endif
 
 #if SQUISH_FACTOR
@@ -20,6 +24,7 @@ ATTRIBUTE float squishFactor;
 VARYING float varSquish;
 #endif
 
+#if MULTI_DRAW
 #if FULL_3D_TRANSFORM
 ATTRIBUTE vec3 transform0;
 ATTRIBUTE vec3 transform1;
@@ -27,6 +32,16 @@ ATTRIBUTE vec3 transform2;
 ATTRIBUTE vec3 transform3;
 #else
 ATTRIBUTE vec3 posOffset;
+#endif
+#else
+#if FULL_3D_TRANSFORM
+uniform vec3 transform0;
+uniform vec3 transform1;
+uniform vec3 transform2;
+uniform vec3 transform3;
+#else
+uniform vec3 posOffset;
+#endif
 #endif
 
 #if MODELVIEW
@@ -86,11 +101,11 @@ void main(void)
 {
 #if MODELVIEW
    vec4 pos = modelview_matrix *
-#if MULTI_DRAW && FULL_3D_TRANSFORM
+#if /*MULTI_DRAW && */FULL_3D_TRANSFORM
       mat4(vec4(transform0, 0), vec4(transform1, 0), vec4(transform2, 0), vec4(transform3, 1)) *
 #endif
       vec4(vertex
-#if MULTI_DRAW && !FULL_3D_TRANSFORM
+#if /*MULTI_DRAW &&*/ !FULL_3D_TRANSFORM  // TODO: posOffset state flag...
        + posOffset
 #endif
        , 1.0);
@@ -166,5 +181,5 @@ void main(void)
 #endif
 
    //drawID = gl_DrawID;
-   drawID = drawID1;
+   //drawID = drawID1;
 }

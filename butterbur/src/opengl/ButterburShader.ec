@@ -86,6 +86,10 @@ public void setupGL(Display display)
       loadedGLExts = true;
       glVersion = 3;
       glMinorVersion = 2;
+#elif defined(__UWP__)
+      loadedGLExts = true;
+      glVersion = 3;
+      glMinorVersion = 2;
 #else
       ogl_LoadFunctions();
       loadedGLExts = true;
@@ -167,12 +171,13 @@ public:
    int uCubeMapMatrix;
    int uAlphaFuncValue;
    int uLayer;
-   //int uDrawID;
+   int uPosOffset;
+   int uTransform0, uTransform1, uTransform2, uTransform3;
 
    bool initialSetup; initialSetup = true;
    bool useNearPlane;
 
-   void registerUniforms(int program, DefaultShaderBits state)
+   void registerUniforms(int program, ButterburShaderBits state)
    {
       useNearPlane = state.environmentMapping;
 
@@ -180,6 +185,15 @@ public:
       uPrjMatrix        = glGetUniformLocation(program, "projection_matrix");
       uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
       uLayer            = glGetUniformLocation(program, "layer");
+      if(state.transform3D)
+      {
+         uTransform0       = glGetUniformLocation(program, "transform0");
+         uTransform1       = glGetUniformLocation(program, "transform1");
+         uTransform2       = glGetUniformLocation(program, "transform2");
+         uTransform3       = glGetUniformLocation(program, "transform3");
+      }
+      else if(!state.multiDraw && state.modelView)
+         uPosOffset        = glGetUniformLocation(program, "posOffset");
       if(state.modelView)
          uMVMatrix         = glGetUniformLocation(program, "modelview_matrix");
 
@@ -322,6 +336,7 @@ public:
    float fogColor[3];
 
    float color[4];
+   float posOffset[3];
 
    int textureLayer;
 
@@ -354,18 +369,21 @@ public:
       }
       if(state.squishFactor)
          glBindAttribLocation(program, squishFactorAttribute,  "squishFactor");
-      //#if !defined(__ANDROID__)
-      glBindAttribLocation(program, drawIDAttribute, "drawID1");
-      //#endif
-      if(state.transform3D)
+      if(state.multiDraw)
       {
-         glBindAttribLocation(program, transform0Attribute, "transform0");
-         glBindAttribLocation(program, transform1Attribute, "transform1");
-         glBindAttribLocation(program, transform2Attribute, "transform2");
-         glBindAttribLocation(program, transform3Attribute, "transform3");
+         //#if !defined(__ANDROID__)
+         glBindAttribLocation(program, drawIDAttribute, "drawID1");
+         //#endif
+         if(state.transform3D)
+         {
+            glBindAttribLocation(program, transform0Attribute, "transform0");
+            glBindAttribLocation(program, transform1Attribute, "transform1");
+            glBindAttribLocation(program, transform2Attribute, "transform2");
+            glBindAttribLocation(program, transform3Attribute, "transform3");
+         }
+         else
+            glBindAttribLocation(program, posOffsetAttribute, "posOffset");
       }
-      else
-         glBindAttribLocation(program, posOffsetAttribute, "posOffset");
 #endif
    }
 
@@ -562,11 +580,14 @@ public:
          glUniform3fv(shader.uFogColor, 1, fogColor);
       }
 
-      if(modifiedUniforms.material && state.textureArray && !state.multiDraw)
+      if(modifiedUniforms.layer && state.textureArray && !state.multiDraw)
          // TODO: For now we don't have a mechanism for per draw layer...
       {
          glUniform1ui(shader.uLayer, textureLayer);
       }
+
+      if(modifiedUniforms.pos && !state.transform3D && !state.multiDraw && state.modelView)
+         glUniform3fv(shader.uPosOffset, 1, posOffset);
 #endif
    }
 /*
@@ -766,7 +787,16 @@ public:
       set
       {
          textureLayer = value;
-         modifiedUniforms.material = true;
+         modifiedUniforms.layer = true;
+      }
+   }
+
+   property Vector3Df posOffset
+   {
+      set
+      {
+         memcpy(posOffset, value, 3*sizeof(float));
+         modifiedUniforms.pos = true;
       }
    }
 
@@ -775,7 +805,7 @@ public:
       if(((ButterburShaderBits)state).debugging != on)
       {
          ((ButterburShaderBits)state).debugging = on;
-         modifiedUniforms = { true, true, true, true, true };
+         modifiedUniforms = { true, true, true, true, true, true, true };
       }
    }
 
