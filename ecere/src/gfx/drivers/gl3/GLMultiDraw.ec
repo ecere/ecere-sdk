@@ -651,7 +651,6 @@ public struct GLMultiDraw
 #endif
       GLFlushMatrices();
 
-      // Then render:
 #if defined(__UWP__) || defined(__EMSCRIPTEN__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))  // TODO: This should be a check for no OpenGLES3.2 support
       // ******* Basic Draw Elements *******
       {
@@ -748,6 +747,7 @@ public struct GLMultiDraw
          CheckGLErrors(__FILE__,__LINE__);
    #endif
       }
+#if !defined(_GLES3)
       else
       {
          // ******* Indirect Multi Draw *******
@@ -756,14 +756,12 @@ public struct GLMultiDraw
    #ifdef _DEBUG
          CheckGLErrors(__FILE__,__LINE__);
    #endif
-
-#if !defined(__EMSCRIPTEN__)
+         // This is available on OpenGL 4.3+
          glMultiDrawElementsIndirect(
             drawMode,
             type,
             glCaps_gpuCommands ? 0 : commands,
             commandsCount, 0);
-#endif
 
    #ifdef _DEBUG
          CheckGLErrors(__FILE__,__LINE__);
@@ -771,6 +769,7 @@ public struct GLMultiDraw
 
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, 0);
       }
+#endif
 #endif
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_vao) glBindVertexArray(0);
