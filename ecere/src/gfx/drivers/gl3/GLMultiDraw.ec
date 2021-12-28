@@ -32,6 +32,9 @@ private:
 // hmm... 'Set glCapabilities.gpuCommands = false' where?
 // effectivaly disabling this commit?
 // #define CLIENT_MEM_COMMANDS  // Defined as a work-around for Intel driver that does not seem to support indirect commands buffers?
+#if defined(__UWP__)
+ #define CLIENT_MEM_COMMANDS
+#endif
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
@@ -649,7 +652,7 @@ public struct GLMultiDraw
       GLFlushMatrices();
 
       // Then render:
-#if defined(__UWP__) || defined(__EMSCRIPTEN__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))
+#if defined(__UWP__) || defined(__EMSCRIPTEN__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))  // TODO: This should be a check for no OpenGLES3.2 support
       // ******* Basic Draw Elements *******
       {
          // NOTE: This fallback likely might need to be implemented outside if it has custom attributes.
@@ -698,7 +701,7 @@ public struct GLMultiDraw
             glDrawElements(drawMode, cmd->count, type, (void *)(uintptr)(cmd->firstIndex * ixSize));
          }
       }
-#else //if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
+#else
       // ******* Instanced Draws with Base Vertex *******
       // This path that isn't taken here is the fallback for when MDEI is not available.  TODO: proper condition
       if(!glCaps_mdei)
@@ -712,7 +715,7 @@ public struct GLMultiDraw
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
-#if defined(__ANDROID__) || defined(__UWP__) || defined(__EMSCRIPTEN__)
+#if defined(_GLES3)
             // NOTE: glVertexAttribPointer might cause VAOs to be re-validated... Uniforms faster?
             uint baseInstance = cmd->baseInstance;
             GLABBindBuffer(GL_ARRAY_BUFFER, transformsAB.buffer);
@@ -721,13 +724,11 @@ public struct GLMultiDraw
             glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, 0, (void *)(uintptr)(baseInstance * sizeof(uint)));
             GLABBindBuffer(GL_ARRAY_BUFFER, 0);
 
-#if !defined(__EMSCRIPTEN__)
             // OpenGL ES 3.2 has this
             glDrawElementsInstancedBaseVertex(
                drawMode, cmd->count, type,
                (void *)(uintptr)(cmd->firstIndex * ixSize),
                cmd->instanceCount, cmd->baseVertex);
-#endif
 #else
             glDrawElementsInstancedBaseVertexBaseInstance(
                drawMode, cmd->count, type,
@@ -740,8 +741,8 @@ public struct GLMultiDraw
    #endif
       }
       else
-//#else // ******* Indirect Multi Draw *******
       {
+         // ******* Indirect Multi Draw *******
          GLABBindBuffer(GL_DRAW_INDIRECT_BUFFER, glCaps_gpuCommands ? commandsB.buffer : 0);
 
    #ifdef _DEBUG
