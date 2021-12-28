@@ -53,7 +53,7 @@ public:
 public class ShaderModifiedUniforms : uint32
 {
 public:
-   bool matMV:1, light:1, material:1, matPrj:1, matTex:1;
+   bool matMV:1, light:1, material:1, matPrj:1, matTex:1, pos:1, layer:1;
 }
 
 public class Shader
@@ -114,7 +114,7 @@ public:
    uint64 state;
    ShaderModifiedUniforms modifiedUniforms;
 
-   modifiedUniforms = { true, true, true, true, true };
+   modifiedUniforms = { true, true, true, true, true, true, true };
 
 private:
    char * vertexShaderFile;
@@ -328,7 +328,7 @@ public:
       {
          if(shader != this.shader)
          {
-            modifiedUniforms = { true, true, true, true, true };
+            modifiedUniforms = { true, true, true, true, true, true, true };
             activeState = state;
             this.shader = shader;
          }
