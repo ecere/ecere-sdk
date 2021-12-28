@@ -654,21 +654,13 @@ public struct GLMultiDraw
 #if defined(__UWP__) || defined(__EMSCRIPTEN__) || ((defined(_GLES) || defined(_GLES2)) && !defined(_GLES3))  // TODO: This should be a check for no OpenGLES3.2 support
       // ******* Basic Draw Elements *******
       {
-         // NOTE: This fallback likely might need to be implemented outside if it has custom attributes.
+         // NOTE: This fallback requires the shader to implement setupDrawCommand() callback allowing to handle custom attributes.
          //       Shader multiDraw should already be disabled.
          int n;
          uint ixSize = type == GL_UNSIGNED_INT ? 4 : 2;
+         uint vertexStride = this.vertexStride;
          GLAB ab { vertexGLMB.ab.buffer };
          Shader shader = activeShader;
-         // We need to use reflection unless we expose this in base Shader class...
-         Property pPosOffset = shader ? eClass_FindProperty(shader._class, "posOffset", null) : null;
-         Property pTextureLayer = shader ? eClass_FindProperty(shader._class, "textureLayer", null) : null;
-         void (* setPosOffset)(void *, void *) = transforms && pPosOffset ? (void *)pPosOffset.Set : null;
-         void (* setTextureLayer)(void *, uint) = pTextureLayer ? (void *)pTextureLayer.Set : null;
-
-         #if defined(_DEBUG)
-         // PrintLn("WARNING: limited GLMultiDraw::draw() fallback using glDrawElements()");
-         #endif
 
          GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexGLMB.ab.buffer);
 
@@ -677,25 +669,10 @@ public struct GLMultiDraw
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
-
-            ab.use(vertex,   3, GL_FLOAT, vertexStride, (void *)(uintptr)(cmd->baseVertex * vertexStride));
-            ab.use(normal,   3, GL_FLOAT, vertexStride, (void *)(uintptr)(cmd->baseVertex * vertexStride + 3 * sizeof(float)));
-            ab.use(texCoord, 2, GL_FLOAT, vertexStride, (void *)(uintptr)(cmd->baseVertex * vertexStride + 6 * sizeof(float)));
-
-            // One float custom attribute 13 if vertexStride is set to 9 floats
-            if(vertexStride == 9 * sizeof(float))
-               ab.use((GLBufferContents)13,
-                                1, GL_FLOAT, vertexStride, (void *)(uintptr)(cmd->baseVertex * vertexStride + 8 * sizeof(float)));
-
-            // TODO: posOffset and textureLayer in Shader base class?
             // TODO: Should we hold on to transforms in MultiDraw instead of DrawManager?
-            if(setPosOffset)
-               setPosOffset(shader, (Vector3Df *)(transforms + n * transformSize));
-            if(setTextureLayer)
-               setTextureLayer(shader, drawIDs[cmd->baseInstance]);
-            if(setPosOffset || setTextureLayer)
-               shader.activate(); // Need to re-activate shader for properties to take effect
-
+            shader.setupDrawCommand(ab, vertexStride, cmd->baseVertex, drawIDs[cmd->baseInstance],
+               transforms ? transforms + n * transformSize : null);
+            shader.activate();
             glDrawElements(drawMode, cmd->count, type, (void *)(uintptr)(cmd->firstIndex * ixSize));
          }
       }
