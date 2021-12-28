@@ -675,7 +675,6 @@ public struct GLMultiDraw
 
          glDisableVertexAttribArray((GLBufferContents)drawIDAttribute);
          glDisableVertexAttribArray((GLBufferContents)posOffsetAttribute);
-         GLFlushMatrices();
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
