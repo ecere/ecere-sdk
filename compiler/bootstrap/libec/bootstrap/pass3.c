@@ -879,7 +879,7 @@ struct __ecereNameSpace__ecere__com__Instance * incoming;
 int nonBreakableIncoming;
 } ecere_gcc_struct;
 
-struct External * __ecereMethod_External_ForwardDeclare();
+struct External * __ecereMethod_External_ForwardDeclare(struct External * this);
 
 struct AsmField;
 

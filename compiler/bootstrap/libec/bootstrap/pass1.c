@@ -399,7 +399,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Free;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(struct __ecereNameSpace__ecere__com__Iterator * this);
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 

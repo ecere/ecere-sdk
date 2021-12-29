@@ -522,7 +522,7 @@ class OptionBox<class Z> : CommonControl
                   Iterator<PlatformOptions> it { currentNode.platforms };
                   if(it.Find(p))
                   {
-                     it.Remove(p);
+                     it.Remove();
                      delete p;
                   }
                }

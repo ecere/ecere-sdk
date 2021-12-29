@@ -2540,14 +2540,14 @@ public void DeclareMethod(External neededFor, Method method, const char * name)
             // Add this parameter if not a static method
             if(method.dataType && !method.dataType.staticMethod)
             {
-               if(funcDecl && funcDecl.function.parameters && funcDecl.function.parameters->count)
+               if(funcDecl)
                {
                   Class _class = method.dataType.thisClass ? method.dataType.thisClass.registered : method._class;
                   TypeName thisParam = MkTypeName(MkListOne(
                      MkSpecifierName(method.dataType.thisClass ? method.dataType.thisClass.string : method._class.fullName)),
                      (_class && _class.type == systemClass) ? MkDeclaratorPointer(MkPointer(null,null), MkDeclaratorIdentifier(MkIdentifier("this"))) : MkDeclaratorIdentifier(MkIdentifier("this")));
-                  TypeName firstParam = ((TypeName)funcDecl.function.parameters->first);
-                  Specifier firstSpec = firstParam.qualifiers ? firstParam.qualifiers->first : null;
+                  TypeName firstParam = funcDecl.function.parameters ? ((TypeName)funcDecl.function.parameters->first) : null;
+                  Specifier firstSpec = firstParam && firstParam.qualifiers ? firstParam.qualifiers->first : null;
 
                   if(firstSpec && firstSpec.type == baseSpecifier && firstSpec.specifier == VOID && !firstParam.declarator)
                   {

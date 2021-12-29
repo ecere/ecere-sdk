@@ -332,7 +332,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode();
+int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode(struct __ecereNameSpace__ecere__com__Instance * this);
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 

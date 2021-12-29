@@ -143,7 +143,7 @@ int __ecereProp___ecereNameSpace__ecere__sys__BTNode_Get_count(struct __ecereNam
 
 void __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Free(struct __ecereNameSpace__ecere__sys__BTNode * this, void (*  FreeKey)(void *  key));
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Rebalance();
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Rebalance(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindString(struct __ecereNameSpace__ecere__sys__BTNode * this, const char *  key);
 
@@ -151,7 +151,7 @@ struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ec
 
 struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_FindAll(struct __ecereNameSpace__ecere__sys__BTNode * this, uintptr_t key);
 
-struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_RemoveSwapRight();
+struct __ecereNameSpace__ecere__sys__BTNode * __ecereMethod___ecereNameSpace__ecere__sys__BTNode_RemoveSwapRight(struct __ecereNameSpace__ecere__sys__BTNode * this);
 
 char *  __ecereMethod___ecereNameSpace__ecere__sys__BTNode_Print(struct __ecereNameSpace__ecere__sys__BTNode * this, char *  output, int tps);
 
