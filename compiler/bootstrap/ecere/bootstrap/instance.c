@@ -237,6 +237,8 @@ return power;
 
 static unsigned int __ecereNameSpace__ecere__com__memoryInitialized = 0;
 
+const size_t __ecereNameSpace__ecere__com__allocSizePrefixLen = sizeof(size_t);
+
 void __ecereNameSpace__ecere__com__CheckConsistency()
 {
 }
@@ -4472,7 +4474,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpa
 }
 if(ensureCOM && !strcmp(name, "ecere") && module)
 {
-name = !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM") ? "ecereCOM" : "ecere";
+name = !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM") ? "ecere" : "ecereCOM";
 if((!Load && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM")) || (Load && (!__thisModule || !((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name || !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM")) && Load != (void *)__ecereDll_Load_ecere))
 {
 struct __ecereNameSpace__ecere__com__Instance * module;
@@ -5020,6 +5022,16 @@ else
 memset(_class->data, 0, offsetClass);
 }
 memset((unsigned char *)_class->data + offsetClass, 0, sizeClass);
+}
+if(type == 4)
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
+
+if(base && base->type != 4)
+{
+data->values.count = 0;
+data->largest = 0;
+}
 }
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
 _class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);
