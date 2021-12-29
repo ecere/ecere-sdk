@@ -717,7 +717,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__com__Container_Add;
 
 unsigned int __ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(struct __ecereNameSpace__ecere__com__Instance * this, char *  s, int max);
 
-void __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Wait();
+void __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_Wait(struct __ecereNameSpace__ecere__com__Instance * this);
 
 void SetFileInput(struct __ecereNameSpace__ecere__com__Instance * file)
 {
