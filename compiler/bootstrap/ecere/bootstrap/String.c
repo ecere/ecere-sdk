@@ -1097,7 +1097,7 @@ if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((_
 {
 int strLen = strlen(fileName) - 1;
 
-if(strLen > -1)
+if(strLen > -1 && strcmp(fileName, "."))
 {
 for(; strLen > -1 && (ch = fileName[strLen]) && (ch == '/' || ch == '\\'); strLen--)
 ;
@@ -1307,7 +1307,7 @@ if(strstr(directory, "..") == directory && (!directory[2] || directory[2] == ((_
 {
 int strLen = strlen(fileName) - 1;
 
-if(strLen > -1)
+if(strLen > -1 && strcmp(fileName, "."))
 {
 unsigned int separator = 0;
 
