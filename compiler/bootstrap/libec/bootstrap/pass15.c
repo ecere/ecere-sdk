@@ -1452,7 +1452,7 @@ break;
 }
 }
 
-void __ecereMethod_Expression_Clear();
+void __ecereMethod_Expression_Clear(struct Expression * this);
 
 struct MembersInit;
 
@@ -9701,12 +9701,12 @@ FreeSpecifier(spec);
 }
 if(method->dataType && !method->dataType->__anon1.__anon2.staticMethod)
 {
-if(funcDecl && funcDecl->__anon1.function.parameters && (*funcDecl->__anon1.function.parameters).count)
+if(funcDecl)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = method->dataType->__anon1.__anon2.thisClass ? method->dataType->__anon1.__anon2.thisClass->__anon1.registered : method->_class;
 struct TypeName * thisParam = MkTypeName(MkListOne(MkSpecifierName(method->dataType->__anon1.__anon2.thisClass ? method->dataType->__anon1.__anon2.thisClass->string : method->_class->fullName)), (_class && _class->type == 1000) ? MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), MkDeclaratorIdentifier(MkIdentifier("this"))) : MkDeclaratorIdentifier(MkIdentifier("this")));
-struct TypeName * firstParam = ((struct TypeName *)(*funcDecl->__anon1.function.parameters).first);
-struct Specifier * firstSpec = firstParam->qualifiers ? (*firstParam->qualifiers).first : (((void *)0));
+struct TypeName * firstParam = funcDecl->__anon1.function.parameters ? ((struct TypeName *)(*funcDecl->__anon1.function.parameters).first) : (((void *)0));
+struct Specifier * firstSpec = firstParam && firstParam->qualifiers ? (*firstParam->qualifiers).first : (((void *)0));
 
 if(firstSpec && firstSpec->type == 0 && firstSpec->__anon1.specifier == VOID && !firstParam->declarator)
 {

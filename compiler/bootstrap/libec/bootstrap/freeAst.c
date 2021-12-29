@@ -234,7 +234,7 @@ struct __ecereNameSpace__ecere__com__Instance * __ecereProp___ecereNameSpace__ec
 
 void __ecereProp___ecereNameSpace__ecere__com__MapIterator_Set_map(struct __ecereNameSpace__ecere__com__MapIterator * this, struct __ecereNameSpace__ecere__com__Instance * value);
 
-unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next();
+unsigned int __ecereMethod___ecereNameSpace__ecere__com__Iterator_Next(struct __ecereNameSpace__ecere__com__Iterator * this);
 
 uint64 __ecereProp___ecereNameSpace__ecere__com__Iterator_Get_data(struct __ecereNameSpace__ecere__com__Iterator * this);
 

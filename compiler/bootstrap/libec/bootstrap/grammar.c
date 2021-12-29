@@ -428,7 +428,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Putc;
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Puts;
 
-unsigned char *  __ecereMethod___ecereNameSpace__ecere__sys__TempFile_StealBuffer();
+unsigned char *  __ecereMethod___ecereNameSpace__ecere__sys__TempFile_StealBuffer(struct __ecereNameSpace__ecere__com__Instance * this);
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
 

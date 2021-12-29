@@ -332,7 +332,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode();
+int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode(struct __ecereNameSpace__ecere__com__Instance * this);
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
@@ -602,7 +602,6 @@ int (*  Get)(void * );
 unsigned int (*  IsSet)(void * );
 void *  data;
 void *  symbol;
-char *  fullName;
 int vid;
 unsigned int conversion;
 unsigned int watcherOffset;
@@ -984,7 +983,7 @@ c++;
 else
 valid = 0;
 }
-else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s"))
+else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s") || !strcmp(arg + 1, "include") || !strcmp(arg, "--source-map-base"))
 {
 if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc)
 {

@@ -227,6 +227,8 @@ extern unsigned int __ecereNameSpace__ecere__sys__DeleteFile(const char *  fileN
 
 extern int snprintf(char * , size_t, const char * , ...);
 
+extern char *  __ecereNameSpace__ecere__sys__GetEnvironment(const char *  envName, char *  envValue, int max);
+
 extern void resetScanner(void);
 
 extern void ParseEc(void);
@@ -408,7 +410,7 @@ extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Read;
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
-int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode();
+int __ecereMethod___ecereNameSpace__ecere__sys__DualPipe_GetExitCode(struct __ecereNameSpace__ecere__com__Instance * this);
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
@@ -2858,7 +2860,7 @@ c++;
 else
 valid = 0;
 }
-else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s"))
+else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s") || !strcmp(arg + 1, "include") || !strcmp(arg, "--source-map-base"))
 {
 if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc)
 {
@@ -3016,6 +3018,12 @@ __ecereNameSpace__ecere__sys__DeleteFile(outputFilePath);
 }
 snprintf(command, sizeof (command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
 command[sizeof (command) - 1] = 0;
+{
+char verbose[2048];
+
+if(__ecereNameSpace__ecere__sys__GetEnvironment("V", verbose, sizeof (verbose)) && !strcmp(verbose, "1"))
+__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "ecp: note: executing preprocessor: ", __ecereClass_char__PTR_, command, (void *)0);
+}
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(1))), command)))
 {
 int exitCode;

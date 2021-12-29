@@ -1,6 +1,44 @@
+#define _Noreturn
+
 namespace net;
 
+// NOTE: These definitions are currently necessary for defining FileServerConnection class
+//       inheriting from Socket. Because of lack of "static" members SOCKADDR_IN a; gets
+//       re-declared here.
 #ifndef ECERE_NONET
+
+#if defined(__WIN32__)
+
+#define WIN32_LEAN_AND_MEAN
+#define String _String
+#include <winsock2.h>
+#undef String
+#define SOCKLEN_TYPE int
+
+#elif defined(__unix__) || defined(__APPLE__)
+
+default:
+#define SOCKLEN_TYPE socklen_t
+#define set _set
+#define uint _uint
+#include <sys/time.h>
+#include <unistd.h>
+
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <arpa/inet.h>
+#undef set
+#undef uint
+private:
+
+typedef struct sockaddr_in SOCKADDR_IN;
+
+#endif
+
 
 import "network"
 
