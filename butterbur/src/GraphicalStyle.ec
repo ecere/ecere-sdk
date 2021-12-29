@@ -564,7 +564,7 @@ public:
    //return sym for visualization classes
    public TextStyle ::build(CMSSStyleSheet styleSheet, ECCSSEvaluator evaluator, Class stylesClass)
    {
-       return (TextStyle)TextStyle::build(styleSheet, evaluator, class(TextStyle));
+       return (TextStyle)GraphicalStyle::build(styleSheet, evaluator, class(TextStyle));
    }
 
    private void applyDefaults(TextStyleMask mask)
@@ -607,7 +607,7 @@ public:
    //return sym for visualization classes
    public ImageStyle ::build(CMSSStyleSheet styleSheet, ECCSSEvaluator evaluator, Class stylesClass)
    {
-       return (ImageStyle)ImageStyle::build(styleSheet, evaluator, class(ImageStyle));
+       return (ImageStyle)GraphicalStyle::build(styleSheet, evaluator, class(ImageStyle));
    }
 
    private void applyDefaults(ImageStyleMask mask)
