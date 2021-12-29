@@ -105,9 +105,9 @@ extern struct __ecereNameSpace__ecere__com__Property * __ecereProp_double_isNan;
 
 extern int targetBits;
 
-extern unsigned int inCompiler;
-
 extern unsigned int inPreCompiler;
+
+extern unsigned int inCompiler;
 
 extern unsigned int inDebugger;
 
@@ -10063,7 +10063,16 @@ if(!isMember && _class->type == 2 && dataMember->dataType)
 struct __ecereNameSpace__ecere__com__BitMember * bitMember = (struct __ecereNameSpace__ecere__com__BitMember *)dataMember;
 uint64 mask = 0;
 int d;
+unsigned int bitClassSize = _class->typeSize * 8;
 
+if(inPreCompiler)
+{
+struct __ecereNameSpace__ecere__com__Class * b = _class;
+
+while(b && b->type == 2 && b->base)
+b = b->base;
+bitClassSize = (b && b->type != 0) ? _class->typeSize * 8 : 64;
+}
 ComputeTypeSize(dataMember->dataType);
 if(bitMember->pos == -1)
 bitMember->pos = _class->memberOffset;
@@ -10076,7 +10085,7 @@ if(d)
 mask <<= 1;
 mask |= 1;
 }
-if(bitMember->pos + bitMember->size > _class->typeSize * 8 || bitMember->pos == 64)
+if(bitMember->pos + bitMember->size > bitClassSize)
 {
 if(inCompiler)
 Compiler_Error("overflowing bits in %s: bit class member %s at position %d\n", _class->name, bitMember->name, bitMember->pos, "\n");

@@ -463,6 +463,15 @@ void ComputeClassMembers(Class _class, bool isMember)
                   BitMember bitMember = (BitMember) dataMember;
                   uint64 mask = 0;
                   int d;
+                  uint bitClassSize = _class.typeSize * 8;
+                  if(inPreCompiler)
+                  {
+                     // In precompiler, base classes might not be fully configured yet and unknown base classes will be of 'normalClass' type
+                     Class b = _class;
+                     while(b && b.type == bitClass && b.base)
+                        b = b.base;
+                     bitClassSize = (b && b.type != normalClass) ? _class.typeSize * 8 : 64;
+                  }
 
                   ComputeTypeSize(dataMember.dataType);
 
@@ -476,7 +485,7 @@ void ComputeClassMembers(Class _class, bool isMember)
                         mask <<= 1;
                      mask |= 1;
                   }
-                  if(bitMember.pos + bitMember.size > _class.typeSize * 8 || bitMember.pos == 64)
+                  if(bitMember.pos + bitMember.size > bitClassSize)
                   {
                      if(inCompiler)
                         Compiler_Error("overflowing bits in %s: bit class member %s at position %d\n",
