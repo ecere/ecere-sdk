@@ -237,6 +237,8 @@ return power;
 
 static unsigned int __ecereNameSpace__ecere__com__memoryInitialized = 0;
 
+const size_t __ecereNameSpace__ecere__com__allocSizePrefixLen = sizeof(size_t);
+
 void __ecereNameSpace__ecere__com__CheckConsistency()
 {
 }
@@ -5020,6 +5022,16 @@ else
 memset(_class->data, 0, offsetClass);
 }
 memset((unsigned char *)_class->data + offsetClass, 0, sizeClass);
+}
+if(type == 4)
+{
+struct __ecereNameSpace__ecere__com__EnumClassData * data = (struct __ecereNameSpace__ecere__com__EnumClassData *)_class->data;
+
+if(base && base->type != 4)
+{
+data->values.count = 0;
+data->largest = 0;
+}
 }
 (__ecereNameSpace__ecere__com__eSystem_Delete((void *)_class->dataTypeString), _class->dataTypeString = 0);
 _class->dataTypeString = __ecereNameSpace__ecere__sys__CopyString(dataTypeString);

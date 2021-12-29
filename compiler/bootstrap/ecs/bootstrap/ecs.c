@@ -85,6 +85,8 @@ static char mainModuleName[797];
 
 static char projectName[797];
 
+static unsigned int wasm = 0;
+
 static const char * attributeCommon = "__attribute__((__common__)) ";
 
 extern struct __ecereNameSpace__ecere__com__Property * __ecereProp___ecereNameSpace__ecere__sys__BinaryTree_first;
@@ -2946,15 +2948,18 @@ c++;
 else
 valid = 0;
 }
-else if(!strcmp(arg, "-no-attribute-common"))
-attributeCommon = "";
+else if(!strcmp(arg, "-wasm"))
+{
+wasm = 1;
+attributeCommon = "__attribute__((__weak__)) ";
+}
 }
 }
 if(!output)
 valid = 0;
 if(!valid)
 {
-printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output> [-no-attribute-common]\n", (((void *)0))));
+printf("%s", __ecereNameSpace__ecere__GetTranslatedString("ecs", "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output> [-wasm]\n", (((void *)0))));
 }
 else
 {
