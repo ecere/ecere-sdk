@@ -419,6 +419,11 @@ static int OnCompare(Class _class, void * data1, void * data2)
                                  value1.f = ((float(*)(void *))(void *)prop.Get)(data1);
                                  value2.f = ((float(*)(void *))(void *)prop.Get)(data2);
                               }
+                              else if(!strcmp(memberType.dataTypeString, "double"))
+                              {
+                                 value1.d = ((double(*)(void *))(void *)prop.Get)(data1);
+                                 value2.d = ((double(*)(void *))(void *)prop.Get)(data2);
+                              }
                               else
                               {
                                  value1.i = ((int(*)(void*))(void *)prop.Get)(data1);
