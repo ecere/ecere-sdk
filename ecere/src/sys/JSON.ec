@@ -519,7 +519,8 @@ private:
       else if(isalpha(ch) || ch == '_')
       {
          // Unquoted string values like true false null and some special cases understood by eCON
-
+         // REVIEW: Why do we have this new eCON / JSON difference?
+         //         true, false and null are also valid in JSON
          String unqStr;
          if (eCON)
          {  // Get the string the right way for eCON
@@ -527,10 +528,11 @@ private:
                result = success;
          }
          else
-         {  // Get the string the right way for JSON
+         {
+            // Get the string the right way for JSON
             int c = 0;
             unqStr = new char[256];
-            while(c < sizeof(unqStr)-1 && (isalpha(ch) || isdigit(ch) || ch == '_'))
+            while(c < 255 && (isalpha(ch) || isdigit(ch) || ch == '_'))
             {
                unqStr[c++] = ch;
                if(!ReadChar(&ch)) break;
