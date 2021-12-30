@@ -770,8 +770,8 @@ class EmscriptenInterface : Interface
    // emReturnTest("emscripten_set_focusin_callback",             emscripten_set_focusin_callback(window, null, 1, focusevent_callback), &okCount);
    // emReturnTest("emscripten_set_focusout_callback",            emscripten_set_focusout_callback(window, null, 1, focusevent_callback), &okCount);
 
-      emReturnTest("emscripten_set_deviceorientation_callback",   emscripten_set_deviceorientation_callback(null, 1, deviceorientation_callback), &okCount);
-      emReturnTest("emscripten_set_devicemotion_callback",        emscripten_set_devicemotion_callback(null, 1, devicemotion_callback), &okCount);
+   // emReturnTest("emscripten_set_deviceorientation_callback",   emscripten_set_deviceorientation_callback(null, 1, deviceorientation_callback), &okCount);
+   // emReturnTest("emscripten_set_devicemotion_callback",        emscripten_set_devicemotion_callback(null, 1, devicemotion_callback), &okCount);
 
    // emReturnTest("emscripten_set_orientationchange_callback",   emscripten_set_orientationchange_callback(null, 1, orientationchange_callback), &okCount);
 
