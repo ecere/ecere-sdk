@@ -123,7 +123,7 @@ int glVersion = 0;
 #endif
 private:
 
-#if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
+#if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__) || defined(__EMSCRIPTEN__)
 uint tempTexFBO;  // TODO: Free this on termination... glDeleteFramebuffers(1, &tempTexFBO);
 #endif
 
@@ -284,10 +284,10 @@ public struct GLArrayTexture
 
    void copy(GLArrayTexture src, uint targetFBO)
    {
-#if ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))&& !defined(__EMSCRIPTEN__)
+#if ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
       int target = GL_TEXTURE_2D_ARRAY;
       // 4.3+
-#if (!defined(__ANDROID__) || defined(__LUMIN__)) && !defined(__UWP__)
+#if (!defined(__ANDROID__) || defined(__LUMIN__)) && !defined(__UWP__) && !defined(__EMSCRIPTEN__)
       int level = 0;
       int w = width, h = height;
 
