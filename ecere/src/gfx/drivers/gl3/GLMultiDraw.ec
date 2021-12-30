@@ -646,6 +646,8 @@ public struct GLMultiDraw
    {
       if(!commandsCount) return;
 
+      // TOCHECK: Should this re-do all the use() here if there is no VAO support?
+
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_vao) glBindVertexArray(vao);
 #endif

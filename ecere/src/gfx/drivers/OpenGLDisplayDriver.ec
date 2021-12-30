@@ -823,7 +823,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__LUMIN__)
       capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES3)
-      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true, mdei = true, gpuCommands = true };
+      capabilities = { shaders = true, vao = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES)
       capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object"), mdei = true, gpuCommands = true };
 #elif defined(_GLES2)
@@ -885,7 +885,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(__LUMIN__)
       oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, vao = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES3)
-      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true, mdei = true, gpuCommands = true };
+      oglSystem.capabilities = { shaders = true, vao = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES)
       oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES2)
