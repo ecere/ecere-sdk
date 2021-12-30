@@ -257,8 +257,19 @@ public struct GLArrayTexture
          glTexParameterf(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, 16.0 );
    #endif
 
-      glTexParameteri(target, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
-      glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+#if defined(_GLES) || !defined(_GLES2) || defined(_GLES3)
+      if(format == GL_R16UI || format == GL_RGB16UI || format == format == GL_RGBA16UI)
+      {
+         // Only Nearest supported for *UI formats
+         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+      }
+      else
+#endif
+      {
+         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
+         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+      }
 
       if(levels > 3) // TODO: Wrap options as a property?
       {
