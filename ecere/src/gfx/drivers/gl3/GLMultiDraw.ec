@@ -12,7 +12,7 @@ import "OpenGLDisplayDriver"
 #include <GLES3/gl32.h>
 #endif
 
-#if defined(_GLES2) || defined(_GLES3)
+#if defined(_GLES2)
 #define GL_R16 GL_LUMINANCE
 #define GL_RED GL_LUMINANCE   // Should this be GL_ALPHA ? Swizzle mode needed?
 #endif
@@ -112,7 +112,7 @@ public struct FreeSpots
 };
 
 default:
-#if defined(_GLES3) && !defined(__UWP__)  // TOCHECK: Whatversion for UWP, WebGL 2?
+#if defined(_GLES3) //&& !defined(__UWP__)  // TOCHECK: Whatversion for UWP, WebGL 2?
 int glVersion = 3;
 #elif defined(_GLES2)
 int glVersion = 2;
@@ -169,15 +169,27 @@ public struct GLArrayTexture
 
    void initUShort(int levels, int w, int h, int count)
    {
+#if defined(_GLES3)
+      _init(levels, w, h, count, GL_R16UI, false);
+#else
       _init(levels, w, h, count, GL_R16, false);
+#endif
    }
    void initRGBUShort(int levels, int w, int h, int count)
    {
-      _init(levels, w, h, count, GL_RGB16 /*UI*/, false);
+#if defined(_GLES3)
+      _init(levels, w, h, count, GL_RGB16UI, false);
+#else
+      _init(levels, w, h, count, GL_RGB16, false);
+#endif
    }
    void initRGBAUShort(int levels, int w, int h, int count)
    {
-      _init(levels, w, h, count, GL_RGBA16 /*UI*/, false);
+#if defined(_GLES3)
+      _init(levels, w, h, count, GL_RGBA16UI, false);
+#else
+      _init(levels, w, h, count, GL_RGBA16, false);
+#endif
    }
 
    void _init(int levels, int w, int h, int count, int format, bool setMaxLevel)
@@ -333,17 +345,29 @@ public struct GLArrayTexture
 
    void setLayerUShort(int level, int x, int y, int layer, byte * c, uint targetFBO)
    {
+#if defined(_GLES3)
+      setLayerFormat(level, x, y, layer, c, targetFBO, GL_RED_INTEGER, GL_UNSIGNED_SHORT);
+#else
       setLayerFormat(level, x, y, layer, c, targetFBO, GL_RED, GL_UNSIGNED_SHORT);
+#endif
    }
 
    void setLayerRGBUShort(int level, int x, int y, int layer, byte * c, uint targetFBO)
    {
+#if defined(_GLES3)
+      setLayerFormat(level, x, y, layer, c, targetFBO, GL_RGB_INTEGER, GL_UNSIGNED_SHORT);
+#else
       setLayerFormat(level, x, y, layer, c, targetFBO, GL_RGB, GL_UNSIGNED_SHORT);
+#endif
    }
 
    void setLayerRGBAUShort(int level, int x, int y, int layer, byte * c, uint targetFBO)
    {
+#if defined(_GLES3)
+      setLayerFormat(level, x, y, layer, c, targetFBO, GL_RGBA_INTEGER, GL_UNSIGNED_SHORT);
+#else
       setLayerFormat(level, x, y, layer, c, targetFBO, GL_RGBA, GL_UNSIGNED_SHORT);
+#endif
    }
 
    void setLayerFormat(int level, int x, int y, int layer, byte * c, uint targetFBO, int format, int type)
