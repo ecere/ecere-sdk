@@ -117,9 +117,7 @@ static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalfo
 
 tmTexture *tmCreateTexture( uint32_t textureordermask )
 {
-  tmTexture *texture;
-  texture = malloc( sizeof(tmTexture) );
-  memset( texture, 0, sizeof(tmTexture) );
+  tmTexture *texture = calloc( 1, sizeof(tmTexture) );
   texture->flags = TM_TEXTURE_FLAGS_INVALID;
   texture->ordermask = textureordermask;
   return texture;

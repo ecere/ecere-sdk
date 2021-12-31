@@ -883,6 +883,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
    #endif
                      }
                   }
+                  val.OnFree();
                   *flg |= flag;
                }
                else

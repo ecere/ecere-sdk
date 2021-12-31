@@ -493,9 +493,19 @@ class LWDrawManager
       return success;
    }
 
+   void ::destroyImage(void * img)
+   {
+      dmImage * image = img;
+      if(image)
+      {
+         tmDestroyTexture(image->texture);
+         delete image;
+      }
+   }
+
    void * ::defineImage1(uint glTex, int width, int height)
    {
-      tmTexture * texture = new0 tmTexture[1];
+      tmTexture * texture = tmCreateTexture(0);
       dmImage * image = new0 dmImage[1];
       texture->width = width;
       texture->height = height;
@@ -516,7 +526,7 @@ class LWDrawManager
    */
    void * ::defineImage(uint glTex, int offsetX, int offsetY, int width, int height, int blendFlag, int programIndex, int layerIndex )
    {
-      tmTexture * texture = new0 tmTexture[1];
+      tmTexture * texture = tmCreateTexture(0);
       dmImage * image = new0 dmImage[1];
 
       texture->width = width;
