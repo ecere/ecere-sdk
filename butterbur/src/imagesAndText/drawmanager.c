@@ -742,7 +742,7 @@ printf( " Flush %d images\n", (int)dm->imagebuffercount );
 #if ENABLE_GL_MAPBUF
         vboVertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
 #else
-        vboVertex = vboStorage = malloc(sizeof(dmDrawVertex)* drawbuffer->vertexAlloc);
+        vboVertex = vboStorage;
 #endif
         vertexcount = 0;
       }
@@ -861,6 +861,7 @@ printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imagebuffer->
    glUnmapBuffer( GL_ARRAY_BUFFER );
 #else
    glBufferSubData( GL_ARRAY_BUFFER, 0, vertexcount * sizeof(dmDrawVertex), vboStorage );
+   free(vboStorage);
 #endif
   /* Flush font manager texture updates */
   if( dm->flushcallback )
@@ -1030,7 +1031,7 @@ printf( " Flush %d images\n", (int)dm->imagebuffercount );
         vbovertex = glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
    #endif
 #else
-        vbovertex = vboStorage = malloc(sizeof(dmDrawVertex)* drawbuffer->vertexalloc);
+        vbovertex = vboStorage;
 #endif
         vertexcount = 0;
       }
@@ -1163,6 +1164,7 @@ printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imagebuffer->
    glUnmapBuffer( GL_ARRAY_BUFFER );
 #else
    glBufferSubData( GL_ARRAY_BUFFER, 0, vertexcount * sizeof(dmDrawVertex), vboStorage );
+   free(vboStorage);
 #endif
   /* Flush font manager texture updates */
   if( dm->flushcallback )
