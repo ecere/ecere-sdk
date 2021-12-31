@@ -725,6 +725,10 @@ private:
                mutexTemplateInstanceFix.Release();
                arrayType = rType;
             }
+#ifdef _DEBUG
+            else if(!arrayType && warnings)
+               PrintLn("JSON Parser Warning: Null item type parsing ", type.name);
+#endif
             if(itemResult == success)
             {
                // TODO: Verify the matching between template type and uint64
