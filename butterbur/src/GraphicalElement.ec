@@ -690,6 +690,16 @@ public struct ImageResource
       type = CopyString(src.type);
       sprite = CopyString(src.sprite);
    }
+
+   void OnFree()
+   {
+      delete path;
+      delete id;
+      delete url;
+      delete ext;
+      delete type;
+      delete sprite;
+   }
 /*
    property const String path
    {
@@ -722,6 +732,12 @@ public class Image : GraphicalElement
          i.image = imageResource;
       }
    }
+
+   ~Image()
+   {
+      image.OnFree();
+   }
+
 public:
    ImageResource image;
 
@@ -746,4 +762,9 @@ public class Model : GraphicalElement
    type = model;
 public:
    ImageResource model;
+
+   ~Model()
+   {
+      model.OnFree();
+   }
 }
