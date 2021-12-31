@@ -258,7 +258,7 @@ public struct GLArrayTexture
    #endif
 
 #if defined(_GLES) || !defined(_GLES2) || defined(_GLES3)
-      if(format == GL_R16UI || format == GL_RGB16UI || format == format == GL_RGBA16UI)
+      if(format == GL_R16UI || format == GL_RGB16UI || format == GL_RGBA16UI)
       {
          // Only Nearest supported for *UI formats
          glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
