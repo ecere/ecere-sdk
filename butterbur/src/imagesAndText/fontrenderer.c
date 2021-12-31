@@ -169,7 +169,7 @@ static void frFontUpdateTexture( void *rendererhandle, int *rect, const unsigned
 
   glBindTexture( GL_TEXTURE_2D, (state->texture)->gltex );
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-#if ENABLE_GL_LEGACY
+#if ENABLE_GL_LEGACY || defined(__EMSCRIPTEN__)  // Is this supported in GL ES 3? We need a fallback without this
   glPixelStorei( GL_UNPACK_ROW_LENGTH, state->texturewidth );
 #endif
   glTexSubImage2D( GL_TEXTURE_2D, 0, rect[0], rect[1], sizex, sizey, glformat, GL_UNSIGNED_BYTE, data + (rect[1] * state->texturewidth + rect[0]) * state->channelcount);
@@ -178,7 +178,7 @@ static void frFontUpdateTexture( void *rendererhandle, int *rect, const unsigned
   //glBindTexture( GL_TEXTURE_2D, 0);
   //glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-#if ENABLE_GL_LEGACY
+#if ENABLE_GL_LEGACY || defined(__EMSCRIPTEN__)  // Is this supported in GL ES 3? We need a fallback without this
   glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
 #endif
 

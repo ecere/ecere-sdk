@@ -138,6 +138,7 @@ public:
         else
 #endif
        {
+          // TOCHECK: Is this necessary on ES 3 / WebGL? GL_UNPACK_ROW_LENGTH seems to work.
           int row = w * channelcount;
           byte * tmp = new byte[h * row];
           int y;
