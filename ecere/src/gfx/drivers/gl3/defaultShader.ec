@@ -96,9 +96,12 @@ public:
    int uBlackTint;
 
    bool initialSetup; initialSetup = true;
+   bool useNearPlane;
 
    void registerUniforms(int program, DefaultShaderBits state)
    {
+      useNearPlane = state.environmentMapping;
+
 #if ENABLE_GL_SHADERS
       uPrjMatrix        = glGetUniformLocation(program, "projection_matrix");
       uMatDiffuse       = glGetUniformLocation(program, "matDiffuse");
@@ -109,10 +112,16 @@ public:
       if(state.lighting)
       {
          int i;
+         if(!state.nonLocalViewer && state.specular)
+            useNearPlane = true;
 
          for(i = 0; i < 8; i++)
          {
+            LightMode mode = (LightMode)((state.lightBits & (0x7 << (3*i))) >> (3*i));
             char name[100];
+
+            if(mode >= pos)
+               useNearPlane = true;
 
             sprintf(name, "lightsPos[%d]", i);
             uLightsPos[i] = glGetUniformLocation(program, name);
@@ -139,7 +148,8 @@ public:
             uLightsSpotExp[i] = glGetUniformLocation(program, name);
          }
 
-         uNearPlane        = glGetUniformLocation(program, "nearPlane");
+         if(useNearPlane)
+            uNearPlane        = glGetUniformLocation(program, "nearPlane");
          uNormalsMatrix    = glGetUniformLocation(program, "normals_matrix");
          uNormalsInvScale2 = glGetUniformLocation(program, "normals_inv_scale2");
          uGlobalAmbient    = glGetUniformLocation(program, "globalAmbient");
@@ -381,7 +391,7 @@ public:
 
       if(modifiedUniforms.matPrj)
       {
-         if(state.lighting)
+         if(shader.useNearPlane)
             glUniform1f(shader.uNearPlane, nearPlane);
          glUniformMatrix4fv(shader.uPrjMatrix, 1, GL_FALSE, projection);
       }
