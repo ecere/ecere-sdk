@@ -8,7 +8,8 @@ asm(".symver log,log@GLIBC_2.2.5");
 #define GLSTATS
 #endif
 
-#define DIAGNOSTICS
+// #define DIAGNOSTICS
+
 #if defined(_DEBUG) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__UWP__)
  #define GL_DEBUGGING
 #endif
@@ -1157,8 +1158,10 @@ class OpenGLDisplayDriver : DisplayDriver
                }
             }
 
+#ifdef _DEBUG
             PrintLn("We've got OpenGL Version: ", (char*)glGetString(GL_VERSION), "\n");
             PrintLn("We've got OpenGL Renderer: ", (char*)glGetString(GL_RENDERER), "\n");
+#endif
 
             /*glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);*/

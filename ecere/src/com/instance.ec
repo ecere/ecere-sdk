@@ -6809,7 +6809,7 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
 {
    Application app;
 
-#if defined(__EMSCRIPTEN__)
+#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
    emscripten_log(EM_LOG_CONSOLE, "__ecere_COM_Initialize\n");
 #endif
 
