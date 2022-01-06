@@ -1873,7 +1873,7 @@ private class Display3D : struct
                   double k;
                   bool doesIntersect = intersectTriangle(vx[0], vx[1], vx[2], rayLocal, &k);
                   if(!doesIntersect && nPoints > 3)
-                     intersectTriangle(vx[1], vx[2], vx[3], rayLocal, &k);
+                     doesIntersect = intersectTriangle(vx[0], vx[2], vx[3], rayLocal, &k);
                   if(doesIntersect)
                   {
                      result = true;
