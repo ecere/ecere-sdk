@@ -748,9 +748,8 @@ public:
       }
 #endif
 
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
       printf("before init\n");
-
 
       /*
       {
@@ -783,17 +782,19 @@ public:
                {
                   if(window.autoCreate && !window.created)
                   {
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
+
                      printf("   inside window.Create()\n");
 #endif
                      if(window.Create())
                      {
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
+
                         printf("      created\n");
 #endif
                         break;
                      }
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
                      else
                         printf("      failed?\n");
 #endif
@@ -804,7 +805,9 @@ public:
          }
 
 #ifdef __EMSCRIPTEN__
+#ifdef _DEBUG
          printf("emscripten_set_main_loop\n");
+#endif
          emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
 #endif
 
