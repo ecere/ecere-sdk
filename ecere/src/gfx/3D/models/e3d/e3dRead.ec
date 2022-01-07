@@ -259,6 +259,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   String nameNoExt = CopyString(name);
                   int attempt;
                   bool isHTTP;
+                  bool successfulLoad;
 
                   StripExtension(nameNoExt);
                   GetExtension(name, ext);
@@ -269,14 +270,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   PathCat(path, name);
                   StripExtension(path);
 
-                  // if isHTTP we do not want to wait for the download
-                  if(isHTTP && ctx.saveCompressedMutex)
-                  {
-#ifdef _DEBUG
-                     PrintLn(" DEBUG INFO: ctx.path was a url in File ", __FILE__," at Line ", __LINE__);
-#endif
+                  if(ctx.saveCompressedMutex)
                      ctx.saveCompressedMutex.Wait();
-                  }
 
                   for(attempt = ( !strcmpi(ext,"etc2") || !ctx.compressedTextures ) ? 0 : 1; !f && attempt >= 0; --attempt)
                   {
@@ -299,41 +294,32 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      }
                   }
 
-                  // if isHTTP we want to wait after the download
-                  if(isHTTP && ctx.saveCompressedMutex)
-                     ctx.saveCompressedMutex.Wait();
-
                   delete nameNoExt;
 
-                  if(!f || !bitmap.LoadFromFile(f, format, null))
+                  successfulLoad = f && bitmap.LoadFromFile(f, format, null);
+
+                  if(ctx.saveCompressedMutex)
+                     ctx.saveCompressedMutex.Release();
+
+                  if(successfulLoad)
                   {
-                     if(ctx.saveCompressedMutex)
-                        ctx.saveCompressedMutex.Release();
-                  }
-                  else
-                  {
-                     if(ctx.saveCompressedMutex)
-                        ctx.saveCompressedMutex.Release();
                      if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                      {
                         Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
                         bitmap.Copy2(bmp, true);
                         delete bmp;
 
-                        if(ctx.compressedTextures)
+                        if(ctx.compressedTextures && ctx.saveCompressedCallback)
                         {
                            if(ctx.saveCompressedMutex)
-                              ctx.saveCompressedMutex.Wait();
-                           if(ctx.saveCompressedCallback)
-                              ctx.saveCompressedCallback(ctx.getTextureContext,
-                                    name, ctx.resolution, ctx.resolution, bitmap);
+                              ctx.saveCompressedMutex.Wait();                // Is this the name with an extension here?
+                           ctx.saveCompressedCallback(ctx.getTextureContext, name, ctx.resolution, ctx.resolution, bitmap);
                            if(ctx.saveCompressedMutex)
                               ctx.saveCompressedMutex.Release();
                         }
                      }
                      bitmap.MakeMipMaps(displaySystem);
                   }
-
 
                   delete f;
                }
@@ -382,17 +368,63 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                Bitmap bitmap = data;
                if(bitmap)
                {
-                  TempFile file { };
-                  int count = (int)(bEnd - pos);
-                  byte * r = new byte[count];
-                  f.Read(r, 1, count);
-                  file.buffer = r;
-                  file.size = count;
-                  bitmap.LoadFromFile(file, header.type == texturePNG ? "png" : "jpg", null); //displaySystem);
-                  bitmap.MakeMipMaps(displaySystem);
-                  file.StealBuffer();
+                  const String format = header.type == texturePNG ? "png" : "jpg";
+                  File file = null;
+                  bool successfulLoad;
+                  String name = null;
+
+                  if(ctx.saveCompressedMutex)
+                     ctx.saveCompressedMutex.Wait();
+                  if(ctx.compressedTextures)
+                  {
+                     name = PrintString(ctx.curTextureID);
+
+                     if(ctx.getTextureCallback)
+                        file = ctx.getTextureCallback(ctx.getTextureContext, name, ctx.resolution, ctx.resolution, "etc2");
+                     else
+                     {
+                        // TODO: Default path to cache compressed textures to?
+                        // ChangeExtension(path, format, path);
+                        // file = FileOpen(path, read);
+                     }
+                     if(file)
+                        format = "etc2";
+                  }
+                  if(!file)
+                  {
+                     int count = (int)(bEnd - pos);
+                     byte * r = new byte[count];
+                     f.Read(r, 1, count);
+                     file = TempFile { buffer = r, size = count };
+                  }
+
+                  successfulLoad = file && bitmap.LoadFromFile(file, format, null);
+
+                  if(ctx.saveCompressedMutex)
+                     ctx.saveCompressedMutex.Release();
+
+                  if(successfulLoad)
+                  {
+                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
+                     {
+                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
+                        bitmap.Copy2(bmp, true);
+                        delete bmp;
+
+                        if(ctx.compressedTextures)
+                        {
+                           if(ctx.saveCompressedMutex)
+                              ctx.saveCompressedMutex.Wait();
+                           if(ctx.saveCompressedCallback)
+                              ctx.saveCompressedCallback(ctx.getTextureContext, name, ctx.resolution, ctx.resolution, bitmap);
+                           if(ctx.saveCompressedMutex)
+                              ctx.saveCompressedMutex.Release();
+                        }
+                     }
+                     bitmap.MakeMipMaps(displaySystem);
+                  }
+                  delete name;
                   delete file;
-                  delete r;
                }
                break;
             }
