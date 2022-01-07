@@ -749,7 +749,6 @@ public:
          float * c = (float *)&material.diffuse;
 
          state.perVertexColor = flags.colors;
-         state.separateSpecular = state.specular && matFlags.separateSpecular;
          state.cubeMap = matFlags.cubeMap && material.baseMap;
          if(matFlags.cubeMap) state.texturing = false;
          state.twoSided = matFlags.doubleSided && !matFlags.singleSideLight;
@@ -776,6 +775,7 @@ public:
          }
 
          state.specular = material.power && state.constantColor && (material.specular.r || material.specular.g || material.specular.b);
+         state.separateSpecular = state.specular && matFlags.separateSpecular;
          power = material.power;
          state.alphaTest = matFlags.partlyTransparent;
 

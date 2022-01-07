@@ -406,7 +406,7 @@ void main(void)
 #if LIGHTING_ON && MAT_SPECULAR && MAT_SEPARATE_SPECULAR
    c = min(vec4(1.0), vec4(vec3(c) + specular
    #if CONSTANT_COLOR
-      matSpecular
+      * matSpecular
    #endif
       , 1.0));
 #endif
