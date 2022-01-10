@@ -100,8 +100,13 @@ CUSTOM1_PRJ_CFLAGS = \
 	 $(PRJ_CFLAGS)
 
 ECFLAGS += -module $(MODULE)
-ECFLAGS += \
-	 -nolinenumbers
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
+
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 CECFLAGS += -cpp $(_CPP)
 

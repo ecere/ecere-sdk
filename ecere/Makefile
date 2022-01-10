@@ -486,9 +486,14 @@ CUSTOM5_PRJ_CFLAGS = \
 			 -Isrc/gfx/newFonts/cc \
 	 $(CUSTOM2_PRJ_CFLAGS)
 
-ECFLAGS += -module $(MODULE)
-ECFLAGS += \
-	 -nolinenumbers -defaultns ecere
+ECFLAGS += -module $(MODULE) -defaultns ecere
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
+
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 # PLATFORM-SPECIFIC OPTIONS
 

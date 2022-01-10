@@ -93,8 +93,13 @@ PRJ_CFLAGS += \
 			 -DECERE_EPJ2MAKE
 
 ECFLAGS += -module $(MODULE)
-ECFLAGS += \
-	 -nolinenumbers
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
+
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 # PLATFORM-SPECIFIC OPTIONS
 

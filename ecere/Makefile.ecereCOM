@@ -117,9 +117,14 @@ CUSTOM1_PRJ_CFLAGS = \
 			 -Isrc/gfx/newFonts/cc \
 	 $(PRJ_CFLAGS)
 
-ECFLAGS += -module $(MODULE)
-ECFLAGS += \
-	 -nolinenumbers -defaultns ecere
+ECFLAGS += -module $(MODULE) -defaultns ecere
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
+
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
