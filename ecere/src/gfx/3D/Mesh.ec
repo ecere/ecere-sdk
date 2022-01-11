@@ -1143,6 +1143,138 @@ public:
    }
 
 #if !defined(ECERE_NOGL)
+
+   void countTexture(Bitmap bitmap, AVLTree<uintptr> bitmaps, int * w, int * h, int * internalFormat)
+   {
+      if(bitmaps.Add((uintptr)bitmap))
+      {
+         Bitmap b = bitmap.numMipMaps && bitmap.bitmaps && bitmap.bitmaps[0] ? bitmap.bitmaps[0] : bitmap;
+         *w = Max(*w, b.width);
+         *h = Max(*h, b.height);
+         if(!*internalFormat)
+         {
+   #if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
+            bool sRGB2Linear = bitmap.sRGB2Linear;
+            *internalFormat = bitmap.pixelFormat == pixelFormatETC2RGBA8 ?
+            (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
+            (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
+   #else
+            *internalFormat = bitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
+   #endif
+         }
+      }
+   }
+
+   void countMatTextures(Material mat, int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
+   {
+      if(nAT > 0 && mat.baseMap)      countTexture(mat.baseMap,     bitmaps[0], w + 0, h + 0, internalFormats + 0);
+      if(nAT > 1 && mat.bumpMap)      countTexture(mat.bumpMap,     bitmaps[1], w + 1, h + 1, internalFormats + 1);
+      if(nAT > 2 && mat.specularMap)  countTexture(mat.specularMap, bitmaps[2], w + 2, h + 2, internalFormats + 2);
+      if(nAT > 3 && mat.envMap)       countTexture(mat.envMap,      bitmaps[3], w + 3, h + 3, internalFormats + 3);
+      if(nAT > 4 && mat.reflectMap)   countTexture(mat.reflectMap,  bitmaps[4], w + 4, h + 4, internalFormats + 4);
+   }
+
+   void countTextures(int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
+   {
+      PrimitiveGroup g;
+
+      for(g = groups.first; g; g = g.next)
+         if(g.material)
+            countMatTextures(g.material, nAT, bitmaps, w, h, internalFormats);
+      if(primitives)
+      {
+         int p;
+         for(p = 0; p < nPrimitives; p++)
+         {
+            PrimitiveSingle prim = primitives[p];
+            if(prim.material) countMatTextures(prim.material, nAT, bitmaps, w, h, internalFormats);
+         }
+      }
+   }
+
+   void UploadTexture(Bitmap bitmap, DisplaySystem displaySystem, GLArrayTexture at)
+   {
+      if(bitmap.displaySystem != displaySystem)
+      {
+         if(!at)
+            bitmap.MakeMipMaps(displaySystem);
+         else
+         {
+            Bitmap convBitmap = bitmap;
+            if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
+               convBitmap = bitmap.ProcessDD((bool)2, 0, false, 16384, false, at.width, at.height); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
+            if(convBitmap)
+            {
+               if(!at.texture)
+               {
+#if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
+                  bool sRGB2Linear = bitmap.sRGB2Linear;
+                  int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
+                     (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
+                     (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
+         #else
+                  int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
+#endif
+
+                  // TOCHECK: Shouldn't the overall bitmap width be set?
+                  // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
+                  at._init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1,
+                     at.width  ? at.width  : MODELS_TEXTUREARRAY_SIZE,
+                     at.height ? at.height : MODELS_TEXTUREARRAY_SIZE,
+                     at.numLayers ? at.numLayers : 64,
+                     internalFormat,
+                     false);
+               }
+
+               if(convBitmap.bitmaps)
+               {
+                  int layer = at.allocateLayer(0);
+                  int j;
+                  int numLevels = at.numLevels;
+                  int skipLevel = Max(0, convBitmap.numMipMaps - numLevels);
+                  if(layer != -1)
+                  {
+                     for(j = 0; j < convBitmap.numMipMaps; j++)
+                     {
+                        Bitmap bmp = convBitmap.bitmaps[j];
+                        if(bmp)
+                        {
+                           int level = j - skipLevel;
+                           if(level >= 0)
+                           {
+                              if(convBitmap /*bmp*/.pixelFormat == pixelFormatETC2RGBA8)
+                                 at.setLayerCompressed(level, 0, 0, layer, bmp.picture, bmp.sizeBytes, 0);
+                              else
+                                 at.setLayer(level, 0, 0, layer, bmp.picture, 0);
+                           }
+#ifdef ETC2_COMPRESS
+                           if(convBitmap.pixelFormat == pixelFormatETC2RGBA8)
+                           {
+                              etc2Free(bmp.picture);
+                              bmp.picture = null;
+                           }
+                           else
+#endif
+                              delete bmp.picture;
+                           delete bmp;
+                           convBitmap.bitmaps[j] = null; // TOCHECK: ?
+                        }
+                     }
+                     delete convBitmap.bitmaps;
+
+                     bitmap.displaySystem = displaySystem;
+                     bitmap.driver = displaySystem.driver;
+                     bitmap.driverData = (void *)(intptr)layer;   // TOFIX: *not* a texture in this case! Don't free as one.
+                  }
+               }
+            }
+
+            if(convBitmap != bitmap)
+               delete convBitmap;
+         }
+      }
+   }
+
    void UploadPrimitive(PrimitiveSingle g, DisplaySystem displaySystem, bool uploadTextures, int nAT, GLArrayTexture * mAT, bool clearData, bool unlockAndDelete)
    {
       Material mat = g.material;
@@ -1155,91 +1287,11 @@ public:
       }
       if(mat && uploadTextures)
       {
-         if(nAT && mAT != null)
-         {
-            int i;
-            for(i = 0; i < Min(1, nAT); i++)
-            {
-               Bitmap bitmap = i == 0 ? mat.baseMap : null;
-               if(bitmap && bitmap.displaySystem != displaySystem)
-               {
-                  Bitmap convBitmap = bitmap;
-                  GLArrayTexture * at = &mAT[i];
-                  if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
-                     convBitmap = bitmap.ProcessDD((bool)2, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
-                  if(convBitmap)
-                  {
-                     if(!at->texture)
-                     {
-#if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
-                        bool sRGB2Linear = bitmap.sRGB2Linear;
-                        int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
-                           (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
-                           (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
-               #else
-                        int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
-#endif
-
-                        // TOCHECK: Shouldn't the overall bitmap width be set?
-                        // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
-                        at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1,
-                           at->width  ? at->width  : MODELS_TEXTUREARRAY_SIZE,
-                           at->height ? at->height : MODELS_TEXTUREARRAY_SIZE,
-                           at->numLayers ? at->numLayers : 64,
-                           internalFormat,
-                           false);
-                     }
-
-                     if(convBitmap.bitmaps)
-                     {
-                        int layer = at->allocateLayer(0);
-                        int j;
-                        int numLevels = at->numLevels;
-                        int skipLevel = Max(0, convBitmap.numMipMaps - numLevels);
-                        if(layer != -1)
-                        {
-                           for(j = 0; j < convBitmap.numMipMaps; j++)
-                           {
-                              Bitmap bmp = convBitmap.bitmaps[j];
-                              if(bmp)
-                              {
-                                 int level = j - skipLevel;
-                                 if(level >= 0)
-                                 {
-                                    if(convBitmap /*bmp*/.pixelFormat == pixelFormatETC2RGBA8)
-                                       at->setLayerCompressed(level, 0, 0, layer, bmp.picture, bmp.sizeBytes, 0);
-                                    else
-                                       at->setLayer(level, 0, 0, layer, bmp.picture, 0);
-                                 }
-#ifdef ETC2_COMPRESS
-                                 if(convBitmap.pixelFormat == pixelFormatETC2RGBA8)
-                                 {
-                                    etc2Free(bmp.picture);
-                                    bmp.picture = null;
-                                 }
-                                 else
-#endif
-                                    delete bmp.picture;
-                                 delete bmp;
-                                 convBitmap.bitmaps[j] = null; // TOCHECK: ?
-                              }
-                           }
-                           delete convBitmap.bitmaps;
-
-                           bitmap.displaySystem = displaySystem;
-                           bitmap.driver = displaySystem.driver;
-                           bitmap.driverData = (void *)(intptr)layer;   // TOFIX: *not* a texture in this case! Don't free as one.
-                        }
-                     }
-                  }
-
-                  if(convBitmap != bitmap)
-                     delete convBitmap;
-               }
-            }
-         }
-         else if(mat.baseMap && mat.baseMap.displaySystem != displaySystem)
-            mat.baseMap.MakeMipMaps(displaySystem);
+         if(mat.baseMap)     UploadTexture(mat.baseMap,     displaySystem, mAT && nAT > 0 ? mAT[0] : null);
+         if(mat.bumpMap)     UploadTexture(mat.bumpMap,     displaySystem, mAT && nAT > 1 ? mAT[1] : null);
+         if(mat.specularMap) UploadTexture(mat.specularMap, displaySystem, mAT && nAT > 2 ? mAT[2] : null);
+         if(mat.envMap)      UploadTexture(mat.envMap,      displaySystem, mAT && nAT > 3 ? mAT[3] : null);
+         if(mat.reflectMap)  UploadTexture(mat.reflectMap,  displaySystem, mAT && nAT > 4 ? mAT[4] : null);
       }
       if(unlockAndDelete && (!g.type.sharedIndices /*|| !meab*/))
          delete g.indices;

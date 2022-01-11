@@ -64,7 +64,7 @@ class ETCFormat : BitmapFormat
       File f = FileOpen(fileName, write);
 
       if(bitmap.pixelFormat != pixelFormatETC2RGBA8)
-         bmp = bitmap.ProcessDD(true, 0, true, 16384, true);
+         bmp = bitmap.ProcessDD(true, 0, true, 16384, true, 0, 0);
 
       if(f)
       {

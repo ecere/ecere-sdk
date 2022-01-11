@@ -2191,7 +2191,7 @@ class OpenGLDisplayDriver : DisplayDriver
       Bitmap convBitmap = bitmap;
 
       if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
-         convBitmap = bitmap.ProcessDD(mipMaps, cubeMapFace, false, oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
+         convBitmap = bitmap.ProcessDD(mipMaps, cubeMapFace, false, oglSystem.maxTextureSize, !capabilities.nonPow2Textures, 0, 0);
       if(convBitmap)
       {
          // TODO: Proper _GLES3 setup...
