@@ -1625,6 +1625,7 @@ static void * __ecereNameSpace__ecere__com___crealloc(void * pointer, unsigned i
 {
 if(!size)
 {
+if(pointer)
 __ecereNameSpace__ecere__com___free(pointer);
 return (((void *)0));
 }
