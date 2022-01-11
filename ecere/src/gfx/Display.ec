@@ -1001,6 +1001,8 @@ public:
          ObjectFlags flags = *&object.flags;
          bool viewSpace = flags.viewSpace;
 
+         display3D.cullEnabled = -1;
+
          if(display3D.selection || !camera)
             planes = viewSpace ? display3D.viewPickingPlanes : display3D.worldPickingPlanes;
          else
@@ -1325,13 +1327,19 @@ public:
                SortPrimitive * sort = past ? null : &display3D.triangles[c];
                Mesh mesh = past ? null : *&sort->object.mesh;
                PrimitiveSingle * primitive = past ? null : sort->triangle;
+               bool ix32 = !past && primitive ? primitive->type.indices32bit : false;
+               uint32 * indices32 = past ? null : ix32 ?                                 // baseIndex set but not used for Singles?
+
+                  (primitive->type.sharedIndices && mesh.indices ? mesh.indices + primitive->baseIndex : primitive->indices32) :
+                  null;
+               uint16 * indices16 = past || ix32 ? null : primitive->indices;
                Material material = past ? null : primitive->material ? primitive->material : sort->object.material;
                bool newMatrix, newMesh, newMaterial;
                if(!material) material = defaultMaterial;
                newMatrix   = past ? false : &sort->object.matrix != matrix;
                newMesh     = past ? false : (display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab/* || is16Bit */)  // TODO: Don't combine for different baseVertex for 16 bit indices?
 #endif
                   );
                newMaterial = past ? false : material != display3D.material;
@@ -1347,9 +1355,11 @@ public:
                   }
                   if(toFlush)
                   {
+                     uint baseVertex = 0; // TODO: Don't combine for different baseVertex for 16 bit indices?
+
                      transBuffer[bufID].upload(0, toFlush * sizeof(uint32), transIndices);
-                     transBuffer[bufID].draw(GL_TRIANGLES, toFlush,
-                        USE_32_BIT_INDICES ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, glCaps_vertexBuffer ? 0 : transIndices);
+                     transBuffer[bufID].draw2(GL_TRIANGLES, toFlush,
+                        USE_32_BIT_INDICES ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT, glCaps_vertexBuffer ? 0 : transIndices, baseVertex);
                      toFlush = 0;
                      bufID++;
                      if(bufID >= NUM_ROTATE_BUFS)
@@ -1398,32 +1408,33 @@ public:
                }
                else*/
                {
-                  if(primitive->type.indices32bit)
+                  int meshBaseVertex = mesh.baseVertex;  // TODO: Don't combine for different baseVertex for 16 bit indices?
+                  if(indices32)
                   {
-                     transIndices[toFlush+0] = (uintindex)primitive->indices32[0];
-                     transIndices[toFlush+1] = (uintindex)primitive->indices32[1];
-                     transIndices[toFlush+2] = (uintindex)primitive->indices32[2];
+                     transIndices[toFlush+0] = (uintindex)indices32[0] + meshBaseVertex;
+                     transIndices[toFlush+1] = (uintindex)indices32[1] + meshBaseVertex;
+                     transIndices[toFlush+2] = (uintindex)indices32[2] + meshBaseVertex;
                   }
                   else
                   {
-                     transIndices[toFlush+0] = primitive->indices[0];
-                     transIndices[toFlush+1] = primitive->indices[1];
-                     transIndices[toFlush+2] = primitive->indices[2];
+                     transIndices[toFlush+0] = indices16[0] + meshBaseVertex;
+                     transIndices[toFlush+1] = indices16[1] + meshBaseVertex;
+                     transIndices[toFlush+2] = indices16[2] + meshBaseVertex;
                   }
                   toFlush += 3;
                   if(primitive->type == quads)
                   {
-                     if(primitive->type.indices32bit)
+                     if(indices32)
                      {
-                        transIndices[toFlush+0] = (uintindex)primitive->indices32[0];
-                        transIndices[toFlush+1] = (uintindex)primitive->indices32[2];
-                        transIndices[toFlush+2] = (uintindex)primitive->indices32[3];
+                        transIndices[toFlush+0] = (uintindex)indices32[0] + meshBaseVertex;
+                        transIndices[toFlush+1] = (uintindex)indices32[2] + meshBaseVertex;
+                        transIndices[toFlush+2] = (uintindex)indices32[3] + meshBaseVertex;
                      }
                      else
                      {
-                        transIndices[toFlush+0] = primitive->indices[0];
-                        transIndices[toFlush+1] = primitive->indices[2];
-                        transIndices[toFlush+2] = primitive->indices[3];
+                        transIndices[toFlush+0] = indices16[0] + meshBaseVertex;
+                        transIndices[toFlush+1] = indices16[2] + meshBaseVertex;
+                        transIndices[toFlush+2] = indices16[3] + meshBaseVertex;
                      }
                      toFlush += 3;
                   }
@@ -1643,6 +1654,7 @@ private class Display3D : struct
    Vector3D rayIntersect;
    float light0Pos[4];
    Vector3D rlInvDelta;
+   int cullEnabled;
 
    ~Display3D()
    {
@@ -1698,7 +1710,7 @@ private class Display3D : struct
       float * vertices = (float *)mesh.vertices;
       int vStride = mesh.flags.interleaved ? 8 : 3;
 
-      if(!vertices) return false; // Need vertices here...
+      if(!vertices || (!indices32 && !indices16)) return false; // Need vertices and indices here...
 
       // Parts are currently in the Mesh rather than the PrimitiveGroup, assuming the group order (restarting at ix 0)
       // However picking currently does not seem to support groups with shared indices (baseIndex)
@@ -2026,11 +2038,16 @@ private class Display3D : struct
          SortPrimitive * sort = &triangles[c];
          Mesh mesh = sort->object.mesh;
          PrimitiveSingle * primitive = sort->triangle;
+         bool ix32 = primitive->type.indices32bit;
+         uint32 * indices32 = ix32 ?                                 // baseIndex set but not used for Singles?
+            (primitive->type.sharedIndices && mesh.indices ? mesh.indices + primitive->baseIndex : primitive->indices32) :
+            null;
+         uint16 * indices16 = ix32 ? null : primitive->indices;
          Vector3Df min { MAXFLOAT, MAXFLOAT, MAXFLOAT };
          Vector3Df max { -MAXFLOAT, -MAXFLOAT, -MAXFLOAT };
          int v;
-         bool ix32 = primitive->type.indices32bit;
          float * vertices = (float *)mesh.vertices;
+         int baseVertex = mesh.baseVertex;
          uint vStride = mesh.flags.interleaved ? 8 : 3;
          if(object != sort->object)
          {
@@ -2050,7 +2067,7 @@ private class Display3D : struct
 
          for(v = 0; v<primitive->nIndices; v++)
          {
-            Vector3Df * local = (Vector3Df *)(vertices + vStride * (ix32 ? primitive->indices32[v] : primitive->indices[v]));
+            Vector3Df * local = (Vector3Df *)(vertices + vStride * (baseVertex + (indices32 ? indices32[v] : indices16[v])));
             Vector3Df vertex;
 
             vertex.MultMatrix(local, &matrix);

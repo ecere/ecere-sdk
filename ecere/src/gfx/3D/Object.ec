@@ -2234,7 +2234,7 @@ private:
       Object o;
 
       this.displaySystem = displaySystem;
-      if(flags.mesh && mesh)
+      if(flags.mesh && mesh && flags.ownMesh)
          mesh.Upload(displaySystem, true, mab, meab, nAT, mAT);
       for(o = children.first; o; o = o.next)
          o.Upload(displaySystem, mab, meab, nAT, mAT);

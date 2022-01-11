@@ -337,7 +337,7 @@ public:
 #endif
             driver.FreeIndices(displaySystem, (PrimitiveSingle *)&group.type);
          }
-         if(!group.type.vertexRange)
+         if(!group.type.vertexRange && (!group.type.sharedIndices /*|| !meab*/))
             delete group.indices;
          groups.Delete(group);
       }
@@ -377,35 +377,14 @@ public:
 
    bool LockPrimitiveGroup(PrimitiveGroup group)
    {
-      bool result = false;
-      if(this && group)
-      {
-         if(group.type.vertexRange)
-            result = true;
-         else if(group.data && driver.LockIndices(displaySystem, (PrimitiveSingle *)&group.type))
-            result = true;
-      }
-      return result;
+       // FIXME: Define PrimitiveGroup aggregating PrimitiveSingle
+      return LockPrimitive((PrimitiveSingle *)&group.type);
    }
 
    void UnlockPrimitiveGroup(PrimitiveGroup group)
    {
-      if(this && group)
-      {
-         bool shareIndicesTweak = false;
-         if(group.type.sharedIndices && !group.indices && indices)
-         {
-            shareIndicesTweak = true;
-            group.indices = (uint16 *)((byte *)indices + (group.baseIndex * (group.type.indices32bit ? 4 : 2)));
-         }
-#if !defined(ECERE_NOGL)
-         driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, meab);
-#else
-         driver.UnlockIndices(displaySystem, (PrimitiveSingle *)&group.type, group.type.indices32bit, group.nIndices, null);
-#endif
-         if(shareIndicesTweak)
-            group.indices = null;
-      }
+      // FIXME: Define PrimitiveGroup aggregating PrimitiveSingle
+      UnlockPrimitive((PrimitiveSingle *)&group.type);
    }
 
    void FreePrimitive(PrimitiveSingle primitive)
@@ -460,11 +439,19 @@ public:
    {
       if(this && primitive)
       {
+         bool shareIndicesTweak = false;
+         if(primitive.type.sharedIndices && !primitive.indices && indices)
+         {
+            shareIndicesTweak = true;
+            primitive.indices = (uint16 *)((byte *)indices + (primitive.baseIndex * (primitive.type.indices32bit ? 4 : 2)));
+         }
 #if !defined(ECERE_NOGL)
-         driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, meab);
+         driver.UnlockIndices(displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, meab);
 #else
-         driver.UnlockIndices(this.displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, null);
+         driver.UnlockIndices(displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, null);
 #endif
+         if(shareIndicesTweak)
+            ; // Dont do this for picking? primitive.indices = null;
       }
    }
 
@@ -473,7 +460,9 @@ public:
       bool result = false;
       if(this && primitive)
       {
-         if(driver.LockIndices(displaySystem, primitive))
+         if(primitive.type.vertexRange)
+            result = true;
+         else if(primitive.data && driver.LockIndices(displaySystem, primitive))
             result = true;
       }
       return result;
@@ -895,7 +884,7 @@ public:
             else
                c++;
          }
-         primitives = renew primitives PrimitiveSingle[this.nPrimitives];
+         primitives = renew0 primitives PrimitiveSingle[this.nPrimitives];
          result = true;
          if(object)
             object.flags.translucent = nPrimitives ? true : false;
@@ -954,7 +943,7 @@ public:
             else
                c++;
          }
-         primitives = renew primitives PrimitiveSingle[this.nPrimitives];
+         primitives = renew0 primitives PrimitiveSingle[this.nPrimitives];
 
          // Split translucent groups into primitives
          for(group = groups.first; group; group = nextGroup)
@@ -987,7 +976,7 @@ public:
 
                nPrimitives += (groupCount - offset) / nIndex;
 
-               primitives = renew primitives PrimitiveSingle[this.nPrimitives + nPrimitives];
+               primitives = renew0 primitives PrimitiveSingle[this.nPrimitives + nPrimitives];
 
                if(group.type.indices32bit)
                {
@@ -995,7 +984,7 @@ public:
                   {
                      PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
 
-                     if(AllocatePrimitive(primitive, group.type & ~PrimitiveGroupType { vertexRange = true }, nPoints))
+                     if(AllocatePrimitive(primitive, group.type & ~PrimitiveGroupType { vertexRange = true, sharedIndices = true }, nPoints))
                      {
                         if(group.type.vertexRange)
                         {
@@ -1067,7 +1056,7 @@ public:
                   {
                      PrimitiveSingle * primitive = &primitives[this.nPrimitives++];
 
-                     if(AllocatePrimitive(primitive, group.type & ~ PrimitiveGroupType { vertexRange = true }, nPoints))
+                     if(AllocatePrimitive(primitive, group.type & ~ PrimitiveGroupType { vertexRange = true, sharedIndices = true }, nPoints))
                      {
                         if(group.type.vertexRange)
                         {
@@ -1154,6 +1143,108 @@ public:
    }
 
 #if !defined(ECERE_NOGL)
+   void UploadPrimitive(PrimitiveSingle g, DisplaySystem displaySystem, bool uploadTextures, int nAT, GLArrayTexture * mAT, bool clearData, bool unlockAndDelete)
+   {
+      Material mat = g.material;
+      if(!g.type.vertexRange)
+      {
+         if(clearData)
+            g.data = null;
+         if(unlockAndDelete)
+            UnlockPrimitive(g);
+      }
+      if(mat && uploadTextures)
+      {
+         if(nAT && mAT != null)
+         {
+            int i;
+            for(i = 0; i < Min(1, nAT); i++)
+            {
+               Bitmap bitmap = i == 0 ? mat.baseMap : null;
+               if(bitmap && bitmap.displaySystem != displaySystem)
+               {
+                  Bitmap convBitmap = bitmap;
+                  GLArrayTexture * at = &mAT[i];
+                  if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
+                     convBitmap = bitmap.ProcessDD((bool)2, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
+                  if(convBitmap)
+                  {
+                     if(!at->texture)
+                     {
+#if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
+                        bool sRGB2Linear = bitmap.sRGB2Linear;
+                        int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
+                           (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
+                           (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
+               #else
+                        int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
+#endif
+
+                        // TOCHECK: Shouldn't the overall bitmap width be set?
+                        // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
+                        at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1,
+                           at->width  ? at->width  : MODELS_TEXTUREARRAY_SIZE,
+                           at->height ? at->height : MODELS_TEXTUREARRAY_SIZE,
+                           at->numLayers ? at->numLayers : 64,
+                           internalFormat,
+                           false);
+                     }
+
+                     if(convBitmap.bitmaps)
+                     {
+                        int layer = at->allocateLayer(0);
+                        int j;
+                        int numLevels = at->numLevels;
+                        int skipLevel = Max(0, convBitmap.numMipMaps - numLevels);
+                        if(layer != -1)
+                        {
+                           for(j = 0; j < convBitmap.numMipMaps; j++)
+                           {
+                              Bitmap bmp = convBitmap.bitmaps[j];
+                              if(bmp)
+                              {
+                                 int level = j - skipLevel;
+                                 if(level >= 0)
+                                 {
+                                    if(convBitmap /*bmp*/.pixelFormat == pixelFormatETC2RGBA8)
+                                       at->setLayerCompressed(level, 0, 0, layer, bmp.picture, bmp.sizeBytes, 0);
+                                    else
+                                       at->setLayer(level, 0, 0, layer, bmp.picture, 0);
+                                 }
+#ifdef ETC2_COMPRESS
+                                 if(convBitmap.pixelFormat == pixelFormatETC2RGBA8)
+                                 {
+                                    etc2Free(bmp.picture);
+                                    bmp.picture = null;
+                                 }
+                                 else
+#endif
+                                    delete bmp.picture;
+                                 delete bmp;
+                                 convBitmap.bitmaps[j] = null; // TOCHECK: ?
+                              }
+                           }
+                           delete convBitmap.bitmaps;
+
+                           bitmap.displaySystem = displaySystem;
+                           bitmap.driver = displaySystem.driver;
+                           bitmap.driverData = (void *)(intptr)layer;   // TOFIX: *not* a texture in this case! Don't free as one.
+                        }
+                     }
+                  }
+
+                  if(convBitmap != bitmap)
+                     delete convBitmap;
+               }
+            }
+         }
+         else if(mat.baseMap && mat.baseMap.displaySystem != displaySystem)
+            mat.baseMap.MakeMipMaps(displaySystem);
+      }
+      if(unlockAndDelete && (!g.type.sharedIndices /*|| !meab*/))
+         delete g.indices;
+   }
+
    bool Upload(DisplaySystem displaySystem, bool uploadTextures, GLMB mab, GLMB meab, int nAT, GLArrayTexture * mAT)
    {
       bool result = false;
@@ -1171,111 +1262,27 @@ public:
 
       Unlock(0);
 
-      delete vertices;
+      if(flags.interleaved)
+         delete vertices;
+
       delete texCoords;
       delete normals;
       delete colors;
       delete lightVectors;
 
       for(g = groups.first; g; g = g.next)
+         UploadPrimitive((PrimitiveSingle *)&g.type, displaySystem, uploadTextures, nAT, mAT, clearData, true);
+
+      if(primitives)
       {
-         Material mat = g.material;
-         if(!g.type.vertexRange)
+         int p;
+         for(p = 0; p < nPrimitives; p++)
          {
-            if(clearData)
-               g.data = null;
-            UnlockPrimitiveGroup(g);
+            PrimitiveSingle * g = &primitives[p];
+            UploadPrimitive(g, displaySystem, uploadTextures, nAT, mAT, clearData, false);
          }
-         if(mat && uploadTextures)
-         {
-            if(nAT && mAT != null)
-            {
-               int i;
-               for(i = 0; i < Min(1, nAT); i++)
-               {
-                  Bitmap bitmap = i == 0 ? mat.baseMap : null;
-                  if(bitmap && bitmap.displaySystem != displaySystem)
-                  {
-                     Bitmap convBitmap = bitmap;
-                     GLArrayTexture * at = &mAT[i];
-                     if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
-                        convBitmap = bitmap.ProcessDD((bool)2, 0, false, 16384, false); //oglSystem.maxTextureSize, !capabilities.nonPow2Textures);
-                     if(convBitmap)
-                     {
-                        if(!at->texture)
-                        {
-#if !defined(__EMSCRIPTEN__) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
-                           bool sRGB2Linear = bitmap.sRGB2Linear;
-                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ?
-                              (sRGB2Linear ? GL_COMPRESSED_SRGB8_ALPHA8_ETC2_EAC : GL_COMPRESSED_RGBA8_ETC2_EAC) :
-                              (sRGB2Linear ? GL_SRGB8_ALPHA8 : GL_RGBA8);
-                  #else
-                           int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
-#endif
-
-                           // TOCHECK: Shouldn't the overall bitmap width be set?
-                           // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
-                           at->_init(convBitmap.numMipMaps ? convBitmap.numMipMaps : 1,
-                              at->width  ? at->width  : MODELS_TEXTUREARRAY_SIZE,
-                              at->height ? at->height : MODELS_TEXTUREARRAY_SIZE,
-                              at->numLayers ? at->numLayers : 64,
-                              internalFormat,
-                              false);
-                        }
-
-                        if(convBitmap.bitmaps)
-                        {
-                           int layer = at->allocateLayer(0);
-                           int j;
-                           int numLevels = at->numLevels;
-                           int skipLevel = Max(0, convBitmap.numMipMaps - numLevels);
-                           if(layer != -1)
-                           {
-                              for(j = 0; j < convBitmap.numMipMaps; j++)
-                              {
-                                 Bitmap bmp = convBitmap.bitmaps[j];
-                                 if(bmp)
-                                 {
-                                    int level = j - skipLevel;
-                                    if(level >= 0)
-                                    {
-                                       if(convBitmap /*bmp*/.pixelFormat == pixelFormatETC2RGBA8)
-                                          at->setLayerCompressed(level, 0, 0, layer, bmp.picture, bmp.sizeBytes, 0);
-                                       else
-                                          at->setLayer(level, 0, 0, layer, bmp.picture, 0);
-                                    }
-#ifdef ETC2_COMPRESS
-                                    if(convBitmap.pixelFormat == pixelFormatETC2RGBA8)
-                                    {
-                                       etc2Free(bmp.picture);
-                                       bmp.picture = null;
-                                    }
-                                    else
-#endif
-                                       delete bmp.picture;
-                                    delete bmp;
-                                    convBitmap.bitmaps[j] = null; // TOCHECK: ?
-                                 }
-                              }
-                              delete convBitmap.bitmaps;
-
-                              bitmap.displaySystem = displaySystem;
-                              bitmap.driver = displaySystem.driver;
-                              bitmap.driverData = (void *)(intptr)layer;   // TOFIX: *not* a texture in this case! Don't free as one.
-                           }
-                        }
-                     }
-
-                     if(convBitmap != bitmap)
-                        delete convBitmap;
-                  }
-               }
-            }
-            else if(mat.baseMap && mat.baseMap.displaySystem != displaySystem)
-               mat.baseMap.MakeMipMaps(displaySystem);
-         }
-         delete g.indices;
       }
+
       result = true;
       return result;
    }

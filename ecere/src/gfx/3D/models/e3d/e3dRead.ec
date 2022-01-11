@@ -539,7 +539,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                allocedFeatures = features;
                allocedFeatures.vertices = true;
                if(allocedFeatures == { vertices = true, normals = true, texCoords1 = true })
-                  allocedFeatures.interleaved = true; // Loading this common format as interleaved for now...
+                  // TODO: Review issues with translucent primitives when this is set...
+                  ; //allocedFeatures.interleaved = true; // Loading this common format as interleaved for now...
                if(vSize && mesh.Allocate(allocedFeatures, nVertices, displaySystem))
                {
                   bool loadIL = false;
