@@ -2210,6 +2210,11 @@ class OpenGLDisplayDriver : DisplayDriver
          GLuint glBitmap = cubeMapFace && face > 0 ? (GLuint)(uintptr)bitmap.driverData : 0;
          int level;
 
+#if !defined(_GLES3)
+            if(internalFormat == GL_COMPRESSED_RGBA8_ETC2_EAC)
+               internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
+
          glGetError();
          if(!glBitmap)
             glGenTextures(1, &glBitmap);

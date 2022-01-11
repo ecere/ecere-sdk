@@ -6,7 +6,7 @@ import "Display"
 
 #ifdef ETC2_COMPRESS
 default extern void * etc2Compress(float * pixelData, unsigned int width, unsigned int height,
-   unsigned int * size, unsigned int * dw, unsigned int * dh);
+   unsigned int * size, unsigned int * dw, unsigned int * dh, int format);
 default extern void etc2Free(void * data);
 #endif
 
@@ -1008,6 +1008,16 @@ public:
       Bitmap retValue = null;
       Bitmap convBitmap { mipMaps = false };
       bool freeConvBitmap = true;
+      PixelFormat workingFormat = pixelFormat888;
+
+#if !defined(ETC2_COMPRESS)
+      compress = false;
+#endif
+
+#if defined(_GLES3)
+      if(compress)
+         workingFormat = pixelFormatRGBA;  // DXT5 compressor expects reverse order?
+#endif
 
       convBitmap.width = bitmap.width;
       convBitmap.height = bitmap.height;
@@ -1044,7 +1054,7 @@ public:
       convBitmap.allocatePalette = false;
 
       // Pre process the bitmap... First make it 32 bit
-      if(convBitmap.Convert(null, pixelFormat888, null))
+      if(convBitmap.Convert(null, workingFormat, null))
       {
          int c, level;
          uint w = bitmap.width, h = bitmap.height;
@@ -1127,16 +1137,31 @@ public:
          for(level = 0; result && (w >= 1 || h >= 1); level++, w >>= 1, h >>= 1)
          {
             Bitmap mipMap;
+            int mw, mh;
             if(!w) w = 1;
             if(!h) h = 1;
-            if(bitmap.width != w || bitmap.height != h)
+            mw = w;
+            mh = h;
+            if(compress)
+            {
+               mw = (mw + 3) & (~3);
+               mh = (mh + 3) & (~3);
+            }
+
+            if(bitmap.width != mw || bitmap.height != mh)
             {
                mipMap = Bitmap { };
-               if(mipMap.Allocate(null, w, h, w, pixelFormat888, false))
+               if(mipMap.Allocate(null, mw, mh, mw, workingFormat, false))
                {
                   Surface mipSurface = mipMap.GetSurface(0,0,null);
                   mipSurface.blend = false;
-                  mipSurface.Filter(convBitmap, 0,0,0,0, w, h, convBitmap.width, convBitmap.height);
+                  mipSurface.Filter(convBitmap, 0,0,0,0, mw, mh, convBitmap.width, convBitmap.height);
+                  if(compress)
+                  {
+                     // NOTE: The mipmap dimensions are reset to not include the 4x4 blocks compression adjustment
+                     mipMap.width = w;
+                     mipMap.height = h;
+                  }
                   delete mipSurface;
                }
                else
@@ -1156,8 +1181,8 @@ public:
                   {
                      retValue = { mipMaps = true };
                      retValue.pixelFormat = compress ? pixelFormatETC2RGBA8 : pixelFormatRGBAGL;
-                     retValue.width = w;
-                     retValue.height = h;
+                     retValue.width = mw;
+                     retValue.height = mh;
                      retValue.bitmaps = new0 Bitmap[numMipMaps];
                   }
                   if(mipMap == convBitmap)
@@ -1180,25 +1205,21 @@ public:
             for(level = 0; level < (mipMaps ? retValue.numMipMaps : 1); level++)
             {
                uint size = 0;
-               int i;
                Bitmap mipMap = mipMaps ? retValue.bitmaps[level] : retValue;
                void * pixelData = mipMap.picture;
                uint width = mipMap.width, height = mipMap.height;
-               float * fData = new float[width * height * 4];
+               int format = 0;
+#if !defined(_GLES3)
+               format = 1;
+#endif
 
-               for(i = 0; i < width * height; i++)
-               {
-                  ColorRGBA * pix = &((ColorRGBA *)pixelData)[i];
-                  fData[4*i+0] = pix->r / 255.0f;
-                  fData[4*i+1] = pix->g / 255.0f;
-                  fData[4*i+2] = pix->b / 255.0f;
-                  fData[4*i+3] = pix->a / 255.0f;
-               }
+               // NOTE: Re-adjust the dimensions as allocated here
+               width = (width + 3) & (~3);
+               height = (height + 3) & (~3);
 
-               delete pixelData;
-               mipMap.picture = etc2Compress(fData, width, height, &size, &width, &height);
+               mipMap.picture = etc2Compress(pixelData, width, height, &size, &width, &height, format);
                mipMap.sizeBytes = size; mipMap.pixelFormat = pixelFormatETC2RGBA8;
-               delete fData;
+               delete pixelData;
             }
          }
 #endif

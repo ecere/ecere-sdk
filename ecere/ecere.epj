@@ -47,12 +47,10 @@
                "Xrender",
                "GL",
                "ssl",
-               "crypto",
-               "etc"
+               "crypto"
             ],
             "LibraryDirs" : [
-               "/usr/X11R6/lib",
-               "../deps/etc2comp/EtcLib/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
+               "/usr/X11R6/lib"
             ]
          }
       },
@@ -142,34 +140,10 @@
          "Options" : {
             "Debug" : true,
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "_DEBUG"
             ]
-         },
-         "Platforms" : [
-            {
-               "Name" : "linux",
-               "Options" : {
-                  "PreprocessorDefinitions" : [
-                     "ETC2_COMPRESS"
-                  ],
-                  "Libraries" : [
-                     "ncurses",
-                     "pthread",
-                     "m",
-                     "dl",
-                     "fontconfig",
-                     "gif",
-                     "X11",
-                     "Xext",
-                     "Xrender",
-                     "GL",
-                     "ssl",
-                     "crypto",
-                     "etc"
-                  ]
-               }
-            }
-         ]
+         }
       },
       {
          "Name" : "MemoryGuard",
@@ -218,12 +192,18 @@
             "Warnings" : "All",
             "Debug" : true,
             "Optimization" : "Speed",
+            "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS"
+            ],
             "CompilerOptions" : [
                "-mmmx",
                "-msse",
                "-msse2",
                "-msse3",
-               "-msse4"
+               "-msse4",
+               "-msse4.1",
+               "-msse4.2",
+               "-march=skylake"
             ],
             "LinkerOptions" : [
                "--wrap=fcntl64"
@@ -238,23 +218,14 @@
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO).0)",
                "$(if $(WINDOWS_HOST),,ln -sf $(LP)$(MODULE)$(SOV) $(DESTLIBDIR)/$(LP)$(MODULE)$(SO))"
             ]
-         },
-         "Platforms" : [
-            {
-               "Name" : "linux",
-               "Options" : {
-                  "PreprocessorDefinitions" : [
-                     "ETC2_COMPRESS"
-                  ]
-               }
-            }
-         ]
+         }
       },
       {
          "Name" : "Static",
          "Options" : {
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "ECERE_STATIC"
             ],
             "TargetType" : "StaticLibrary",
@@ -482,6 +453,7 @@
          "Name" : "GLES",
          "Options" : {
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "_GLES2"
             ]
          }
@@ -491,6 +463,7 @@
          "Options" : {
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "_GLES",
                "ECERE_STATIC",
                "ECERE_NOSSL"
@@ -509,6 +482,7 @@
          "Name" : "Emscripten",
          "Options" : {
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "ECERE_STATIC",
                "NOBLENDING",
                "ECERE_NOSSL",
@@ -523,6 +497,7 @@
          "Name" : "MinEmscripten",
          "Options" : {
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "ECERE_STATIC",
                "NOBLENDING",
                "ECERE_NOSSL",
@@ -541,6 +516,7 @@
             "NoLineNumbers" : false,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
+               "ETC2_COMPRESS",
                "_GLES3",
                "__UWP__",
                "ECERE_NOSSL",
@@ -1409,6 +1385,41 @@
                                  "Options" : {
                                     "ExcludeFromBuild" : false
                                  }
+                              },
+                              {
+                                 "FileName" : "../deps/etcpak/QuickETC2Pak.c",
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "Debug",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Release",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "GLES",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "Emscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    },
+                                    {
+                                       "Name" : "MinEmscripten",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : false
+                                       }
+                                    }
+                                 ]
                               }
                            ],
                            "Configurations" : [
