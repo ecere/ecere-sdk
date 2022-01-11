@@ -2157,6 +2157,11 @@ if(!strcmp(memberType->dataTypeString, "float"))
 value1.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data1);
 value2.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data2);
 }
+else if(!strcmp(memberType->dataTypeString, "double"))
+{
+value1.__anon1.d = ((double (*)(void *))(void *)prop->Get)(data1);
+value2.__anon1.d = ((double (*)(void *))(void *)prop->Get)(data2);
+}
 else
 {
 value1.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data1);

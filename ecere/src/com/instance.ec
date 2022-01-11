@@ -1649,7 +1649,7 @@ static void * _realloc(void * pointer, unsigned int size)
 #if defined(DISABLE_MEMMGR) && !defined(MEMINFO)
 
 #if defined(msize)
-   if(!size) { free(pointer); return null; }
+   if(!size) { if(pointer) free(pointer); return null; }
    return realloc(pointer, size);
 #else
    byte * p;
@@ -1769,11 +1769,11 @@ static void * _crealloc(void * pointer, unsigned int size)
 
 #if defined(msize)
    uintsize s = pointer ? msize(pointer) : 0;
-   if(!size) { free(pointer); return null; }
+   if(!size) { if(pointer) free(pointer); return null; }
    p = realloc(pointer, size);
 #else
    uintsize s = pointer ? *(size_t *)((byte *)pointer - sizeof(size_t)) : 0;
-   if(!size) { free((byte *)pointer - sizeof(size_t)); return null; }
+   if(!size) { if(pointer) free((byte *)pointer - sizeof(size_t)); return null; }
    p = realloc(pointer ? (byte *)pointer - sizeof(size_t) : null, size + sizeof(size_t));
    if(p) *(size_t *)p = size;
    if(p) p += sizeof(size_t);
@@ -1784,7 +1784,7 @@ static void * _crealloc(void * pointer, unsigned int size)
       printf("_crealloc failed allocating %d bytes!\n", size);
    return p;
 #else
-   if(!size) { _free(pointer); return null; }
+   if(!size) { if(pointer) _free(pointer); return null; }
 
 #if !defined(_NOMUTEX)
    memMutex.Wait();
