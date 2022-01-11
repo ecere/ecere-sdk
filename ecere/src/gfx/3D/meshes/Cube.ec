@@ -116,6 +116,7 @@ public:
                      group.material = material;
                   }
                }
+               flags.computeLightVectors = true;
                mesh.ComputeNormals();
                result = true;
                mesh.Unlock(0);

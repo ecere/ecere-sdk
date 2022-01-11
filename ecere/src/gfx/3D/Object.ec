@@ -1217,7 +1217,8 @@ public:
 
                      delete *&mesh.vertices;
                      delete *&mesh.texCoords;
-                     delete *&mesh.normals;
+                     if(!this.flags.computeLightVectors)
+                        delete *&mesh.normals;
                   }
                }
                if(child.children.count)
@@ -1669,7 +1670,8 @@ public:
          {
             delete *&mesh.vertices;
             delete *&mesh.texCoords;
-            delete *&mesh.normals;
+            if(!this.flags.computeLightVectors)
+               delete *&mesh.normals;
          }
       }
       return result;

@@ -73,6 +73,7 @@ class MaterialsTest : Window
    size = { 640, 480 };
    state = maximized;
 #endif
+   glCapabilities.compatible = true;
    // glCapabilities.shaders = true;
 
    Cube cube { };
@@ -176,6 +177,7 @@ class MaterialsTest : Window
       model.transform.position = { 0, 0, 0 };
       model.UpdateTransform();
       model.SetMinMaxRadius(false);
+      // model.flags.computeLightVectors = true;
       model.mesh.ApplyMaterial(material);
    }
 
@@ -229,6 +231,7 @@ class MaterialsTest : Window
       //if(!forestCubeMap.Load(displaySystem, faceNames2, "jpg", false)) forestBox.cubeMap = null;
 
       teapot.Load(":teapot.3DS", null, displaySystem);
+      teapot.flags.computeLightVectors = true;
       teapot.Merge(displaySystem);
       teapot.mesh.ApplyMaterial(material);
       prepareModel(teapot, 1);

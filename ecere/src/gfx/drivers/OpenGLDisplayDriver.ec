@@ -623,33 +623,27 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
          for(v = 0; !ctx && v < sizeof(versions) / sizeof(versions[0]); v++)
          {
             int v0 = versions[v][0], v1 = versions[v][1];
-            if(!tryingCompat || v0 < 3)
+            //if(!tryingCompat || v0 < 3)
             {
-               //bool coreNotion = v0 > 3 || (v0 == 3 && v1 >= 3);
-               /*int attribs[] =
-               {
-                  WGL_CONTEXT_MAJOR_VERSION_ARB, v0, WGL_CONTEXT_MINOR_VERSION_ARB, v1,
-         #ifdef _DEBUG
-                  WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_DEBUG_BIT_ARB,
-         #endif
-                  coreNotion ? WGL_CONTEXT_PROFILE_MASK_ARB : 0, coreNotion ? (tryingCompat ? WGL_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB : WGL_CONTEXT_CORE_PROFILE_BIT_ARB) : 0,
-                  0,0
-               };*/
+               bool coreNotion = v0 > 3 || (v0 == 3 && v1 >= 3);
                int context_attribs[] =
                {
                   GLX_CONTEXT_MAJOR_VERSION_ARB, v0,
                   GLX_CONTEXT_MINOR_VERSION_ARB, v1,
-                  //GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+#ifdef GL_DEBUGGING
+                  GLX_CONTEXT_FLAGS_ARB        , GLX_CONTEXT_DEBUG_BIT_ARB,
+#endif
+                  GLX_CONTEXT_PROFILE_MASK_ARB, tryingCompat ? GLX_CONTEXT_COMPATIBILITY_PROFILE_BIT_ARB : GLX_CONTEXT_CORE_PROFILE_BIT_ARB,
                   None
                };
                ctx = glXCreateContextAttribsARB( display, config, oglSystem ? oglSystem.glContext : 0, True, context_attribs );
                if(ctx)
                {
                   if(oglDisplay)
-                     oglDisplay.compat = false; //tryingCompat; // FIXME: Some things don't work now with compat set to true?
+                     oglDisplay.compat = tryingCompat || !coreNotion;
 
                   //if(contextVersion) *contextVersion = v0;
-                  //if(isCompatible)   *isCompatible = tryingCompat || !coreNotion;
+                  //if(isCompatible)   *isCompatible = ;
 #ifdef _DEBUG
                   PrintLn("got context for ", v0, ".", v1);
 #endif
@@ -811,8 +805,11 @@ class OpenGLDisplayDriver : DisplayDriver
    void ::CheckCapabilities(OGLSystem oglSystem, OGLDisplay oglDisplay, bool canCheckExtensions)
    {
       GLCapabilities capabilities;
+
+      // TODO: OpenGL 3.0 deprecates glGetString(GL_EXTENSIONS) in favor of looping through
+      //       glGetIntegerv(GL_NUM_EXTENSIONS, &n) extensions and using glGetStringi(GL_EXTENSIONS, i)
 #if !defined(_GLES2)
-      const char * extensions = (canCheckExtensions && (!oglDisplay || oglDisplay.compat)) ? (const char *)glGetString(GL_EXTENSIONS) : null;
+      const char * extensions = (oglDisplay.version < 3 && canCheckExtensions && (!oglDisplay || oglDisplay.compat)) ? (const char *)glGetString(GL_EXTENSIONS) : null;
 #endif
 #ifdef DIAGNOSTICS
       printf("extensions: %s\n", extensions);
@@ -853,7 +850,12 @@ class OpenGLDisplayDriver : DisplayDriver
          vertexPointer = oglDisplay.compat;
 #endif
 #if ENABLE_GL_VAO
-         vao = glBindVertexArray != null && !oglDisplay.compat;   // NOTE: Compat must be turned off to use VAOs!
+         vao = glBindVertexArray != null
+#if defined(__WIN32__)
+            && !oglDisplay.compat    // NOTE: Compat must be turned off to use VAOs! -- enabled on Linux for now as VAO + compat seems to work OK.
+#endif
+         ;
+
 #endif
 #if ENABLE_GL_FBO
          frameBuffer = glBindFramebuffer != null;
@@ -3542,7 +3544,9 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float color[4] = { 1,1,1,1 };
             if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
+            tmu++;
+
             glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)material.bumpMap.driverData);
             glDisable(GL_TEXTURE_CUBE_MAP);
             glEnable(GL_TEXTURE_2D);
@@ -3594,14 +3598,13 @@ class OpenGLDisplayDriver : DisplayDriver
                }
             }
 
-            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
-
             normalMapped = true;
 
             // Modulate base color
             if(material.diffuse.r < 1 || material.diffuse.g < 1 || material.diffuse.b < 1)
             {
+               if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+               if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
                tmu++;
                glDisable(GL_TEXTURE_CUBE_MAP);
                glEnable(GL_TEXTURE_2D);
@@ -3622,8 +3625,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
                color[0] = material.diffuse.r, color[1] = material.diffuse.g, color[2] = material.diffuse.b, color[3] = 1.0;
                glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
-               if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-               if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
             }
 
             // Add ambient light
@@ -3631,6 +3632,8 @@ class OpenGLDisplayDriver : DisplayDriver
                ColorRGB ambient { material.ambient.r * 0.2f, material.ambient.g * 0.2f, material.ambient.g * 0.2f };
                if(ambient.r > 0 || ambient.g > 0 || ambient.b > 0)
                {
+                  if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+                  if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
                   tmu++;
                   glDisable(GL_TEXTURE_CUBE_MAP);
                   glEnable(GL_TEXTURE_2D);
@@ -3651,8 +3654,6 @@ class OpenGLDisplayDriver : DisplayDriver
 
                   color[0] = ambient.r, color[1] = ambient.g, color[2] = ambient.b, color[3] = 1.0;
                   glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color );
-                  if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-                  if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
                }
             }
          }
@@ -3676,7 +3677,9 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!glCaps_shaders)
          {
             if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
+            tmu++;
+
             glEnable(diffuseTarget);
             if(oglDisplay.version >= 2)
                glDisable(flags.cubeMap ? GL_TEXTURE_2D : GL_TEXTURE_CUBE_MAP);
@@ -3742,7 +3745,7 @@ class OpenGLDisplayDriver : DisplayDriver
                glDisable(GL_TEXTURE_GEN_T);
             #endif
 
-               if(tmu > 1)
+               if(tmu > 0)
                   oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
                GLEnableClientState(TEXCOORDS);
             }
@@ -3757,6 +3760,13 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       else
       {
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+         {
+            if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
+         }
+#endif
          GLSetupTexturing(false);
       }
 
@@ -3777,7 +3787,7 @@ class OpenGLDisplayDriver : DisplayDriver
          (mesh.texCoords && (material.baseMap || material.bumpMap || material.specularMap || material.reflectMap)))
       {
 #if ENABLE_GL_FFP
-         if(!glCaps_shaders)
+         if(!glCaps_shaders && tmu > 0)
          {
             if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu - 1);
             if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu - 1);
@@ -3804,7 +3814,9 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float color[4] = { material.opacity, material.opacity, material.opacity, 1.0 };
             if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
+            tmu++;
+
             glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)material.envMap.driverData);
             glEnable(GL_TEXTURE_CUBE_MAP);
          #if _GLES
@@ -3869,7 +3881,9 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             float color[4] = { 1.0f - material.reflectivity, 1.0f - material.reflectivity, 1.0f - material.reflectivity, 1.0 };
             if(glActiveTexture) glActiveTexture(GL_TEXTURE0 + tmu);
-            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu++);
+            if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
+            tmu++;
+
             glBindTexture(GL_TEXTURE_CUBE_MAP, (GLuint)(uintptr)material.envMap.driverData);
             glEnable(GL_TEXTURE_CUBE_MAP);
          #if _GLES
