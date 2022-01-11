@@ -1002,7 +1002,7 @@ public:
       return palette;
    }
 
-   Bitmap ProcessDD(bool mipMaps, uint cubeMapFace, bool compress, int maxTextureSize, bool makePow2)
+   Bitmap ProcessDD(bool mipMaps, uint cubeMapFace, bool compress, int maxTextureSize, bool makePow2, int enforcedWidth, int enforcedHeight)
    {
       Bitmap bitmap = this;
       Bitmap retValue = null;
@@ -1067,16 +1067,15 @@ public:
 
          if(mipMaps)
          {
-            if((int)mipMaps == 2)
-            {
-               w = MODELS_TEXTUREARRAY_SIZE; //512;
-               h = MODELS_TEXTUREARRAY_SIZE; //512;
-            }
+            if(enforcedWidth)
+               w = enforcedWidth;
             else
-            {
                while(w * 2 < h) w *= 2;
+
+            if(enforcedHeight)
+               h = enforcedHeight;
+            else
                while(h * 2 < w) h *= 2;
-            }
             numMipMaps = 1+Max(log2i(w), log2i(h));
          }
 

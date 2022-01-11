@@ -177,6 +177,7 @@ struct E3DOptions
    int resolution;
    bool compressedTextures;
    bool skipTexturesProcessing;
+   int enforcedTexWidth, enforcedTexHeight;
 
    Mutex saveCompressedMutex; // TODO: It might be better to have callbacks for loading texures?
    void *getTextureContext;
@@ -190,15 +191,13 @@ class E3DContext : struct
 {
    Map<uint, Bitmap> texturesByID;
    const String texturesPath;
-
-
-
    AVLTree<Material> materials;
 
    bool positiveYUp;
    int resolution;
    bool compressedTextures;
    bool skipTexturesProcessing;
+   int enforcedTexWidth, enforcedTexHeight;
 
    const String path;
    Mutex saveCompressedMutex;

@@ -569,7 +569,7 @@ public:
                   uint tex;
 
                   bmp.Load(img.image.path, null, null);
-                  glBmp = bmp.ProcessDD(false, 0, 0, 16384, 0);
+                  glBmp = bmp.ProcessDD(false, 0, 0, 16384, 0, 0, 0);
                   if(glBmp)
                   {
                      glGenTextures(1, &tex);

@@ -305,7 +305,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                      {
-                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
+                        Bitmap bmp = bitmap.ProcessDD(true, 0, ctx.compressedTextures, 16384, true, ctx.enforcedTexWidth, ctx.enforcedTexHeight);
                         bitmap.Copy2(bmp, true);
                         delete bmp;
 
@@ -407,7 +407,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                      {
-                        Bitmap bmp = bitmap.ProcessDD((bool)2, 0, ctx.compressedTextures, 16384, true);
+                        Bitmap bmp = bitmap.ProcessDD(true, 0, ctx.compressedTextures, 16384, true, ctx.enforcedTexWidth, ctx.enforcedTexHeight);
                         bitmap.Copy2(bmp, true);
                         delete bmp;
 
@@ -968,6 +968,8 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
       ctx.positiveYUp = options.positiveYUp;
       ctx.resolution = options.resolution;
       ctx.compressedTextures = options.compressedTextures;
+      ctx.enforcedTexWidth = options.enforcedTexWidth;
+      ctx.enforcedTexHeight = options.enforcedTexHeight;
       ctx.skipTexturesProcessing = options.skipTexturesProcessing;
       ctx.saveCompressedMutex = options.saveCompressedMutex;
       ctx.getTextureContext = options.getTextureContext;

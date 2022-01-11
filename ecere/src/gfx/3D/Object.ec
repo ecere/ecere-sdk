@@ -2229,9 +2229,44 @@ private:
    }
 
 #if !defined(ECERE_NOGL)
+   void countTextures(int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
+   {
+      Object o;
+
+      if(flags.mesh && mesh && flags.ownMesh)
+         mesh.countTextures(nAT, bitmaps, w, h, internalFormats);
+      for(o = firstChild; o; o = o.next)
+         o.countTextures(nAT, bitmaps, w, h, internalFormats);
+   }
+
    public void Upload(DisplaySystem displaySystem, GLMB mab, GLMB meab, int nAT, GLArrayTexture * mAT)
    {
       Object o;
+
+      if(nAT && mAT && !mAT[0].texture && !mAT[0].numLayers)
+      {
+         // Automatically initialize array textures with this object's requirements by default
+         AVLTree<uintptr> bitmaps[5];
+         int internalFormats[5] = { 0 };
+         int w[5] = { 0 }, h[5] = { 0 };
+         int i;
+
+         for(i = 0; i < Min(nAT, 5); i++)
+            bitmaps[i] = { };
+
+         countTextures(nAT, bitmaps, w, h, internalFormats);
+
+         for(i = 0; i < Min(nAT, 5); i++)
+         {
+            int numLayers = bitmaps[i].count;
+            int numMipMaps = log2i(Max(w[i], h[i])) + 1;
+
+            if(numLayers)
+               mAT[i]._init(numMipMaps, w[i], h[i], numLayers, internalFormats[i], false);
+
+            delete bitmaps[i];
+         }
+      }
 
       this.displaySystem = displaySystem;
       if(flags.mesh && mesh && flags.ownMesh)
