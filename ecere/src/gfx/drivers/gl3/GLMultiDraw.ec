@@ -586,6 +586,7 @@ public struct GLMultiDraw
 
    void prepare(int vertNCoords, int verticesStride)
    {
+      // NOTE: prepare() is also used to update state when VAOs are not used, pass flag when upload is needed?
       idsAB.upload(0, totalInstances * sizeof(uint), drawIDs);
       if(glCaps_gpuCommands)
          commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);

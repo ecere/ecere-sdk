@@ -92,6 +92,7 @@ public:
                      group.indices[index++] = (uint16)((lat-1) * w + lon);
                   }
 
+               flags.computeLightVectors = true;
                mesh.UnlockPrimitiveGroup(group);
                result = true;
 
