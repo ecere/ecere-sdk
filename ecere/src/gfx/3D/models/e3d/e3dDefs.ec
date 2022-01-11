@@ -174,6 +174,7 @@ struct E3DOptions
    AVLTree<Material> materials;
 
    bool positiveYUp;
+   bool shareIndices;   // Set to true to use mesh.indices and group.baseIndex while loading
    int resolution;
    bool compressedTextures;
    bool skipTexturesProcessing;
@@ -194,6 +195,7 @@ class E3DContext : struct
    AVLTree<Material> materials;
 
    bool positiveYUp;
+   bool shareIndices;
    int resolution;
    bool compressedTextures;
    bool skipTexturesProcessing;
