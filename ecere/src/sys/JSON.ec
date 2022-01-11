@@ -2078,11 +2078,11 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       bool jsonDicMap = false;
       if(mapNodeClass && mapNodeClass.templateClass && eClass_IsDerived(mapNodeClass.templateClass, class(MapNode)))
       {
-         Class mapKeyClass = mapNodeClass.templateArgs[0].dataTypeClass;
-         Class mapDataClass = mapNodeClass.templateArgs[2].dataTypeClass;
+         //Class mapKeyClass = mapNodeClass.templateArgs[0].dataTypeClass;
+         //Class mapDataClass = mapNodeClass.templateArgs[2].dataTypeClass;
          // TOCHECK: When would we *not* want this JSON dictionary behavior for a Map?
          // TODO: Reverse the default behavior and identify any case where we do not want this.
-         jsonDicMap  = (!eCON && (
+         jsonDicMap  = (!eCON /*&& (
                   !strcmp(mapKeyClass.name, "UMSFormatType") ||
                   strstr(mapDataClass.name, "UMSFieldValue") ||
                   (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
@@ -2092,7 +2092,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
                   strstr(mapDataClass.name, "ProcessingOutput") ||
                   strstr(mapDataClass.name, "FlexyField") ||
                   strstr(mapDataClass.name, "JSONSchema")
-                  )
+                  )*/
                );
       }
 
@@ -2483,7 +2483,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             mapKeyClass = objectType.templateArgs[0].dataTypeClass;
             mapDataClass = objectType.templateArgs[2].dataTypeClass;
             // TOCHECK: When would we *not* want this JSON dictionary behavior for a Map?
-            jsonDicMap  = (!eCON && (
+            jsonDicMap  = (!eCON /*&& (
                      !strcmp(mapKeyClass.name, "UMSFormatType") ||
                      strstr(mapDataClass.name, "UMSFieldValue") ||
                      (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
@@ -2493,7 +2493,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      strstr(mapDataClass.name, "ProcessingInput") ||
                      strstr(mapDataClass.name, "ProcessingOutput") ||
                      strstr(mapDataClass.name, "JSONSchema")
-                     )
+                     )*/
                   );
          }
 
