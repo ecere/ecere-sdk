@@ -6,8 +6,6 @@ public import "ecere"
 
 import "e3dDefs"
 
-#define SHARE_INDICES   // Define to use mesh.indices and group.baseIndex
-
 static struct E3DBlockHeader
 {
    E3DBlockType type __attribute__((packed));
@@ -587,43 +585,45 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
 
                f.Read(&nFaces, sizeof(nFaces), 1);
 
-#ifdef SHARE_INDICES
-               // Assuming triangles for now
+               if(ctx.shareIndices)
                {
-                  uint16 * indices16 = new uint16[nFaces * 3];
-                  int i;
-
-                  // TODO: 16 bit indices here?
-                  mesh.indices = new uint32[nFaces * 3];
-                  mesh.nIndices = nFaces * 3;
-                  f.Read(indices16, sizeof(uint16), nFaces * 3);
-                  for(i = 0; i < nFaces * 3; i++)
-                     mesh.indices[i] = indices16[i];
-                  delete indices16;
-               }
-               if(displaySystem)
-               {
-                  uint indexSize = sizeof(uint32);
-                  uint size = mesh.nIndices * indexSize;
-                  BlockEntry block;
-
-                  if(!mesh.meab)
+                  // Assuming triangles for now
                   {
-                     mesh.meab = { };
-                     mesh.flags.ownMEAB = true;
-                  }
-                  block = mesh.meab.allocate(elements, size);
-                  mesh.baseIndex = block ? block.start / indexSize : -1;
-                  if(mesh.baseIndex != -1)
-                     mesh.meab.ab.upload(block.start, size, mesh.indices);
-               }
+                     uint16 * indices16 = new uint16[nFaces * 3];
+                     int i;
 
-               {
-                  PrimitiveGroup g = mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
+                     // TODO: 16 bit indices here?
+                     mesh.indices = new uint32[nFaces * 3];
+                     mesh.nIndices = nFaces * 3;
+                     f.Read(indices16, sizeof(uint16), nFaces * 3);
+                     for(i = 0; i < nFaces * 3; i++)
+                        mesh.indices[i] = indices16[i];
+                     delete indices16;
+                  }
                   if(displaySystem)
-                     g.baseIndex = mesh.baseIndex;
+                  {
+                     uint indexSize = sizeof(uint32);
+                     uint size = mesh.nIndices * indexSize;
+                     BlockEntry block;
+
+                     if(!mesh.meab)
+                     {
+                        mesh.meab = { };
+                        mesh.flags.ownMEAB = true;
+                     }
+                     block = mesh.meab.allocate(elements, size);
+                     mesh.baseIndex = block ? block.start / indexSize : -1;
+                     if(mesh.baseIndex != -1)
+                        mesh.meab.ab.upload(block.start, size, mesh.indices);
+                  }
+
+                  {
+                     PrimitiveGroup g = mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
+                     if(displaySystem)
+                        g.baseIndex = mesh.baseIndex;
+                  }
                }
-#else
+               else
                // Assuming triangles for now
                {
                   PrimitiveGroup g = mesh.AddPrimitiveGroup({ triangles }, nFaces * 3);
@@ -633,7 +633,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      mesh.UnlockPrimitiveGroup(g);
                   }
                }
-#endif
                // if(mesh.normals) mesh.ComputeNormals();
                mesh.Unlock(0);
                break;
@@ -643,31 +642,34 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                int nFaces = 0;
                f.Read(&nFaces, sizeof(nFaces), 1);
 
-#ifdef SHARE_INDICES
-               // Assuming triangles for now
-               mesh.indices = new uint32[nFaces * 3];
-               mesh.nIndices = nFaces * 3;
-               f.Read(mesh.indices, sizeof(uint32), nFaces * 3);
 
-               if(displaySystem)
+               if(ctx.shareIndices)
                {
-                  uint indexSize = sizeof(uint32);
-                  uint size = mesh.nIndices * indexSize;
-                  BlockEntry block;
+                  // Assuming triangles for now
+                  mesh.indices = new uint32[nFaces * 3];
+                  mesh.nIndices = nFaces * 3;
+                  f.Read(mesh.indices, sizeof(uint32), nFaces * 3);
 
-                  if(!mesh.meab)
+                  if(displaySystem)
                   {
-                     mesh.meab = { };
-                     mesh.flags.ownMEAB = true;
-                  }
-                  block = mesh.meab.allocate(elements, size);
-                  mesh.baseIndex = block ? block.start / indexSize : -1;
-                  if(mesh.baseIndex != -1)
-                     mesh.meab.ab.upload(block.start, size, mesh.indices);
-               }
+                     uint indexSize = sizeof(uint32);
+                     uint size = mesh.nIndices * indexSize;
+                     BlockEntry block;
 
-               mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
-#else
+                     if(!mesh.meab)
+                     {
+                        mesh.meab = { };
+                        mesh.flags.ownMEAB = true;
+                     }
+                     block = mesh.meab.allocate(elements, size);
+                     mesh.baseIndex = block ? block.start / indexSize : -1;
+                     if(mesh.baseIndex != -1)
+                        mesh.meab.ab.upload(block.start, size, mesh.indices);
+                  }
+
+                  mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
+               }
+               else
                {
                   PrimitiveGroup g = mesh.AddPrimitiveGroup({ triangles, indices32bit = true }, nFaces * 3);
                   if(mesh.LockPrimitiveGroup(g))
@@ -677,7 +679,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      mesh.UnlockPrimitiveGroup(g);
                   }
                }
-#endif
                //mesh.ComputeNormals();
                mesh.Unlock(0);
                break;
@@ -697,22 +698,18 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   if(count)
                   {
                      PrimitiveGroup g;
-                     g = mesh.AddPrimitiveGroup({ triangles, indices32bit = is32
-#ifdef SHARE_INDICES
-                           , sharedIndices = true
-#endif
-                        }, 3 * count);
-#ifdef SHARE_INDICES
-                     g.baseIndex = mesh.baseIndex + 3 * start;
-#else
-                     mesh.LockPrimitiveGroup(g);
-                     if(is32)
-                        memcpy(g.indices32, group.indices32 + 3*start, 3*count * sizeof(uint32));
+                     g = mesh.AddPrimitiveGroup({ triangles, indices32bit = is32, sharedIndices = ctx.shareIndices }, 3 * count);
+                     if(ctx.shareIndices)
+                        g.baseIndex = mesh.baseIndex + 3 * start;
                      else
-                        memcpy(g.indices, group.indices + 3*start, 3*count * sizeof(uint16));
-                     mesh.UnlockPrimitiveGroup(g);
-#endif
-
+                     {
+                        mesh.LockPrimitiveGroup(g);
+                        if(is32)
+                           memcpy(g.indices32, group.indices32 + 3*start, 3*count * sizeof(uint32));
+                        else
+                           memcpy(g.indices, group.indices + 3*start, 3*count * sizeof(uint16));
+                        mesh.UnlockPrimitiveGroup(g);
+                     }
                      g.material = ctx.materialsByID[id];
                   }
                }
@@ -962,6 +959,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
 
    if(options != null)
    {
+      ctx.shareIndices = options.shareIndices;
       ctx.texturesByID = options.texturesByID ? options.texturesByID : { };
       ctx.materials = options.materials;
       ctx.texturesPath = options.texturesPath;
