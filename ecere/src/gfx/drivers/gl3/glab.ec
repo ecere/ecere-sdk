@@ -306,6 +306,10 @@ public:
    {
       uint oldSize = totalSize;
       uint newSize = (uint)Min((uint64)MAXDWORD, (uint64)totalSize + Max((uint64)extraNeeded, (uint64)totalSize / 2));
+#ifdef _DEBUG
+      if((uint64)totalSize + Max((uint64)extraNeeded, (uint64)totalSize / 2) > (uint64)MAXDWORD)
+         PrintLn("WARNING: Expanding AB beyond MAXDWORD");
+#endif
       if(newSize >= (uint64)oldSize + extraNeeded && ab.resize(type, totalSize, newSize, staticDraw, keepSameBufferID))
       {
          uint spaceAdded = newSize - totalSize;
@@ -355,7 +359,7 @@ public struct GLB
       {
          // 2 copies (!) needed to preserve buffer ID
          GLB tmp { };
-         if(tmp._allocate(type, newSize, null, usage))
+         if(tmp._allocate(type, oldSize, null, usage))
          {
             tmp.copy(this, 0, 0, oldSize);
             if(_allocate(type, newSize, null, usage))
