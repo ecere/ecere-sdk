@@ -659,13 +659,15 @@ public:
 
 public struct ImageResource
 {
-   const String path;
-   const String id;
-   const String url;
-   const String ext;
-   const String type;
-   const String sprite;
+private:
+   String path;
+   String id;
+   String url;
+   String ext;
+   String type;
+   String sprite;
 
+public:
    int OnCompare(ImageResource b)
    {
       int r;
@@ -700,13 +702,42 @@ public struct ImageResource
       delete type;
       delete sprite;
    }
-/*
+
    property const String path
    {
       set { delete path; path = CopyString(value); }
       get { return path; }
    }
-*/
+
+   property const String id
+   {
+      set { delete id; id = CopyString(value); }
+      get { return id; }
+   }
+
+   property const String url
+   {
+      set { delete url; url = CopyString(value); }
+      get { return url; }
+   }
+
+   property const String ext
+   {
+      set { delete ext; ext = CopyString(value); }
+      get { return ext; }
+   }
+
+   property const String type
+   {
+      set { delete type; type = CopyString(value); }
+      get { return type; }
+   }
+
+   property const String sprite
+   {
+      set { delete sprite; sprite = CopyString(value); }
+      get { return sprite; }
+   }
 };
 
 public class Image : GraphicalElement
