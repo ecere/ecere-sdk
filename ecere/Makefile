@@ -266,6 +266,7 @@ _OBJECTS = \
 	$(OBJ)harfbuzz-tibetan.o \
 	$(OBJ)harfbuzz-impl.o \
 	$(OBJ)harfbuzz-thai.o \
+	$(OBJ)QuickETC2Pak$(O) \
 	$(if $(DISABLE_GL),,$(OBJ)gl_compat_4_4.o) \
 	$(if $(DISABLE_GL),,$(OBJ)cc$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)ccstr$(O)) \
@@ -301,6 +302,7 @@ SOURCES = $(ECSOURCES) \
 	src/gfx/drivers/harfbuzz/harfbuzz-impl.c \
 	src/gfx/drivers/harfbuzz/harfbuzz-thai.c \
 	$(if $(DISABLE_GL),,src/gfx/drivers/gl3/gl_compat_4_4.c) \
+	../deps/etcpak/QuickETC2Pak.c \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/cc.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/ccstr.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
@@ -464,6 +466,7 @@ PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DBUILDING_ECERE_COM \
 			 -DCURL_DISABLE_TYPECHECK \
+			 -DETC2_COMPRESS \
 			 -Isrc/gfx/drivers/gl3/ \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \
@@ -1794,6 +1797,9 @@ $(OBJ)harfbuzz-impl.o: src/gfx/drivers/harfbuzz/harfbuzz-impl.c
 
 $(OBJ)harfbuzz-thai.o: src/gfx/drivers/harfbuzz/harfbuzz-thai.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c src/gfx/drivers/harfbuzz/harfbuzz-thai.c -o $(OBJ)harfbuzz-thai.o
+
+$(OBJ)QuickETC2Pak.o: ../deps/etcpak/QuickETC2Pak.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../deps/etcpak/QuickETC2Pak.c) -o $(OBJ)QuickETC2Pak.o
 
 ifneq ($(WINDOWS_TARGET),)
 $(OBJ)Direct3D8DisplayDriver.o: $(OBJ)Direct3D8DisplayDriver.c

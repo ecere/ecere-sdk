@@ -1161,6 +1161,11 @@ public:
    #else
             *internalFormat = bitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
    #endif
+
+#if !defined(_GLES3)
+            if(*internalFormat == GL_COMPRESSED_RGBA8_ETC2_EAC)
+               *internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
          }
       }
    }
@@ -1215,6 +1220,12 @@ public:
          #else
                   int internalFormat = convBitmap.pixelFormat == pixelFormatETC2RGBA8 ? 0 : GL_RGBA;
 #endif
+
+#if !defined(_GLES3)
+                  if(internalFormat == GL_COMPRESSED_RGBA8_ETC2_EAC)
+                     internalFormat = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
+#endif
+
 
                   // TOCHECK: Shouldn't the overall bitmap width be set?
                   // Bitmap bmp = convBitmap.bitmaps && convBitmap.numMipMaps ? convBitmap.bitmaps[0] : convBitmap;
