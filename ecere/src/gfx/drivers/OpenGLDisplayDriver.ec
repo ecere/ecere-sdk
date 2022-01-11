@@ -3505,6 +3505,8 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLMesh oglMesh = mesh ? mesh.data : null;
 #endif
 
+      if(!display.display3D) display.display3D = { };
+
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders && shader)
          shader.select();
@@ -3517,7 +3519,11 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!glCaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, !flags.singleSideLight);
 #endif
-         glDisable(GL_CULL_FACE);
+         if(display.display3D.cullEnabled != 0)
+         {
+            glDisable(GL_CULL_FACE);
+            display.display3D.cullEnabled = 0;
+         }
       }
       else
       {
@@ -3525,8 +3531,11 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!glCaps_shaders)
             GLLightModeli(GL_LIGHT_MODEL_TWO_SIDE, bool::false);
 #endif
-         if(!mesh.mab) // TODO: State check
+         if(display.display3D.cullEnabled != 1)
+         {
             glEnable(GL_CULL_FACE);
+            display.display3D.cullEnabled = 1;
+         }
       }
 
       // Fog
@@ -4214,13 +4223,33 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             int nVertices = mesh.nVertices;
             uint vSize = 8 * sizeof(float);
+
             if(oglMesh.needAlloc)
             {
                BlockEntry block = mab.allocate(attributes, nVertices * vSize);
                oglMesh.interleaved = true;
                mesh.baseVertex = block ? block.start / vSize : -1;
                oglMesh.vertices.buffer = mab.ab.buffer;
+
+               if(flags.colors)
+                  oglMesh.colors.allocate(mesh.nVertices * sizeof(ColorRGBAf), mesh.colors, staticDraw);
+               if(flags.tangents)
+                  oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
+               if(flags.lightVectors)
+                  oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+
                oglMesh.needAlloc = false;
+            }
+            else
+            {
+               if(flags.colors)
+                  oglMesh.colors.upload(0, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors);
+
+               if(flags.tangents)
+                  oglMesh.tangents.upload(0, mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents);
+
+               if(flags.lightVectors)
+                  oglMesh.lightVectors.upload(0, mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors);
             }
             if(flags.interleaved)
                oglMesh.vertices.upload(vSize * mesh.baseVertex, nVertices * vSize, mesh.vertices);
