@@ -4450,6 +4450,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if defined(_GLES) || defined(_GLES2)
          baseVertexOffset = mesh.baseVertex;
+#else
+         if(mesh.flags & { tangents = true, colors = true })
+            baseVertexOffset = mesh.baseVertex;
 #endif
 
          // *** Vertex Stream ***
@@ -4486,8 +4489,8 @@ class OpenGLDisplayDriver : DisplayDriver
                {
                   GLEnableClientState(TANGENTS1);
                   GLEnableClientState(TANGENTS2);
-                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)(baseVertexOffset * 6 * sizeof(float)) : mesh.tangents);
-                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)((baseVertexOffset*6 + 3) * sizeof(float)) : mesh.tangents+1);
+                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)(0*baseVertexOffset * 6 * sizeof(float)) : mesh.tangents);
+                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)((0*baseVertexOffset*6 + 3) * sizeof(float)) : mesh.tangents+1);
                }
                else
                {
@@ -4527,7 +4530,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.colors || mesh.flags.colors)
             {
                GLEnableClientState(COLORS);
-               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? (void *)(baseVertexOffset * 4 * sizeof(float)) : mesh.colors);
+               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? (void *)(0*baseVertexOffset * 4 * sizeof(float)) : mesh.colors);
             }
             else
                GLDisableClientState(COLORS);
@@ -4637,7 +4640,8 @@ class OpenGLDisplayDriver : DisplayDriver
          else
             eab.draw2(getPrimitiveType(type.primitiveType), nIndices,
                indices32Bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
-               eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices, mesh.baseVertex);
+               eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices,
+                  (mesh.flags & { tangents = true, colors = true }) ? 0 : mesh.baseVertex);
          // TODO: Do this somewhere else... GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
 #ifdef _DEBUG

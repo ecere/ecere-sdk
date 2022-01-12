@@ -945,7 +945,7 @@ public:
 
             if(!group && display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags)
 #endif
                )
                displaySystem.driver.SelectMesh(this, mesh);
@@ -1234,7 +1234,7 @@ public:
             subclass(DisplayDriver) driver = displaySystem.driver;
             if(display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags)
 #endif
                )
                driver.SelectMesh(this, mesh);
@@ -1339,7 +1339,8 @@ public:
                newMatrix   = past ? false : &sort->object.matrix != matrix;
                newMesh     = past ? false : (display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab/* || is16Bit */)  // TODO: Don't combine for different baseVertex for 16 bit indices?
+                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags /* || is16Bit */)
+                        // TODO: Don't combine for different baseVertex for 16 bit indices?
 #endif
                   );
                newMaterial = past ? false : material != display3D.material;
@@ -1409,6 +1410,15 @@ public:
                else*/
                {
                   int meshBaseVertex = mesh.baseVertex;  // TODO: Don't combine for different baseVertex for 16 bit indices?
+
+                  // Handled by SelectMesh when no base vertex support or if we have tangents or colors
+#if defined(_GLES) || defined(_GLES2)
+                  meshBaseVertex = 0;
+#else
+                  if(mesh.flags & { tangents = true, colors = true })
+                     meshBaseVertex = 0;
+#endif
+
                   if(indices32)
                   {
                      transIndices[toFlush+0] = (uintindex)indices32[0] + meshBaseVertex;
