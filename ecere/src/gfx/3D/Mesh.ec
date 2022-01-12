@@ -1304,7 +1304,7 @@ public:
          if(mat.envMap)      UploadTexture(mat.envMap,      displaySystem, mAT && nAT > 3 ? mAT[3] : null);
          if(mat.reflectMap)  UploadTexture(mat.reflectMap,  displaySystem, mAT && nAT > 4 ? mAT[4] : null);
       }
-      if(unlockAndDelete && (!g.type.sharedIndices /*|| !meab*/))
+      if(unlockAndDelete && (!g.type.sharedIndices && !meab))
          delete g.indices;
    }
 
