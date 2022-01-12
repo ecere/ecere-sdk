@@ -868,7 +868,7 @@ public:
             if(display3D.mesh != mesh)
             {
 #if !defined(_GLES) && !defined(_GLES2) && !defined(ECERE_NOGL)
-               if(!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab)
+               if(!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags)
 #endif
                   driver.SelectMesh(this, mesh);
             }
