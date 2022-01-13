@@ -29,6 +29,7 @@ import "Mesh"
 import "Object"
 import "Quaternion"
 import "Vector3D"
+import "DepthSort"
 #endif
 
 #if (!defined(ECERE_VANILLA) && !defined(ECERE_ONEDRIVER) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL))
@@ -270,8 +271,6 @@ public struct Light
 
 public define NumberOfLights = 8;
 
-// Painter's algorithm
-
 public class HitRecord : struct
 {
 public:
@@ -294,144 +293,6 @@ public:
       else
          return  0;
    }
-};
-
-#define EPSILON 0.00001
-
-struct SortPrimitive
-{
-   PrimitiveSingle * triangle;
-   Object object;
-   Vector3Df middle;
-   Vector3Df min, max;
-   Material material;
-   Plane plane;
-   bool marked;
-
-   int Compare(SortPrimitive primitive2)
-   {
-      double value;
-      if(ZOverlap(primitive2) && Sgn(plane.d) != Sgn(primitive2.plane.d))
-         value = plane.d - primitive2.plane.d;
-      else
-         value = middle.z - primitive2.middle.z;
-
-      if(value > EPSILON)
-         return 1;
-      else if(value<-EPSILON)
-         return -1;
-      else if((uintptr)material < (uintptr)primitive2.material)
-         return -1;
-      else if((uintptr)material > (uintptr)primitive2.material)
-         return 1;
-      else
-         return 0;
-   }
-
-   private static inline bool ZOverlap(SortPrimitive poly2)
-   {
-      if(min.z > poly2.max.z - EPSILON || poly2.min.z > max.z - EPSILON)
-         return false;
-      return true;
-   }
-
-   /*
-   bool XYOverlap(SortPrimitive poly2)
-   {
-      if(min.x > poly2.max.x - EPSILON || poly2.min.x > max.x - EPSILON )
-         return false;
-      if(min.y > poly2.max.y - EPSILON || poly2.min.y > max.y - EPSILON )
-         return false;
-      return true;
-   }
-
-   bool SurfaceOutside(SortPrimitive poly2)
-   {
-      bool result = true;
-
-      PrimitiveSingle * primitive = triangle;
-      Mesh mesh = object.mesh;
-      Matrix * matrix = &object.matrix;
-      int v;
-      double a = poly2.plane.a, b = poly2.plane.b, c = poly2.plane.c, d = poly2.plane.d;
-      if(d < 0)
-      {
-         a*=-1;
-         b*=-1;
-         c*=-1;
-         d = - (a * poly2.middle.x + b * poly2.middle.y + c * poly2.middle.z);
-      }
-
-      for(v = 0; v < primitive->nIndices; v++)
-      {
-         double surface;
-         Vector3Df * local = &mesh.vertices[primitive->indices[v]];
-         Vector3Df vertex;
-
-         vertex.MultMatrix(local, matrix);
-
-         surface = a * vertex.x + b * vertex.y + c * vertex.z + d;
-
-         if(surface < EPSILON)
-         {
-            result = false;
-            break;
-         }
-      }
-
-      if(result == true)
-         return true;
-      else
-         return result;
-   }
-
-   bool SurfaceInside(SortPrimitive poly2)
-   {
-      bool result = true;
-
-      PrimitiveSingle * primitive = poly2.triangle;
-      Mesh mesh = poly2.object.mesh;
-      Matrix * matrix = &poly2.object.matrix;
-      int v;
-      double a = plane.a, b = plane.b, c = plane.c, d = plane.d;
-      if(d < 0)
-      {
-         a*=-1;
-         b*=-1;
-         c*=-1;
-         d = - (a * middle.x + b * middle.y + c * middle.z);
-      }
-
-      for(v = 0; v < primitive->nIndices; v++)
-      {
-         double surface;
-         Vector3Df * local = &mesh.vertices[primitive->indices[v]];
-         Vector3Df vertex;
-
-         vertex.MultMatrix(local, matrix);
-
-         surface = a * vertex.x + b * vertex.y + c * vertex.z + d;
-         if(surface > -EPSILON)
-         {
-            result = false;
-            break;
-         }
-      }
-
-      if(result == true)
-         return true;
-      else
-         return result;
-   }
-
-   bool ShouldBeSwapped(SortPrimitive poly2)
-   {
-      if (!XYOverlap(poly2)) return false;
-      if (SurfaceOutside(poly2)) return false;
-      if (SurfaceInside(poly2)) return false;
-      return true;
-   }
-   */
 };
 
 #endif
@@ -897,8 +758,7 @@ public:
             display3D.partlyTransparentObjects.Add(object);
          if(flags.translucent)
          {
-            Matrix matrix;
-            Matrix inverse, inverseTranspose;
+            Matrix matrix, invTrans;
             int c;
 
             if(flags.viewSpace)
@@ -912,32 +772,41 @@ public:
                temp.m[3][2] -= camera.cPosition.z;
                matrix.Multiply(temp, camera.viewMatrix);
             }
+            matrix.Scale(1,1,-1);   // With the new comparison the scale is actually unnecessary...
 
-            inverse.Inverse(matrix);
-            inverseTranspose.Transpose(inverse);
+            invTrans.InverseTransposeTransform(matrix);
 
             for(c = 0; c < nPrimitives; c++)
             {
                PrimitiveSingle * triangle = &mesh.primitives[c];
                SortPrimitive * sort;
                Plane * plane = &triangle->plane;
-               if(!triangle->material || !triangle->material.opacity) continue;
+               uint triIndex = display3D.nTriangles;
+               bool backface;
+               Material material = triangle->material;
+
+               if(!material || !material.opacity) continue;
                if(display3D.nTriangles >= display3D.maxTriangles)
                {
                   display3D.maxTriangles = display3D.maxTriangles ? (display3D.maxTriangles * 3 / 2) : 32768;
                   display3D.triangles = renew display3D.triangles SortPrimitive[display3D.maxTriangles];
                }
-               sort = &display3D.triangles[display3D.nTriangles++];
-               sort->material = triangle->material;
+
+               sort = &display3D.triangles[triIndex];
+               sort->middle.MultMatrix(triangle->middle, matrix);
+               sort->plane.MultMatrix(plane, invTrans);
+               sort->plane.normal.Normalize(sort->plane.normal);
+               sort->plane.d = -(sort->plane.a * sort->middle.x + sort->plane.b * sort->middle.y + sort->plane.c * sort->middle.z);
+
+               backface = sort->plane.d <= 0;
+               if(backface && !material.flags.doubleSided)
+                  continue;
+
                sort->object = object;
                sort->triangle = triangle;
-               sort->middle.MultMatrix(triangle->middle, matrix);
-               sort->middle.z *= -1;
-               // sort->plane.MultMatrix(triangle->plane, inverseTranspose);
-               sort->plane.d = plane->a * inverseTranspose.m[0][3] +
-                               plane->b * inverseTranspose.m[1][3] +
-                               plane->c * inverseTranspose.m[2][3] +
-                               plane->d * inverseTranspose.m[3][3];
+               sort->node = null;
+
+               display3D.nTriangles++;
             }
          }
          else if(nPrimitives)
@@ -1284,10 +1153,11 @@ public:
             int * bufSizes = display3D.bufSizes;
             int bufID = display3D.bufID;
 
+            // *** Sort translucent primitives ***
+            sortPrimitives(display3D.triangles, display3D.nTriangles, display3D.camera, display3D.sortData,
+               display3D.maxFullSort, display3D.fullProjCheck);
+
             blend = true;
-
-            display3D.SortTriangles();
-
             depthWrite = false;
 
             // TODO: Review rendering 32 bit index meshes with OpenGL ES
@@ -1322,10 +1192,11 @@ public:
             display3D.partlyTransparentObjects.minAllocSize = display3D.partlyTransparentObjects.size;
             display3D.partlyTransparentObjects.size = 0;
 
-            for(c=0; c<=display3D.nTriangles; c++)
+            for(c = 0; c <= display3D.nTriangles; c++)
             {
                bool past = c == display3D.nTriangles;
                SortPrimitive * sort = past ? null : &display3D.triangles[c];
+               // if(sort && !sort->object) continue;
                Mesh mesh = past ? null : *&sort->object.mesh;
                PrimitiveSingle * primitive = past ? null : sort->triangle;
                bool ix32 = !past && primitive ? primitive->type.indices32bit : false;
@@ -1334,7 +1205,7 @@ public:
                   (primitive->type.sharedIndices && mesh.indices ? mesh.indices + primitive->baseIndex : primitive->indices32) :
                   null;
                uint16 * indices16 = past || ix32 ? null : primitive->indices;
-               Material material = past ? null : primitive->material ? primitive->material : sort->object.material;
+               Material material = past ? null : /*sort->material;  */primitive->material ? primitive->material : sort->object.material;
                bool newMatrix, newMesh, newMaterial;
                if(!material) material = defaultMaterial;
                newMatrix   = past ? false : &sort->object.matrix != matrix;
@@ -1528,6 +1399,8 @@ public:
    property bool vSync        { set { displaySystem.driver.SetRenderState(this, vSync, value); } };
 
    property bool pickingPlanes { set { display3D.pickingPlanes = value; } };
+   property int maxFullSort { set { display3D.maxFullSort = value; } get { return display3D.maxFullSort; } }
+   property bool fullProjCheck { set { display3D.fullProjCheck = value; } get { return display3D.fullProjCheck; } }
 #endif
    property DisplayFlags flags { get { return displaySystem.flags; } }
    property PixelFormat pixelFormat { get { return /*alphaBlend ? pixelFormat888 : */displaySystem.pixelFormat; } }
@@ -1670,6 +1543,13 @@ private class Display3D : struct
    Vector3D rlInvDelta;
    int cullEnabled;
 
+   int maxFullSort;
+   maxFullSort = 3000;
+   // maxFullSort = 0;
+   // maxFullSort = 1000000;
+   bool fullProjCheck;
+   fullProjCheck = true;
+
 #if !defined(ECERE_NOGL)
    GLEAB transBuffer[NUM_ROTATE_BUFS];
 #endif
@@ -1681,6 +1561,7 @@ private class Display3D : struct
    ~Display3D()
    {
       delete triangles;
+      sortData.free();
    }
 
    int _SetLights(Display display, Object object, int id)
@@ -2048,269 +1929,6 @@ private class Display3D : struct
          }
       }
       return result;
-   }
-
-   void SortTriangles(void)
-   {
-      Matrix matrix;
-      Object object = null;
-      int c;
-      for(c=0; c<nTriangles; c++)
-      {
-         SortPrimitive * sort = &triangles[c];
-         Mesh mesh = sort->object.mesh;
-         PrimitiveSingle * primitive = sort->triangle;
-         bool ix32 = primitive->type.indices32bit;
-         uint32 * indices32 = ix32 ?                                 // baseIndex set but not used for Singles?
-            (primitive->type.sharedIndices && mesh.indices ? mesh.indices + primitive->baseIndex : primitive->indices32) :
-            null;
-         uint16 * indices16 = ix32 ? null : primitive->indices;
-         Vector3Df min { MAXFLOAT, MAXFLOAT, MAXFLOAT };
-         Vector3Df max { -MAXFLOAT, -MAXFLOAT, -MAXFLOAT };
-         int v;
-         float * vertices = (float *)mesh.vertices;
-         int baseVertex = mesh.baseVertex;
-         uint vStride = mesh.flags.interleaved ? 8 : 3;
-         if(object != sort->object)
-         {
-            object = sort->object;
-            if(object.flags.viewSpace)
-               matrix = object.matrix;
-            else
-            {
-               Camera camera = this.camera;
-               Matrix temp = object.matrix;
-               temp.m[3][0] -= camera.cPosition.x;
-               temp.m[3][1] -= camera.cPosition.y;
-               temp.m[3][2] -= camera.cPosition.z;
-               matrix.Multiply(temp, camera.viewMatrix);
-            }
-         }
-
-         for(v = 0; v<primitive->nIndices; v++)
-         {
-            Vector3Df * local = (Vector3Df *)(vertices + vStride * (baseVertex + (indices32 ? indices32[v] : indices16[v])));
-            Vector3Df vertex;
-
-            vertex.MultMatrix(local, &matrix);
-
-            if(vertex.x > max.x) max.x = vertex.x;
-            if(vertex.y > max.y) max.y = vertex.y;
-            if(vertex.z > max.z) max.z = vertex.z;
-            if(vertex.x < min.x) min.x = vertex.x;
-            if(vertex.y < min.y) min.y = vertex.y;
-            if(vertex.z < min.z) min.z = vertex.z;
-         }
-
-         sort->min = min;
-         sort->max = max;
-
-         sort->marked = false;
-      }
-
-   /*
-      Logf("========= Before Sort ==========\n");
-      for(c=0; c<nTriangles; c++)
-      {
-         SortPrimitive * sort = &triangles[c];
-         int v;
-         Mesh mesh = sort->mesh;
-         PrimitiveSingle * primitive = sort->triangle;
-
-         Logf("Triangle %d (%s):\n", c, primitive->material->name);
-
-         for(v = 0; v<primitive->nIndices; v++)
-         {
-            Vector3Df * local = &mesh.vertices[primitive->indices[v]];
-            Vector3Df vertex;
-
-
-            vertex.<MultMatrix(local, sort->matrix);
-
-            Logf("Vertex %d:", v);
-
-            // Logf("   Local %f, %f, %f:\n", local->x, local->y, local->z);
-            Logf("   View  %f, %f, %f:\n", vertex.x, vertex.y, vertex.z);
-
-         }
-
-         Logf("Min %f, %f, %f:\n", sort->min.x, sort->min.y, sort->min.z);
-         Logf("Max %f, %f, %f:\n", sort->max.x, sort->max.y, sort->max.z);
-         Logf("\n", c);
-      }*/
-
-      // *** Sort translucent primitives ***
-      qsort((void*) triangles, nTriangles, sizeof(SortPrimitive), SortPrimitive::Compare);
-   /*
-      Logf("\n\n========= After Sort ==========\n");
-      for(c=0; c<nTriangles; c++)
-      {
-         SortPrimitive * sort = &triangles[c];
-         int v;
-         Mesh mesh = sort->mesh;
-         PrimitiveSingle * primitive = sort->triangle;
-
-         Logf("Triangle %d (%s):\n", c, primitive->material->name);
-
-         for(v = 0; v<primitive->nIndices; v++)
-         {
-            Vector3Df * local = &mesh.vertices[primitive->indices[v]];
-            Vector3Df vertex;
-
-
-            vertex.MultMatrix(local, sort->matrix);
-
-            Logf("Vertex %d:", v);
-
-            // Logf("   Local %f, %f, %f:\n", local->x, local->y, local->z);
-            Logf("   View  %f, %f, %f:\n", vertex.x, vertex.y, vertex.z);
-
-         }
-
-         Logf("Min %f, %f, %f:\n", sort->min.x, sort->min.y, sort->min.z);
-         Logf("Max %f, %f, %f:\n", sort->max.x, sort->max.y, sort->max.z);
-         Logf("\n", c);
-      }
-   */
-      //exit(0);
-
-   /*
-   If all five tests fail for a particular Q,
-   then P might obscure Q. Now Q must be tested.
-   First, the algorithm checks if Q has been "marked."
-   If Q is marked, then Q was "moved around" in the list
-   during a previous iteration of the loop. The algorithm
-   only allows a polygon to be moved once, to avoid the possibility
-   of infinite loops. If Q is not marked, it is tested to see
-   if it might obscure P. If Q cannot obscure P, then Q is possibly
-   behind P and so it is good candidate to be drawn next.
-   Therefore, the algorithm "abandons" the current P (that is, it
-   stops testing Q's against the current P) and moves the current
-   Q to the end of the list to become the next P.
-   */
-   /*
-      {
-         int p;
-         for(p = 0; p<nTriangles; p++)
-         {
-            SortPrimitive * poly1 = &triangles[p];
-            int q;
-
-            for(q = p+1; q<nTriangles; q++)
-            {
-               if(q != p)
-               {
-                  SortPrimitive * poly2 = &triangles[q];
-                  if(poly1->ZOverlap(poly2) && !poly2->marked)
-                  {
-                     if(poly1->ShouldBeSwapped(poly2))
-                     {
-                        if(!poly2->ShouldBeSwapped(poly1))
-                        {
-                           SortPrimitive temp = *poly2;
-                           memmove(triangles+1, triangles, sizeof(SortPrimitive)*q);
-                           triangles[0] = temp;
-                           triangles[0].marked = true;
-                           p = 0;
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-      {
-         int p;
-         for(p = 0; p<nTriangles; p++)
-         {
-            SortPrimitive * poly1 = &triangles[p];
-            int q;
-
-            // for(q = p+1; q<nTriangles; q++)
-            for(q = 0; q<nTriangles; q++)
-            {
-               if(q != p)
-               {
-                  SortPrimitive * poly2 = &triangles[q];
-                  if(poly1->ZOverlap(poly2) && !poly2->marked)
-                  {
-                     if(poly1->ShouldBeSwapped(poly2))
-                     {
-                        if(!poly2->ShouldBeSwapped(poly1))
-                        {
-                           SortPrimitive temp = *poly2;
-                           memmove(triangles+1, triangles, sizeof(SortPrimitive)*q);
-                           triangles[0] = temp;
-                           triangles[0].marked = true;
-                           p = -1;
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-      {
-         int p;
-         for(p = nTriangles-1; p>=0; p--)
-         {
-            SortPrimitive * poly1 = &triangles[p];
-            int q;
-
-            for(q = nTriangles-1; q>=0; q--)
-            {
-               if(q != p)
-               {
-                  SortPrimitive * poly2 = &triangles[q];
-                  if(poly1->ZOverlap(poly2) && !poly2->marked)
-                  {
-                     if(poly1->ShouldBeSwapped(poly2))
-                     {
-                        if(!poly2->ShouldBeSwapped(poly1))
-                        {
-                           SortPrimitive temp = *poly2;
-                           memmove(triangles + q, triangles + q + 1, sizeof(SortPrimitive)*q);
-                           temp.marked = true;
-                           triangles[nTriangles-1] = temp;
-                           p = nTriangles;
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-
-      {
-         for(c=0; c<nTriangles; c++)
-         {
-            int b;
-            SortPrimitive * poly1 = &triangles[c];
-
-            // for(b=0; b<nTriangles; b++)
-            //for(b=c+1; b<nTriangles; b++)
-            b = c+1;
-            if(b<this.nTriangles)
-            {
-               SortPrimitive * poly2 = &this.triangles[b];
-
-               if(poly1->ZOverlap(poly2) && poly1->ShouldBeSwapped(poly2))
-               {
-                  SortPrimitive temp = *poly1;
-                  *poly1 = *poly2;
-                  *poly2 = temp;
-               }
-            }
-         }
-      }
-      */
-
    }
 };
 #endif
