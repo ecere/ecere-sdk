@@ -75,20 +75,17 @@ public struct Plane
    {
       a = source.a * inverseTranspose.m[0][0] +
           source.b * inverseTranspose.m[1][0] +
-          source.c * inverseTranspose.m[2][0] +
-          source.d * inverseTranspose.m[3][0];
+          source.c * inverseTranspose.m[2][0];
       b = source.a * inverseTranspose.m[0][1] +
           source.b * inverseTranspose.m[1][1] +
-          source.c * inverseTranspose.m[2][1] +
-          source.d * inverseTranspose.m[3][1];
+          source.c * inverseTranspose.m[2][1];
       c = source.a * inverseTranspose.m[0][2] +
           source.b * inverseTranspose.m[1][2] +
-          source.c * inverseTranspose.m[2][2] +
-          source.d * inverseTranspose.m[3][2];
+          source.c * inverseTranspose.m[2][2];
       d = source.a * inverseTranspose.m[0][3] +
           source.b * inverseTranspose.m[1][3] +
           source.c * inverseTranspose.m[2][3] +
-          source.d * inverseTranspose.m[3][3];
+          source.d;
    }
 
    void IntersectLine(const Line line, Vector3D result)
