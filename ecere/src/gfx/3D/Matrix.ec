@@ -203,19 +203,17 @@ public union Matrix
 
    void InverseTransposeTransform(const Matrix source)
    {
-      Vector3D x { source.array[0], source.array[1], source.array[ 2] };
-      Vector3D y { source.array[4], source.array[5], source.array[ 6] };
-      Vector3D z { source.array[8], source.array[9], source.array[10] };
-      Vector3D s2
-      {
-         x.x * x.x + x.y * x.y + x.z * x.z,
-         y.x * y.x + y.y * y.y + y.z * y.z,
-         z.x * z.x + z.y * z.y + z.z * z.z
-      };
-      double ix = 1.0 / s2.x, iy = 1.0 / s2.y, iz = 1.0 / s2.z;
-      array[0] = x.x * ix; array[1] = x.y * ix; array[ 2] = x.z * ix;
-      array[4] = y.x * iy; array[5] = y.y * iy; array[ 6] = y.z * iy;
-      array[8] = z.x * iz; array[9] = z.y * iz; array[10] = z.z * iz;
+      Vector3D x { source.array[ 0], source.array[ 1], source.array[ 2] };
+      Vector3D y { source.array[ 4], source.array[ 5], source.array[ 6] };
+      Vector3D z { source.array[ 8], source.array[ 9], source.array[10] };
+      Vector3D t { source.array[12], source.array[13], source.array[14] };
+      double ix = 1.0 / (x.x * x.x + x.y * x.y + x.z * x.z); // Inverse of extracted scale^2
+      double iy = 1.0 / (y.x * y.x + y.y * y.y + y.z * y.z);
+      double iz = 1.0 / (z.x * z.x + z.y * z.y + z.z * z.z);
+      array[ 0] = x.x * ix; array[1] = x.y * ix; array[ 2] = x.z * ix; array[ 3] = -ix * (t.x * x.x + t.y * x.y + t.z * x.z);
+      array[ 4] = y.x * iy; array[5] = y.y * iy; array[ 6] = y.z * iy; array[ 7] = -iy * (t.x * y.x + t.y * y.y + t.z * y.z);
+      array[ 8] = z.x * iz; array[9] = z.y * iz; array[10] = z.z * iz; array[11] = -iz * (t.x * z.x + t.y * z.y + t.z * z.z);
+      array[12] = 0;        array[13] = 0;       array[14] = 0;        array[15] = 1;
    }
 
    void ToEuler(Euler euler)
