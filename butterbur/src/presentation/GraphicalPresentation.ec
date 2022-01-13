@@ -1092,7 +1092,7 @@ static inline double ::fromLine(const Pointf p, const Pointf a, const Pointf b)
 }
 
 // For detecting if a point is in a shape using the tesselated shape.
-#define signedArea(p1, p2, p3) fromLine(p3, p1, p2)
+#define signedArea(p1, p2, p3) fromLine(p3, p1, p2)   // NOTE: this is actually TWICE the signed area, isn't it? Though here we only care about the sign.
 
 static bool pointInsideTriangle(Pointf p, Pointf v1, Pointf v2, Pointf v3)
 {

@@ -740,6 +740,16 @@
                               "Object3DSFormat.ec"
                            ]
                         },
+                        {
+                           "Folder" : "depthsort",
+                           "Files" : [
+                              "Tetrahedron.ec",
+                              "TopoSort.ec",
+                              "DepthSort.ec",
+                              "MinMaxTree.eh",
+                              "Pool.ec"
+                           ]
+                        },
                         "Camera.ec",
                         "Matrix.ec",
                         "Mesh.ec",
