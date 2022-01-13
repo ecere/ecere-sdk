@@ -107,24 +107,117 @@ public struct Plane
 
    void IntersectLinef(const Line line, Vector3Df result)
    {
-      double divisor = a * line.delta.x + b * line.delta.y + c * line.delta.z;
+      // 1.0 / Dot product of plane normal and line
+      double divisor = 1.0 / (a * line.delta.x + b * line.delta.y + c * line.delta.z);
 
       result.x = (float)((b * line.delta.y * line.p0.x - b * line.delta.x * line.p0.y +
                   c * line.delta.z * line.p0.x - c * line.delta.x * line.p0.z -
-                  d * line.delta.x ) / divisor);
+                  d * line.delta.x ) * divisor);
 
       result.y = (float)((a * line.delta.x * line.p0.y - a * line.delta.y * line.p0.x +
                   c * line.delta.z * line.p0.y - c * line.delta.y * line.p0.z -
-                  d * line.delta.y ) / divisor);
+                  d * line.delta.y ) * divisor);
 
       result.z = (float)((a * line.delta.x * line.p0.z - a * line.delta.z * line.p0.x +
                   b * line.delta.y * line.p0.z - b * line.delta.z * line.p0.y -
-                  d * line.delta.z ) / divisor);
+                  d * line.delta.z ) * divisor);
+   }
+
+   int IntersectLinefT(const Line line, Vector3Df result, double * rt)
+   {
+      int r = 0;
+      double t;
+      double dot = normal.x * line.delta.x + normal.y * line.delta.y + normal.z * line.delta.z; // normal.DotProduct(line.delta);
+      double adot = fabs(dot);
+      if(adot > 1E-11)
+      {
+         if(adot < 0.001)
+         {
+            double divisor = 1.0 / dot;
+            result.x = (float)((b * line.delta.y * line.p0.x - b * line.delta.x * line.p0.y +
+                                c * line.delta.z * line.p0.x - c * line.delta.x * line.p0.z -
+                                d * line.delta.x ) * divisor);
+            result.y = (float)((a * line.delta.x * line.p0.y - a * line.delta.y * line.p0.x +
+                                c * line.delta.z * line.p0.y - c * line.delta.y * line.p0.z -
+                                d * line.delta.y ) * divisor);
+            result.z = (float)((a * line.delta.x * line.p0.z - a * line.delta.z * line.p0.x +
+                                b * line.delta.y * line.p0.z - b * line.delta.z * line.p0.y -
+                                d * line.delta.z ) * divisor);
+            if(fabs(line.delta.x) > fabs(line.delta.y) && fabs(line.delta.x) > fabs(line.delta.z))
+               t = (result.x - line.p0.x) / line.delta.x;
+            else if(fabs(line.delta.y) > fabs(line.delta.z))
+               t = (result.y - line.p0.y) / line.delta.y;
+            else
+               t = (result.z - line.p0.z) / line.delta.z;
+         }
+         else
+         {
+            double distance = d + line.p0.x * normal.x + line.p0.y * normal.y + line.p0.z * normal.z; // line.p0.DotProduct(normal);
+
+            t = -distance / dot;
+            result = { (float)(line.p0.x + line.delta.x * t), (float)(line.p0.y + line.delta.y * t), (float)(line.p0.z + line.delta.z * t) };
+            r = 1;
+         }
+      }
+      else
+      {
+         double distance = d + line.p0.x * normal.x + line.p0.y * normal.y + line.p0.z * normal.z; // line.p0.DotProduct(normal);
+
+         // Line is parallel to the plane
+         t = 0;
+         result = { (float)line.p0.x, (float)line.p0.y, (float)line.p0.z };
+         r = (distance == 0 ? 2 : 0); // The whole line intersects with the plane if p0 is at 0 distance
+      }
+
+      if(rt) *rt = t;
+      return r;
    }
 
    void FromPointNormal(const Vector3D normal, const Vector3D point)
    {
       this.normal = normal;
       d = -(normal.x * point.x + normal.y * point.y + normal.z * point.z);
+   }
+
+   #define EPSILON 0.00001f
+
+   private uint IntersectSegment(const Vector3Df a, const Vector3Df b, Vector3Df i)
+   {
+      Line line { { a.x, a.y, a.z }, { (double)b.x - (double)a.x, (double)b.y - (double)a.y, (double)b.z - (double)a.z } };
+      double t;
+      Vector3Df v;
+      int r = IntersectLinefT(line, v, &t);
+      i = v;
+      return (r == 1 && t > EPSILON && t < 1 - EPSILON) | ((r && fabs(t) < EPSILON) << 1) | ((r && fabs(t - 1) < EPSILON) << 2);
+   }
+
+   // Returns the number of intersections
+   // NOTE: Currently this does not consider triangles co-planar with the plane
+   private int IntersectTriangle(const Vector3Df a, const Vector3Df b, const Vector3Df c, Vector3Df * i)
+   {
+      int n = 0;
+      Vector3Df v;
+      uint r = IntersectSegment(a, b, v);
+      if(r)
+      {
+         if(r == 1) i[n++] = v;
+         if(r & 2) i[n++] = a;
+         if(r & 4) i[n++] = b;
+      }
+
+      r = IntersectSegment(b, c, v);
+      if(r)
+      {
+         if(r == 1) i[n++] = v;
+         if(r & 4) i[n++] = b;
+      }
+
+      r = IntersectSegment(c, a, v);
+      if(r)
+      {
+         if(r == 1) i[n++] = v;
+         if(r & 2) i[n++] = c;
+      }
+      return n;
    }
 };

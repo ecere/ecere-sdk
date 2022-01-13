@@ -85,6 +85,10 @@ _ECSOURCES1 = \
 	src/gfx/3D/meshes/SkyBox.ec \
 	src/gfx/3D/meshes/Sphere.ec \
 	src/gfx/3D/models/Object3DSFormat.ec \
+	src/gfx/3D/depthsort/Tetrahedron.ec \
+	src/gfx/3D/depthsort/TopoSort.ec \
+	src/gfx/3D/depthsort/DepthSort.ec \
+	src/gfx/3D/depthsort/Pool.ec \
 	src/gfx/3D/Camera.ec \
 	src/gfx/3D/Matrix.ec \
 	src/gfx/3D/Mesh.ec \
@@ -764,6 +768,18 @@ $(OBJ)Sphere.sym: src/gfx/3D/meshes/Sphere.ec
 $(OBJ)Object3DSFormat.sym: src/gfx/3D/models/Object3DSFormat.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/models/Object3DSFormat.ec -o $(OBJ)Object3DSFormat.sym
 
+$(OBJ)Tetrahedron.sym: src/gfx/3D/depthsort/Tetrahedron.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/Tetrahedron.ec -o $(OBJ)Tetrahedron.sym
+
+$(OBJ)TopoSort.sym: src/gfx/3D/depthsort/TopoSort.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/TopoSort.ec -o $(OBJ)TopoSort.sym
+
+$(OBJ)DepthSort.sym: src/gfx/3D/depthsort/DepthSort.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/DepthSort.ec -o $(OBJ)DepthSort.sym
+
+$(OBJ)Pool.sym: src/gfx/3D/depthsort/Pool.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/Pool.ec -o $(OBJ)Pool.sym
+
 $(OBJ)Camera.sym: src/gfx/3D/Camera.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/Camera.ec -o $(OBJ)Camera.sym
 
@@ -1226,6 +1242,18 @@ $(OBJ)Sphere.c: src/gfx/3D/meshes/Sphere.ec $(OBJ)Sphere.sym | $(SYMBOLS)
 
 $(OBJ)Object3DSFormat.c: src/gfx/3D/models/Object3DSFormat.ec $(OBJ)Object3DSFormat.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/models/Object3DSFormat.ec -o $(OBJ)Object3DSFormat.c -symbols $(OBJ)
+
+$(OBJ)Tetrahedron.c: src/gfx/3D/depthsort/Tetrahedron.ec
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/Tetrahedron.ec -o $(OBJ)Tetrahedron.c -symbols $(OBJ)
+
+$(OBJ)TopoSort.c: src/gfx/3D/depthsort/TopoSort.ec
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/TopoSort.ec -o $(OBJ)TopoSort.c -symbols $(OBJ)
+
+$(OBJ)DepthSort.c: src/gfx/3D/depthsort/DepthSort.ec
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/DepthSort.ec -o $(OBJ)DepthSort.c -symbols $(OBJ)
+
+$(OBJ)Pool.c: src/gfx/3D/depthsort/Pool.ec
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/depthsort/Pool.ec -o $(OBJ)Pool.c -symbols $(OBJ)
 
 $(OBJ)Camera.c: src/gfx/3D/Camera.ec $(OBJ)Camera.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c src/gfx/3D/Camera.ec -o $(OBJ)Camera.c -symbols $(OBJ)
@@ -1698,6 +1726,18 @@ $(OBJ)Sphere.o: $(OBJ)Sphere.c
 
 $(OBJ)Object3DSFormat.o: $(OBJ)Object3DSFormat.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Object3DSFormat.c -o $(OBJ)Object3DSFormat.o
+
+$(OBJ)Tetrahedron$(O): $(OBJ)Tetrahedron.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Tetrahedron.c -o $(OBJ)Tetrahedron.o
+
+$(OBJ)TopoSort$(O): $(OBJ)TopoSort.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)TopoSort.c -o $(OBJ)TopoSort.o
+
+$(OBJ)DepthSort$(O): $(OBJ)DepthSort.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)DepthSort.c  -o $(OBJ)DepthSort.o
+
+$(OBJ)Pool$(O): $(OBJ)Pool.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Pool.c -o $(OBJ)Pool.o
 
 $(OBJ)Camera.o: $(OBJ)Camera.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(OBJ)Camera.c -o $(OBJ)Camera.o
