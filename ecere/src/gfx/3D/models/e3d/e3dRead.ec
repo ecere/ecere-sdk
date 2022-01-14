@@ -408,7 +408,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
                      {
                         Bitmap bmp = bitmap.ProcessDD(true, 0, ctx.compressedTextures, ctx.resolution ? ctx.resolution : 16384,
-                           true, ctx.enforcedTexWidth, ctx.enforcedTexHeight);
+                           false, ctx.enforcedTexWidth, ctx.enforcedTexHeight);
                         bitmap.Copy2(bmp, true);
                         delete bmp;
 
