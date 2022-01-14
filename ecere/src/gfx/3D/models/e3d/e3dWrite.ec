@@ -22,14 +22,21 @@ static bool compressed = true;
 
 static byte * encodeLZMA(byte * data, uint size, uint * encodedSize, void * options)
 {
-   size_t destLen = (unsigned long)(size + size / 1000 + 12);
+   size_t destLen = (unsigned long)(size + size / 10 + 16384);
    byte * compressed = new byte[5+destLen];
    if(compressed)
    {
       size_t outPropsSize = LZMA_PROPS_SIZE;
-      LzmaCompress(compressed + LZMA_PROPS_SIZE, &destLen, data, size, compressed, &outPropsSize,
+      int r = LzmaCompress(compressed + LZMA_PROPS_SIZE, &destLen, data, size, compressed, &outPropsSize,
             9, 1 << 26, 4, 4, 4, 64, 1);
       *encodedSize = (uint)destLen + LZMA_PROPS_SIZE;
+//#ifdef _DEBUG
+      if(r != SZ_OK)
+      {
+         PrintLn("WARNING: E3D: lzma compression failed");
+         delete compressed;
+      }
+//#endif
    }
    return compressed;
 }
@@ -87,18 +94,23 @@ struct BlockInfo
 static void writeLZMA(E3DWriteContext ctx, File f, Container<BlockInfo> infos)
 {
    TempFile tmp { };
-   E3DBlockHeader header { type = lzma };
    byte * cData;
    uint size = 0, cSize = 0;
    for(i : infos)
       writeE3DBlock(ctx, tmp, i.type, i.data, i.fn);
    size = tmp.size;
    cData = encodeLZMA(tmp.buffer, size, &cSize, null);
-   delete tmp;
-   header.size = sizeof(E3DBlockHeader) + sizeof(uint) + cSize;
-   f.Write(&header, sizeof(header), 1);
-   f.Write(&size, sizeof(uint), 1);
-   f.Write(cData, cSize, 1);
+   if(cData && cSize < size)
+   {
+      E3DBlockHeader header { type = lzma, size = sizeof(E3DBlockHeader) + sizeof(uint) + cSize };
+      delete tmp;
+      f.Write(&header, sizeof(header), 1);
+      f.Write(&size, sizeof(uint), 1);
+      f.Write(cData, cSize, 1);
+   }
+   else
+      // Write uncompressed if compression failed or we didn't save anything with compression
+      f.Write(tmp.buffer, 1, size);
    delete cData;
 }
 

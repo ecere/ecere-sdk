@@ -23,7 +23,8 @@ static byte * decodeLZMA(byte * data, uint encodedSize, uint size, void * option
    {
       size_t encSize = encodedSize;
       size_t destLen = size;
-      if(LzmaUncompress(uncompressed, &destLen, data + LZMA_PROPS_SIZE, &encSize, data, LZMA_PROPS_SIZE) != SZ_OK)
+      int r;
+      if((r = LzmaUncompress(uncompressed, &destLen, data + LZMA_PROPS_SIZE, &encSize, data, LZMA_PROPS_SIZE)) != SZ_OK)
       {
          // delete uncompressed buffer upon failure to avoid memory leaks
          delete uncompressed;
