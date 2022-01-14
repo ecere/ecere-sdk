@@ -1459,6 +1459,7 @@ public:
 
             display3D.nTriangles = 0;
             blend = false;
+            depthWrite = true;
          }
       }
    }
