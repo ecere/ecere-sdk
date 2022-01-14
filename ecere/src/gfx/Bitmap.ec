@@ -1010,6 +1010,10 @@ public:
       bool freeConvBitmap = true;
       PixelFormat workingFormat = pixelFormat888;
 
+#if defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+      makePow2 = true; // TOCHECK: Otherwise detect NPOT capability higher up?
+#endif
+
 #if !defined(ETC2_COMPRESS)
       compress = false;
 #endif
