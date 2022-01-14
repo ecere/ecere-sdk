@@ -546,17 +546,20 @@ public:
 
                if(group.type.primitiveType == triFan)
                {
-                  // TODO: Tangents not handled here, compute weights not done here
                   uint ix0 = (i32Bit ? indices32[0] : indices16[0]);
                   uint ix1 = (i32Bit ? indices32[c] : indices16[c]);
                   uint ix2 = (i32Bit ? indices32[c-1] : indices16[c-1]);
+                  Vector3D edges[4], rEdges[4];
+                  double weights[4];
+                  computeNormalWeights(nIndex, vertices, vStride, indices32, i32Bit, c, weights, edges, rEdges);
+
                   plane.FromPointsf(
                      (Vector3Df *)&vertices[ix0 * vStride],
                      (Vector3Df *)&vertices[ix1 * vStride],
                      (Vector3Df *)&vertices[ix2 * vStride]);
                   planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
-                  if(computeNormals)
+                  /*if(computeNormals)
                   {
                      ((Vector3Df *)&normals[ix0 * vStride])->Add((Vector3Df *)&normals[ix0 * vStride], planeNormal); //numShared[ix0]++;
                      ((Vector3Df *)&normals[ix1 * vStride])->Add((Vector3Df *)&normals[ix1 * vStride], planeNormal); //numShared[ix1]++;
@@ -565,6 +568,60 @@ public:
                   weightSum[ix0] += 1.0;  // TODO: Review weightSums
                   weightSum[ix1] += 1.0;
                   weightSum[ix2] += 1.0;
+                  */
+
+                  for(i = c; i < c + nIndex; i++)
+                  {
+                     uint index = i32Bit ? indices32[i] : indices16[i];
+                     int v = i - c;
+                     double w = weights[v];
+
+#ifdef NORMALS_MERGE_VERTICES
+                     index = resolveIndex(index, vMap, ixMap, (Vector3Df *)&vertices[vStride * index], plane);
+#endif
+
+                     if(computeNormals)
+                     {
+                        normals[index * vStride + 0] += planeNormal.x * w;
+                        normals[index * vStride + 1] += planeNormal.y * w;
+                        normals[index * vStride + 2] += planeNormal.z * w;
+                     }
+                     weightSum[index] += w;
+
+                     if(tangents)
+                     {
+                        uint ix0 = i32Bit ? indices32[0] : indices16[0];
+                        uint prev = i-1;
+                        uint next = i;
+                        uint ix1 = i32Bit ? indices32[next] : indices16[next];
+                        uint ix2 = i32Bit ? indices32[prev] : indices16[prev];
+
+                        Vector3Df * p0 = (Vector3Df *)&vertices[vStride * ix0];
+                        Vector3Df * p1 = (Vector3Df *)&vertices[vStride * ix1];
+                        Vector3Df * p2 = (Vector3Df *)&vertices[vStride * ix2];
+                        Pointf    * t0 = (void *)&texCoords[tStride * ix0];   // FIXME: (Pointf *) causes bad .sym
+                        Pointf    * t1 = (void *)&texCoords[tStride * ix1];
+                        Pointf    * t2 = (void *)&texCoords[tStride * ix2];
+                        Vector3D v01 { p1->x - p0->x, p1->y - p0->y, p1->z - p0->z };
+                        Vector3D v02 { p2->x - p0->x, p2->y - p0->y, p2->z - p0->z };
+                        Pointf t01 { t1->x - t0->x, t1->y - t0->y };
+                        Pointf t02 { t2->x - t0->x, t2->y - t0->y };
+
+                        float ff = (t01.x * t02.y - t02.x * t01.y);
+                        if(ff)
+                        {
+                           float f = (float)(w / ff);
+                           Vector3Df * tan1 = &tangents[index*2+0];
+                           Vector3Df * tan2 = &tangents[index*2+1];
+                           tan1->x += f * (v01.x * t02.y - v02.x * t01.y);
+                           tan1->y += f * (v01.y * t02.y - v02.y * t01.y);
+                           tan1->z += f * (v01.z * t02.y - v02.z * t01.y);
+                           tan2->x += f * (v01.x * t02.y - v02.x * t01.y);
+                           tan2->y += f * (v01.y * t02.y - v02.y * t01.y);
+                           tan2->z += f * (v01.z * t02.y - v02.z * t01.y);
+                        }
+                     }
+                  }
                }
                else if(group.type.primitiveType == triStrip || group.type.primitiveType == quadStrip)
                {
