@@ -53,6 +53,11 @@ class GLDemo : Window
       return true;
    }
 
+   void OnUnloadGraphics()
+   {
+      cube.Free(displaySystem);
+   }
+
    void OnResize(int w, int h)
    {
       camera.Setup(w, h, null);
