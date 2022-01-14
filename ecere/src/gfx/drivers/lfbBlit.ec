@@ -454,32 +454,38 @@ static void FILTER_888(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, i
       int y;
       for (y = 0; y < h; y++)
       {
-         int y0 = y * sh / h;
+         float yScaleY = y * scaleY;
+         int y0 = (int)yScaleY;
          int y1 = Min(y0 + 1, sh - 1);
-         float alpha = y * scaleY - y0;
+         float alpha = yScaleY - y0;
+         float oneMalpha = 1.0f - alpha;
          int x;
+         ColorAlpha * y0Source = source + y0 * srcStride;
+         ColorAlpha * y1Source = source + y1 * srcStride;
          for (x = 0; x < w; x++, dest += 1)
          {
-            int x0 = x * sw / w;
+            float xScaleX = x * scaleX;
+            int x0 = (int)xScaleX;
             int x1 = Min(x0 + 1, sw - 1);
-            float beta = x * scaleX - x0;
-            ColorAlpha src00 = source[y0 * srcStride + x0];
-            ColorAlpha src01 = source[y0 * srcStride + x1];
-            ColorAlpha src10 = source[y1 * srcStride + x0];
-            ColorAlpha src11 = source[y1 * srcStride + x1];
+            float beta = xScaleX - x0;
+            float oneMbeta = 1.0f - beta;
+            ColorAlpha src00 = y0Source[x0];
+            ColorAlpha src01 = y0Source[x1];
+            ColorAlpha src10 = y1Source[x0];
+            ColorAlpha src11 = y1Source[x1];
             Color color00 = src00.color, color01 = src01.color, color10 = src10.color, color11 = src11.color;
-            float a1 = (src00.a)   * (1.0f - beta) + (src01.a)   * beta;
-            float r1 = (color00.r) * (1.0f - beta) + (color01.r) * beta;
-            float g1 = (color00.g) * (1.0f - beta) + (color01.g) * beta;
-            float b1 = (color00.b) * (1.0f - beta) + (color01.b) * beta;
-            float a2 = (src10.a)   * (1.0f - beta) + (src11.a)   * beta;
-            float r2 = (color10.r) * (1.0f - beta) + (color11.r) * beta;
-            float g2 = (color10.g) * (1.0f - beta) + (color11.g) * beta;
-            float b2 = (color10.b) * (1.0f - beta) + (color11.b) * beta;
-            float a = a1 * (1.0f - alpha) + a2 * alpha;
-            float r = r1 * (1.0f - alpha) + r2 * alpha;
-            float g = g1 * (1.0f - alpha) + g2 * alpha;
-            float b = b1 * (1.0f - alpha) + b2 * alpha;
+            float a1 = (src00.a)   * oneMbeta + (src01.a)   * beta;
+            float r1 = (color00.r) * oneMbeta + (color01.r) * beta;
+            float g1 = (color00.g) * oneMbeta + (color01.g) * beta;
+            float b1 = (color00.b) * oneMbeta + (color01.b) * beta;
+            float a2 = (src10.a)   * oneMbeta + (src11.a)   * beta;
+            float r2 = (color10.r) * oneMbeta + (color11.r) * beta;
+            float g2 = (color10.g) * oneMbeta + (color11.g) * beta;
+            float b2 = (color10.b) * oneMbeta + (color11.b) * beta;
+            float a = a1 * oneMalpha + a2 * alpha;
+            float r = r1 * oneMalpha + r2 * alpha;
+            float g = g1 * oneMalpha + g2 * alpha;
+            float b = b1 * oneMalpha + b2 * alpha;
             *dest = ColorAlpha { (byte) a, { (byte) r, (byte) g, (byte) b } };
          }
          dest += addDest;
@@ -496,6 +502,7 @@ static void FILTER_888(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, i
          int y0 = (int)(y * scaleY);
          int yc = Min(y0 + 2, sh) - y0;
          int x;
+         ColorAlpha * ySrc = source + y0 * srcStride;
          for(x = 0; x < w; x++, dest += 1)
          {
             int x0 = (int)(x * scaleX);
@@ -503,7 +510,7 @@ static void FILTER_888(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, i
             uint addSrc = srcStride - xc;
             uint64 a = 0, r = 0, g = 0, b = 0;
             int i, j, numPixels = yc * xc;
-            ColorAlpha * src = source + y0 * srcStride + x0;
+            ColorAlpha * src = ySrc + x0;
 
             for(i = y0; i < y0 + yc; i++, src += addSrc)
             {
