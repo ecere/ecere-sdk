@@ -191,6 +191,8 @@ public class GraphicalElement
       else
          this = null;
    }
+private:
+   void * internal;
 
 public:
    public property MultiGraphicalElement parent
