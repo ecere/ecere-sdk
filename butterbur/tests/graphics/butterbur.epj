@@ -171,7 +171,8 @@
                   "$(ECERE_SDK_SRC)/butterbur/src/presentation/DrawingManager.ec",
                   "$(ECERE_SDK_SRC)/butterbur/src/presentation/AnchoredPresentation.ec",
                   "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalPresentation.ec",
-                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalSurface.ec"
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalSurface.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GEInternals.ec"
                ]
             },
             "$(ECERE_SDK_SRC)/butterbur/src/GraphicalElement.ec",
