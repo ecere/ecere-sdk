@@ -11,12 +11,13 @@ const char * indents(int count)
    return spaces(count * g_.options.indentSize, 0);
 }
 
+// NOTE: Casts here avoid warning, but verify them
 #define storeMapGetInstantiate(BType, ECType, array, _map, init) \
    BType result = null; \
-   if(value) \
+   if((ECType)value) \
    { \
-      HashMapIterator<ECType, BType> i { map = g_._map }; \
-      if(i.Index(value, true)) \
+      HashMapIterator<ECType, BType> i { map = (HashMap<ECType, BType>)g_._map }; \
+      if(i.Index((ECType)value, true)) \
          result = i.data; \
       else \
          i.data = result = BType { }, g_.array.Add(result), result.init; \
@@ -899,7 +900,10 @@ class BManual : struct
    char * name;
    ~BManual() { delete name; }
 
-   BVariant ::manual(const String value) { storeMapGetInstantiate(BManual, String, storeManuals, allManuals, init(value/*, app.gen*/)); }
+   BVariant ::manual(const String value)
+   {
+      storeMapGetInstantiate(BManual, UIntPtr, storeManuals, allManuals, init(value/*, app.gen*/));
+   }
    const String getManual() { return manual; }
 
 
