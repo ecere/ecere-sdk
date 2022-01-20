@@ -11404,7 +11404,7 @@ void ProcessExpressionType(Expression exp)
                .type = class(int),
             }
             */
-            char templateString[1024];
+            char templateString[1035];
             OldList * initializers = MkList();
             OldList * structInitializers = MkList();
             OldList * specs = MkList();
