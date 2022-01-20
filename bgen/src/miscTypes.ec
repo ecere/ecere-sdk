@@ -55,6 +55,8 @@ public class UIntPtr : uintptr // bug / issue: UIntPtr64_OnCompare fails for uin
    // found with AVLTree<uintptr> visited { }; switched to AVLTree<UIntPtr> visited { };
    // issue also found with Map<uintptr, String> map { }; but how was it fixed? uintptr seems to still be used? :S
    // perhaps the different type used with the MapIterator is the reason why it worked?
+   // -- This might have been a bug in development branches caused by an optimization now fixed?
+   //    Or maybe something to do with bad (uint32) pointer cast? Verify if this is still an issue and switch to uintptr.
    int OnCompare(UIntPtr o)
    {
       if(o > this)
