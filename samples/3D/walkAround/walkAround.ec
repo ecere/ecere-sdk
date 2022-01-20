@@ -112,7 +112,7 @@ class WalkAroundForm : Window
    Array<Cube> cubes { };
 
    BitmapResource spotTex { ":spot_tex.png", window = this };
-   Material sideMat { opacity = 0.5f, diffuse = teal, ambient = teal, flags = { doubleSided = true, translucent = true } };
+   Material sideMat { opacity = 0.5f, diffuse = teal, ambient = teal, flags = { doubleSided = true, translucent = true, update = true } };
    Material cow1Mat { opacity = 1.0f, diffuse = white, ambient = white };
    Material cow2Mat { opacity = 1.0f, power = 20, diffuse = goldenrod, ambient = goldenrod, specular = goldenrod };
    Material cow3Mat { opacity = 1.0f, power = 20, diffuse = goldenrod, ambient = goldenrod, specular = goldenrod };
