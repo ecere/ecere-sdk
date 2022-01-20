@@ -167,10 +167,11 @@ class ModelViewer : Window
                material = displaySystem.GetMaterial(name);
                if(material)
                {
-                  material.flags = { noFog = true, doubleSided = true, translucent = true };
+                  material.flags = { noFog = true, doubleSided = true, translucent = true, update = true, setupTextures = true };
                   material.opacity = 0.5f;
                   material.diffuse.r = material.diffuse.g = material.diffuse.b = 1;
                   material.ambient = material.diffuse;
+
                   material.baseMap = displaySystem.GetTexture(name);
                   if(!material.baseMap)
                   {
