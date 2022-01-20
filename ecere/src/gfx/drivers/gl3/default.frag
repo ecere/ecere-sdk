@@ -396,7 +396,7 @@ void main(void)
    #if CONSTANT_COLOR
       * matSpecular
    #endif
-      , 1.0));
+      , c.w));
 #endif
 
 #if FOG_ON
