@@ -1083,13 +1083,17 @@ public:
          {
             if(enforcedWidth)
                w = enforcedWidth;
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
             else
                while(w * 2 < h) w *= 2;
+#endif
 
             if(enforcedHeight)
                h = enforcedHeight;
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
             else
                while(h * 2 < w) h *= 2;
+#endif
             numMipMaps = 1+Max(log2i(w), log2i(h));
          }
 
