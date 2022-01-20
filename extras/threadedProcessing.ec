@@ -593,12 +593,62 @@ public:
       for(s = stage ? stage - 1 : 0; s < stages.count; s++)
       {
          ProcessingStage ps = stages[s];
-         while(ps.tasks.count)
+         while(true)
          {
-            onProgress(s+1, ps.tasks.count);
+            int count = ps.tasks.count;
+            bool active = count > 0;
+
+            onProgress(s+1, count);
+            if(!active)
+            {
+               int t;
+               for(t = 0; t < ps.threads.count; t++)
+               {
+                  if(ps.threads[t] && ps.threads[t].activeTask)
+                  {
+                     active = true;
+                     break;
+                  }
+               }
+               if(!active)
+                  break;
+            }
+
             Sleep(0.01);
          }
          if(stage) break;
+      }
+   }
+
+   // Process tasks as they are ready while waiting for all tasks of a given stage to be cleared
+   void processAndWait(int stage)
+   {
+      int s;
+      for(s = stage ? stage - 1 : 0; s < stages.count; s++)
+      {
+         ProcessingStage ps = stages[s];
+         while(true)
+         {
+            if(!processTasks(stage, 10))
+            {
+               bool active = (ps.tasks.count || ps.readyTasks.count);
+               if(!active)
+               {
+                  int t;
+                  for(t = 0; t < ps.threads.count; t++)
+                  {
+                     if(ps.threads[t] && ps.threads[t].activeTask)
+                     {
+                        active = true;
+                        break;
+                     }
+                  }
+                  if(!active)
+                     break;
+               }
+               Sleep(0.01);
+            }
+         }
       }
    }
 
