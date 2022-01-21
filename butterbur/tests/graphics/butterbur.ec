@@ -24,7 +24,7 @@ class ButterburTest : Window
       Array<Pointf> points { [ { 350, 200 }, { 400, 250 }, { 300, 250 } ] };
       float px = 250, py = 150;
 
-      for(i = 0; i < 8; i++)
+      /*for(i = 0; i < 8; i++)
       {
          Array<Pointf> tPoints { size = points.count };
          int j;
@@ -45,7 +45,7 @@ class ButterburTest : Window
                stroke = { blue, width = 20, cap = round, join = round };
             };
          };
-      }
+      }*/
 
       points = { [ { 400, 250 }, { 500, 240 }, { 300, 245 }, { 350, 200 } ] };
 
@@ -61,8 +61,10 @@ class ButterburTest : Window
                (float)((points[j].x - px) * cos(a) + (points[j].y - py) * sin(a) + px + 150),
                (float)((points[j].y - py) * cos(a) - (points[j].x - px) * sin(a) + py + 150)
             };
+
+
          }
-         GraphicalPresentation
+         /*GraphicalPresentation
          {
             scene, graphic = Path
             {
@@ -77,12 +79,15 @@ class ButterburTest : Window
                nodes = tPoints;
                stroke = { red, width = 2, cap = round, join = round };
             };
-         };
+         };*/
       }
+
+      //loadImage();
+
    }
 
    GraphicalSurface gSurface { };
-   MultiPresentation scene { gSurface };
+   MultiPresentation scene { gSurface, pickable = true };
    #define sx ( 1 / 128.0) //256.0f )
    #define sy ( 1 / 128.0) /// 256.0f )
    /*#define sx ( 1 / 64.0 )
@@ -92,6 +97,14 @@ class ButterburTest : Window
 
    #define tx  356
    #define ty  256
+
+   Image imageGE { image = { "../../../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
+   GraphicalPresentation imagePresentation {/*gSurface*/ scene, pickable = true, graphic = imagesGE };
+
+   // NOTE: both use scene?
+   MultiGraphicalElement imagesGE { elements = {} };
+   Image imGE1 { parent = imagesGE, image = { "../../../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
+   Image imGE2 { parent = imagesGE, image = { "../../../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 300, 300 } };
 /*
 
    GraphicalPresentation
@@ -130,6 +143,7 @@ class ButterburTest : Window
    };
    */
 
+   /*
    GraphicalPresentation
    {
       scene, graphic = Path
@@ -137,7 +151,7 @@ class ButterburTest : Window
          nodes = [ { -32767 * sx + tx, 21230 * sy + ty }, { -6726 * sx + tx, 21230 * sy + ty }, { 27258 * sx + tx, 21070 * sy + ty }, { 32767 * sx + tx, 21045 * sy + ty } ];
          stroke = { red, width = 20, cap = round, join = round };
       };
-   };
+   };*/
    /*
    GraphicalPresentation
    {
