@@ -234,6 +234,7 @@ struct TesselatedShape
                before = nodes + (closed ?    0 : tc > 1 ? tc-2 : tc-1);
             else
                before = nodes + (closed ? tc-1 : tc > 1 ?    1 :    0);
+            if(tc == 1) inc = 0;
             after = pp + inc;
 
             oldx = pp->x - before->x, oldy = pp->y - before->y;
@@ -243,7 +244,7 @@ struct TesselatedShape
             {
                bool end = false;
                Pointf p = *pp;
-               float ordx = after->x - p.x,  ordy = after->y - p.y;
+               float ordx = after->x - p.x, ordy = after->y - p.y;
                float oat2 = atan2f(ordy, ordx);
 
                if(i == tc + (tc == 1) - 1)
