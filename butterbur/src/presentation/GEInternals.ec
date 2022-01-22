@@ -32,6 +32,8 @@ public:
 //void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalElement ge, GEType geType, TesselatedShape tShape, uint fillBase, uint vertexBase, uint lineBase, uint vCount, int imgW, int imgH, void * image, Object model, float * cTransform)
 public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalElement ge, float * cTransform)
 {
+   if(ge.type != multi && !ge.internal) return;
+
    switch(ge.type)
    {
       case shape:
@@ -104,13 +106,12 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
       case multi:
       {
          MultiGraphicalElement mge = (MultiGraphicalElement)ge;
-         Array<Vector3Df> offsets {}; // needed?
          float lTransform[12]; memcpy(lTransform, cTransform, 12 * sizeof(float));
-         for (e : mge.elements)
+         for(e : mge.elements)
          {
+            // TODO: Proper 3D transforms
             lTransform[0] = (float)(cTransform[0] + e.transform.position.x);
             lTransform[1] = (float)(cTransform[1] + e.transform.position.y);
-            //lTransform[2] = 0;
             prepareDrawGE(flags, dm, e, lTransform);
          }
          break;
@@ -177,6 +178,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             Bitmap glBmp;
             uint tex;
 
+            // TODO: Share images (loadImage())
             bmp.Load(img.image.path, null, null);
             glBmp = bmp.ProcessDD(false, 0, 0, 16384, 0, 0, 0);
             if(glBmp)
