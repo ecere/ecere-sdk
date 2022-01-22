@@ -578,8 +578,8 @@ public:
          else
          {
             // TODO: 2D Rotation and scaling support...
-            cTransform[0] = (float)(transform[0] + this.transform.position.x + ge.transform.position.x);
-            cTransform[1] = (float)(transform[1] + this.transform.position.y + ge.transform.position.y);
+            cTransform[0] = (float)((transform ? transform[0] : 0) + this.transform.position.x + ge.transform.position.x);
+            cTransform[1] = (float)((transform ? transform[1] : 0) + this.transform.position.y + ge.transform.position.y);
             cTransform[2] = 0;
          }
 
