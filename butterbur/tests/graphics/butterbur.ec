@@ -227,7 +227,7 @@ class ButterburTest : Window
 
    // MGE Tests
    // MultiGraphicalElement mge { scene };
-#if 0
+#if 1
    RoundedRectangle backdrop
    {
       box = {0, 0, 800, 600},
@@ -442,8 +442,8 @@ class ButterburTest : Window
       alignment = { right, bottom };
    };
    GraphicalPresentation textPresentation2 {/*gSurface*/ scene, graphic = textGE2 };
-   Image imageGE { image = { "../../../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
-   GraphicalPresentation imagePresentation {/*gSurface*/ scene, graphic = imageGE };
+   Image imageGE2 { image = { "../../../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
+   GraphicalPresentation imagePresentation2 {/*gSurface*/ scene, graphic = imageGE };
 #endif
 
    // TODO: Anchored presentations at 3D cartesian coordinates...

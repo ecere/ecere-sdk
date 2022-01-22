@@ -8,12 +8,37 @@ import "shapesTesselation"
 
 public struct StartAndCount { uint start, count; };
 
-class GEImageData : struct { void * image; int imgW, imgH; }
-class GEShapeData : struct { uint commandsCount, vertexBase, fillBase, lineBase; TesselatedShape tShape; };
-class GEPath3DData : GEShapeData { uint vCount; }
+class GEImageData : struct
+{
+   void * image;
+   int imgW, imgH;
+}
+
+class GEShapeData : struct
+{
+   uint commandsCount;
+   uint vertexBase; vertexBase = -1;
+   uint fillBase; fillBase = -1;
+   uint lineBase;; lineBase = -1;
+   TesselatedShape tShape;
+
+   ~GEShapeData()
+   {
+      tShape.free();
+   }
+}
+
+class GEPath3DData : GEShapeData
+{
+   uint vCount;
+}
+
 class GEModelData : struct
 {
-   Object model; bool freeModel; bool updateModelColorMap; Map<Color, Array<uint64>> modelColorMap;
+   Object model;
+   bool freeModel;
+   bool updateModelColorMap;
+   Map<Color, Array<uint64>> modelColorMap;
 public:
    property Map<Color, Array<uint64>> modelColorMap
    {
@@ -32,30 +57,31 @@ public:
 //void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalElement ge, GEType geType, TesselatedShape tShape, uint fillBase, uint vertexBase, uint lineBase, uint vCount, int imgW, int imgH, void * image, Object model, float * cTransform)
 public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalElement ge, float * cTransform)
 {
-   if(ge.type != multi && !ge.internal) return;
-
    switch(ge.type)
    {
       case shape:
       {
-         Shape shp = (Shape)ge;
-         ShapesManager sm = (ShapesManager)dm;
-         Stroke stroke = shp.stroke;
-         GEShapeData shapeData = (GEShapeData)ge.internal;
-         TesselatedShape tShape = shapeData.tShape;
-
-         if(tShape.fillCount)
+         if(!ge.internal) break;
+         if(flags.bbShapes || flags.overlay)
          {
-            Fill fill = shp.fill;
-            ColorAlpha color { (byte)(shp.opacity * fill.opacity * 255), fill.color };
-            sm.addCommand(color, tShape.fillCount, shapeData.fillBase, shapeData.vertexBase, cTransform);
-         }
-         if(stroke.width)
-         {
-            ColorAlpha color { (byte)(shp.opacity * stroke.opacity * 255), stroke.color };
-            sm.addCommand(color, tShape.ixCount, shapeData.lineBase, shapeData.vertexBase, cTransform);
-         }
+            Shape shp = (Shape)ge;
+            ShapesManager sm = (ShapesManager)dm;
+            Stroke stroke = shp.stroke;
+            GEShapeData shapeData = (GEShapeData)ge.internal;
+            TesselatedShape tShape = shapeData.tShape;
 
+            if(tShape.fillCount)
+            {
+               Fill fill = shp.fill;
+               ColorAlpha color { (byte)(shp.opacity * fill.opacity * 255), fill.color };
+               sm.addCommand(color, tShape.fillCount, shapeData.fillBase, shapeData.vertexBase, cTransform);
+            }
+            if(stroke.width)
+            {
+               ColorAlpha color { (byte)(shp.opacity * stroke.opacity * 255), stroke.color };
+               sm.addCommand(color, tShape.ixCount, shapeData.lineBase, shapeData.vertexBase, cTransform);
+            }
+         }
          break;
       }
       case GEType::image:
@@ -64,8 +90,10 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
          TIManager im = (TIManager)dm;
          GEImageData imageData = (GEImageData)ge.internal;
 
+         if(!ge.internal) break;
+
          // TODO: prepare 4 points geometry in advance?
-         if(imageData && imageData.image)
+         if((flags.bbTextAndImages || flags.overlayText) && imageData && imageData.image)
          {
             cTransform[0] -= ge.transform.scaling.x * img.hotSpot.x * imageData.imgW;
             cTransform[1] -= ge.transform.scaling.y * img.hotSpot.y * imageData.imgH;
@@ -78,35 +106,45 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
          Text txt = (Text)ge;
          TIManager tm = (TIManager)dm;
 
-         // TODO: morphing and glyph conversion in calculate instead?
-         if(txt.text)
+         if((flags.bbTextAndImages || flags.overlayText) && txt.text)
             tm.addTextCommand(txt.text, txt.font, txt.opacity, txt.alignment, cTransform);
          break;
       }
       case path3D:
       {
-         Path3D p3d = (Path3D)ge;
-         Perspective3DManager pm = (Perspective3DManager)dm;
-         Stroke stroke = p3d.stroke;
-         ColorAlpha color { (byte)(p3d.opacity * stroke.opacity * 255), stroke.color };
-         GEPath3DData pathData = (GEPath3DData)ge.internal;
-         pm.addCommand(color, pathData.vCount, pathData.vertexBase, cTransform);
+         if(!ge.internal) break;
+         if(flags.perspective)
+         {
+            Path3D p3d = (Path3D)ge;
+            Perspective3DManager pm = (Perspective3DManager)dm;
+            Stroke stroke = p3d.stroke;
+            ColorAlpha color { (byte)(p3d.opacity * stroke.opacity * 255), stroke.color };
+            GEPath3DData pathData = (GEPath3DData)ge.internal;
+            pm.addCommand(color, pathData.vCount, pathData.vertexBase, cTransform);
+         }
          break;
       }
       case GEType::model:
       {
-         Model mdl = (Model)ge;
-         Perspective3DManager pm = (Perspective3DManager)dm;
-         GEModelData modelData = (GEModelData)ge.internal;
+         if(!ge.internal) break;
+         if(flags.perspective)
+         {
+            Model mdl = (Model)ge;
+            Perspective3DManager pm = (Perspective3DManager)dm;
+            GEModelData modelData = (GEModelData)ge.internal;
 
-         if(!mdl || mdl.opacity)
-            pm.addModelCommand(modelData.model, cTransform);
+            if(!mdl || mdl.opacity)
+               pm.addModelCommand(modelData.model, cTransform);
+         }
          break;
       }
       case multi:
       {
          MultiGraphicalElement mge = (MultiGraphicalElement)ge;
-         float lTransform[12]; memcpy(lTransform, cTransform, 12 * sizeof(float));
+         float lTransform[12];
+
+         memcpy(lTransform, cTransform, 12 * sizeof(float));
+
          for(e : mge.elements)
          {
             // TODO: Proper 3D transforms
@@ -121,17 +159,7 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
 
 public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr, bool anchored)
 {
-   RenderPassFlags rdrFlags;
-   //if(!rdrFlags) // || reassigned // TODO: Support re-assigning to different parent hierarchy
-   {
-      switch(ge.type) // | the recurse
-      {
-         case shape: rdrFlags = anchored ? { bbShapes = true }: { overlay = true }; break;
-         case text: case image: rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true }; break;
-         case model: case path3D: rdrFlags = { perspective = true }; break;
-         //case multi:
-      }
-   }
+   RenderPassFlags rdrFlags = 0;
    switch(ge.type)
    {
       case shape:
@@ -139,26 +167,27 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          // TODO: Graphic change flag and freeing old buffers
          GEShapeData shapeData = (GEShapeData)ge.internal;
          if(!shapeData)
-            shapeData = {};
+            ge.internal = shapeData = {};
          if(shapeData.vertexBase == -1)
          {
             Shape shp = (Shape)ge;
             MDManager dm = rdrFlags.bbShapes ? mgr.shapeBillboardDM : mgr.shapeOverlayDM;
-            TesselatedShape tShape = shapeData.tShape;
+            TesselatedShape * tShape = &shapeData.tShape;
             // TODO: Optimize when re-tesselation needed?
-            shapeData.tShape.tesselate(shp);
+            tShape->tesselate(shp);
 
-            if(tShape.fillCount)
-               shapeData.fillBase = dm.md.allocateIx(tShape.fillCount, sizeof(tShape.ixFill[0]), tShape.ixFill);
+            if(tShape->fillCount)
+               shapeData.fillBase = dm.md.allocateIx(tShape->fillCount, sizeof(tShape->ixFill[0]), tShape->ixFill);
             else
                shapeData.fillBase = -1;
 
-            shapeData.vertexBase = dm.md.allocateVbo(tShape.vCount, sizeof(tShape.points[0]), tShape.points);
-            shapeData.lineBase = dm.md.allocateIx(tShape.ixCount, sizeof(tShape.ix[0]), tShape.ix);
+            shapeData.vertexBase = dm.md.allocateVbo(tShape->vCount, sizeof(tShape->points[0]), tShape->points);
+            shapeData.lineBase = dm.md.allocateIx(tShape->ixCount, sizeof(tShape->ix[0]), tShape->ix);
 
-            //tShape.free();  TOCHECK: Currently not freeing this for easier calculation of if a point is within a shape
-            tShape.vCount = 0;
-            shapeData.tShape = tShape;
+            //tShape->free();  TOCHECK: Currently not freeing this for easier calculation of if a point is within a shape
+            tShape->vCount = 0;
+
+            rdrFlags = anchored ? { bbShapes = true } : { overlay = true };
 
             // TODO: Calculate combined transform
          }
@@ -197,6 +226,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             }
             delete bmp;
             ge.internal = imageData;
+            rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true };
          }
          break;
       }
@@ -207,7 +237,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          Object m = modelData.model;//this.model;
          // MDManager dm = mgr.perspective3DDM;
          if(!modelData)
-            modelData = {};
+            ge.internal = modelData = {};
          if(m)
          {
             if(m.mesh)
@@ -240,8 +270,6 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             else
                delete object;
          }
-
-         // comment to build ecere-sdk
 
          if(modelData.updateModelColorMap && modelData.model && modelData.model.mesh && modelData.model.mesh.parts && modelData.modelColorMap)
          {
@@ -303,8 +331,8 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                delete partsMap;
             }
             modelData.updateModelColorMap = false;
+            rdrFlags = { perspective = true };
          }
-
          break;
       }
       case text:
@@ -312,6 +340,8 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          // Text txt = (Text)ge;
          // TIManager dm = rdrFlags.bbTextAndImages ? mgr.tiBillboardDM : mgr.tiOverlayDM;
          // TODO: morphing and glyph conversion here instead?
+
+         rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true };
          break;
       }
       case path3D:
@@ -321,13 +351,15 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          Array<Vector3Df> nodes = *(Array<Vector3Df> *)&p3d.nodes;
          GEPath3DData pathData = ge.internal;
          if(!pathData)
-            pathData = {};
+            ge.internal = pathData = {};
 
          if(pathData.vertexBase == -1)
          {
             pathData.vertexBase = dm.md.allocateVbo(nodes.count, sizeof(nodes[0]), nodes.array);
             pathData.vCount = nodes.count;
          }
+
+         rdrFlags = { perspective = true };
          break;
       }
       case multi:
@@ -525,21 +557,64 @@ static InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
 }
 #endif
 
-// types other than model may rely on this in the future
 public void unloadGraphicsGE(bool shutDown, GraphicalElement ge, DisplaySystem displaySystem)
 {
-   GEModelData modelData = (GEModelData)ge.internal;
-   if(modelData && modelData.freeModel && modelData.model)
+   if(ge)
    {
-      modelData.model.Free(displaySystem);
-      delete modelData.model;
-      modelData.freeModel = false;
+      switch(ge.type)
+      {
+         case model:
+         {
+            GEModelData modelData = (GEModelData)ge.internal;
+            if(modelData && modelData.freeModel && modelData.model)
+            {
+               modelData.model.Free(displaySystem);
+               delete modelData.model;
+               modelData.freeModel = false;
+            }
+            break;
+         }
+         case image:
+            // Unload image here?
+            break;
+         case shape:
+         {
+            GEShapeData shapeData = (GEShapeData)ge.internal;
+            // TODO: Freeing buffers here? Do we need the PresentationManager / DrawManager for that?
+            shapeData.vertexBase = -1;
+            shapeData.fillBase = -1;
+            shapeData.lineBase = -1;
+            break;
+         }
+      }
    }
 }
 
 public void freeGE(GraphicalElement ge)
 {
-   GEShapeData shapeData = ge ? (GEShapeData)ge.internal : null;
-   if(shapeData)
-      shapeData.tShape.free();
+   if(ge)
+   {
+      switch(ge.type)
+      {
+         case shape:
+         {
+            GEShapeData shapeData = ge.internal;
+            delete shapeData;
+            break;
+         }
+         case model:
+         {
+            GEModelData modelData = ge.internal;
+            delete modelData;
+            break;
+         }
+         case image:
+         {
+            GEImageData imageData = ge.internal;
+            delete imageData;
+            break;
+         }
+      }
+      ge.internal = null;
+   }
 }

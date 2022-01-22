@@ -411,11 +411,7 @@ public:
    ~GraphicalPresentation()
    {
       // TODO: Free buffers and stuff from MD
-
-      switch(geType)
-      {
-         case shape: tShape.free(); freeGE(ge); break;
-      }
+      freeGE(ge);
       delete ge;
    }
 
@@ -441,18 +437,7 @@ public:
    {
       set
       {
-         delete ge;
-         switch(geType)
-         {
-            // TODO: buffers and stuff...
-            case shape:
-            {
-               tShape.free();
-               vertexBase = -1;
-               break;
-            }
-         }
-
+         unloadGraphicsGE(false, ge, displaySystem);
          ge = value;
          geType = ge ? ge.type : none;
 
@@ -506,14 +491,7 @@ public:
 
    void unloadGraphics(bool shutDown)
    {
-      if(freeModel && model)
-      {
-         model.Free(displaySystem);
-         delete model;
-         freeModel = false;
-      }
-      if(ge && ge.type == GEType::model)
-         unloadGraphicsGE(shutDown, ge, displaySystem);
+      unloadGraphicsGE(shutDown, ge, displaySystem);
    }
 
    void calculate(Presentation topPres, PresentationManager mgr)
