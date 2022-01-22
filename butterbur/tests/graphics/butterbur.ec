@@ -442,7 +442,7 @@ class ButterburTest : Window
       alignment = { right, bottom };
    };
    GraphicalPresentation textPresentation2 {/*gSurface*/ scene, graphic = textGE2 };
-   Image imageGE { image = { "../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
+   Image imageGE { image = { "../../../installer/ecere.png" }, scaling = 1, hotSpot = { 0, 0.5 }, position2D = { 100, 100 } };
    GraphicalPresentation imagePresentation {/*gSurface*/ scene, graphic = imageGE };
 #endif
 
