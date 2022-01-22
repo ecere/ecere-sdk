@@ -449,6 +449,8 @@ struct SortPrimitive
 static uintindex * transIndices = null;
 static int transSize = 0;
 
+#define NUM_ROTATE_BUFS 40
+
 public class Display
 {
 public:
@@ -1272,16 +1274,15 @@ public:
             Matrix * matrix = null;
             int c;
             int toFlush = 0;
-            #define NUM_ROTATE_BUFS 40
-#if !defined(ECERE_NOGL)
-            static GLEAB transBuffer[NUM_ROTATE_BUFS];
-#endif
-            static int bufSizes[NUM_ROTATE_BUFS];
-            static int bufID = 0;
             Object * partlyTransparentObjects = display3D.partlyTransparentObjects.array;
             int count = display3D.partlyTransparentObjects.count;
             subclass(DisplayDriver) driver = displaySystem.driver;
             int i;
+         #if !defined(ECERE_NOGL)
+            GLEAB * transBuffer = display3D.transBuffer;
+         #endif
+            int * bufSizes = display3D.bufSizes;
+            int bufID = display3D.bufID;
 
             blend = true;
 
@@ -1450,6 +1451,8 @@ public:
                   }
                }
             }
+
+            display3D.bufID = bufID;
 
 #if !defined(ECERE_NOGL)
             GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -1666,6 +1669,14 @@ private class Display3D : struct
    float light0Pos[4];
    Vector3D rlInvDelta;
    int cullEnabled;
+
+#if !defined(ECERE_NOGL)
+   GLEAB transBuffer[NUM_ROTATE_BUFS];
+#endif
+   int bufSizes[NUM_ROTATE_BUFS];
+   int bufID;
+
+   SortDataPtr sortData;
 
    ~Display3D()
    {
