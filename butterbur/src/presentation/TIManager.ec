@@ -62,6 +62,8 @@ public class TIManager : DrawingManager
 
    void draw()
    {
+      // TODO: Proper VAO support for text & images?
+      if(glCaps_vao) glBindVertexArray(defaultVAO);
       if(drawManager)
          drawManager.flushImages();
       if(glCaps_shaders)
