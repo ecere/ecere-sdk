@@ -44,6 +44,7 @@ class ModelViewer : Window
 
    void OnUnloadGraphics()
    {
+      model.Free(displaySystem);
       displaySystem.ClearMaterials();
       displaySystem.ClearTextures();
       displaySystem.ClearMeshes();
