@@ -376,15 +376,15 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
 }
 
 // TODO: Proper full box test, not middle point
-public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, GraphicalElement ge)
+public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, GraphicalElement ge, float * transform)
 {
    // Checks if the point is within the GraphicalElement
    // Currently only good for overlaid elements
    // Split into methods for different types of GEs to make it easier to see where to add improvements to this rather rough current method
 
    GraphicalElement picked = null;
-   float tx = x - (float)(ge.transform.position.x);
-   float ty = y - (float)(ge.transform.position.y);
+   float tx = x - (float)(ge.transform.position.x) - (transform ? transform[0] : 0);
+   float ty = y - (float)(ge.transform.position.y) - (transform ? transform[1] : 0);
    if(!(rdrFlags & { overlay = true, overlayText = true, bbShapes = true, bbTextAndImages = true }))
       return null;
 
@@ -406,11 +406,11 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
       case text:  return null; //Can't click text without some glyph size calculations
       case multi:
       {
-         if(ge._class == class(MultiGraphicalElement))
+         //if(ge._class == class(MultiGraphicalElement))
          {
             for(e : ((MultiGraphicalElement)ge).elements)
             {
-               GraphicalElement re = pickGE(x, y, rdrFlags, e);
+               GraphicalElement re = pickGE(x, y, rdrFlags, e, transform);
                if(re)
                {
                   picked = re;

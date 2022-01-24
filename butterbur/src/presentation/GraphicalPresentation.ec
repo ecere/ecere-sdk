@@ -664,7 +664,7 @@ public:
             region.right - (transform ? transform[0] : 0) - (float)this.transform.position.y, region.bottom - (transform ? transform[1] : 0) - (float)this.transform.position.x
          };
 
-         GraphicalElement grf = pickGE((tRegion.left + tRegion.right)/2, (tRegion.top + tRegion.bottom)/2, rdrFlags, ge);
+         GraphicalElement grf = pickGE((tRegion.left + tRegion.right)/2, (tRegion.top + tRegion.bottom)/2, rdrFlags, ge, null);
 
          if(grf)
          {
