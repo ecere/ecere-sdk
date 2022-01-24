@@ -142,8 +142,8 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
       {
          MultiGraphicalElement mge = (MultiGraphicalElement)ge;
          float lTransform[12];
-
-         memcpy(lTransform, cTransform, 12 * sizeof(float));
+                                        // For now assuming 3 floats
+         memcpy(lTransform, cTransform, 3 /*12*/ * sizeof(float));
 
          for(e : mge.elements)
          {
