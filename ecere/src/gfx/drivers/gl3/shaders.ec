@@ -313,7 +313,10 @@ public:
       if(!glCaps_shaders) return false;
 
       if(activeShader != this)
+      {
+         GLFlushMatrices(); // Must flush matrices before switching shader otherwise the matrix stacks may get mixed up
          activeShader = this;
+      }
 
       result = true;
       if(activeState != state || !shader)
