@@ -370,8 +370,11 @@ class ButterburTest : Window
    Dot dot
    {
       //mge,
-      point = { 300, 300 };
-      stroke = { black, width = 20, cap = square };
+      point = { 250, 300 };
+      stroke = { black, width = 20,
+         cap = round
+         //cap = square
+         };
    };
    GraphicalPresentation dotPresentation {/*gSurface*/ scene, graphic = dot };
 
