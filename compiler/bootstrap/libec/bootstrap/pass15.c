@@ -10407,15 +10407,6 @@ break;
 }
 }
 }
-if(retSize)
-{
-unsigned int __simpleStruct0;
-
-if(topMember && topMember->type == 1)
-*retSize = (__simpleStruct0 = *retSize, (__simpleStruct0 > totalSize) ? __simpleStruct0 : totalSize);
-else
-*retSize += totalSize;
-}
 if(totalSize < maxSize && _class->type != 1000)
 {
 int autoPadding = 0;
@@ -10432,7 +10423,17 @@ ListAdd(declarations, MkClassDefDeclaration(MkStructDeclaration(MkListOne(MkSpec
 if(addedPadding)
 *addedPadding = 1;
 (__ecereNameSpace__ecere__com__eSystem_Delete(paddingString), paddingString = 0);
+totalSize = maxSize;
 }
+}
+if(retSize)
+{
+unsigned int __simpleStruct0;
+
+if(topMember && topMember->type == 1)
+*retSize = (__simpleStruct0 = *retSize, (__simpleStruct0 > totalSize) ? __simpleStruct0 : totalSize);
+else
+*retSize += totalSize;
 }
 if(context)
 FinishTemplatesContext(context);
@@ -19073,7 +19074,7 @@ type = (((void *)0));
 }
 if(typeString)
 {
-char templateString[1024];
+char templateString[1035];
 struct __ecereNameSpace__ecere__sys__OldList * initializers = MkList();
 struct __ecereNameSpace__ecere__sys__OldList * structInitializers = MkList();
 struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
