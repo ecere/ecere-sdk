@@ -168,6 +168,8 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          GEShapeData shapeData = (GEShapeData)ge.internal;
          if(!shapeData)
             ge.internal = shapeData = {};
+
+         rdrFlags = anchored ? { bbShapes = true } : { overlay = true };
          if(shapeData.vertexBase == -1)
          {
             Shape shp = (Shape)ge;
@@ -186,9 +188,6 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
 
             //tShape->free();  TOCHECK: Currently not freeing this for easier calculation of if a point is within a shape
             tShape->vCount = 0;
-
-            rdrFlags = anchored ? { bbShapes = true } : { overlay = true };
-
             // TODO: Calculate combined transform
          }
          break;
@@ -197,6 +196,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
       {
          Image img = (Image)ge;
          GEImageData imageData = (GEImageData)ge.internal;
+         rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true };
          //TIManager dm = rdrFlags.bbTextAndImages ? mgr.tiBillboardDM : mgr.tiOverlayDM;
          // TODO: prepare 4 points geometry here instead?
          if(!imageData)
@@ -226,7 +226,6 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             }
             delete bmp;
             ge.internal = imageData;
-            rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true };
          }
          break;
       }
@@ -238,6 +237,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          // MDManager dm = mgr.perspective3DDM;
          if(!modelData)
             ge.internal = modelData = {};
+         rdrFlags = { perspective = true };
          if(m)
          {
             if(m.mesh)
@@ -331,7 +331,6 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                delete partsMap;
             }
             modelData.updateModelColorMap = false;
-            rdrFlags = { perspective = true };
          }
          break;
       }
@@ -353,13 +352,12 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          if(!pathData)
             ge.internal = pathData = {};
 
+         rdrFlags = { perspective = true };
          if(pathData.vertexBase == -1)
          {
             pathData.vertexBase = dm.md.allocateVbo(nodes.count, sizeof(nodes[0]), nodes.array);
             pathData.vCount = nodes.count;
          }
-
-         rdrFlags = { perspective = true };
          break;
       }
       case multi:
