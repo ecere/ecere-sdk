@@ -204,7 +204,7 @@ struct TesselatedShape
          fillCount = 0;
          vCount = 0;
 
-         if(/*lineWidth > 1 && */tc && (tc > 1 || cap != flat))
+         if(stroke.width > 0 && tc && (tc > 1 || cap != flat))
          {
             int rCount = (!noJoin && join == round) ? 7 : (!noJoin && join == bevel) ? 2 : 1;
             int capCount = (cap == round) ? 7 : 1;
@@ -469,15 +469,15 @@ struct TesselatedShape
             vCount = tc;
             points = renew points Pointf[tc];
             memcpy(points, nodes, tc * sizeof(Pointf));
-            ixCount = tc + closed;
-            ix = renew ix uint16[tc];
+            ixCount = 0; //tc + closed;
+            fillCount = tc + closed;
+            ix = null; //renew ix uint16[tc];
             ixFill = renew ixFill uint16[tc + closed];
 
             for(i = 0; i < tc; i++)
                ixFill[i] = (uint16)i;
             if(closed)
                ixFill[i] = 0;
-            memcpy(ixFill, ix, tc * sizeof(Pointf));
          }
 
          if(closed)
