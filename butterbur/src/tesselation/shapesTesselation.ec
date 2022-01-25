@@ -57,6 +57,8 @@ struct TesselatedShape
       bool partialSector = false, fullSector = false;
       uint count = 0;
       Array<Array<Pointf>> inner = null;
+      Stroke stroke = shp.stroke;
+      LineCap cap = stroke.cap;
 
       switch(shp.shpType)
       {
@@ -67,6 +69,7 @@ struct TesselatedShape
             nodes = tmpNodes.array;
             nodes[0] = dot.point;
             count = 1;
+            if(cap == flat) cap = square;
             break;
          }
          case ShapeType::path:
@@ -196,8 +199,6 @@ struct TesselatedShape
       }
 
       {
-         Stroke stroke = shp.stroke;
-         LineCap cap = stroke.cap;
          LineJoin join = stroke.join;
          uint i, tc = count;
 
@@ -220,6 +221,8 @@ struct TesselatedShape
             float oldx, oldy, oat1;
             int inc = flip ? -1 : 1;
             uint ni = flip ? tc-1 : 0;
+
+            if(tc == 1 && lineWidth < 2) lineWidth = 2;
 
             vCount = closed ? (tc * (rCount+1)) : (2*(capCount+1) + ((tc > 2) ? (tc-2) * (rCount+1) : 0));
             points = this.points = renew this.points Pointf[vCount];
@@ -251,8 +254,6 @@ struct TesselatedShape
 
                if(i == tc + (tc == 1) - 1)
                   end = true;
-               if(i == tc)
-                  i = 0;
 
                {
                   bool thisFlip = false, isCap = false;

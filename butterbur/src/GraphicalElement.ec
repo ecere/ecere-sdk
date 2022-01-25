@@ -426,6 +426,8 @@ public class Arc : Shape
 
    shpType = arc;
    innerRadius = 0;
+   stroke.cap = round;
+   stroke.width = 10;
 
 public:
    property Pointf center
