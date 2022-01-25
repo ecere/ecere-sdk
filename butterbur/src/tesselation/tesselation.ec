@@ -166,7 +166,12 @@ static void CALLBACK tessPrimCombine(GLdouble coords[3], Pointf *d[4],
 
 void tesselatePolygon(Array<Pointf> area, Array<Pointf> * outputPtr, Array<TessPrim> * primitivesPtr)
 {
-	int i, d;
+   tesselatePolygonEx(area, null, outputPtr, primitivesPtr);
+}
+
+void tesselatePolygonEx(Array<Pointf> area, Array<Array<Pointf>> inner, Array<Pointf> * outputPtr, Array<TessPrim> * primitivesPtr)
+{
+	int i, j, d;
    Pointf * destPoints;
    int totalCount = area.count;
    int start = 0;
@@ -175,6 +180,10 @@ void tesselatePolygon(Array<Pointf> area, Array<Pointf> * outputPtr, Array<TessP
    Array<CombineVertex> combineVertices { };
 
    static TessPrimData tesselatorData;
+
+   if(inner)
+      for(j = 0; j < inner.count; j++)
+         totalCount += inner[j].count;
 
    tessMutex.Wait();
 
@@ -196,6 +205,21 @@ void tesselatePolygon(Array<Pointf> area, Array<Pointf> * outputPtr, Array<TessP
       {
          destPoints[d] = area[i];
          vertices[d] = { area[i].x, area[i].y };
+      }
+
+      if(inner)
+      {
+         for(j = 0; j < inner.count; j++)
+         {
+            Array<Pointf> contour = inner[j];
+            n = contour.count;
+
+            for(i = n-1; i >= 0; i--, d++)
+            {
+               destPoints[d] = contour[i];
+               vertices[d] = { contour[i].x, contour[i].y };
+            }
+         }
       }
    }
 
@@ -221,11 +245,29 @@ void tesselatePolygon(Array<Pointf> area, Array<Pointf> * outputPtr, Array<TessP
       {
          gluTessBeginContour(butterburTesselator);
          d = start;
+         start += n;
+
          for(i = 0; i < n; i++, d++)
             gluTessVertex(butterburTesselator, (double *)&vertices[d], &destPoints[d]);
          gluTessEndContour(butterburTesselator);
+
+         if(inner)
+         {
+            for(j = 0; j < inner.count; j++)
+            {
+               Array<Pointf> contour = inner[j];
+               n = contour.count;
+               start += n;
+
+               gluTessBeginContour(butterburTesselator);
+               for(i = 0; i < n; i++, d++)
+                  gluTessVertex(butterburTesselator, (double *)&vertices[d], &destPoints[d]);
+               gluTessEndContour(butterburTesselator);
+            }
+         }
       }
-      start += n;
+      else
+         start += n;
    }
 
    gluTessEndPolygon(butterburTesselator);
