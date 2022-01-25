@@ -371,9 +371,15 @@ public:
 public class Path : Shape
 {
    Array<Pointf> nodes { };
+   Array<Array<Pointf>> innerNodes { };
    bool closed, needTesselation;
 
    shpType = path;
+
+   ~Path()
+   {
+      innerNodes.Free();
+   }
 
    // FIXME: eC improvements: Clarify and fix usage of private members in base class...
 public:
@@ -381,6 +387,11 @@ public:
    {
       set { nodes.copySrc = value; }
       get { return nodes; }
+   }
+   property Container<Container<Pointf>> innerNodes
+   {
+      set { innerNodes.copySrc = (Array<Array<Pointf>>)value; }
+      get { return (Container<Container<Pointf>>)innerNodes; }
    }
 
    property bool closed

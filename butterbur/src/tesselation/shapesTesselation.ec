@@ -56,6 +56,7 @@ struct TesselatedShape
       bool closed = false, noJoin = false, needTesselation = false;
       bool partialSector = false, fullSector = false;
       uint count = 0;
+      Array<Array<Pointf>> inner = null;
 
       switch(shp.shpType)
       {
@@ -75,6 +76,7 @@ struct TesselatedShape
             nodes = array.array;
             count = array.count;
             closed = path.closed && count >= 3;
+            inner = (Array<Array<Pointf>>)path.innerNodes;
             needTesselation = closed && path.needTesselation;
             break;
          }
@@ -496,7 +498,7 @@ struct TesselatedShape
                for(i = 0; i < fillCount; i++)
                   tPoints[i] = points[ixFill[i]];
 
-               tesselatePolygon(tPoints, &output, &prims);
+               tesselatePolygonEx(tPoints, inner, &output, &prims);
 
                added = output.count - tPoints.count;
                if(added > 0)
