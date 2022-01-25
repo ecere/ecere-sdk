@@ -1055,14 +1055,7 @@ public int ComputeTypeSize(Type type)
          }
       }
    }
-   if(retSize)
-   {
-      if(topMember && topMember.type == unionMember)
-         *retSize = Max(*retSize, totalSize);
-      else
-         *retSize += totalSize;
-   }
-   /*else */if(totalSize < maxSize && _class.type != systemClass)
+   if(totalSize < maxSize && _class.type != systemClass)
    {
       int autoPadding = 0;
       if(!isMember && _class.structAlignment && totalSize % _class.structAlignment)
@@ -1078,8 +1071,17 @@ public int ComputeTypeSize(Type type)
          if(addedPadding)
             *addedPadding = true;
          delete paddingString;
+         totalSize = maxSize;
       }
    }
+   if(retSize)
+   {
+      if(topMember && topMember.type == unionMember)
+         *retSize = Max(*retSize, totalSize);
+      else
+         *retSize += totalSize;
+   }
+
    if(context)
       FinishTemplatesContext(context);
    paddingID--;
