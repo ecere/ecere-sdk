@@ -534,37 +534,45 @@ struct TesselatedShape
                      case triangles:
                         for(i = 0; i < prim->count; i += 3)
                         {
+                           if(fillCount)
+                           {
+                              // Degenerate
+                              newFill[fillCount] = newFill[fillCount-1];
+                              newFill[fillCount+1] = FIND_IX(i+1);
+                              fillCount += 2;
+                           }
                            newFill[fillCount++] = FIND_IX(i+1);
                            newFill[fillCount++] = FIND_IX(i+0);
                            newFill[fillCount++] = FIND_IX(i+2);
-
-                           // Degenerate
-                           newFill[fillCount] = newFill[fillCount-2];
-                           newFill[fillCount+1] = newFill[fillCount-2];
-                           fillCount+=2;
                         }
                         break;
                      case triangleStrip:
+                        if(fillCount)
+                        {
+                           // Degenerate
+                           newFill[fillCount] = newFill[fillCount-1];
+                           newFill[fillCount+1] = FIND_IX(0);
+                           fillCount += 2;
+                        }
+
                         for(i = 0; i < prim->count; i++)
                            newFill[fillCount++] = FIND_IX(i);
-
-                        // Degenerate
-                        newFill[fillCount] = newFill[fillCount-2];
-                        newFill[fillCount+1] = newFill[fillCount-2];
-                        fillCount+=2;
                         break;
                      case triangleFan:
+                        if(fillCount)
+                        {
+                           // Degenerate
+                           newFill[fillCount] = newFill[fillCount-1];
+                           newFill[fillCount+1] = FIND_IX(1);
+                           fillCount += 2;
+                        }
+
                         newFill[fillCount++] = FIND_IX(1);
                         for(i = 2; i < prim->count; i++)
                         {
                            newFill[fillCount++] = FIND_IX(0);
                            newFill[fillCount++] = FIND_IX(i);
                         }
-
-                        // Degenerate
-                        newFill[fillCount] = newFill[fillCount-2];
-                        newFill[fillCount+1] = newFill[fillCount-2];
-                        fillCount+=2;
                         break;
                   }
                }
