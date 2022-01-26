@@ -4644,7 +4644,7 @@ class OpenGLDisplayDriver : DisplayDriver
             eab.draw2(getPrimitiveType(type.primitiveType), nIndices,
                indices32Bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
                eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices,
-                  (mesh.flags & { tangents = true, colors = true }) ? 0 : mesh.baseVertex);
+                  (mesh.flags & { tangents = true, colors = true }) ? 0 : *&mesh.baseVertex);
          // TODO: Do this somewhere else... GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
 #ifdef _DEBUG
