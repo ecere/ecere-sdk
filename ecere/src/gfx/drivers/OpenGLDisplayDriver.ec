@@ -4247,6 +4247,9 @@ class OpenGLDisplayDriver : DisplayDriver
             }
             else
             {
+               if(!mab.keepSameBufferID)
+                  oglMesh.vertices.buffer = mab.ab.buffer;
+
                if(flags.colors)
                   oglMesh.colors.upload(0, mesh.nVertices * sizeof(ColorRGBAf), mesh.colors);
 
