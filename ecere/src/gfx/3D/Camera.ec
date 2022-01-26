@@ -114,6 +114,93 @@ public:
       }
    }
 
+   void SetupVR(int width, int height, const Matrix prjMatrix)
+   {
+      if(this)
+      {
+         Quaternion quat;
+         float aspectRatio = this.aspectRatio;
+         double A = prjMatrix.m[2][0];
+         double B = prjMatrix.m[2][1];
+         //double C = prjMatrix.m[2][2];
+         //double D = prjMatrix.m[3][2];
+         double n = zMin;
+         //double f = zMax;
+         double r_l = 1.0 / (prjMatrix.m[0][0] / (2*n));
+         double t_b = 1.0 / (prjMatrix.m[1][1] / (2*n));
+         double rpl = A * r_l;
+         double tpb = B * t_b;
+         double l = (rpl - r_l) / 2;
+         double b = (tpb - t_b) / 2;
+         double r = rpl - l;
+         double t = tpb - b;
+         float focalX, focalY;
+
+         if(!aspectRatio)
+            aspectRatio = (float)width/height;
+
+         this.width = width;
+         this.height = height;
+
+         focalX = (float)((width * zMin)  /  r_l);
+         focalY = (float)((height * zMin) / -t_b);
+
+         origin.x = (int)( l * width );
+         origin.y = (int)(-t * height);
+
+         l = this.origin.x - 0;
+         r = this.origin.x - width;
+         t = 0 - this.origin.y;
+         b = height - this.origin.y;
+
+         fovX = atan((width / 2)  / focalX) * 2;
+         fovY = atan((height / 2) / focalY) * 2;
+
+         fovLeft   = atan(-l);
+         fovRight  = atan(-r);
+         fovTop    = atan(t);
+         fovBottom = atan(b);
+
+
+         // Compute Clipping Planes
+         {
+            Vector3D normal, point = {0,0,0};
+
+            // --- Left ---
+            quat.Yaw(fovLeft - Pi/2);
+            quat.ToDirection(normal);
+            viewClippingPlanes[left].FromPointNormal(normal, point);
+
+            // --- Right ---
+            quat.Yaw(fovRight + Pi/2);
+            quat.ToDirection(normal);
+            viewClippingPlanes[right].FromPointNormal(normal, point);
+
+            // --- Top ---
+            quat.Pitch(fovTop + Pi/2);
+            quat.ToDirection(normal);
+            viewClippingPlanes[top].FromPointNormal(normal, point);
+
+            // --- Bottom ---
+            quat.Pitch(fovBottom - Pi/2);
+            quat.ToDirection(normal);
+            viewClippingPlanes[bottom].FromPointNormal(normal, point);
+
+            // --- Near ---
+            normal.x = 0; normal.y = 0; normal.z = 1;
+            point.z = zMin;
+            viewClippingPlanes[near].FromPointNormal(normal, point);
+
+            // --- Far ---
+            normal.x = 0; normal.y = 0; normal.z = -1;
+            point.z = zMax;
+            viewClippingPlanes[far].FromPointNormal(normal, point);
+         }
+
+         needUpdate = true;
+      }
+   }
+
    void AdjustPosition(Vector3D position)
    {
       ClippingPlane c;
