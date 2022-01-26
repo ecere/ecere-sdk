@@ -3546,6 +3546,106 @@ class OpenGLDisplayDriver : DisplayDriver
       }
    }
 
+   // TODO: Support GLFB as a Surface?
+   void SetCameraVR(Display display, Camera camera, int eye, int w, int h, GLFB output, const Matrix prjMat)
+   {
+      OGLDisplay oglDisplay = display.driverData;
+
+      if(camera)
+      {
+         Matrix prjMatrix = prjMat;
+         prjMatrix.m[1][1] *= -1;
+
+         if(!output.fbo)
+         {
+#if !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__ODROID__) && !defined(__UWP__)
+            ogl_LoadFunctions();
+#endif
+            output.setup(true, true /* REVIEW */, 1, GL_RGBA8, GL_DEPTH_COMPONENT, w, h);
+            //output.setup(true, 1, GL_SRGB8_ALPHA8, GL_DEPTH_COMPONENT, w, h);
+         }
+         camera.SetupVR(w, h, prjMatrix);
+
+         glDisable(GL_SCISSOR_TEST);
+
+         glBindFramebuffer(GL_FRAMEBUFFER, output.fbo);
+         // *** ViewPort ***
+         glViewport(0, 0, w, h);
+
+         GLMatrixMode(MatrixMode::texture);
+         if(!display.display3D.camera)
+            GLPushMatrix();
+         GLLoadIdentity();
+
+         // *** Projection Matrix ***
+         GLMatrixMode(MatrixMode::projection);
+         if(!display.display3D.camera)
+            GLPushMatrix();
+
+         /* TODO: selection
+         if(display.display3D.collectingHits)
+         {
+            float pickX = display.display3D.pickX + surface.offset.x;
+            float pickY = display.height - (display.display3D.pickY + surface.offset.y) - 1;
+            Matrix pickMatrix
+            {
+               {
+                  w / display.display3D.pickWidth, 0, 0, 0,
+                  0, h / display.display3D.pickHeight, 0, 0,
+                  0, 0, 1, 0,
+                  (w + 2.0f * (x - pickX)) / display.display3D.pickWidth,
+                  (h + 2.0f * (y - pickY)) / display.display3D.pickHeight, 0, 1
+               }
+            };
+            GLLoadMatrixd(pickMatrix.array);
+         }
+         else
+            GLLoadIdentity();
+         */
+
+         glmsLoadMatrixd(prjMatrix.array);
+
+         glDisable(GL_BLEND);
+
+         // *** Z Inverted Identity Matrix ***
+         GLMatrixMode(MatrixMode::modelView);
+         if(!display.display3D.camera)
+            GLPushMatrix();
+
+         GLLoadIdentity();
+
+         GLScaled(1.0/nearPlane, 1.0/nearPlane, -1.0/nearPlane);
+
+         // *** View Matrix ***
+         GLMultMatrixd(camera.viewMatrix.array);
+
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders)
+         {
+            defaultShader.select();
+            defaultShader.setCamera(camera);
+         }
+#endif
+
+         // *** Lights ***
+         // ...
+
+         glEnable(GL_DEPTH_TEST);
+
+         GLSetupLighting(true);
+#if ENABLE_GL_FFP
+         if(!glCaps_shaders)
+            glShadeModel(GL_SMOOTH);
+#endif
+         glDepthMask((byte)bool::true);
+         oglDisplay.depthWrite = true;
+
+#ifndef __EMSCRIPTEN__
+         glEnable(GL_MULTISAMPLE);
+#endif
+      }
+   }
+
    void ApplyMaterial(Display display, Material material, Mesh mesh)
    {
 #if ENABLE_GL_FFP
