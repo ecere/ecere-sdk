@@ -176,12 +176,17 @@ public void glmsOrtho(double l, double r, double b, double t, double n, double f
 
 public void glmsScaled(double a, double b, double c)
 {
-   Matrix m, r;
+   Matrix m
+   { {
+      a,0,0,0,
+      0,b,0,0,
+      0,0,c,0,
+      0,0,0,1
+   } };
+   Matrix r;
    int ix = matrixIndex[curStack];
    isIdentity[curStack][ix] = false;
 
-   m.Identity();
-   m.Scale(a,b,c);
    r.Multiply3x4(m, matrixStack[curStack][ix]);
    matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
@@ -189,12 +194,17 @@ public void glmsScaled(double a, double b, double c)
 
 public void glmsTranslated( double a, double b, double c)
 {
-   Matrix m, r;
+   Matrix m
+   { {
+      1,0,0,0,
+      0,1,0,0,
+      0,0,1,0,
+      a,b,c,1
+   } };
+   Matrix r;
    int ix = matrixIndex[curStack];
    isIdentity[curStack][ix] = false;
 
-   m.Identity();
-   m.Translate(a,b,c);
    r.Multiply3x4(m, matrixStack[curStack][ix]);
    matrixStack[curStack][ix] = r;
    stackModified[curStack] = true;
