@@ -14,7 +14,7 @@ public:
    property CameraType type { set { type = value; } get { return type; } };
    property Vector3D position { set { position = value; } get { value = position; } };
    property Quaternion orientation { set { orientation = value; if(type == attached || type == fixed) eulerOrientation = value; } get { value = orientation; } };
-   property Euler eulerOrientation { set { eulerOrientation = value; if(type != attached && type != fixed) orientation = value; } get { value = eulerOrientation; } };
+   property Euler eulerOrientation { set { eulerOrientation = value; if(type == attached || type == fixed) orientation = value; } get { value = eulerOrientation; } };
    property Vector3D cPosition { get { value = cPosition; } };
    property Quaternion cOrientation { get { value = cAngle; } };
    property Degrees fov { set { fov = value; } get { return fov; } };
