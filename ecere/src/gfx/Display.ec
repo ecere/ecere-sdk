@@ -221,6 +221,7 @@ public:
    virtual void ::PushMatrix(Display);
    virtual void ::PopMatrix(Display, bool);
    virtual void ::SetTransform(Display, Matrix, bool, bool);
+   virtual void ::SetCameraVR(Display, Camera, int eye, int w, int h, void * fb, const Matrix prjMat);
 #endif
    virtual void ::SetBlitTint(Display, Surface, ColorAlpha);   // REVIEW: Is it really necessary to have a method here, we have a Surface member
 };
@@ -607,6 +608,110 @@ public:
                display3D.rayWorld.delta.Subtract(p, display3D.rayWorld.p0);
             }
          }
+      }
+   }
+
+   void SetCameraVR(Camera camera, int eye, int w, int h, GLFB output, const Matrix prjMat)
+   {
+      if(!display3D)
+      {
+         display3D = Display3D { };
+      }
+      if(!display3D.selection)
+         DrawTranslucency();
+
+      if(!camera)
+      {
+         if(!display3D.selection)
+            displaySystem.driver.SelectMesh(this, null);
+
+         display3D.material = null;
+         display3D.mesh = null;
+      }
+      if(!display3D.selection)
+      {
+         displaySystem.driver.SetCameraVR(this, camera, eye, w, h, output, prjMat);
+      }
+
+      this.display3D.camera = camera;
+
+      if(camera)
+      {
+         /* TODO:
+         if(!camera.focalX)
+            camera.Setup(width, height, null);
+
+         // Always calling Update() here had broken interpolation in OrbitWithMouse!
+         if(!camera.cAngle.w && surface)
+            camera.Update();
+
+         if(display3D.selection)
+         {
+            // Compute Picking Planes
+            Vector3D normal;
+            Vector3D point { 0,0,0 };
+            Quaternion quat;
+            Angle fovLeft, fovRight, fovTop, fovBottom;
+            ClippingPlane c;
+
+            double l = camera.origin.x - (display3D.pickX - display3D.pickWidth/2.0f);
+            double r = camera.origin.x - (display3D.pickX + display3D.pickWidth/2.0f);
+            double t = (display3D.pickY - display3D.pickHeight/2.0f) - camera.origin.y;
+            double b = (display3D.pickY + display3D.pickHeight/2.0f) - camera.origin.y;
+
+            fovLeft   = atan(l / camera.focalX);
+            fovRight  = atan(r / camera.focalX);
+            fovTop    = atan(t / camera.focalY);
+            fovBottom = atan(b / camera.focalY);
+
+            // --- Left ---
+            quat.Yaw(fovLeft - Pi/2);
+            quat.ToDirection(normal);
+            display3D.viewPickingPlanes[left].FromPointNormal(normal, point);
+
+            // --- Right ---
+            quat.Yaw(fovRight + Pi/2);
+            quat.ToDirection(normal);
+            display3D.viewPickingPlanes[right].FromPointNormal(normal, point);
+
+            // --- Top ---
+            quat.Pitch(fovTop + Pi/2);
+            quat.ToDirection(normal);
+            display3D.viewPickingPlanes[top].FromPointNormal(normal, point);
+
+            // --- Bottom ---
+            quat.Pitch(fovBottom - Pi/2);
+            quat.ToDirection(normal);
+            display3D.viewPickingPlanes[bottom].FromPointNormal(normal, point);
+
+            // --- Near ---
+            normal.x = 0; normal.y = 0; normal.z = 1;
+            point.z = camera.zMin;
+            display3D.viewPickingPlanes[near].FromPointNormal(normal, point);
+
+            // --- Far ---
+            normal.x = 0; normal.y = 0; normal.z = -1;
+            point.z = camera.zMax;
+            display3D.viewPickingPlanes[far].FromPointNormal(normal, point);
+
+            for(c = 0; c<ClippingPlane::enumSize; c++)
+               display3D.worldPickingPlanes[c].MultMatrix(display3D.viewPickingPlanes[c], camera.inverseTranspose);
+
+            // Compute picking ray
+            {
+               Vector3D p;
+               display3D.rayView.p0 = { 0, 0, 0 };
+               p.x = display3D.pickX;
+               p.y = display3D.pickY;
+               p.z = 0.0f;
+               camera.Unproject(p, display3D.rayView.delta);
+
+               // Convert ray to world space
+               camera.Untransform(display3D.rayView.p0, display3D.rayWorld.p0);
+               camera.Untransform(display3D.rayView.delta, p);
+               display3D.rayWorld.delta.Subtract(p, display3D.rayWorld.p0);
+            }
+         }*/
       }
    }
 
