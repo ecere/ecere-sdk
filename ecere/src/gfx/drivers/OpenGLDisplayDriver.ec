@@ -4010,7 +4010,7 @@ class OpenGLDisplayDriver : DisplayDriver
       GLCapabilities caps = glCaps;
       if(oglSystem) SETCAPS(oglSystem.capabilities);
 
-      if(mesh.mab && oglMesh)
+      if(mesh.mab && oglMesh && !mesh.flags.vertices && !mesh.flags.normals && !mesh.flags.texCoords1)
       {
          int baseVertex = mesh.baseVertex;
          oglMesh.vertices.buffer = 0;
