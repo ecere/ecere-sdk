@@ -182,6 +182,81 @@ private:
    Plane plane;
 };
 
+public struct SkinBone
+{
+   String name;
+   Matrix invBindMatrix;
+   Matrix bsInvBindMatrix;
+   Object object;
+};
+
+public define MAX_BONES = 10;
+public define NO_BONE = 255;
+
+public struct SkinVert
+{
+   byte bones  [MAX_BONES];
+   byte weights[MAX_BONES];
+};
+
+public class MeshSkin
+{
+public:
+   Matrix bindShapeMatrix;
+   Array<SkinBone> bones { };
+   Array<SkinVert> skinVerts { };
+   Matrix invShape;
+   bool bsIsIdentity;
+
+private:
+   Vector3Df * vertices, * normals, * tangents;
+
+   ~MeshSkin()
+   {
+      delete vertices;
+      delete normals;
+      delete tangents;
+   }
+};
+
+union Matrixf
+{
+   float m[4][4];
+   float array[16];
+
+   property Matrix
+   {
+      set
+      {
+         int i;
+         for(i = 0; i < 16; i++)
+            array[i] = (float)value.array[i];
+      }
+      get
+      {
+         int i;
+         for(i = 0; i < 16; i++)
+            value.array[i] = (double)array[i];
+      }
+   }
+
+   void Identity()
+   {
+      m[0][0] = 1;   m[0][1] = 0;   m[0][2] = 0;   m[0][3] = 0;
+      m[1][0] = 0;   m[1][1] = 1;   m[1][2] = 0;   m[1][3] = 0;
+      m[2][0] = 0;   m[2][1] = 0;   m[2][2] = 1;   m[2][3] = 0;
+      m[3][0] = 0;   m[3][1] = 0;   m[3][2] = 0;   m[3][3] = 1;
+   }
+};
+
+static inline void inlineMultMatrix(Vector3Df dest, const Vector3Df source, const Matrixf matrix)
+{
+   dest.x = (float)(source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0]);
+   dest.y = (float)(source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1]);
+   dest.z = (float)(source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2]);
+}
+
+
 public struct MeshPart
 {
    uint64 id;
@@ -208,6 +283,194 @@ public:
    property ColorRGB * lightVectors { get { return lightVectors; } set { lightVectors = value; } };
    property OldList groups { get { value = groups; } };
    property MeshFeatures flags { get { return flags; } set { flags = value; } };
+   property MeshSkin skin { get { return skin; } set { skin = value; } };
+   property Array<int> dupVerts
+   {
+      set { dupVerts = value; }
+      get { return dupVerts; }
+   };
+
+   void ApplySkin()
+   {
+      MeshSkin skin = this.skin;
+      if(skin && skin.skinVerts.count + (dupVerts ? dupVerts.count : 0) == nVertices)
+      {
+         Vector3Df * oVertices = this.vertices, * vertices;
+         Vector3Df * oNormals = this.normals, * normals;
+         Vector3Df * oTangents = this.tangents, * tangents = null;
+         Array<Matrixf> matBones { size = skin.bones.count };
+         Array<Matrixf> nmatBones { size = skin.bones.count };
+         int i, nVertices = skin.skinVerts.count;
+         bool bsIdentity = skin.bsIsIdentity;
+
+         if(!oNormals) return;
+
+         if(!skin.vertices) skin.vertices = new Vector3Df[this.nVertices];
+         if(!skin.normals)  skin.normals = new Vector3Df[this.nVertices];
+         if(oTangents && !skin.tangents) skin.tangents = new Vector3Df[2*this.nVertices];
+         this.vertices = vertices = skin.vertices;
+         this.normals  = normals  = skin.normals;
+         this.tangents = tangents = skin.tangents;
+         Lock({ vertices = true, normals = true, tangents = (oTangents != null) });
+
+         for(i = 0; i < skin.bones.count; i++)
+         {
+            SkinBone * bone = &skin.bones[i];
+            if(bone->object)
+            {
+               Matrix m;
+
+               m.Multiply(bone->bsInvBindMatrix, bone->object.matrixPtr);
+
+               if(bsIdentity)
+                  matBones[i] = m;
+               else
+               {
+                  Matrix tmp;
+                  tmp.Multiply(m, skin.invShape);
+                  matBones[i] = tmp;
+               }
+
+               nmatBones[i] = m;
+               nmatBones[i].m[3][0] = 0;
+               nmatBones[i].m[3][1] = 0;
+               nmatBones[i].m[3][2] = 0;
+            }
+            else
+            {
+               matBones[i].Identity();
+               nmatBones[i].Identity();
+            }
+         }
+
+         for(i = 0; i < nVertices; i++)
+         {
+            Vector3Df * vert = &vertices[i];
+            Vector3Df * nor = &normals[i];
+            Vector3Df * tan1 = &tangents[2*i+0];
+            Vector3Df * tan2 = &tangents[2*i+1];
+            SkinVert * sv = &skin.skinVerts[i];
+            int j;
+            float tw = 0;
+            Vector3Df vt { };
+            Vector3Df nt { };
+            Vector3Df t1t { };
+            Vector3Df t2t { };
+            for(j = 0; j < MAX_BONES; j++)
+            {
+               int b = sv->bones[j];
+               if(b != NO_BONE)
+               {
+                  float w = sv->weights[j] / 255.0f;
+                  Vector3Df v, n, t1, t2;
+                  inlineMultMatrix(v, oVertices[i], matBones[b]);
+                  tw += w;
+                  vt.x += w * v.x;
+                  vt.y += w * v.y;
+                  vt.z += w * v.z;
+
+                  inlineMultMatrix(n, oNormals[i], nmatBones[b]);
+                  nt.x += w * n.x;
+                  nt.y += w * n.y;
+                  nt.z += w * n.z;
+
+                  if(oTangents)
+                  {
+                     inlineMultMatrix(t1, oTangents[2*i+0], nmatBones[b]);
+                     t1t.x += w * t1.x;
+                     t1t.y += w * t1.y;
+                     t1t.z += w * t1.z;
+
+                     inlineMultMatrix(t2, oTangents[2*i+1], nmatBones[b]);
+                     t2t.x += w * t2.x;
+                     t2t.y += w * t2.y;
+                     t2t.z += w * t2.z;
+                  }
+               }
+               else
+                  break;
+            }
+
+            if(tw)
+            {
+               tw = 1.0f / tw;
+               vert->x = vt.x * tw;
+               vert->y = vt.y * tw;
+               vert->z = vt.z * tw;
+
+               nor->x = nt.x * tw;
+               nor->y = nt.y * tw;
+               nor->z = nt.z * tw;
+
+               if(oTangents)
+               {
+                  tan1->x = t1t.x * tw;
+                  tan1->y = t1t.y * tw;
+                  tan1->z = t1t.z * tw;
+
+                  tan2->x = t2t.x * tw;
+                  tan2->y = t2t.y * tw;
+                  tan2->z = t2t.z * tw;
+               }
+            }
+            else
+            {
+               *vert = oVertices[i];
+               *nor = oNormals[i];
+               if(oTangents)
+               {
+                  *tan1 = oTangents[2*i+0];
+                  *tan2 = oTangents[2*i+1];
+               }
+            }
+            /*vert->x *= 0.01;
+            vert->y *= 0.01;
+            vert->z *= 0.01;*/
+         }
+
+         if(dupVerts)
+         {
+            int * dv = dupVerts.array - nVertices;
+            int count = nVertices + dupVerts.count;
+            for(i = nVertices; i < count; i++)
+            {
+               int ix = dv[i];
+               vertices[i] = vertices[ix];
+               // Assuming smooth normals for now...
+               normals[i]  = normals[ix];
+               if(oTangents)
+               {
+                  tangents[2*i+0] = tangents[2*ix+0];
+                  tangents[2*i+1] = tangents[2*ix+1];
+               }
+            }
+         }
+
+         delete matBones;
+         delete nmatBones;
+
+         Unlock({ vertices = true, normals = true, tangents = (oTangents != null) });
+         SetMinMaxRadius();
+
+         this.vertices = oVertices;
+         this.normals = oNormals;
+         if(oTangents) this.tangents = oTangents;
+      }
+   }
+
+   void UnapplySkin()
+   {
+      MeshSkin skin = this.skin;
+      if(skin)
+      {
+         delete skin.vertices;
+         delete skin.normals;
+         delete skin.tangents;
+         Lock({ vertices = true, normals = true, tangents = (tangents != null) });
+         Unlock({ vertices = true, normals = true, tangents = (tangents != null) });
+         SetMinMaxRadius();
+      }
+   }
 
    // For intra-model attribution; in groups order, assuming triangles
    // REVIEW: Should parts be in PrimitiveGroup instead? Picking and 'baseIndex' not currently supported?
@@ -497,6 +760,8 @@ public:
          uint vStride = flags.interleaved ? 8 : 3, tStride = flags.interleaved ? 8 : 2;
          Vector3Df * tangents = this.tangents;
          int i;
+         int nVertices = this.nVertices - (dupVerts ? dupVerts.count : 0);
+
          if(computeNormals)
          {
             if(vStride == 3)
@@ -746,6 +1011,7 @@ public:
                }
             }
          }
+
          // NOTE: Here we're currently making the assumption that the primitives are in indices mode (vertexRange = false)
          for(c = 0; c<nPrimitives; c++)
          {
@@ -869,12 +1135,83 @@ public:
          delete vMap;
 #endif
 
+         if(dupVerts)
+         {
+            int * dv = dupVerts.array - nVertices;
+            int count = nVertices + dupVerts.count;
+            int i;
+            for(i = nVertices; i < count; i++)
+            {
+               int ix = dv[i];
+               if(computeNormals)
+                  normals[i]  = normals[ix];
+               if(computeTangents && tangents)
+               {
+                  tangents[2*i+0] = tangents[2*ix+0];
+                  tangents[2*i+1] = tangents[2*ix+1];
+               }
+            }
+         }
+
          //delete numShared;
          delete weightSum;
          Unlock({ interleaved = flags.interleaved, normals = computeNormals, tangents = computeTangents });
       }
    }
 
+   Mesh Copy()
+   {
+      Mesh mesh = null;
+      if(this)
+      {
+         mesh = { };
+         if(mesh.Allocate(flags, nVertices, displaySystem))
+         {
+            PrimitiveGroup g;
+            if(flags.vertices)
+               memcpy(mesh.vertices, vertices, nVertices * (flags.doubleVertices ? sizeof(Vector3D) : sizeof(Vector3Df)));
+            if(flags.normals)
+               memcpy(mesh.normals, normals, nVertices * (flags.doubleNormals ? sizeof(Vector3D) : sizeof(Vector3Df)));
+            if(flags.texCoords1)
+               memcpy(mesh.texCoords, texCoords, nVertices * sizeof(Pointf));
+            if(flags.colors)
+               memcpy(mesh.colors, colors, nVertices * sizeof(ColorRGBAf));
+            if(flags.tangents)
+               memcpy(mesh.tangents, tangents, nVertices * sizeof(Vector3Df));
+            if(flags.lightVectors)
+               memcpy(mesh.lightVectors, lightVectors, nVertices * sizeof(Vector3Df));
+
+            for(g = groups.first; g; g = g.next)
+            {
+               PrimitiveGroup group = mesh.AddPrimitiveGroup(g.type, g.nIndices);
+               if(group)
+               {
+                  if(group.type.vertexRange)
+                  {
+                     group.first = g.first;
+                     group.nVertices = g.nVertices;
+                  }
+                  else
+                  {
+                     if(group.type.indices32bit)
+                        memcpy(group.indices32, g.indices32, sizeof(uint32) * group.nIndices);
+                     else
+                        memcpy(group.indices, g.indices, sizeof(uint16) * group.nIndices);
+                  }
+                  group.material = g.material;
+                  mesh.UnlockPrimitiveGroup(group);
+               }
+            }
+            mesh.Unlock(0);
+         }
+
+         mesh.skin = skin;
+         mesh.radius = radius;
+         mesh.min = min;
+         mesh.max = max;
+      }
+      return mesh;
+   }
 
    void ApplyMaterial(Material material)
    {
@@ -1361,7 +1698,7 @@ public:
          if(mat.envMap)      UploadTexture(mat.envMap,      displaySystem, mAT && nAT > 3 ? mAT[3] : null);
          if(mat.reflectMap)  UploadTexture(mat.reflectMap,  displaySystem, mAT && nAT > 4 ? mAT[4] : null);
       }
-      if(unlockAndDelete && (!g.type.sharedIndices && !meab))
+      if(unlockAndDelete && (!g.type.sharedIndices && !meab && !skin))
          delete g.indices;
    }
 
@@ -1385,8 +1722,10 @@ public:
       if(flags.interleaved)
          delete vertices;
 
-      delete texCoords;
-      delete normals;
+      if(!skin || !mab)
+         delete texCoords;
+      if(!skin)
+         delete normals;
       delete colors;
       delete lightVectors;
 
@@ -1484,6 +1823,8 @@ private:
    Vector3Df min, max;
    float radius;
    CubeMap normMap;
+   MeshSkin skin;
+   Array<int> dupVerts;
 
    // Private Data
    DisplaySystem displaySystem;

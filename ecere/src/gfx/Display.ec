@@ -1610,7 +1610,7 @@ private class Display3D : struct
       Array<MeshPart> parts = mesh.parts;
       int pi;
       int firstPart = 0, lastPart = 0;
-      float * vertices = (float *)mesh.vertices;
+      float * vertices = (float *)(mesh.skin && mesh.skin.vertices ? mesh.skin.vertices : mesh.vertices);
       int vStride = mesh.flags.interleaved ? 8 : 3;
 
       if(!vertices || (!indices32 && !indices16)) return false; // Need vertices and indices here...
