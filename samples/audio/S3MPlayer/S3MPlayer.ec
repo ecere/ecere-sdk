@@ -1,3 +1,4 @@
+import "ecere"
 import "EcereAudio"
 
 static uint16 periods[] = { 1712, 1616, 1524, 1440, 1356, 1280, 1208, 1140, 1076, 1016, 960, 907};
@@ -362,9 +363,9 @@ class S3M
                         volumes[channel] = volume;
                         gotVolume = true;
                      }
-                     else if((info & 0xF0) == 0x0)
+                     else if((info & 0xF0) == 0x0) // TODO: Review this
                         slides[channel] = -(info & 0x0F);
-                     else if((info & 0xF0) == 0xF)
+                     else if((info & 0xF0) == 0xF0)
                      {
                         volume -= (info & 0x0F);
                         if(volume < 0) volume = 0;
