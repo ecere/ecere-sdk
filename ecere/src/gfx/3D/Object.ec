@@ -28,7 +28,7 @@ public class ObjectFlags
 {
 public:
    bool root:1, viewSpace:1, ownMesh:1, translucent:1, flipWindings:1, keysLoaded:1, transform:1, mesh:1, light:1, camera:1, localMatrixSet:1;
-   bool computeLightVectors:1;
+   bool computeLightVectors:1, skinApplied:1;
    int hierarchy:16:16;
 };
 
@@ -864,6 +864,17 @@ public:
       if(model)
       {
          Object modelChild;
+         FrameTrack t;
+
+         startFrame = model.startFrame;
+         endFrame = model.endFrame;
+         for(t = model.tracks->first; t; t = t.next)
+         {
+            FrameTrack track { type = t.type, numKeys = t.numKeys };
+            track.keys = new FrameKey[t.numKeys];
+            memcpy(track.keys, t.keys, sizeof(FrameKey) * t.numKeys);
+            AddFrameTrack(track);
+         }
 
          name = CopyString(model.name);
          flags = model.flags;
@@ -1215,9 +1226,11 @@ public:
                      }
                      mesh.Unlock(0);
 
-                     delete *&mesh.vertices;
-                     delete *&mesh.texCoords;
-                     if(!this.flags.computeLightVectors)
+                     if(!mesh.nPrimitives && !mesh.skin)
+                        delete *&mesh.vertices;
+                     if(!mesh.skin || !mesh.mab)
+                        delete *&mesh.texCoords;
+                     if(!this.flags.computeLightVectors && !mesh.skin)
                         delete *&mesh.normals;
                   }
                }
@@ -1665,12 +1678,14 @@ public:
             delete objectMesh;
          }
 
-         // TOOD: Make this an option?
+         // TODO: Make this an option?
          if(lastLevel && displaySystem && mesh && !mesh.nPrimitives)
          {
-            delete *&mesh.vertices;
-            delete *&mesh.texCoords;
-            if(!this.flags.computeLightVectors)
+            if(!mesh.skin)
+               delete *&mesh.vertices;
+            if(!mesh.skin || !mesh.mab)
+               delete *&mesh.texCoords;
+            if(!this.flags.computeLightVectors && !mesh.skin)
                delete *&mesh.normals;
          }
       }
@@ -1716,9 +1731,43 @@ public:
       SetMinMaxRadius(false);
    }
 
+   private bool _ApplySkins()
+   {
+      bool result = false;
+      Object o;
+      if(flags.mesh && mesh && mesh.skin)
+      {
+         mesh.ApplySkin();
+         flags.skinApplied = true;
+         result = true;
+      }
+      for(o = children.first; o; o = o.next)
+         result |= o._ApplySkins();
+      return result;
+   }
+
+   public void ApplySkins()
+   {
+      _ApplySkins();
+      SetMinMaxRadius(false);
+   }
+
+   void ResetPose()
+   {
+      Object o;
+      if(flags.mesh && mesh && mesh.skin)
+      {
+         mesh.UnapplySkin();
+         flags.skinApplied = false;
+      }
+      for(o = children.first; o; o = o.next)
+         o.ResetPose();
+      SetMinMaxRadius(false);
+   }
+
    void Animate(int frame)
    {
-      if(this && startFrame != endFrame)
+      if(this && this.frame != frame && startFrame != endFrame)
       {
          if(frame < (int)startFrame)
             frame = Max((int)startFrame, (int)endFrame - ((int)startFrame - frame - 1));
@@ -1948,7 +1997,7 @@ private:
       }
    }
 
-   void _Animate(unsigned int frame)
+   void _Animate(/*unsigned */int frame)
    {
       Object child;
       FrameTrack track;
@@ -1956,22 +2005,67 @@ private:
       bool eulerRotation = false;
       bool hasPitch = false, hasRoll = false, hasYaw = false;
 
+      if(!flags.ownMesh && mesh && mesh.skin && mesh.skin.bones.count)
+      {
+         Object o = mesh.skin.bones[0].object;
+         if(o)
+         {
+            while(o.parent) o = o.parent;
+            if(o.frame != frame)
+               o._Animate(frame);
+         }
+      }
+
       for(track = tracks.first; track; track = track.next)
       {
-         unsigned int c;
-
          if(track.numKeys)
          {
-            unsigned int prev = 0, next = track.numKeys - 1;
-            FrameKey * prevKey = &track.keys[prev], * nextKey = &track.keys[next];
+            /*unsigned */int prev = 0, next = track.numKeys - 1, mid = (prev + next) >> 1;
+            FrameKey * keys = track.keys, * prevKey = keys + prev, * nextKey = keys + next, * midKey = keys + mid;
             float t = 0;
 
+            while(true)
+            {
+               int f = midKey->frame;
+               if(f < frame)
+               {
+                  prevKey = midKey;
+                  prev = mid;
+                  mid = (prev + next)>>1;
+                  if(mid == prev) mid = next;
+                  midKey = keys + mid;
+               }
+               else if(f > frame)
+               {
+                  nextKey = midKey;
+                  next = mid;
+                  mid = (prev + next)>>1;
+                  midKey = keys + mid;
+               }
+               else
+               {
+                  prevKey = midKey;
+                  nextKey = midKey;
+                  prev = mid;
+                  next = mid;
+                  break;
+               }
+               if(mid == prev)
+                  break;
+            }
+#if 0
+
+            int prev2 = 0, next2 = track.numKeys - 1;
             for(c = 0; c<track.numKeys; c++)
             {
                FrameKey * key = track.keys + c;
-               if(key->frame <= frame) { prevKey = key; prev = c; }
-               if(key->frame >= frame) { nextKey = key; next = c; break; }
+               if(key->frame <= frame) { prev2 = c; }
+               if(key->frame >= frame) { next2 = c; break; }
             }
+            if(prev2 != prev || next2 != next)
+               printf("bug");
+
+#endif
 
             if(nextKey->frame != prevKey->frame)
                t = ease((float) (frame - prevKey->frame) / (nextKey->frame - prevKey->frame), prevKey->easeFrom, nextKey->easeTo);
@@ -2091,6 +2185,7 @@ private:
       for(child = children.first; child; child = child.next)
          child._Animate(frame);
 
+      flags.localMatrixSet = false;
       flags.transform = true;
    }
 
