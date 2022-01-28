@@ -59,8 +59,8 @@
 
 #define constexpr
 
-#define Min(a, b) ({typeof(a) ta = (a), tb = (b); ta < tb ? ta : tb;})
-#define Max(a, b) ({typeof(a) ta = (a), tb = (b); ta > tb ? ta : tb;})
+#define Min(a, b) ({__typeof(a) ta = (a), tb = (b); ta < tb ? ta : tb;})
+#define Max(a, b) ({__typeof(a) ta = (a), tb = (b); ta > tb ? ta : tb;})
 #define MAXINT ((int)0x7fffffff)
 #define alignas(x) __attribute__((aligned(x)))
 
