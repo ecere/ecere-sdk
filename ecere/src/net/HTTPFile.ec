@@ -88,7 +88,9 @@ public:
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, this);
       curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+#ifndef ECERE_NOSSL
       SetCurlEmbeddedCA(curl_handle);
+#endif
       res = curl_easy_perform(curl_handle);
       if(res != CURLE_OK)
          fprintf(stderr, "curl_easy_perform() failed (%s): %s\n", curl_easy_strerror(res), name);
@@ -213,7 +215,7 @@ public HTTPFile FileOpenURL(const char * name)
 #define set _set
 #include <openssl/ssl.h>
 #if defined(__WIN32__) && OPENSSL_VERSION_NUMBER < 0x1010006fL
-#include <openssl/applink.c>
+// #include <openssl/applink.c> // This is already in SSLSocket
 #endif
 #undef byte
 #undef int64
