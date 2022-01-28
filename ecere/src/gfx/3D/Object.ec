@@ -1716,12 +1716,14 @@ public:
       SetMinMaxRadius(false);
    }
 
-   void Animate(unsigned int frame)
+   void Animate(int frame)
    {
       if(this && startFrame != endFrame)
       {
-         while(frame < startFrame) frame += (endFrame - startFrame + 1);
-         while(frame > endFrame)   frame -= (endFrame - startFrame + 1);
+         if(frame < (int)startFrame)
+            frame = Max((int)startFrame, (int)endFrame - ((int)startFrame - frame - 1));
+         if(frame > (int)endFrame)
+            frame = Min((int)endFrame, (int)startFrame + (frame - (int)endFrame - 1));
 
          this.frame = frame;
          _Animate(frame);
@@ -2096,6 +2098,8 @@ private:
    public FrustumPlacement InsideFrustum(Plane * planes)
    {
       FrustumPlacement result = inside;
+      // FIXME: SetCameraVR() does not currently set up planes properly
+      // return result;
 
       int p;
       // First test: Sphere
