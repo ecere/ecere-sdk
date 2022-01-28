@@ -199,11 +199,7 @@
                "-mmmx",
                "-msse",
                "-msse2",
-               "-msse3",
-               "-msse4",
-               "-msse4.1",
-               "-msse4.2",
-               "-march=skylake"
+               "-msse3"
             ],
             "LinkerOptions" : [
                "--wrap=fcntl64"
@@ -1552,7 +1548,7 @@
                                     {
                                        "Name" : "win32",
                                        "Options" : {
-                                          "ExcludeFromBuild" : true
+                                          "ExcludeFromBuild" : false
                                        }
                                     }
                                  ]
@@ -1664,7 +1660,7 @@
                                     {
                                        "Name" : "win32",
                                        "Options" : {
-                                          "ExcludeFromBuild" : true
+                                          "ExcludeFromBuild" : false
                                        }
                                     }
                                  ]
