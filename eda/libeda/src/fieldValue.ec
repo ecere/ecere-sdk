@@ -50,6 +50,7 @@ public struct FieldValue
          case integer:  return compareInt(b);
          case real:     return compareReal(b);
          case text:     return compareText(b);
+         case blob:     return Sgn((uintptr)this.b - (uintptr)b.b); // NOTE: Currently no way to compare content of blob...
       }
       return 0;
    }
