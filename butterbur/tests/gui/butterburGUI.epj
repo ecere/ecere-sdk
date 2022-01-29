@@ -1,0 +1,146 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "butterburGUI",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
+      "IncludeDirs" : [
+         "../../../ecere/src/gfx/drivers/gl3",
+         "../../src/imagesAndText",
+         "../../../deps/libtess",
+         "../../../ecere/src/gfx/newFonts/cc"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "butterburGUI",
+      "Libraries" : [
+         "ecere",
+         "freetype"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m",
+               "GL"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "butterbur",
+         "Files" : [
+            {
+               "Folder" : "tess",
+               "Files" : [
+                  "../../../deps/libtess/dict.c",
+                  "../../../deps/libtess/dict.h",
+                  "../../../deps/libtess/dictList.h",
+                  "../../../deps/libtess/geom.c",
+                  "../../../deps/libtess/geom.h",
+                  "../../../deps/libtess/gluos.h",
+                  "../../../deps/libtess/glutess.h",
+                  "../../../deps/libtess/memalloc.h",
+                  "../../../deps/libtess/mesh.c",
+                  "../../../deps/libtess/mesh.h",
+                  "../../../deps/libtess/normal.c",
+                  "../../../deps/libtess/normal.h",
+                  "../../../deps/libtess/priorityq.c",
+                  "../../../deps/libtess/priorityq.h",
+                  "../../../deps/libtess/priorityqSort.h",
+                  "../../../deps/libtess/README",
+                  "../../../deps/libtess/render.c",
+                  "../../../deps/libtess/render.h",
+                  "../../../deps/libtess/sweep.c",
+                  "../../../deps/libtess/sweep.h",
+                  "../../../deps/libtess/tess.c",
+                  "../../../deps/libtess/tess.h",
+                  "../../../deps/libtess/tessmono.c",
+                  "../../../deps/libtess/tessmono.h"
+               ]
+            },
+            {
+               "Folder" : "eccss",
+               "Files" : [
+                  "../../../compiler/eccss/astNode.ec",
+                  "../../../compiler/eccss/eccss.ec",
+                  "../../../compiler/eccss/expressions.ec",
+                  "../../../compiler/eccss/lexing.ec",
+                  "../../../extras/stringTools.ec"
+               ]
+            },
+            "../../src/presentation/AnchoredPresentation.ec",
+            "../../src/presentation/DrawingManager.ec",
+            "../../src/presentation/GraphicalPresentation.ec",
+            "../../src/presentation/GraphicalSurface.ec",
+            "../../src/presentation/Presentation.ec",
+            "../../src/presentation/TIManager.ec",
+            "../../src/GraphicalElement.ec",
+            "../../src/GraphicalStyle.ec",
+            "../../src/tesselation/shapesTesselation.ec",
+            "../../src/tesselation/tesselation.ec",
+            "../../src/imagesAndText/atlasbuilder.c",
+            "../../src/imagesAndText/atlasbuilder.h",
+            "../../src/imagesAndText/cpusimd.c",
+            "../../src/imagesAndText/cpusimd.h",
+            "../../src/imagesAndText/drawmanager.c",
+            "../../src/imagesAndText/drawmanager.h",
+            "../../src/imagesAndText/fontmanager.c",
+            "../../src/imagesAndText/fontmanager.h",
+            "../../src/imagesAndText/fontrenderer.c",
+            "../../src/imagesAndText/fontrenderer.h",
+            "../../src/imagesAndText/img.c",
+            "../../src/imagesAndText/img.h",
+            "../../src/imagesAndText/imgdistmap.c",
+            "../../src/imagesAndText/imgdistmap.h",
+            "../../src/imagesAndText/texturemanager.c",
+            "../../src/imagesAndText/texturemanager.h",
+            "../../src/opengl/ButterburShader.ec",
+            "../../src/opengl/VersionedShader.ec",
+            "../../../ecere/src/gfx/drivers/gl3/gl_compat_4_4.c",
+            "../../../ecere/src/gfx/drivers/gl3/gl_compat_4_4.h",
+            "../../../ecere/src/gfx/newFonts/cc/mmhash.c",
+            "../../../ecere/src/gfx/newFonts/cc/mmhash.h",
+            "../../src/presentation/GEInternals.ec"
+         ]
+      },
+      "../../src/gui/IMElement.ec",
+      "testUI.ec",
+      "testIMElements.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      {
+         "Folder" : "shaders",
+         "Files" : [
+            "../../src/opengl/shaders/butterbur.frag",
+            "../../src/opengl/shaders/butterbur.vert"
+         ]
+      }
+   ]
+}
