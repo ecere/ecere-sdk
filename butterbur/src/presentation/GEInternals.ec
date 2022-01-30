@@ -39,18 +39,6 @@ class GEModelData : struct
    bool freeModel;
    bool updateModelColorMap;
    Map<Color, Array<uint64>> modelColorMap;
-public:
-   property Map<Color, Array<uint64>> modelColorMap
-   {
-      set
-      {
-         // if(value != modelColorMap)
-         {
-            modelColorMap = value;
-            updateModelColorMap = true;
-         }
-      }
-   }
 }
 
 // NOTE: both GraphicalPresentation and GeoFeaturePresentation will call this, where will it go?

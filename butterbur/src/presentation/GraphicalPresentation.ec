@@ -369,42 +369,9 @@ int pickObject(const Boxf region, int maxResults, PickResult * results, Line ray
 public class GraphicalPresentation : Presentation
 {
    GraphicalElement ge;
-   GEType geType;
    // float cTransform[3]; // The total transform applied to a leaf graphical element.  Calculated from local transform of all containing elements
    Transform transform; // The transform applied at this specific level of the hierarchy
    transform.scaling = { 1, 1, 1 };
-
-   Map<Color, Array<uint64>> modelColorMap;
-   bool updateModelColorMap;
-   bool freeModel;
-
-   // REVIEW: Should we allocate separate side data for specific implementations?
-  // union  // REVIEW: image is non-null with the union?
-  // {
-      // For Shape
-      struct
-      {
-         uint commandsCount; //Number of draw commands this takes to draw
-         uint vertexBase, fillBase, lineBase;
-         TesselatedShape tShape;
-      };
-
-      // For Text
-
-      // For Image
-      void * image;
-      int imgW, imgH;
-
-      // For Path3D
-      uint vCount;
-
-      // For Multi
-
-      // For Model
-      Object model;
-//   };
-
-   vertexBase = -1, fillBase = -1, lineBase = -1;
 
 public:
 
@@ -417,8 +384,8 @@ public:
 
    property Object modelObject
    {
-      set { model = value; freeModel = false; geType = model; }
-      get { return model; }
+      set { freeGE(ge); ge = Model { internal = GEModelData { freeModel = false; model = value } }; }
+      get { return ge && ge.internal ? ((GEModelData)ge.internal).model : null; }
    }
 
    property Map<Color, Array<uint64>> modelColorMap
@@ -426,9 +393,11 @@ public:
       set
       {
          // if(value != modelColorMap)
+         if(ge && ge.internal)
          {
-            modelColorMap = value;
-            updateModelColorMap = true;
+            GEModelData modelData = ge.internal;
+            modelData.modelColorMap = value;
+            modelData.updateModelColorMap = true;
          }
       }
    }
@@ -439,8 +408,6 @@ public:
       {
          unloadGraphicsGE(false, ge, displaySystem);
          ge = value;
-         geType = ge ? ge.type : none;
-
          needUpdate = true;
          if(ge) incref ge;
       }
@@ -500,7 +467,7 @@ public:
       {
          MultiPresentation p = parent;
 
-         rdrFlags = calculateGE(ge, mgr, p.anchored);
+         rdrFlags = ge ? calculateGE(ge, mgr, p.anchored) : 0;
          needUpdate = false;
       }
    }
@@ -568,8 +535,10 @@ public:
    int pick(const Boxf region, int maxResults, PickResult * results, const float * transform,
       const Matrix * vm, const Pointd * projParams)
    {
+      if(!ge) return 0;
       if(rdrFlags.perspective)
       {
+         Object model = ge && ge.internal && eClass_IsDerived(ge._class, class(Model)) ? ((GEModelData)ge.internal).model : null;
          if(model)
          {
             //float cTransform[12];
