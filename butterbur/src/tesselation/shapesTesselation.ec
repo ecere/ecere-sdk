@@ -145,8 +145,8 @@ struct TesselatedShape
                int i;
                int res = 8;
 
-               rx = Min(rx, box.right - box.left);
-               ry = Min(ry, box.bottom - box.top);
+               rx = Max(1.0f, Min(rx, box.right - box.left));
+               ry = Max(1.0f, Min(ry, box.bottom - box.top));
 
                noJoin = true;
                count = 4*res;
