@@ -388,7 +388,7 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
 
    switch(ge.type)
    {
-      case shape: return shapeContainsPoint(x, y, ge) ? ge : null;
+      case shape: return shapeContainsPoint(tx, ty, ge) ? ge : null;
       case image:
       {
          // TODO: Check hotspot, alpha channels (can't click a transparent portion of image), etc
@@ -406,9 +406,11 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
       {
          //if(ge._class == class(MultiGraphicalElement))
          {
-            for(e : ((MultiGraphicalElement)ge).elements)
+            Iterator<GraphicalElement> it { ((MultiGraphicalElement)ge).elements };
+            while(it.Prev())
             {
-               GraphicalElement re = pickGE(x, y, rdrFlags, e, transform);
+               GraphicalElement e = it.data;
+               GraphicalElement re = pickGE(tx, ty, rdrFlags, e, transform);
                if(re)
                {
                   picked = re;
