@@ -366,6 +366,9 @@ int pickObject(const Boxf region, int maxResults, PickResult * results, Line ray
    return nPicks;
 }
 
+// IMPROVE: Currently needed for changing graphic...
+static PresentationManager presentationManager;
+
 public class GraphicalPresentation : Presentation
 {
    GraphicalElement ge;
@@ -406,7 +409,8 @@ public:
    {
       set
       {
-         unloadGraphicsGE(false, ge, displaySystem);
+         unloadGraphicsGE(false, ge, displaySystem, presentationManager);
+         delete ge;
          ge = value;
          needUpdate = true;
          if(ge) incref ge;
@@ -456,9 +460,9 @@ public:
       get { value = transform.scaling; }
    };
 
-   void unloadGraphics(bool shutDown)
+   void unloadGraphics(bool shutDown, PresentationManager mgr)
    {
-      unloadGraphicsGE(shutDown, ge, displaySystem);
+      unloadGraphicsGE(shutDown, ge, displaySystem, mgr);
    }
 
    void calculate(Presentation topPres, PresentationManager mgr)
@@ -466,6 +470,8 @@ public:
       if(needUpdate)
       {
          MultiPresentation p = parent;
+
+         presentationManager = mgr;
 
          rdrFlags = ge ? calculateGE(ge, mgr, p.anchored) : 0;
          needUpdate = false;
