@@ -1781,7 +1781,7 @@ int fmExpandAtlas( fmManager *fm, int width, int height )
   height = FM_MAX( height, fm->height );
 
   if( ( width == fm->width ) && ( height == fm->height ) )
-    return 1;  
+    return 1;
 
   /* Flush all pending glyphs to be rendered */
   fmFlush( fm, 1 );
