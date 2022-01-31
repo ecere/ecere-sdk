@@ -299,7 +299,7 @@ class LWFontManager
       int width, height, newheight;
 
       fontManager.getAtlasSize(&width, &height);
-      if( height < TEST_FONT_ATLAS_SIZE_MAXHEIGHT )
+      if(false && height < TEST_FONT_ATLAS_SIZE_MAXHEIGHT) // Invoking expandAtlas() rather than resetAtlas() still causes issues
       {
          newheight = height << 1;
          fontManager.expandAtlas(width, newheight);
