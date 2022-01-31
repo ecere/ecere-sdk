@@ -627,6 +627,7 @@ public:
             if(nPicks)
             {
                results[0].presentation = this;
+               results[0].element = ge;
             }
             return nPicks;
          }
