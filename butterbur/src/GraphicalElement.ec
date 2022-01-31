@@ -1,6 +1,6 @@
 public import IMPORT_STATIC "ecere"
 
-public enum GEType { none, shape, text, image, path3D, multi, model };
+public enum GEType { none, shape, text, image, path3D, multi, model, instance };
 
 public enum GraphicalUnit { pixels, meters, feet, percent, points, em, screenInches, screenCM, screenMM };
 
@@ -507,6 +507,25 @@ public:
       set { delete stroke; stroke = value; }
       get { return stroke; }
    };
+}
+
+public class GraphicInstance : GraphicalElement
+{
+   GraphicalElement element;
+
+   type = instance;
+
+public:
+   property GraphicalElement element
+   {
+      set { if(element != value) { delete element; element = value; if(value) incref value; } }
+      get { return element; }
+   }
+
+   ~GraphicInstance()
+   {
+      delete element;
+   }
 }
 
 // TODO: !!
