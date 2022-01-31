@@ -19,8 +19,9 @@ class GEShapeData : struct
    uint commandsCount;
    uint vertexBase; vertexBase = -1;
    uint fillBase; fillBase = -1;
-   uint lineBase;; lineBase = -1;
+   uint lineBase; lineBase = -1;
    TesselatedShape tShape;
+   bool anchored; // To know which DrawManager (overlay or billboards) to free with...
 
    ~GEShapeData()
    {
@@ -135,10 +136,11 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
 
          for(e : mge.elements)
          {
+            GraphicalElement ce = e;
             // TODO: Proper 3D transforms
-            lTransform[0] = (float)(cTransform[0] + e.transform.position.x);
-            lTransform[1] = (float)(cTransform[1] + e.transform.position.y);
-            prepareDrawGE(flags, dm, e, lTransform);
+            lTransform[0] = (float)(cTransform[0] + ce.transform.position.x);
+            lTransform[1] = (float)(cTransform[1] + ce.transform.position.y);
+            prepareDrawGE(flags, dm, ce, lTransform);
          }
          break;
       }
@@ -158,6 +160,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             ge.internal = shapeData = {};
 
          rdrFlags = anchored ? { bbShapes = true } : { overlay = true };
+         shapeData.anchored = anchored;
          if(shapeData.vertexBase == -1)
          {
             Shape shp = (Shape)ge;
@@ -175,7 +178,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             shapeData.lineBase = dm.md.allocateIx(tShape->ixCount, sizeof(tShape->ix[0]), tShape->ix);
 
             //tShape->free();  TOCHECK: Currently not freeing this for easier calculation of if a point is within a shape
-            tShape->vCount = 0;
+            // tShape->vCount = 0; // We need the count to free...
             // TODO: Calculate combined transform
          }
          break;
@@ -188,7 +191,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          //TIManager dm = rdrFlags.bbTextAndImages ? mgr.tiBillboardDM : mgr.tiOverlayDM;
          // TODO: prepare 4 points geometry here instead?
          if(!imageData)
-            imageData = {};
+            ge.internal = imageData = { };
          if(!imageData.image)
          {
             Bitmap bmp { };
@@ -213,7 +216,6 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                delete glBmp;
             }
             delete bmp;
-            ge.internal = imageData;
          }
          break;
       }
@@ -221,10 +223,11 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
       {
          GEModelData modelData = (GEModelData)ge.internal;
          Model mdl = (Model)ge;
-         Object m = modelData.model;//this.model;
+         Object m;
          // MDManager dm = mgr.perspective3DDM;
          if(!modelData)
             ge.internal = modelData = {};
+         m = modelData.model;//this.model;
          rdrFlags = { perspective = true };
          if(m)
          {
@@ -545,7 +548,7 @@ static InsideReturn pointInside(Array<Pointf> nodes, Pointf point, double e)
 }
 #endif
 
-public void unloadGraphicsGE(bool shutDown, GraphicalElement ge, DisplaySystem displaySystem)
+public void unloadGraphicsGE(bool shutDown, GraphicalElement ge, DisplaySystem displaySystem, PresentationManager mgr)
 {
    if(ge)
    {
@@ -563,15 +566,46 @@ public void unloadGraphicsGE(bool shutDown, GraphicalElement ge, DisplaySystem d
             break;
          }
          case image:
-            // Unload image here?
+         {
+            GEImageData imageData = (GEImageData)ge.internal;
+            if(imageData)
+            {
+               LWDrawManager::destroyImage(imageData.image);
+               imageData.image = null;
+            }
             break;
+         }
          case shape:
          {
             GEShapeData shapeData = (GEShapeData)ge.internal;
-            // TODO: Freeing buffers here? Do we need the PresentationManager / DrawManager for that?
-            shapeData.vertexBase = -1;
-            shapeData.fillBase = -1;
-            shapeData.lineBase = -1;
+            if(shapeData)
+            {
+               ShapesManager dm = shapeData.anchored ? mgr.shapeBillboardDM : mgr.shapeOverlayDM;
+               TesselatedShape * tShape = &shapeData.tShape;
+               if(shapeData.fillBase != -1)
+               {
+                  dm.md.freeIx(shapeData.fillBase, sizeof(tShape->ixFill[0]), tShape->fillCount);
+                  shapeData.fillBase = -1;
+               }
+               if(shapeData.lineBase != -1)
+               {
+                  dm.md.freeIx(shapeData.lineBase, sizeof(tShape->ix[0]), tShape->ixCount);
+                  shapeData.lineBase = -1;
+               }
+               if(shapeData.vertexBase != -1)
+               {
+                  dm.md.freeVbo(shapeData.vertexBase, sizeof(tShape->points[0]), tShape->vCount);
+                  shapeData.vertexBase = -1;
+               }
+               tShape->free();
+            }
+            break;
+         }
+         case multi:
+         {
+            MultiGraphicalElement mge = (MultiGraphicalElement)ge;
+            for(e : mge.elements)
+               unloadGraphicsGE(shutDown, e, displaySystem, mgr);
             break;
          }
       }
@@ -600,6 +634,19 @@ public void freeGE(GraphicalElement ge)
          {
             GEImageData imageData = ge.internal;
             delete imageData;
+            break;
+         }
+         case path3D:
+         {
+            GEPath3DData path3DData = ge.internal;
+            delete path3DData;
+            break;
+         }
+         case multi:
+         {
+            MultiGraphicalElement mge = (MultiGraphicalElement)ge;
+            for(e : mge.elements)
+               freeGE(e);
             break;
          }
       }
