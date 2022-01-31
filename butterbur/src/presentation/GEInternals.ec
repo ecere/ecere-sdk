@@ -449,7 +449,7 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
             while(it.Prev())
             {
                GraphicalElement e = it.data;
-               GraphicalElement re = pickGE(tx, ty, rdrFlags, e, transform);
+               GraphicalElement re = pickGE(tx, ty, rdrFlags, e, null);
                if(re)
                {
                   picked = re;
@@ -460,7 +460,7 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
          break;
       }
       case instance:
-         if(pickGE(tx, ty, rdrFlags, ((GraphicInstance)ge).element, transform))
+         if(pickGE(tx, ty, rdrFlags, ((GraphicInstance)ge).element, null))
             return ge;
          break;
    }
