@@ -14,7 +14,7 @@ public:
    VAlignment vertAlign:3;
 };
 
-public class GEFont : struct   // NOTE: This will likely be renamed to simply Font in next-gen Ecere Graphics
+public class GEFont /*: struct */  // NOTE: This will likely be renamed to simply Font in next-gen Ecere Graphics
 {
    void OnCopy(GEFont src)
    {
@@ -517,7 +517,29 @@ public:
    {
       set
       {
-         elements.copySrc = value;
+         if(value)
+         {
+            if(!eClass_IsDerived(value._class, class(Array)))
+               elements.copySrc = (void *)value;
+            else
+            {
+               delete elements;
+               elements = (Array<GraphicalElement>)value;
+               incref value;
+            }
+            for(e : elements)
+            {
+               GraphicalElement ge = e;
+               *&ge.parent = this;
+               incref ge;
+            }
+         }
+         else
+         {
+            for(e : elements)
+               *&e.parent = null;
+            elements.Free();
+         }
       }
       get { return this ? elements : null; }
    }
@@ -647,7 +669,7 @@ public:
 
    property GEFont font
    {
-      set { if(value) font.OnCopy(value); else font = null; }
+      set { delete font; font = value; if(value) incref value; } // Font is now a normal class
       get { return font; }
    }
 
