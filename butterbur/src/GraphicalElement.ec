@@ -138,9 +138,9 @@ public class Stroke : struct
 
 public:
    Color color;
-   Array<GraphicalElement> pattern;
-   float opacity;
    float width;
+   float opacity;
+   Array<GraphicalElement> pattern;
    StrokeStyling center { opacity = 1.0 };
    StrokeStyling casing { opacity = 1.0 };
    LineJoin join;
