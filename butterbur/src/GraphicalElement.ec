@@ -834,6 +834,7 @@ public:
    Pointf hotSpot;
    Color tint;
    Color blackTint;
+   int alphaThreshold;
 
    hotSpot = { 0.5, 0.5 };
    tint = white;
