@@ -1,6 +1,7 @@
 public import "ecere"
-import "GraphicalSurface"
-import "GraphicalPresentation"
+
+import "GraphicalElement"
+import "TIManager"
 
 int wrapTextExtentFM(LWFontManager fm, GEFont geFont, LWFMFont font, const String text, int ex, int ey, int * wtw, int * wth)
 {
@@ -17,7 +18,7 @@ int wrapTextExtentFM(LWFontManager fm, GEFont geFont, LWFMFont font, const Strin
    fm.getExtent(0, 0, "W", 1, box);
    tw = box.right - box.left;
    th = box.bottom - box.top;
-   th = (font.lineHeight) * pixelSize;
+   th = (int)(font.lineHeight * pixelSize);
    lh = th;
 
    *wtw = 0;
@@ -40,7 +41,7 @@ int wrapTextExtentFM(LWFontManager fm, GEFont geFont, LWFMFont font, const Strin
             fm.getExtent(0, 0, drawUntil ? drawUntil : start, (int)(nextSpace - (drawUntil ? drawUntil : start)), box);
             tw = box.right - box.left;
             th = box.bottom - box.top;
-            th = (font.lineHeight) * pixelSize;
+            th = (int)(font.lineHeight * pixelSize);
 
             if(!th) th = lh;
             if(w + tw < ex || !drawUntil)
@@ -62,7 +63,7 @@ int wrapTextExtentFM(LWFontManager fm, GEFont geFont, LWFMFont font, const Strin
                fm.getExtent(0, 0, start, (int)(drawUntil - start), box);
                w = box.right - box.left;
                th = box.bottom - box.top;
-               th = (font.lineHeight) * pixelSize;
+               th = (int)(font.lineHeight * pixelSize);
             }
          }
          if(drawUntil)
@@ -105,7 +106,7 @@ enum Direction { horizontal, vertical };
 
 GEFont defaultFont { "Tahoma", 8.25f };
 
-class Element : MultiPresentation
+class Element : MultiGraphicalElement
 {
 private:
    DimensionBox margin, border, padding;  // The Box model
@@ -132,24 +133,22 @@ private:
    GEFont font;
    Image image;
 
-   RoundedRectangle gRect { };
-   GraphicalPresentation pRect { this, graphic = gRect };
-   Text gText { };
-   GraphicalPresentation pText { this, graphic = gText };
+   RoundedRectangle gRect { parent = this };
+   Text gText { parent = this };
 
    /*
-   List<Primitive> primitives;   // Displays above subElements
-   List<Primitive> bgPrimitives; // Displays behind subElements, need to figure out how to scale to width (e.g. Rectangle with a gradient)
+   List<Primitive> primitives;   // Displays above elements
+   List<Primitive> bgPrimitives; // Displays behind elements, need to figure out how to scale to width (e.g. Rectangle with a gradient)
    List<Effects> effects;
    */
 
-   void computeContentSize(DisplaySystem displaySystem)
+   void computeContentSize(LWFontManager fontManager)
    {
       int cw = clientSize.w, ch = clientSize.h;
       int minimum = 0, thickness = 0;
       Size graphicsSize { };
       int rcw = cw, rch = ch;
-      for(n : subElements; eClass_IsDerived(n._class, class(Element)))
+      for(n : elements; eClass_IsDerived(n._class, class(Element)))
       {
          Element e = (Element)n;
          if(e.autoLayoutFlag)
@@ -190,7 +189,7 @@ private:
 
             e.clientSize = { w, h };
 
-            e.computeContentSize(displaySystem);
+            e.computeContentSize(fontManager);
             if(!e.hScroll && e.contentSize.w > nw) nw = e.contentSize.w;
             if(!e.vScroll && e.contentSize.h > nh) nh = e.contentSize.h;
 
@@ -214,29 +213,22 @@ private:
          /*if(!cw) cw = MAXINT;
          if(!ch) ch = MAXINT;*/
 
-         MultiPresentation topPres = parent;
-         GraphicalSurface gSurface;
          LWFMFont font;
-         LWFontManager fm;
-
          Element p = this;
+         GEFont tFont = null;
+
          while(!p.font && p.parent && eClass_IsDerived(p.parent._class, class(Element)))
             p = (Element)p.parent;
 
-         GEFont tFont;
          tFont.OnCopy(p.font);
          tFont.color = fgColor;
 
          gText.font = tFont;
          gText.text = caption;
 
-         while(topPres.parent) topPres = topPres.parent;
-         gSurface = (GraphicalSurface)topPres;
-         fm = gSurface.fontManager;
+         font = fontManager.getFont(gText.font);
 
-         font = fm.getFont(gText.font);
-
-         wrapTextExtentFM(gSurface.fontManager, gText.font, font, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
+         wrapTextExtentFM(fontManager, gText.font, font, caption, cw, ch, (int *)&graphicsSize.w, (int *)&graphicsSize.h);
          if(graphicsSize.w)
             graphicsSize.w += 1;
       }
@@ -250,7 +242,7 @@ private:
 
    void updateTLPosition()
    {
-      for(n : subElements; eClass_IsDerived(n._class, class(Element)))
+      for(n : elements; eClass_IsDerived(n._class, class(Element)))
       {
          Element e = (Element)n;
          e.tlPosition = { e.position.x + tlPosition.x, e.position.y + tlPosition.y };
@@ -266,12 +258,12 @@ private:
       int thickness = direction == vertical   ? clientSize.w : clientSize.h;
       int start = 0;
       int totalMin = 0;
-      Alignment2D lastAlignment = subElements.count > 2 ? ((Element)subElements[2]).selfAlignment : { };
+      Alignment2D lastAlignment = elements.GetCount() > 2 ? ((Element)elements[2]).selfAlignment : { };
       if(!(int)(direction == horizontal ? lastAlignment.horzAlign : lastAlignment.vertAlign))
          lastAlignment = alignment;
 
       // Allocate extra space
-      for(n : subElements; eClass_IsDerived(n._class, class(Element)))
+      for(n : elements; eClass_IsDerived(n._class, class(Element)))
       {
          Element e = (Element)n;
          e.clientSize = { };
@@ -339,7 +331,7 @@ private:
          }
       }
 
-      for(n : subElements; eClass_IsDerived(n._class, class(Element)))
+      for(n : elements; eClass_IsDerived(n._class, class(Element)))
       {
          Element e = (Element)n;
          int w = e.hScroll ? 0 : e.contentSize.w;
@@ -436,7 +428,7 @@ private:
          {
             e.tlPosition = { e.position.x + tlPosition.x, e.position.y + tlPosition.y };
             e.clientSize = { w, h };
-            if(e.autoLayoutFlag && e.subElements)
+            if(e.autoLayoutFlag && e.elements)
                e.autoLayout();
          }
          else
@@ -444,41 +436,43 @@ private:
             if(e.tlPosition.x != e.position.x + tlPosition.x || e.tlPosition.y != e.position.y + tlPosition.y )
                positionUpdated = true;
             e.tlPosition = { e.position.x + tlPosition.x, e.position.y + tlPosition.y };
-            if(positionUpdated && e.subElements)
+            if(positionUpdated && e.elements)
                e.updateTLPosition();
          }
       }
 
 
-      Element p = this;
-      while(!p.font && p.parent && eClass_IsDerived(p.parent._class, class(Element)))
-         p = (Element)p.parent;
+      {
+         Element p = this;
+         GEFont tFont = null;
+         int sw = contentSize.w, sh = contentSize.h;
+         int x = tlPosition.x, y = tlPosition.y;
 
-      GEFont tFont;
-      tFont.OnCopy(p.font);
-      tFont.color = fgColor;
+         while(!p.font && p.parent && eClass_IsDerived(p.parent._class, class(Element)))
+            p = (Element)p.parent;
 
-      int sw = contentSize.w, sh = contentSize.h;
-      int x = tlPosition.x, y = tlPosition.y;
+         tFont.OnCopy(p.font);
+         tFont.color = fgColor;
 
-      gText.font = tFont;
-      gText.text = caption;
+         gText.font = tFont;
+         gText.text = caption;
 
-      // TODO: Use graphical elements to render?
-      gRect.box = { x, y, x + cw, y + ch };
-      gRect.fill = { bgColor.color, opacity = bgColor.a / 255.0 };
-      gRect.stroke = { borderColor.color, opacity = borderColor.a / 255.0, width = 0 };
+         // TODO: Use graphical elements to render?
+         gRect.box = { x, y, x + cw, y + ch };
+         gRect.fill = { bgColor.color, opacity = bgColor.a / 255.0f };
+         gRect.stroke = { borderColor.color, opacity = borderColor.a / 255.0f, width = 0 };
 
-      pRect.graphic = gRect;
+         // TODO: Update? pRect.graphic = gRect;
 
-      if(alignment.horzAlign == center)
-         x += (cw - sw) / 2;
-      if(alignment.vertAlign == middle)
-         y += (ch - sh) / 2;
-      pText.position2D = { x, y };
-
-      gText.alignment = { left, top };
-      pText.graphic = gText;
+         if(alignment.horzAlign == center)
+            x += (cw - sw) / 2;
+         if(alignment.vertAlign == middle)
+            y += (ch - sh) / 2;
+         //pText.position2D = { x, y };
+         gText.position2D = { x, y };
+         gText.alignment = { left, top };
+         // TODO: Update? pText.graphic = gText;
+      }
    }
 
    #if 0 //  Render should now be handled by Graphical Presentations
@@ -508,9 +502,9 @@ private:
          // surface.WriteText(x, y, caption, strlen(caption));
          wrapText(surface, caption, x, y, tlPosition.x + clientSize.w, tlPosition.y + clientSize.h);
       }
-      if(subElements)
+      if(elements)
       {
-         for(n : subElements)
+         for(n : elements)
             ((Element)n).render(surface);
       }
    }
@@ -617,59 +611,3 @@ class Elemental2 : Col
 }
 */
 
-class AutoLayoutForm : Window
-{
-   displayDriver = "OpenGL";
-   caption = "";
-   background = formColor;
-   borderStyle = sizable;
-   hasMaximize = true;
-   hasMinimize = true;
-   hasClose = true;
-   clientSize = { 640, 480 };
-
-   GraphicalSurface gs { };
-
-   Element contents;
-
-   AutoLayoutForm()
-   {
-      UseSingleGLContext(true);
-   }
-
-   bool OnLoadGraphics()
-   {
-      // contents.loadGraphics(displaySystem);
-      incref contents;
-      contents.parent = gs;
-
-      setupGL(display);
-      gs.calculate(gs, gs.presManager);
-
-      return true;
-   }
-
-   void OnResize(int width, int height)
-   {
-      int nw = contents.minSize.w.getPixels(width);
-      int nh = contents.minSize.h.getPixels(height);
-
-      setupGL(display);
-      contents.clientSize = { Max(nw, width), Max(nh, height) };
-      if(contents.subElements)
-      {
-         contents.computeContentSize(displaySystem);
-         contents.autoLayout();
-      }
-      Update(null);
-   }
-
-   void OnRedraw(Surface surface)
-   {
-      Size size = clientSize;
-
-      //contents.render(surface);
-      setupGL(display);
-      gs.render(size.w, size.h, 0, 0);
-   }
-}

@@ -64,7 +64,8 @@
                   "$(ECERE_SDK_SRC)/butterbur/src/presentation/DrawingManager.ec",
                   "$(ECERE_SDK_SRC)/butterbur/src/presentation/AnchoredPresentation.ec",
                   "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalPresentation.ec",
-                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalSurface.ec"
+                  "$(ECERE_SDK_SRC)/butterbur/src/presentation/GraphicalSurface.ec",
+                  "../../src/presentation/GEInternals.ec"
                ]
             },
             {
@@ -162,7 +163,8 @@
       {
          "Folder" : "gui",
          "Files" : [
-            "$(ECERE_SDK_SRC)/butterbur/src/gui/autoLayout.ec"
+            "$(ECERE_SDK_SRC)/butterbur/src/gui/autoLayout.ec",
+            "../../src/gui/AutoLayoutForm.ec"
          ]
       },
       {
