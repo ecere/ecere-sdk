@@ -1092,6 +1092,9 @@ printf( "   Render image at %d %d, order 0x%x, texture %p\n", (int)imagebuffer->
   dmFlushRenderDrawBuffer( dm, drawbuffer, program, vertexcount );
   dm->imagebuffercount = 0;
 
+  if(!stateblend)
+     glEnable(GL_BLEND);
+
   ERRORCHECK();
 }
 
