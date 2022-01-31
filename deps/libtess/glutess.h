@@ -198,7 +198,7 @@ GLAPI void GLAPIENTRY gluTessEndContour (GLUtesselator* tess);
 GLAPI void GLAPIENTRY gluTessEndPolygon (GLUtesselator* tess);
 GLAPI void GLAPIENTRY gluTessNormal (GLUtesselator* tess, GLdouble valueX, GLdouble valueY, GLdouble valueZ);
 GLAPI void GLAPIENTRY gluTessProperty (GLUtesselator* tess, GLenum which, GLdouble data);
-GLAPI void GLAPIENTRY gluTessVertex (GLUtesselator* tess, GLdouble *location, GLvoid* data);
+GLAPI void GLAPIENTRY gluTessVertex (GLUtesselator* tess, GLdouble location[3], GLvoid* data);
 
 #ifdef __cplusplus
 }
