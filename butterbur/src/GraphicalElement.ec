@@ -163,6 +163,8 @@ public struct StrokeStyling
 
 public class GraphicalElement
 {
+   class_no_expansion;
+
    Transform transform; // The transform applied at this specific level of the hierarchy
    float opacity;
    GEType type;
