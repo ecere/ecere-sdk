@@ -780,7 +780,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                         setInstance(object,  (Instance)(uintptr)val.i);
 
                         if(destType.type == normalClass)
-                           eInstance_DecRef((Instance)(uintptr)val.i);
+                           ; //eInstance_DecRef((Instance)(uintptr)val.i);
                         else if(destType.type == noHeadClass)
                         {
                            // TODO: base classes destructors?
@@ -814,19 +814,19 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                            if(e._class == class(CMSSExpInstance))
                            {
                               CMSSExpInstance instExp = (CMSSExpInstance)e;
-                              Instance a = instExp.instData;
+                              /*Instance a = instExp.instData;
                               Class c = instExp.expType;
                               if(c && c.type == normalClass)
                                  a._refCount++;
-
+                              */
                               array[j] = instExp.instData;
                            }
                            j++;
                         }
 
-                        setInstance(object,  (Instance)(uintptr)array);
+                        setInstance(object, (Instance)(uintptr)array);
 
-                        delete array;
+                        // delete array;
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
@@ -883,7 +883,6 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
    #endif
                      }
                   }
-                  val.OnFree();
                   *flg |= flag;
                }
                else
