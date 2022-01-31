@@ -114,7 +114,8 @@ public struct Boxf
 public struct PickResult
 {
    Presentation presentation;
-   union { GraphicalElement element; uint64 id; };
+   GraphicalElement element;
+   uint64 id;
 };
 
 public class MultiPresentation : Presentation
