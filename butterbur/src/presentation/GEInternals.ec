@@ -144,6 +144,22 @@ public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalEle
          }
          break;
       }
+      case instance:
+      {
+         GraphicInstance gi = (GraphicInstance)ge;
+         if(gi.element)
+         {
+            float lTransform[12];
+                                           // For now assuming 3 floats
+            memcpy(lTransform, cTransform, 3 /*12*/ * sizeof(float));
+
+            // TODO: Proper 3D transforms
+            lTransform[0] = (float)(cTransform[0] + gi.element.transform.position.x);
+            lTransform[1] = (float)(cTransform[1] + gi.element.transform.position.y);
+            prepareDrawGE(flags, dm, gi.element, lTransform);
+         }
+         break;
+      }
    }
 }
 
@@ -360,6 +376,13 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
 
          break;
       }
+      case instance:
+      {
+         GraphicInstance gi = (GraphicInstance)ge;
+         if(gi.element)
+            rdrFlags = calculateGE(gi.element, mgr, anchored);
+         break;
+      }
    }
    return rdrFlags;
 }
@@ -409,7 +432,12 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
                }
             }
          }
+         break;
       }
+      case instance:
+         if(pickGE(tx, ty, rdrFlags, ((GraphicInstance)ge).element, transform))
+            return ge;
+         break;
    }
    return picked;
 }
@@ -608,6 +636,13 @@ public void unloadGraphicsGE(bool shutDown, GraphicalElement ge, DisplaySystem d
                unloadGraphicsGE(shutDown, e, displaySystem, mgr);
             break;
          }
+         case instance:
+         {
+            GraphicInstance gi = (GraphicInstance)ge;
+            if(gi.element)
+               unloadGraphicsGE(shutDown, gi.element, displaySystem, mgr);
+            break;
+         }
       }
    }
 }
@@ -647,6 +682,13 @@ public void freeGE(GraphicalElement ge)
             MultiGraphicalElement mge = (MultiGraphicalElement)ge;
             for(e : mge.elements)
                freeGE(e);
+            break;
+         }
+         case instance:
+         {
+            GraphicInstance gi = (GraphicInstance)ge;
+            if(gi.element)
+               freeGE(gi.element);
             break;
          }
       }
