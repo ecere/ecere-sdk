@@ -32,7 +32,7 @@ public class Presentation
    {
       return 0;
    }
-   public virtual void unloadGraphics(bool shutDown);
+   public virtual void unloadGraphics(bool shutDown, PresentationManager mgr);
 
    public property MultiPresentation parent
    {
@@ -203,12 +203,12 @@ public:
       return results;
    }
 
-   void unloadGraphics(bool shutDown)
+   void unloadGraphics(bool shutDown, PresentationManager mgr)
    {
       for(o : subElements)
       {
          Presentation p = o;
-         p.unloadGraphics(shutDown);
+         p.unloadGraphics(shutDown, mgr);
       }
    }
 }

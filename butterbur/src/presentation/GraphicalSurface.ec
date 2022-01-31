@@ -28,9 +28,12 @@ public class GraphicalSurface : MultiPresentation
    bool doneManagersSetup;
 
    // TODO: How will graphics context termination be handled properly?
-   public void unloadGraphics(bool shutDown)
+   public void unloadGraphics(bool shutDown, PresentationManager mgr)
    {
+      MultiPresentation::unloadGraphics(shutDown, presManager);
+
       drawManager.end();
+      presManager.free();
    }
 
    void setupManagers()
