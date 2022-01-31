@@ -125,13 +125,16 @@ static int frFontResizeTexture( void *rendererhandle, int width, int height )
   frFontState *state;
 
   state = (frFontState *)rendererhandle;
-  /* Reuse create to resize too. */
+  // Reuse create to resize too.
   if( state->imagelist )
-    free( state->imagelist );
-  state->imagecount = 0;
-  state->imagealloc = 512;
-  state->imagelist = malloc( state->imagealloc * sizeof(dmImage) );
-
+    ; // REVIEW: free( state->imagelist );
+      // It seems that this was freeing existing glyphs while the atlas is being resized...
+  if(!state->imagelist )
+  {
+    state->imagecount = 0;
+    state->imagealloc = 512;
+    state->imagelist = malloc( state->imagealloc * sizeof(dmImage) );
+  }
   retval = frFontCreateTexture( rendererhandle, width, height );
   return retval;
 }
