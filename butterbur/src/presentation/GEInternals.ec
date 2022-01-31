@@ -12,6 +12,12 @@ class GEImageData : struct
 {
    void * image;
    int imgW, imgH;
+   byte * alpha;
+
+   ~GEImageData()
+   {
+      delete alpha;
+   }
 }
 
 class GEShapeData : struct
@@ -211,25 +217,37 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          if(!imageData.image)
          {
             Bitmap bmp { };
-            Bitmap glBmp;
-            uint tex;
 
             // TODO: Share images (loadImage())
-            bmp.Load(img.image.path, null, null);
-            glBmp = bmp.ProcessDD(false, 0, 0, 16384, 0, 0, 0);
-            if(glBmp)
+            if(bmp.Load(img.image.path, null, null))
             {
-               glGenTextures(1, &tex);
-               glBindTexture(GL_TEXTURE_2D, tex);
-               glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-               glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-               glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-               glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, bmp.width, bmp.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBmp.picture);
-               imageData.imgW = bmp.width;
-               imageData.imgH = bmp.height;
-               // TODO: Image alignment? (Currently handled in prepareDraw())
-               imageData.image = LWDrawManager::defineImage(tex, 0, 0, bmp.width, bmp.height, 1, 0, 0);
-               delete glBmp;
+               ColorAlpha * color = (ColorAlpha *)bmp.picture;
+               int i;
+               uint size = bmp.width * bmp.height;
+               Bitmap glBmp;
+
+               imageData.alpha = new byte[size];
+               for(i = 0; i < size; i++)
+                  imageData.alpha[i] = color[i].a;
+
+               glBmp = bmp.ProcessDD(false, 0, 0, 16384, 0, 0, 0);
+               if(glBmp)
+               {
+                  uint tex;
+
+                  glGenTextures(1, &tex);
+                  glBindTexture(GL_TEXTURE_2D, tex);
+                  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+                  glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+                  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                  //if(glBmp.keepData) // breaks things
+                  glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, bmp.width, bmp.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, glBmp.picture);
+                  imageData.imgW = bmp.width;
+                  imageData.imgH = bmp.height;
+                  // TODO: Image alignment? (Currently handled in prepareDraw())
+                  imageData.image = LWDrawManager::defineImage(tex, 0, 0, bmp.width, bmp.height, 1, 0, 0);
+                  delete glBmp;
+               }
             }
             delete bmp;
          }
@@ -405,15 +423,22 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
       case shape: return shapeContainsPoint(tx, ty, ge) ? ge : null;
       case image:
       {
-         // TODO: Check hotspot, alpha channels (can't click a transparent portion of image), etc
-         // Something isn't working quite right here, imgW and imgH both show up in debug watch as 0 when they clearly have a value so this might be related?
          Image img = (Image)ge;
          GEImageData imageData = (GEImageData)ge.internal;
-         float w = imageData.imgW * ge.scaling2D.x;
-         float h = imageData.imgH * ge.scaling2D.y;
-         tx += w * img.hotSpot.x;
-         ty += h * img.hotSpot.y;
-         return (tx >= 0 && ty >= 0 && tx < w && ty < h) ? ge : null;
+         float w = imageData.imgW;
+         float h = imageData.imgH;
+         tx += w * img.hotSpot.x * ge.scaling2D.x;
+         ty += h * img.hotSpot.y * ge.scaling2D.y;
+         tx /= ge.scaling2D.x;
+         ty /= ge.scaling2D.y;
+
+         if(tx >= 0 && ty >= 0 && tx < w && ty < h)
+         {
+            int ix = (int)tx, iy = (int)ty;
+            byte a = imageData.alpha ? ((byte *)imageData.alpha)[iy * imageData.imgW + ix] : 255;
+            return a >= img.alphaThreshold ? ge : null;
+         }
+         break;
       }
       case text:  return null; //Can't click text without some glyph size calculations
       case multi:
