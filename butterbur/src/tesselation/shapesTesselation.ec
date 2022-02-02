@@ -30,6 +30,8 @@ private static inline double pointsArea(Pointf * points, int count)
    return area;
 }
 
+static define joinMaxTimesStrokeWidth = 10;
+
 struct TesselatedShape
 {
    Pointf * points;
@@ -364,7 +366,7 @@ struct TesselatedShape
                   }
                   else
                   {
-                     float r = fabsf(lineWidth / cosf(diffAngle/2) / 2);
+                     float r = fabsf(lineWidth / Max(0.5f / joinMaxTimesStrokeWidth, cosf(diffAngle/2)) / 2);
                      bool diffSigns = Sgn(at1) != Sgn(at2);
                      float angle;
                      float rx, ry;
