@@ -143,8 +143,8 @@ public:
    Array<GraphicalElement> pattern;
    StrokeStyling center { opacity = 1.0 };
    StrokeStyling casing { opacity = 1.0 };
-   LineJoin join;
-   LineCap cap;
+   LineJoin join; join = round;
+   LineCap cap; cap = round;
    Array<int> dashes;
    GraphicalUnit widthUnit;
 
