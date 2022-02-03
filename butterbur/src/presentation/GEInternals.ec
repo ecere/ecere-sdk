@@ -48,8 +48,11 @@ class GEModelData : struct
    Map<Color, Array<uint64>> modelColorMap;
 }
 
-// NOTE: both GraphicalPresentation and GeoFeaturePresentation will call this, where will it go?
-//void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalElement ge, GEType geType, TesselatedShape tShape, uint fillBase, uint vertexBase, uint lineBase, uint vCount, int imgW, int imgH, void * image, Object model, float * cTransform)
+class GETextData : struct
+{
+   Box box;
+}
+
 public void prepareDrawGE(RenderPassFlags flags, DrawingManager dm, GraphicalElement ge, float * cTransform)
 {
    switch(ge.type)
@@ -361,11 +364,25 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
       }
       case text:
       {
-         // Text txt = (Text)ge;
-         // TIManager dm = rdrFlags.bbTextAndImages ? mgr.tiBillboardDM : mgr.tiOverlayDM;
-         // TODO: morphing and glyph conversion here instead?
-
-         rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true };
+         GETextData textData = (GETextData)ge.internal;
+         Text txt = (Text)ge;
+         if(txt.text && txt.text[0])
+         {
+            // TODO: morphing and glyph conversion here instead?
+            TIManager tm = rdrFlags.bbTextAndImages ? mgr.tiBillboardDM : mgr.tiOverlayDM;
+            Box box;
+            int len = strlen(txt.text);
+            int paddingWidth = Max(2, (int)(1+(txt.font ? txt.font.outline.size : 0)));
+            LWFMHorizontalAlignment hAlign = txt.alignment.horzAlign == unset ? left : (LWFMHorizontalAlignment)(txt.alignment.horzAlign-1);
+            LWFMVerticalAlignment vAlign = txt.alignment.vertAlign == top ? top : txt.alignment.vertAlign == middle ? middle : bottom ;
+            LWFMFont lwfmFont = tm.fontManager.getFont(txt.font);
+            if(!textData)
+               ge.internal = textData = {};
+            tm.fontManager.setState(lwfmFont, (txt.font ? txt.font.size : 12) * 96 / 72, { hAlign, vAlign}, 0, paddingWidth);
+            tm.fontManager.getExtent(0, 0, txt.text, len, box);
+            textData.box = box;
+            rdrFlags = anchored ? { bbTextAndImages = true } : { overlayText = true };
+         }
          break;
       }
       case path3D:
@@ -425,6 +442,7 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
       {
          Image img = (Image)ge;
          GEImageData imageData = (GEImageData)ge.internal;
+
          float w = imageData.imgW;
          float h = imageData.imgH;
          tx += w * img.hotSpot.x * ge.scaling2D.x;
@@ -440,7 +458,14 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
          }
          break;
       }
-      case text:  return null; //Can't click text without some glyph size calculations
+      case text:
+      {
+         GETextData textData = (GETextData)ge.internal;
+         Box box = textData.box;
+         if(tx >= box.left && tx < box.right && ty >= box.top && ty < box.bottom)
+            return ge;
+         return null;
+      }
       case multi:
       {
          //if(ge._class == class(MultiGraphicalElement))
@@ -694,6 +719,12 @@ public void freeGE(GraphicalElement ge)
          {
             GEImageData imageData = ge.internal;
             delete imageData;
+            break;
+         }
+         case text:
+         {
+            GETextData textData = ge.internal;
+            delete textData;
             break;
          }
          case path3D:
