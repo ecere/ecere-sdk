@@ -350,6 +350,8 @@ struct TesselatedShape
                            float a = (i || end) ? (angle - (float)Pi/4) + (float)Pi : (angle + (float)Pi/4);
 
                            r *= sqrtf(2);
+                           rx = (r - sss) * fx + sss, ry = (r - sss) * fy + sss;
+
                            c = cosf(a) * rx, s = sinf(a) * ry;
                            points[startIX] = { p.x + c, p.y + s };
 
