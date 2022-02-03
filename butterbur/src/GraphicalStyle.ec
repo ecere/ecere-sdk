@@ -175,7 +175,10 @@ public enum ShapeStyleKind : GraphicalStyleKind
    fillStippleStyle = ShapeStyleMask { fillStippleStyle = true },
    fillHatchStyle = ShapeStyleMask { fillHatchStyle = true },
    fillGradient = ShapeStyleMask { fillGradient = true },
-   stroke = ShapeStyleMask { strokePattern = true, strokeOpacity = true, strokeWidth = true, strokeColor = true, strokeCenterWidth = true, strokeCenterColor = true, strokeCenterOpacity = true, strokeCasingWidth = true, strokeCasingColor = true, strokeCasingOpacity = true },
+   stroke = ShapeStyleMask {
+      strokePattern = true, strokeOpacity = true, strokeWidth = true, strokeColor = true, strokeCenterWidth = true, strokeCenterColor = true, strokeCenterOpacity = true,
+      strokeCasingWidth = true, strokeCasingColor = true, strokeCasingOpacity = true, strokeJoin = true, strokeCap = true, strokeDashPattern = true
+   },
    strokePattern = ShapeStyleMask { strokePattern = true },
    strokeOpacity = ShapeStyleMask { strokeOpacity = true },
    strokeWidth = ShapeStyleMask { strokeWidth = true },
