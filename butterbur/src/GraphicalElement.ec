@@ -474,15 +474,23 @@ public:
 public class Dot : Shape
 {
    Pointf point;
-   float size;
+   // float size;
 
    shpType = dot;
+   stroke.width = 10;
+   stroke.color = white;
 
 public:
    property Pointf point
    {
       set { point = value; }
       get { value = point; }
+   }
+
+   property float size
+   {
+      set { stroke.width = value; }
+      get { return stroke.width; }
    }
 }
 
