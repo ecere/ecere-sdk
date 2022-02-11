@@ -423,7 +423,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
 }
 
 // TODO: Proper full box test, not middle point
-public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, GraphicalElement ge, float * transform)
+GraphicalElement pickGE(float x, float y, GraphicalElement ge, float * transform)
 {
    // Checks if the point is within the GraphicalElement
    // Currently only good for overlaid elements
@@ -432,8 +432,6 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
    GraphicalElement picked = null;
    float tx = x - (float)(ge.transform.position.x) - (transform ? transform[0] : 0);
    float ty = y - (float)(ge.transform.position.y) - (transform ? transform[1] : 0);
-   if(!(rdrFlags & { overlay = true, overlayText = true, bbShapes = true, bbTextAndImages = true }))
-      return null;
 
    switch(ge.type)
    {
@@ -474,7 +472,7 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
             while(it.Prev())
             {
                GraphicalElement e = it.data;
-               GraphicalElement re = pickGE(tx, ty, rdrFlags, e, null);
+               GraphicalElement re = pickGE(tx, ty, e, null);
                if(re)
                {
                   picked = re;
@@ -485,7 +483,7 @@ public GraphicalElement pickGE(float x, float y, RenderPassFlags rdrFlags, Graph
          break;
       }
       case instance:
-         if(pickGE(tx, ty, rdrFlags, ((GraphicInstance)ge).element, null))
+         if(pickGE(tx, ty, ((GraphicInstance)ge).element, null))
             return ge;
          break;
    }
