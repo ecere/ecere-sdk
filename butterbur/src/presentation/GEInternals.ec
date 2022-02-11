@@ -459,9 +459,12 @@ GraphicalElement pickGE(float x, float y, GraphicalElement ge, float * transform
       case text:
       {
          GETextData textData = (GETextData)ge.internal;
-         Box box = textData.box;
-         if(tx >= box.left && tx < box.right && ty >= box.top && ty < box.bottom)
-            return ge;
+         if(textData)
+         {
+            Box box = textData.box;
+            if(tx >= box.left && tx < box.right && ty >= box.top && ty < box.bottom)
+               return ge;
+         }
          return null;
       }
       case multi:
