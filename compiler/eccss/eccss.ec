@@ -768,7 +768,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      {
                         void (* setString)(void * o, String v) = (void *)prop.Set;
                         String s =
-                           (val.type.type == text)    ? CopyString(val.s)  :
+                           (val.type.type == text)    ? (val.type.mustFree ? val.s : CopyString(val.s)) :
                            (val.type.type == real)    ? PrintString(val.r) :
                            (val.type.type == integer) ? PrintString(val.i) : null;
                         setString(object, s);
@@ -859,7 +859,7 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      else if(destType == class(String))
                      {
                         *(String *)((byte *)object + mInit.offset) =
-                           (val.type.type == text)    ? CopyString(val.s)  :
+                           (val.type.type == text)    ? (val.type.mustFree ? val.s : CopyString(val.s))  :
                            (val.type.type == real)    ? PrintString(val.r) :
                            (val.type.type == integer) ? PrintString(val.i) : null;
                      }
