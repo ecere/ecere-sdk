@@ -310,42 +310,44 @@ public:
    // Trying to get data using the wrong property (eg: using s when
    //   type.type==array) should return 0, 0.0 or null, according to the property type.
 
+   // TODO: Get rid of these properties, they cause a great deal of confusion and are unnecessary.
+
    // Property to access data as pointer to void:
-   property void * b {
+   property void * prop_b {
       get{ return (type.type == blob) ? b : null;}
       set{b = value; type = {blob, true};}
       isset { return type.type == blob && b != null;}
    }
 
    // Property to access data as String (aka char *):
-   property String s {
+   property String prop_s {
       get{ return (type.type == text) ? s : null;}
       set{ s = value; type = {text, true};}
       isset { return type.type == text && s != null;}
    }
    // Property to access data as integer:
-   property int64 i {
+   property int64 prop_i {
       get{ return (type.type == integer) ? i : 0;}
       set{ i = value; type = {integer, false};}
       isset { return type.type == integer;}
    }
 
    // Property to access data as real:
-   property double r {
+   property double prop_r {
       get{ return (type.type == real) ? r : 0.0;}
       set{ r = value; type = {real, false};}
       isset { return type.type == real;}
    }
 
    // Property to access data as array:
-   property Array<FlexyField> a {
+   property Array<FlexyField> prop_a {
       get{ return (type.type == array) ? a : null;}
       set{ a = value; type = {array, true};}
       isset { return type.type == array && a != null;}
    }
 
    // Property to access the data as map:
-   property Map<String, FlexyField> m {
+   property Map<String, FlexyField> prop_m {
       get{ return (type.type == map) ? m : null;}
        set{ m = value; type = {map, true};}
       isset { return type.type == map && m != null;}
@@ -627,7 +629,7 @@ public:
          delete working;
          if(result)
          {
-            property::m = tempMap.M;
+            prop_m = tempMap.M;
             tempMap.M = null;
          }
          delete tempMap;
@@ -639,14 +641,14 @@ public:
          result = getArrayOrMap(string, class(Array<FlexyField>), (void*)&tempArray);
          if(!result)
             delete tempArray;
-         property::a = tempArray;
+         prop_a = tempArray;
          return result;
       }
       else if(string[0] == '\"')
       {
          int len = strlen(string + 1);
          if(len > 0) len--;
-         property::s = new char[len + 1];
+         prop_s = new char[len + 1];
          UnescapeCString(s, string+1, len);
          return true;
       }
@@ -658,13 +660,13 @@ public:
       }
       else if(!strcmpi(string, "false"))
       {
-         property::i = 0;
+         prop_i = 0;
          type.format = boolean;
          return true;
       }
       else if(!strcmpi(string, "true"))
       {
-         property::i = 1;
+         prop_i = 1;
          type.format = boolean;
          return true;
       }
@@ -673,17 +675,17 @@ public:
          char * rest;
          if(strchr(string, '.') || strchr(string, 'E') || strchr(string, 'e') )
          {
-            property::r = strtod(string, &rest);
+            prop_r = strtod(string, &rest);
          }
          else
          {
-            property::i = (int64) strtoll(string, &rest, 0);
+            prop_i = (int64) strtoll(string, &rest, 0);
          }
 
          // If rest points to the start of string,
          // this was not a number, so it is a blob.
          if((rest == string))
-            property::b = CopyString(string);
+            prop_b = CopyString(string);
          return true;
       }
 
