@@ -34,6 +34,9 @@ uint defaultVAO;
 #ifdef _DEBUG
 void checkGLErrors( const char *file, int line )
 {
+#if defined(__WIN32__)
+   if(!glGetError) return;
+#endif
    int e, nCount = 0;
    while((e = glGetError()) && nCount++ < 10)
       PrintLn("GL error ", e, "! (at ", file, ":", line, ")");
