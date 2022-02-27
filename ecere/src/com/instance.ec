@@ -5057,7 +5057,7 @@ public dllexport void eInstance_Delete(Instance instance)
          base = _class.base;
 
    #ifdef USE_ATOMICS
-         cCount = (int)atomic_fetch_sub(&(_class.templateClass ? _class.templateClass : _class).count, 1);
+         cCount = (int)atomic_fetch_sub(&(_class.templateClass ? _class.templateClass : _class).count, 1) - 1;
    #else
 #if !defined(_NOMUTEX) && !defined(ECERE_BOOTSTRAP)
          memMutex.Wait();
