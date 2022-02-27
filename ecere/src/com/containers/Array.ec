@@ -220,7 +220,9 @@ public:
          if(array)
          {
             MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
-            block._class = class(T);
+            Class c = class(T);
+            ClassType t = c.type;
+            block._class = t == noHeadClass || t == normalClass ? (Class)class(Instance) : c;
          }
 #endif
       }
@@ -329,7 +331,9 @@ public:
             if(array)
             {
                MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
-               block._class = class(T);
+               Class c = class(T);
+               ClassType t = c.type;
+               block._class = t == noHeadClass || t == normalClass ? (Class)class(Instance) : c;
             }
 #endif
          }
@@ -351,7 +355,9 @@ public:
          if(array)
          {
             MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
-            block._class = class(T);
+            Class c = class(T);
+            ClassType t = c.type;
+            block._class = t == noHeadClass || t == normalClass ? (Class)class(Instance) : c;
          }
 #endif
       }
@@ -367,7 +373,9 @@ public:
          if(array)
          {
             MemBlock block = (MemBlock)((byte *)array - sizeof(class MemBlock));
-            block._class = class(T);
+            Class c = class(T);
+            ClassType t = c.type;
+            block._class = t == noHeadClass || t == normalClass ? (Class)class(Instance) : c;
          }
 #endif
 
