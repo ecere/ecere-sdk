@@ -157,7 +157,8 @@ public:
       if(this != null)
       {
          int read = Min(numBytes, count - pos);
-         memcpy(bytes, _buffer + pos, read);
+         if(bytes) // Allow skipping over
+            memcpy(bytes, _buffer + pos, read);
          pos += read;
          return read;
       }
