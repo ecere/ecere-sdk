@@ -12,15 +12,24 @@ import "Container"
 #include "mmhash.h"
 
 static define HASH_PAGE_SHIFT = 7;
-/*
+
+#define NULL_KEY  ((int64)0xFFFFFFFFFFFFFFFFLL)
+
 static void hashClearEntry(int64 *entry)
 {
-   *entry = 0;
+   *entry = NULL_KEY;
 }
-*/
+
 static int hashEntryValid(const int64 *entry)
 {
-   return *entry != 0;
+   return *entry != NULL_KEY;
+}
+
+static void hashClearEntries(int64 * entries, uint numEntries)
+{
+   int i;
+   for(i = 0; i < numEntries; i++)
+      entries[i] = NULL_KEY;
 }
 
 static uint32_t hashEntryKey(const int64 *entry)
@@ -37,7 +46,7 @@ static uint32_t hashEntryKey(const int64 *entry)
 
 static int hashEntryCmp(const int64 *entry, const int64 *entryRef)
 {
-   if(!*entry) return MM_HASH_ENTRYCMP_INVALID;
+   if(*entry == NULL_KEY) return MM_HASH_ENTRYCMP_INVALID;
    if(*entry == *entryRef) return MM_HASH_ENTRYCMP_FOUND;
    return MM_HASH_ENTRYCMP_SKIP;
 }
@@ -50,10 +59,12 @@ static int hashEntryList( void *opaque, const int64 *entry, const int64 *entryRe
 */
 static const mmHashAccess hashAccess =
 {
-   null, //hashClearEntry,
+   hashClearEntry,
    hashEntryValid,
    hashEntryKey,
-   hashEntryCmp
+   hashEntryCmp,
+   null, // entrylist
+   hashClearEntries
 };
 
 public class HashTable<class KT = int64> : Container<KT, I = KT>
@@ -159,5 +170,17 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
    {
       free(tbl);
       tbl = null;
+   }
+   public property int initSize
+   {
+      set
+      {
+         int bits = Max(8, log2i(value));  // size == 1, 1 bit causes crashes...
+         uintsize s = mmHashRequiredSize(sizeof(int64), bits, HASH_PAGE_SHIFT);
+         if(tbl) free(tbl);
+         tbl = malloc(s);
+         if(tbl)
+            mmHashInit(tbl, &hashAccess, sizeof(int64), bits, HASH_PAGE_SHIFT, 0);
+      }
    }
 }
