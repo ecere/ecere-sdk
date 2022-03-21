@@ -256,7 +256,7 @@ public:
    PixelFormat pixelFormat;
    byte * picture;
    uint stride;
-   uint size, sizeBytes;
+   uint size, sizeBytes;   // TODO: Change this to be 64 bit? (breaking)
    ColorAlpha * palette;
    bool allocatePalette;
 

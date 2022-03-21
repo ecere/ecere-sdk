@@ -183,6 +183,12 @@ public class LFBDisplayDriver : DisplayDriver
       bitmap.height = height;
       bitmap.size = (uint32) stride * (uint32)height;
       bitmap.sizeBytes = bitmap.size << GetColorDepthShifts(format);
+      if(bitmap.sizeBytes < bitmap.size)
+      {
+         bitmap.sizeBytes = 0;
+         return false;
+      }
+
       bitmap.pixelFormat = format;
       bitmap.transparent = false;
    /*
