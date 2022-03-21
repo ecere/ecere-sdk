@@ -143,11 +143,14 @@ void mmHashReset( void *hashtable, const mmHashAccess *access )
   mmHashTable *table;
   void *entry;
   void (*clearentry)( void *entry ) = access->clearentry;
+  void (*clearentries)( void *entry, unsigned int ) = access->clearentries;
 
   /* Clear the table */
   table = hashtable;
   entry = MM_HASH_ENTRYLIST( table );
-  if(clearentry)
+  if(clearentries)
+     clearentries(entry, table->hashsize);
+  else if(clearentry)
   {
      for( hashkey = 0 ; hashkey < table->hashsize ; hashkey++ )
      {
