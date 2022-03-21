@@ -1686,7 +1686,12 @@ class EARFileSystem : FileSystem
                break;
             }
             else if(try > 0)
-               Sleep(0.01);
+            {
+               if(FileExists(fileName))
+                  Sleep(0.01);
+               else
+                  break;
+            }
          }
 
          // This piece of code will create a new archive as a new file or at the footer
