@@ -8,7 +8,7 @@ default:
 
 __attribute__((unused)) static void _WorkAround()
 {
-   int a;
+   int a = 0;
    a.OnGetDataFromString(null);
 }
 extern int __ecereVMethodID_class_OnGetDataFromString;
