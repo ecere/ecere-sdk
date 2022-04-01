@@ -1390,7 +1390,15 @@
                                  "FileName" : "GLMultiDraw.ec",
                                  "Options" : {
                                     "ExcludeFromBuild" : false
-                                 }
+                                 },
+                                 "Configurations" : [
+                                    {
+                                       "Name" : "WSMS",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
+                                    }
+                                 ]
                               },
                               {
                                  "FileName" : "../deps/etcpak/QuickETC2Pak.c",
