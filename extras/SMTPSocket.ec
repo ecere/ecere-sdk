@@ -31,11 +31,12 @@ class SMTPSocket : Socket
    }
 };
 
-void SMTPSend(const String host, int port, const String localHost, Array<String> recipients, const String from, const String fromName, const String replyTo,
+bool SMTPSend(const String host, int port, const String localHost, Array<String> recipients, const String from, const String fromName, const String replyTo,
    const String subject, File file, const String contentType)
 {
+   bool result = true;
    bool first = true;
-   for(r : recipients; r)
+   for(r : recipients; result && r)
    {
       const String to = r;
       // TOCHECK: Should we re-use the socket / not disconnect?
@@ -66,12 +67,20 @@ void SMTPSend(const String host, int port, const String localHost, Array<String>
             socket.Sendf("Reply-To: <%s>\r\n", replyTo);
          socket.SendString("\r\n");
 
-         file.Seek(0, start);
-         while(!file.Eof())
+         if(eClass_IsDerived(file._class, class(TempFile)))
          {
-            char buffer[4096];
-            uint read = file.Read(buffer, 1, sizeof(buffer));
-            socket.Send(buffer, read);
+            TempFile tf = (TempFile)file;
+            socket.Send(tf.buffer, tf.size);
+         }
+         else
+         {
+            file.Seek(0, start);
+            while(!file.Eof())
+            {
+               char buffer[4096];
+               uint read = file.Read(buffer, 1, sizeof(buffer));
+               socket.Send(buffer, read);
+            }
          }
 
          socket.SendString("\r\n.\r\n");
@@ -80,8 +89,11 @@ void SMTPSend(const String host, int port, const String localHost, Array<String>
          socket.WaitReply();
          socket.Disconnect(0);
       }
+      else
+         result = false;
       delete socket;
    }
+   return result;
 }
 
 /*
