@@ -31,53 +31,57 @@ class SMTPSocket : Socket
    }
 };
 
-void SMTPSend(char * host, char * to, char * from, File file)
+void SMTPSend(const String host, int port, const String localHost, Array<String> recipients, const String from, const String fromName, const String replyTo,
+   const String subject, File file, const String contentType)
 {
-   SMTPSocket socket { };
-   incref socket;
-
-   if(socket.Connect(host, 25)) //995
+   bool first = true;
+   for(r : recipients; r)
    {
-      socket.WaitReply();
-      Log("HELO localhost\n");
-      socket.SendString("HELO localhost\r\n");
-      socket.WaitReply();
-      Logf("MAIL from: %s\n", from);
-      socket.Sendf("MAIL from: %s\r\n", from);
-      socket.WaitReply();
-      Logf("RCPT To: %s\n", to);
-      socket.Sendf("RCPT To: %s\r\n", to);
-      socket.WaitReply();
-      Log("DATA\n");
-      socket.SendString("DATA\r\n");
-      socket.WaitReply();
-      Log("Subject: Email test\n");
-      Log("Mime-Version: 1.0;\n");
-      Log("Content-Type: text/html; charset=\"ISO-8859-1\";\n");
-      Log("Content-Transfer-Encoding: 7bit;\n");
-      socket.SendString("Subject: Email test\r\n");
-      socket.SendString("Mime-Version: 1.0;\r\n");
-      socket.SendString("Content-Type: text/html; charset=\"ISO-8859-1\";\r\n");
-      socket.SendString("Content-Transfer-Encoding: 7bit;\r\n");
-      socket.SendString("\r\n");
+      const String to = r;
+      // TOCHECK: Should we re-use the socket / not disconnect?
+      SMTPSocket socket { };
+      incref socket;
 
-      file.Seek(0, start);
-      while(!file.Eof())
+      if(!first) Sleep(0.1);
+      first = false;
+
+      if(socket.Connect(host, port)) //25 // 995
       {
-         char buffer[4096];
-         uint read = file.Read(buffer, 1, sizeof(buffer));
-         socket.Send(buffer, read);
-      }
+         socket.WaitReply();
+         socket.Sendf("HELO %s\r\n", localHost);
+         socket.WaitReply();
+         socket.Sendf("MAIL from: <%s>\r\n", from);
+         socket.WaitReply();
+         socket.Sendf("RCPT To: %s\r\n", to);
+         socket.WaitReply();
+         socket.SendString("DATA\r\n");
+         socket.WaitReply();
+         socket.SendString("Mime-Version: 1.0;\r\n");
+         socket.Sendf("Content-Type: %s; charset=\"UTF-8\";\r\n", contentType);
+         socket.SendString("Content-Transfer-Encoding: 7bit;\r\n");
+         socket.Sendf("Subject: %s\r\n", subject);
+         if(fromName)
+            socket.Sendf("From: \"%s\" <%s>\r\n", fromName, from);
+         if(replyTo)
+            socket.Sendf("Reply-To: <%s>\r\n", replyTo);
+         socket.SendString("\r\n");
 
-      Log("\n.\n");
-      socket.SendString("\r\n.\r\n");
-      socket.WaitReply();
-      Log("QUIT\n");
-      socket.SendString("QUIT\r\n");
-      socket.WaitReply();
-      socket.Disconnect(0);
+         file.Seek(0, start);
+         while(!file.Eof())
+         {
+            char buffer[4096];
+            uint read = file.Read(buffer, 1, sizeof(buffer));
+            socket.Send(buffer, read);
+         }
+
+         socket.SendString("\r\n.\r\n");
+         socket.WaitReply();
+         socket.SendString("QUIT\r\n");
+         socket.WaitReply();
+         socket.Disconnect(0);
+      }
+      delete socket;
    }
-   delete socket;
 }
 
 /*
