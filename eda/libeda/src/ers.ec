@@ -600,6 +600,20 @@ Array<FileFilter> csvFilters
 
 public class CSVReport : ReportDestination
 {
+   public property TempFile exportFile
+   {
+      set
+      {
+         if(value)
+         {
+            char temp[64];
+            sprintf(temp, "File://%p", value);
+            saveTo.filePath = temp;
+         }
+         else
+            saveTo.filePath = "";
+      }
+   }
    hasHorzScroll = true;
    hasVertScroll = true;
    dontHideScroll = true;
@@ -619,11 +633,12 @@ public class CSVReport : ReportDestination
       page.Create();
    }
 
-   void PutString(File f, const char * text)
+   void PutString(File f, const char * text, bool emailing)
    {
       char output[4096];
       int s = 0, d = 0;
       byte ch;
+      bool lastLF = false;
 
       output[d++] = '"';
       while((ch = text[s++]) && d < sizeof(output) - 1)
@@ -639,7 +654,10 @@ public class CSVReport : ReportDestination
                ch = '?';
          }
          if(ch == '\"') output[d++] = '\\';
+         if(lastLF && ch == '.' && lastLF && d < sizeof(output) - 2) // Avoid terminating e-mail
+            output[d++] = ' ';
          output[d++] = ch;
+         if(emailing && ch == '\n') lastLF = true;
       }
       output[d++] = '"';
       output[d] = 0;
@@ -650,13 +668,25 @@ public class CSVReport : ReportDestination
 
    void EndPage(Page page)
    {
+      bool proceed;
       char filePath[MAX_LOCATION];
-      strcpy(filePath, report.title);
-      ChangeChars(filePath, "/\\:*?\"|<>", '_');
-      strcat(filePath, ".csv");
-      saveTo.master = master;
-      saveTo.filePath = filePath;
-      if(saveTo.Modal())
+      bool emailing = false;
+
+      if(saveTo.filePath[0])
+      {
+         proceed = true;
+         emailing = true;
+      }
+      else
+      {
+         strcpy(filePath, report.title);
+         ChangeChars(filePath, "/\\:*?\"|<>", '_');
+         strcat(filePath, ".csv");
+         saveTo.master = master;
+         saveTo.filePath = filePath;
+         proceed = saveTo.Modal() == ok;
+      }
+      if(proceed)
       {
          File f = FileOpen(saveTo.filePath, write);
          if(f)
@@ -680,7 +710,7 @@ public class CSVReport : ReportDestination
                         const char * text = label.text;
                         if(label != first)f.Puts(",");
                         if(text)
-                           PutString(f, text);
+                           PutString(f, text, emailing);
                      }
                   }
                   if(detail._class == report.groupings[0].header)
