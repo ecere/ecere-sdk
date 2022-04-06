@@ -63,6 +63,12 @@ public enum CMSSTokenType
 
    intDivide,  // div
 
+   bitAnd,
+   bitOr,
+   bitXor,
+   bitNot,
+   lShift,
+   rShift,
    // Textual operators
    in
    ;
