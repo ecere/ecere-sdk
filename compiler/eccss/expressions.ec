@@ -79,7 +79,8 @@ private:
                           type##Equ, type##Nqu, \
                           type##And, type##Or, \
                           type##Grt, type##Sma, type##GrtEqu, type##SmaEqu, \
-                          null, null, null, null, null, null \
+                          null, null, null, null, null, null, \
+                          type##BitAnd, type##BitOr, type##BitXor, type##LShift, type##RShift, type##BitNot \
                         }
 
 #define OPERATOR_TABLE_REAL(type) \
@@ -89,6 +90,7 @@ private:
                           type##Equ, type##Nqu, \
                           type##And, type##Or, \
                           type##Grt, type##Sma, type##GrtEqu, type##SmaEqu, \
+                          null, null, null, null, null, null, \
                           null, null, null, null, null, null \
                         }
 
@@ -99,7 +101,8 @@ private:
                           type##Equ, type##Nqu, \
                           type##And, type##Or, \
                           type##Grt, type##Sma, type##GrtEqu, type##SmaEqu,  \
-                          type##StrCnt, type##StrSrt, type##StrEnd, type##StrNotCnt, type##StrNotSrt, type##StrNotEnd     \
+                          type##StrCnt, type##StrSrt, type##StrEnd, type##StrNotCnt, type##StrNotSrt, type##StrNotEnd,     \
+                          null, null, null, null, null, null \
                         }
 
 #define OPERATOR_TABLE_EMPTY(type) \
@@ -108,7 +111,8 @@ private:
                           null, null, \
                           null, null, \
                           null, null, null, null, \
-                          null, null, null, null, null, null     \
+                          null, null, null, null, null, null,     \
+                          null, null, null, null, null, null \
 }
 
 static CMSSTokenType opPrec[][8] =
@@ -119,7 +123,12 @@ static CMSSTokenType opPrec[][8] =
    { '<', '>', smallerEqual, greaterEqual },
    { equal, notEqual, stringStartsWith, stringNotStartsW, stringEndsWith, stringNotEndsW, stringContains, stringNotContains },
    { and },
-   { or }
+   { or },
+   { bitAnd },
+   { bitOr },
+   { bitXor },
+   { bitNot },
+   { lShift, rShift }
 };
 
 static define numPrec = sizeof(opPrec) / sizeof(opPrec[0]);
@@ -793,6 +802,10 @@ public:
                   case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); break;
                   case stringContains:       tbl->StrCnt    (value, val1, val2); break;
                   case stringNotContains:    tbl->StrNotCnt (value, val1, val2); break;
+                  case bitAnd:               tbl->BitAnd    (value, val1, val2); break;
+                  case bitOr:                tbl->BitOr     (value, val1, val2); break;
+                  case bitXor:               tbl->BitXor    (value, val1, val2); break;
+                  case bitNot:               tbl->BitNot    (value, val1); break;
                }
                flags.resolved = value.type.type != nil;
             }
@@ -2548,20 +2561,6 @@ public:
    bool (* DivAsign)(FieldValue, FieldValue, FieldValue);
    bool (* ModAsign)(FieldValue, FieldValue, FieldValue); */
 
-   // binary bitwise
-   /*bool (* BitAnd)(FieldValue, FieldValue, FieldValue);
-   bool (* BitOr)(FieldValue, FieldValue, FieldValue);
-   bool (* BitXor)(FieldValue, FieldValue, FieldValue);
-   bool (* LShift)(FieldValue, FieldValue, FieldValue);
-   bool (* RShift)(FieldValue, FieldValue, FieldValue);
-   bool (* BitNot)(FieldValue, FieldValue);   */
-
-   // binary bitwise assignment
-  /* bool (* AndAsign)(FieldValue, FieldValue, FieldValue);
-   bool (* OrAsign)(FieldValue, FieldValue, FieldValue);
-   bool (* XorAsign)(FieldValue, FieldValue, FieldValue);
-   bool (* LShiftAsign)(FieldValue, FieldValue, FieldValue);
-   bool (* RShiftAsign)(FieldValue, FieldValue, FieldValue);*/
 
    // unary logical negation
    bool (* Not)(FieldValue, const FieldValue);
@@ -2587,6 +2586,21 @@ public:
    bool (* StrNotCnt)(FieldValue, const FieldValue, const FieldValue);
    bool (* StrNotSrt)(FieldValue, const FieldValue, const FieldValue);
    bool (* StrNotEnd)(FieldValue, const FieldValue, const FieldValue);
+
+   // binary bitwise
+   bool (* BitAnd)(FieldValue, FieldValue, FieldValue);
+   bool (* BitOr)(FieldValue, FieldValue, FieldValue);
+   bool (* BitXor)(FieldValue, FieldValue, FieldValue);
+   bool (* LShift)(FieldValue, FieldValue, FieldValue);
+   bool (* RShift)(FieldValue, FieldValue, FieldValue);
+   bool (* BitNot)(FieldValue, FieldValue);
+
+   // binary bitwise assignment
+  /* bool (* AndAsign)(FieldValue, FieldValue, FieldValue);
+   bool (* OrAsign)(FieldValue, FieldValue, FieldValue);
+   bool (* XorAsign)(FieldValue, FieldValue, FieldValue);
+   bool (* LShiftAsign)(FieldValue, FieldValue, FieldValue);
+   bool (* RShiftAsign)(FieldValue, FieldValue, FieldValue);*/
 };
 
 
@@ -2617,14 +2631,14 @@ OPERATOR_REAL(BINARY_DIVIDEREAL, /=, DivAsign)
 OPERATOR_INT(BINARY_DIVIDEINT, %=, ModAsign) */
 
 // binary bitwise
-/*OPERATOR_INT(BINARY, &, BitAnd)
+OPERATOR_INT(BINARY, &, BitAnd)
 OPERATOR_INT(BINARY, |, BitOr)
 OPERATOR_INT(BINARY, ^, BitXor)
 OPERATOR_INT(BINARY, <<, LShift)
-OPERATOR_INT(BINARY, >>, RShift)*/
+OPERATOR_INT(BINARY, >>, RShift)
 
 // unary bitwise
-//OPERATOR_INT(UNARY, ~, BitNot)
+OPERATOR_INT(UNARY, ~, BitNot)
 
 // binary bitwise assignment
 /*
