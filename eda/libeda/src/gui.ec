@@ -384,6 +384,7 @@ public:
          value.AddFieldEditor(this);
          row = value.editRow;
       }
+      get { return (EditSection)master; }
    };
 
    property Field field
