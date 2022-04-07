@@ -675,7 +675,7 @@ public class CSVReport : ReportDestination
       if(saveTo.filePath[0])
       {
          proceed = true;
-         emailing = true;
+         // emailing = true;
       }
       else
       {
