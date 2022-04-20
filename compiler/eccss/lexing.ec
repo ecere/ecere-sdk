@@ -133,7 +133,14 @@ static Map<String, CMSSTokenType> stringTokens
    { "$",  stringEndsWith },
    { "!~", stringNotContains },
    { "!^", stringNotStartsW },
-   { "!$", stringNotEndsW }
+   { "!$", stringNotEndsW },
+
+   { "bitand", bitAnd },
+   { "bitor", bitOr },
+   { "bitxor", bitXor },
+   { "bitnot", bitNot },
+   { "<<", lShift },
+   { ">>", rShift }
 ] };
 
 static CMSSTokenType matchToken(const String text)

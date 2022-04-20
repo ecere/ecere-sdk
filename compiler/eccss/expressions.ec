@@ -91,7 +91,7 @@ private:
                           type##And, type##Or, \
                           type##Grt, type##Sma, type##GrtEqu, type##SmaEqu, \
                           null, null, null, null, null, null, \
-                          null, null, null, null, null, null \
+                          type##BitAnd, null /*type##BitOr*/, null /*type##BitXor*/, null /*type##LShift*/, null /*type##RShift*/, null /*type##BitNot*/ \
                         }
 
 
@@ -2637,8 +2637,26 @@ OPERATOR_INT(BINARY, ^, BitXor)
 OPERATOR_INT(BINARY, <<, LShift)
 OPERATOR_INT(BINARY, >>, RShift)
 
+// OPERATOR_REAL(BINARY, &, BitAnd)
+
+static bool realBitAnd(FieldValue value, const FieldValue val1, const FieldValue val2)
+{
+   value.r = ((uint64)val1.r) & ((uint64)val2.r);
+   value.type = { type = integer };
+   return true;
+}
+
+/*
+OPERATOR_REAL(BINARY, |, BitOr)
+OPERATOR_REAL(BINARY, ^, BitXor)
+OPERATOR_REAL(BINARY, <<, LShift)
+OPERATOR_REAL(BINARY, >>, RShift)
+*/
+
 // unary bitwise
 OPERATOR_INT(UNARY, ~, BitNot)
+//OPERATOR_REAL(UNARY, ~, BitNot)
+
 
 // binary bitwise assignment
 /*
