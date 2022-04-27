@@ -705,6 +705,8 @@ public:
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass) //float
    {
       ExpFlags flags { };
+
+      value = { type = { nil } };
       if(exp1 && exp2)
       {
          FieldValue val1 { };
@@ -719,11 +721,12 @@ public:
          flags1 = exp1.compute(val1, evaluator, computeType, stylesClass);
          flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
 
-         if(op >= stringStartsWith && op <= stringNotContains)
+         if(op >= stringStartsWith && op <= stringNotEndsW)
             type = text;
          else
             type = (val1.type.type == real || val2.type.type == real) ? real :
-                   (val1.type.type == integer || val2.type.type == integer) ? integer : text;
+                   (val1.type.type == integer || val2.type.type == integer) ? integer :
+                   (val1.type.type == nil && val2.type.type == nil) ? nil : text;
          tbl = &opTables[type];
 
          flags = flags1 | flags2;
@@ -778,7 +781,7 @@ public:
             if(val2.type.type != type)
                convertFieldValue(val2, type, val2);
 
-            if(val1.type.type == val2.type.type)
+            if(val1.type.type != nil && val1.type.type == val2.type.type)
             {
                switch(op)
                {
