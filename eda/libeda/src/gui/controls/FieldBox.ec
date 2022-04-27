@@ -12,20 +12,20 @@ public class FieldBox : DataBox
 
    Field field;
    int64 dataHolder; // THERE SEEMS TO BE A BUG WHEN ACCESSING row ACROSS .so
-   TableEditor editor;
+   TableEditor tableEditor;
 
    property Row row
    {
       get
       {
          Row result = null;
-         if(field && editor)
+         if(field && tableEditor)
          {
-            if(editor.table == field.table)
-               result = editor.editRow;
-            else if(editor.lookups)
+            if(tableEditor.table == field.table)
+               result = tableEditor.editRow;
+            else if(tableEditor.lookups)
             {
-               Lookup lookup = editor.lookups[field.table]; // Map<Table, Lookup> limits to single lookup per table
+               Lookup lookup = tableEditor.lookups[field.table]; // Map<Table, Lookup> limits to single lookup per table
                if(lookup.valueField && lookup.findField && lookup.row && !lookup.row.nil)
                   result = lookup.row;
             }
@@ -34,17 +34,16 @@ public class FieldBox : DataBox
       }
    }
 
-   // DataBox has a member called editor as well?
-   // would like to rename TableEditor to TableControl anyway
-   public property TableEditor editor
+   // rename TableEditor to TableControl?
+   public property TableEditor tableEditor
    {
       set
       {
-         if(value != editor)
+         if(value != tableEditor)
          {
-            if(editor)
-               editor.RemoveFieldBox(this);
-            editor = value;
+            if(tableEditor)
+               tableEditor.RemoveFieldBox(this);
+            tableEditor = value;
             if(value)
                value.AddFieldBox(this);
          }
@@ -54,13 +53,13 @@ public class FieldBox : DataBox
    watch(parent)
    {
       if(eClass_IsDerived(parent._class, class(TableEditor)))
-         property::editor = (TableEditor)parent;
+         property::tableEditor = (TableEditor)parent;
    };
 
    watch(master)
    {
       if(eClass_IsDerived(master._class, class(TableEditor)))
-         property::editor = (TableEditor)master;
+         property::tableEditor = (TableEditor)master;
    };
 
    public property Field field

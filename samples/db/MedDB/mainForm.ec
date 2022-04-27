@@ -57,11 +57,11 @@ class RestrictionEditor : Window
 {
    tabCycle = true;
 
-   ListSection list { this, editor = editor, fldName = dbfield("Restrictions", name), table = dbtable("Restrictions"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
-   EditSection editor { this, table = dbtable("Restrictions"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
+   ListSection list { this, editSection = editSection, fldName = dbfield("Restrictions", name), table = dbtable("Restrictions"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
+   EditSection editSection { this, table = dbtable("Restrictions"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("Restrictions", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
-   Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
+   FieldDataBox boxName { tableEditor = editSection, field = dbfield("Restrictions", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   Label label1 { editSection.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
 class ClassesEditor : Window
@@ -69,22 +69,22 @@ class ClassesEditor : Window
    tabCycle = true;
    background = activeBorder;
 
-   ListSection list { this, editor = editor, fldName = dbfield("DrugClasses", name), table = dbtable("DrugClasses"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
-   EditSection editor { this, table = dbtable("DrugClasses"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
+   ListSection list { this, editSection = editSection, fldName = dbfield("DrugClasses", name), table = dbtable("DrugClasses"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
+   EditSection editSection { this, table = dbtable("DrugClasses"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("DrugClasses", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
-   Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
+   FieldDataBox boxName { tableEditor = editSection, field = dbfield("DrugClasses", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   Label label1 { editSection.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
 class SubClassesEditor : Window
 {
    tabCycle = true;
    background = activeBorder;
-   ListSection list { this, editor = editor, fldName = dbfield("SubClasses", name), table = dbtable("SubClasses"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
-   EditSection editor { this, table = dbtable("SubClasses"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
+   ListSection list { this, editSection = editSection, fldName = dbfield("SubClasses", name), table = dbtable("SubClasses"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
+   EditSection editSection { this, table = dbtable("SubClasses"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("SubClasses", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
-   Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
+   FieldDataBox boxName { tableEditor = editSection, field = dbfield("SubClasses", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   Label label1 { editSection.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
 class FormesEditor : Window
@@ -92,49 +92,49 @@ class FormesEditor : Window
    tabCycle = true;
    background = activeBorder;
 
-   ListSection list { this, editor = editor, fldName = dbfield("Forms", name), table = dbtable("Forms"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
-   EditSection editor { this, table = dbtable("Forms"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
+   ListSection list { this, editSection = editSection, fldName = dbfield("Forms", name), table = dbtable("Forms"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
+   EditSection editSection { this, table = dbtable("Forms"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("Forms", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
-   Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
+   FieldDataBox boxName { tableEditor = editSection, field = dbfield("Forms", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   Label label1 { editSection.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
 class UnitesEditor : Window
 {
    tabCycle = true;
    background = activeBorder;
-   ListSection list { this, editor = editor, fldName = dbfield("Units", name), table = dbtable("Units"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
-   EditSection editor { this, table = dbtable("Units"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
+   ListSection list { this, editSection = editSection, fldName = dbfield("Units", name), table = dbtable("Units"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
+   EditSection editSection { this, table = dbtable("Units"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxName { editor = editor, field = dbfield("Units", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
-   Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxName };
+   FieldDataBox boxName { tableEditor = editSection, field = dbfield("Units", name), caption = "Name", size = { 174, 20 }, position = { 20, 32 } };
+   Label label1 { editSection.editArea, position = { 20, 8 }, labeledWindow = boxName };
 };
 
 class MedEditor : Window
 {
    tabCycle = true;
    background = activeBorder;
-   ListSection list { this, editor = editor, fldName = dbfield("Drugs", genericName), table = dbtable("Drugs"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
-   EditSection editor { this, table = dbtable("Drugs"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
+   ListSection list { this, editSection = editSection, fldName = dbfield("Drugs", genericName), table = dbtable("Drugs"), anchor = { left = 0, top = 0, bottom = 0, right = 0.5 } };
+   EditSection editSection { this, table = dbtable("Drugs"), anchor = { left = 0.5, top = 0, bottom = 0, right = 0 } };
 
-   FieldDataBox boxGenericName { editor = editor, field = dbfield("Drugs", genericName), caption = "Generic Name", size = { h = 20 }, anchor = { left = 20, top = 32, right = 20 } };
-   FieldDataBox boxCommercialNames { editor = editor, field = dbfield("Drugs", commercialNames), caption = "Commercial Names", size = { h = 67 }, anchor = { left = 20, top = 88, right = 20 } };
+   FieldDataBox boxGenericName { tableEditor = editSection, field = dbfield("Drugs", genericName), caption = "Generic Name", size = { h = 20 }, anchor = { left = 20, top = 32, right = 20 } };
+   FieldDataBox boxCommercialNames { tableEditor = editSection, field = dbfield("Drugs", commercialNames), caption = "Commercial Names", size = { h = 67 }, anchor = { left = 20, top = 88, right = 20 } };
 
-   FieldDataBox boxSubClass { editor = editor, field = dbfield("Drugs", subClass), caption = "Sub Class", size = { h = 20 }, anchor = { left = 20, top = 192, right = 20 } };
-   FieldDataBox boxClass { editor = editor, field = dbfield("Drugs", drugClass), caption = "Class", size = { h = 20 }, anchor = { left = 20, top = 248, right = 20 } };
+   FieldDataBox boxSubClass { tableEditor = editSection, field = dbfield("Drugs", subClass), caption = "Sub Class", size = { h = 20 }, anchor = { left = 20, top = 192, right = 20 } };
+   FieldDataBox boxClass { tableEditor = editSection, field = dbfield("Drugs", drugClass), caption = "Class", size = { h = 20 }, anchor = { left = 20, top = 248, right = 20 } };
 
-   FieldDataBox boxRestriction { editor = editor, field = dbfield("Drugs", restriction), caption = "Restriction", size = { h = 20 }, anchor = { left = 20, top = 290, right = 20 } };
+   FieldDataBox boxRestriction { tableEditor = editSection, field = dbfield("Drugs", restriction), caption = "Restriction", size = { h = 20 }, anchor = { left = 20, top = 290, right = 20 } };
 
-   FieldDataBox boxFormConcentrations { editor = editor, field = dbfield("Drugs", formConcentrations), caption = "Form & Concentrations", size = { h = 80 }, anchor = { left = 20, top = 330, right = 20 } };
+   FieldDataBox boxFormConcentrations { tableEditor = editSection, field = dbfield("Drugs", formConcentrations), caption = "Form & Concentrations", size = { h = 80 }, anchor = { left = 20, top = 330, right = 20 } };
 
-   Label label1 { editor.editArea, position = { 20, 8 }, labeledWindow = boxGenericName };
-   Label label2 { editor.editArea, position = { 20, 64 }, labeledWindow = boxCommercialNames };
-   Label label3 { editor.editArea, position = { 20, 168 }, labeledWindow = boxSubClass };
-   Label label4 { editor.editArea, position = { 20, 224 }, labeledWindow = boxClass };
-   Label label5 { editor.editArea, position = { 20, 270 }, labeledWindow = boxRestriction };
-   Label label6 { editor.editArea, position = { 20, 310 }, labeledWindow = boxFormConcentrations };
+   Label label1 { editSection.editArea, position = { 20, 8 }, labeledWindow = boxGenericName };
+   Label label2 { editSection.editArea, position = { 20, 64 }, labeledWindow = boxCommercialNames };
+   Label label3 { editSection.editArea, position = { 20, 168 }, labeledWindow = boxSubClass };
+   Label label4 { editSection.editArea, position = { 20, 224 }, labeledWindow = boxClass };
+   Label label5 { editSection.editArea, position = { 20, 270 }, labeledWindow = boxRestriction };
+   Label label6 { editSection.editArea, position = { 20, 310 }, labeledWindow = boxFormConcentrations };
 
-   Label spacer { editor.editArea, position = { 20, 420 }, size = { h = 10 } };
+   Label spacer { editSection.editArea, position = { 20, 420 }, size = { h = 10 } };
 }
 
 class MedTesting : Window
@@ -182,7 +182,7 @@ class MedTesting : Window
       {
          if(row.Last())
          {
-            int range = row.id;
+            int range = (int)row.id;
             Drug id = GetRandom(1, range);
             if(row.Find(dbfield("Drugs", id), middle, 0, id))
             {

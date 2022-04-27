@@ -375,7 +375,7 @@ public:
       set { row = value; }
       get { return row; }
    }
-   property EditSection editor
+   property EditSection tableEditor
    {
       set
       {
@@ -670,11 +670,11 @@ public class ListSection : Group
    size = { 710, 287 };
    anchor = { left = sgs, top = 32 + sgs * 3, bottom = 55 + sgs * 3 };
 public:
-   property EditSection editor
+   property EditSection editSection
    {
       set
       {
-         editor = value;
+         editSection = value;
          value.list = this;
       }
    }
@@ -697,7 +697,7 @@ public:
                indexedFields[0] = { fldId };
                table.Index(1, indexedFields);
 
-               editor.editRow.tbl = table;
+               editSection.editRow.tbl = table;
 
                RefillList();
             }
@@ -713,16 +713,16 @@ public:
 
    bool OnClose(bool parentClosing)
    {
-      if(editor && editor.modifiedDocument)
+      if(editSection && editSection.modifiedDocument)
       {
          switch(NotifySaveConfirmation(master, this))
          {
             case cancel:
                return false;
             case yes:
-               editor.EditSave();
+               editSection.EditSave();
             case no:
-               editor.modifiedDocument = false;
+               editSection.modifiedDocument = false;
                break;
          }
       }
@@ -739,7 +739,7 @@ public:
          delete r;
       }
       list.Sort(null, 1);
-      editor.modifiedDocument = false;
+      editSection.modifiedDocument = false;
    }
 
    virtual void Window::NotifyRefillList(ListSection listSection, Row r)
@@ -775,7 +775,7 @@ public:
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
          list.NotifySelect(this, list, null, 0);
-         if(!editor.modifiedDocument)
+         if(!editSection.modifiedDocument)
          {
             Id id; // = table.rowsCount + 1; // this is bad with deleted rows, won't work, how to have unique id?
             Row r { table };
@@ -788,7 +788,7 @@ public:
             else
                id = 1;
 
-            editor.EditClear();
+            editSection.EditClear();
             {
                bool active = true;
                r.Add();
@@ -843,9 +843,9 @@ public:
             {
                NotifyDeleting(master, this);
 
-               editor.editRow.Delete();
+               editSection.editRow.Delete();
                list.DeleteRow(list.currentRow);
-               editor.EditClear();
+               editSection.EditClear();
 
                NotifyDeleted(master, this);
 
@@ -859,7 +859,7 @@ public:
 
    bool FilterNotifyChanged(DataBox dataBox, bool closeDropDown)
    {
-      editor.EditClear();
+      editSection.EditClear();
       RefillList();
       if(list.firstRow)
          SelectListRow(list.firstRow);
@@ -877,7 +877,7 @@ public:
          bool result = true;
          if(/*row && */row != lastRow)
          {
-            if(editor.modifiedDocument)
+            if(editSection.modifiedDocument)
             {
                if(row)
                   list.currentRow = lastRow;
@@ -887,9 +887,9 @@ public:
                   case cancel:
                      return false;
                   case yes:
-                     editor.EditSave();
+                     editSection.EditSave();
                   case no:
-                     editor.modifiedDocument = false;
+                     editSection.modifiedDocument = false;
                      list.currentRow = row;
                      break;
                }
@@ -912,11 +912,11 @@ public:
 
          if(list.currentRow != row)
             list.currentRow = row;
-         if(editor.editRow.Find(fldId, middle, nil, id))
+         if(editSection.editRow.Find(fldId, middle, nil, id))
          {
-            editor.listRow = row;
+            editSection.listRow = row;
             NotifySelectListRow(master, this, id);
-            editor.EditLoad();
+            editSection.EditLoad();
          }
       }
       // Logf("SelectListRow took %f seconds\n", GetTime() - startTime);
@@ -931,12 +931,12 @@ public:
 
    void RefreshState()
    {
-      if(editor)
+      if(editSection)
       {
-         editor.btnSave.disabled = !list.currentRow;
-         editor.btnReload.disabled = !list.currentRow;
+         editSection.btnSave.disabled = !list.currentRow;
+         editSection.btnReload.disabled = !list.currentRow;
          btnDelete.disabled = !list.currentRow;
-         editor.disabled = !list.firstRow;
+         editSection.disabled = !list.firstRow;
       }
    }
 
@@ -953,12 +953,12 @@ public:
    {
       OnResize(clientSize.w, clientSize.h);
       SelectFirst();
-      if(editor) editor.modifiedDocument = false;
+      if(editSection) editSection.modifiedDocument = false;
       return Window::OnPostCreate();
    }
 
 private:
-   EditSection editor;
+   EditSection editSection;
    Table table;
    DataRow lastRow;
 }

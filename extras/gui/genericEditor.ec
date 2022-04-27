@@ -31,7 +31,7 @@ class GenericEditor : Window
 
          Clear();
 
-         editor.table = value;
+         editSection.table = value;
          if(!list.fldName && value)
             list.fldName = value.FindField("Name");
          list.table = value;
@@ -40,8 +40,8 @@ class GenericEditor : Window
             if(strcmpi(f.name, "ID"))
             {
                int h = 20;
-               FieldDataBox box { editor = editor, field = f, text = f.name, size = { h = h }, anchor = { left = 20, top = y + 16, right = 20 } };
-               Label label { editor.editArea, position = { 20, y }, labeledWindow = box };
+               FieldDataBox box { tableEditor = editSection, field = f, text = f.name, size = { h = h }, anchor = { left = 20, top = y + 16, right = 20 } };
+               Label label { editSection.editArea, position = { 20, y }, labeledWindow = box };
                if(eClass_IsDerived(f.type, class(DataList)) || eClass_IsDerived(f.type, class(IdList)) || eClass_IsDerived(f.type, class(MultiLineString)))
                {
                   h = 70;
@@ -64,10 +64,10 @@ class GenericEditor : Window
 
    ListSection list
    {
-      this, editor = editor,
+      this, editSection = editSection,
       anchor = { left = 0, top = 0, bottom = 0, right = 0.5 }
    };
-   EditSection editor
+   EditSection editSection
    {
       this,
       anchor = { left = 0.5, top = 0, bottom = 0, right = 0 }
