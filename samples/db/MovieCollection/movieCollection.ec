@@ -50,7 +50,7 @@ class MovieCollectionForm : Window
       }
    };
    GenericEditor editor { this, anchor = { 0, 0, 0, 0 }, table = dbtable("Movies"),
-      list.text = "List of Movies", editor.text = "Movie Entry Being Edited" };
+      list.text = "List of Movies", editSection.text = "Movie Entry Being Edited" };
    Button editBorrowers
    {
       this, caption = "Edit Borrowers", altB, stayOnTop = true, anchor = { right = 40, bottom = 40 };
@@ -63,7 +63,7 @@ class MovieCollectionForm : Window
             borderStyle = sizable;
             size = { 640, 300 };
             table = dbtable("Borrowers");
-            list.text = "List of Borrowers", editor.text = "Borrower Entry Being Edited";
+            list.text = "List of Borrowers", editSection.text = "Borrower Entry Being Edited";
          };
          borrowersEditor.Modal();
          editor.dataBoxes[3].Refresh();

@@ -469,14 +469,14 @@ public:
                {
                   // todo: make this work for all types, although this is meant to be an id field
                   Id id = 0;
-                  TableEditor editor = eInstance_New(f.editorClass);
-                  incref editor;
-                  editor.parent = f.parentWindow;
-                  editor.master = this;
-                  dynamicLookupTableEditors.Add(editor);
-                  editor.Create();
+                  TableEditor tableEditor = eInstance_New(f.editorClass);
+                  incref tableEditor;
+                  tableEditor.parent = f.parentWindow;
+                  tableEditor.master = this;
+                  dynamicLookupTableEditors.Add(tableEditor);
+                  tableEditor.Create();
                   row.GetData(f.lookupIdField, id);
-                  editor.Select(id);
+                  tableEditor.Select(id);
                }
                delete row;
             }
