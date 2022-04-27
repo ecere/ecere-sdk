@@ -1211,6 +1211,15 @@ public:
       // TOCHECK: any issue to set resolved to true if all elements are resolved?
       delete array;
 
+      if(!type && elements)
+      {
+         // Default type?
+         if(elements[0].expType == class(String))
+            type = class(Array<String>);
+         else
+            type = class(Array<double>);
+      }
+
       if(type && computeType == runtime && elements)
       {
          if(type.templateClass == class(Container))
