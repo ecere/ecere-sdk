@@ -11,6 +11,8 @@ public import "EDA"
 #define __restrict
 
 #ifndef ECERE_STATIC
+
+#define __STDC_NO_VLA__
 #include <regex.h>
 
 static regex_t regex;
