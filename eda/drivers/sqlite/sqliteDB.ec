@@ -10,10 +10,14 @@ public import "EDA"
 
 #define __restrict
 
+#ifndef ECERE_STATIC
+#define __STDC_NO_VLA__
+
 #include <regex.h>
 
 static regex_t regex;
 static String lastRegex;
+#endif
 
 static void sqlite_regexp(sqlite3_context * context, int argc, sqlite3_value ** values)
 {
