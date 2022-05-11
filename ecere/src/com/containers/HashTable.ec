@@ -70,6 +70,7 @@ static const mmHashAccess hashAccess =
 public class HashTable<class KT = int64> : Container<KT, I = KT>
 {
    void *tbl;
+   uint initSize;
 
    HashTable()
    {
@@ -82,10 +83,10 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
    IteratorPointer Add(T value)
    {
       int64 * entry;
-      bool success = mmHashDirectAddEntry2(tbl, &hashAccess, &value, bool::true, &entry) == MM_HASH_SUCCESS;
-      if(success)
-         resize();
-      return success ? (IteratorPointer)entry : null;
+      int r = mmHashDirectAddEntry2(tbl, &hashAccess, &value, bool::true, &entry);
+      if(r == MM_HASH_SUCCESS)
+         resize(false);
+      return r == MM_HASH_SUCCESS ? (IteratorPointer)entry : null;
    }
 
    KT GetData(IteratorPointer pointer)
@@ -107,20 +108,20 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
    void Remove(IteratorPointer it)
    {
       mmHashDirectDeleteEntry2(tbl, &hashAccess, it, 0);
-      resize();
+      resize(true);
    }
 
    void Delete(IteratorPointer it)
    {
       mmHashDirectDeleteEntry2(tbl, &hashAccess, it, 0);
-      resize();
+      resize(true);
    }
 
-   static void resize()
+   static void resize(bool down)
    {
       int bits, status = mmHashGetStatus(tbl, &bits);
       if(status == MM_HASH_STATUS_MUSTGROW) bits++;
-      else if(status == MM_HASH_STATUS_MUSTSHRINK && bits > 12) bits--;
+      else if(status == MM_HASH_STATUS_MUSTSHRINK && down && bits > 12 && (1 << bits) > initSize) bits--;
       else return;
       {
          uint pageShift = 4;
@@ -145,7 +146,7 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
          int r = mmHashDirectAddEntry2(tbl, &hashAccess, &pos, bool::true, &entry);
          if(r != MM_HASH_FOUND)
          {
-            resize();
+            resize(false);
             if(justAdded) *justAdded = true;
          }
          return entry;
@@ -177,6 +178,7 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
       {
          int bits = Max(8, log2i(value));  // size == 1, 1 bit causes crashes...
          uintsize s = mmHashRequiredSize(sizeof(int64), bits, HASH_PAGE_SHIFT);
+         initSize = value;
          if(tbl) free(tbl);
          tbl = malloc(s);
          if(tbl)
