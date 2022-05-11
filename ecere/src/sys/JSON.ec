@@ -216,7 +216,8 @@ FreeingAVLTree<const String> compactArrays
    "MD_Keywords",
    "EX_Extent",
    "FieldValue",
-   "double"
+   "double",
+   "ZoneString"
 ] };
 
 public enum JSONResult { syntaxError, success, typeMismatch, noItem };
