@@ -786,7 +786,7 @@ public:
                switch(op)
                {
                   case multiply:             tbl->Mul       (value, val1, val2); break;
-                  case divide:   if(val1.i)  tbl->Div       (value, val1, val2); break;
+                  case divide:   if(val2.i)  tbl->Div       (value, val1, val2); break;
                   case minus:                tbl->Sub       (value, val1, val2); break;
                   case plus:                 tbl->Add       (value, val1, val2); break;
                   case modulo:               tbl->Mod       (value, val1, val2); break;
@@ -808,7 +808,6 @@ public:
                   case bitAnd:               tbl->BitAnd    (value, val1, val2); break;
                   case bitOr:                tbl->BitOr     (value, val1, val2); break;
                   case bitXor:               tbl->BitXor    (value, val1, val2); break;
-                  case bitNot:               tbl->BitNot    (value, val1); break;
                }
                flags.resolved = value.type.type != nil;
             }
@@ -836,8 +835,9 @@ public:
          {
             switch(op)
             {
-               case '-': tbl->Neg(value, val2); break;
-               case '!': tbl->Not(value, val2); break;
+               case '-':    tbl->Neg(value, val2);    break;
+               case '!':    tbl->Not(value, val2);    break;
+               case bitNot: tbl->BitNot(value, val2); break;
             }
          }
       }
