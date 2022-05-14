@@ -203,8 +203,9 @@ private:
 
       // NOTE: Currently using int64 for uint64 may result in wrong order...
       if(onCompare == (void *)class(int64).OnCompare ||
-         (Tclass.type == unitClass && Tclass.typeSize == sizeof(int64) && !strcmp(Tclass.name, "Id")) ||
-         (Tclass.type == bitClass && Tclass.typeSize == sizeof(int64))) isInt64 = true;
+         (t == unitClass && Tclass.typeSize == sizeof(int64) && !strcmp(Tclass.name, "Id")) ||
+         (t == bitClass && Tclass.typeSize == sizeof(int64)))
+         isInt64 = true;
       else if(onCompare == (void *)class(double).OnCompare) isDouble = true;
 
       reference = (t == systemClass && !Tclass.byValueSystemClass) || t == bitClass || t == enumClass || t == unitClass;
