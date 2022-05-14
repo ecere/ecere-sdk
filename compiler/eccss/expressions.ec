@@ -610,6 +610,7 @@ public:
          if(!strcmp(identifier.string, "null"))
          {
             value.type.type = nil;
+            flags.resolved = true; // Should resolved be set for null?
          }
          else if(destType && (destType.type == enumClass || destType == class(Color)))
          {
@@ -731,7 +732,7 @@ public:
 
          flags = flags1 | flags2;
 
-         if(flags1.resolved && val1.type.type != type)
+         if(flags1.resolved && val1.type.type != nil && val1.type.type != type)
             convertFieldValue(val1, type, val1);
 
          if(op == in)
@@ -753,7 +754,7 @@ public:
                   {
                      if(f2.resolved)
                      {
-                        if(v2.type.type != type)
+                        if(v2.type.type != nil && v2.type.type != type)
                            convertFieldValue(v2, type, v2);
                         if(v2.type.type == type)
                         {
@@ -778,7 +779,7 @@ public:
                val1 = { type = { integer }, i = 0 };
             if(!flags2.resolved)
                val2 = { type = { integer }, i = 0 };
-            if(val2.type.type != type)
+            if(val2.type.type != nil && val2.type.type != type)
                convertFieldValue(val2, type, val2);
 
             if(val1.type.type != nil && val1.type.type == val2.type.type)
@@ -810,6 +811,12 @@ public:
                   case bitXor:               tbl->BitXor    (value, val1, val2); break;
                }
                flags.resolved = value.type.type != nil;
+            }
+            else if((val1.type.type == nil || val2.type.type == nil) && (op == equal || op == notEqual))
+            {
+               // Null equality checks
+               value = { type = { integer }, i = (op == equal ? val1.type.type == val2.type.type : val1.type.type != val2.type.type) };
+               flags.resolved = true;
             }
             else
                flags.resolved = false;
