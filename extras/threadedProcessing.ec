@@ -34,7 +34,7 @@ public:
    bool waitedOn:1;
 }
 
-class ProcessingTask : ListItem
+public class ProcessingTask : ListItem
 {
    class_no_expansion;
    ProcessingTaskStatus status;
@@ -458,7 +458,7 @@ public:
             stages.size = stage;
          if(!stages[stage-1])
             stages[stage-1] = { processing = this, thisStage = stage };
-         if(numThreads >= stages[stage-1].threads.count)
+         if(numThreads >= stages[stage-1].threads.count || (numThreads && !stages[stage-1].threads[0]))
             stages[stage-1].init(numThreads);
       }
    }
