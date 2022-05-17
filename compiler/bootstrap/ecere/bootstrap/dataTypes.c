@@ -2047,6 +2047,7 @@ if(this != (((void *)0)))
 size_t __simpleStruct0;
 int read = (__simpleStruct0 = __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count - __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos, (numBytes < __simpleStruct0) ? numBytes : __simpleStruct0);
 
+if(bytes)
 memcpy(bytes, __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->_buffer + __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos, read);
 __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->pos += read;
 return read;
