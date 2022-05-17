@@ -3033,7 +3033,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("print('getDirESDK: ', getDirESDK(os.getcwd()))");
    out.PrintLn("esdkDir = getDirESDK(os.getcwd())");
    out.PrintLn("if esdkDir.find('pip-req-build-') == -1 or esdkDir.find('pip-install-of') == -1:");
-   out.PrintLn("   inPipInstallBuild = True");
+   out.PrintLn("   inPipInstallBuild = False #True");
    out.PrintLn("else:");
    out.PrintLn("   inPipInstallBuild = False");
    out.PrintLn("");
@@ -3049,13 +3049,16 @@ static void generateBUILD(File out, PythonGen g)
    //ddd 'build\\lib.' + fp
    out.PrintLn("if inPipInstallBuild == True:");
    out.PrintLn("   blddir = 'build/lib.%s-%s' % (get_platform(), pver[0:pver.rfind('.')])");
-   out.PrintLn("elif sys.argv[0] == 'setup.py':");
+   //out.PrintLn("elif sys.argv[0] == 'setup.py':");
+   out.PrintLn("else:");
    out.PrintLn("   blddir = 'bindings/py'");
+   /*
    out.PrintLn("else:");
    out.PrintLn("   if sys.argv[0] == 'setup.py':");
    out.PrintLn("      blddir = 'bindings/py'");
    out.PrintLn("   else:");
    out.PrintLn("      blddir = ''");
+   */
    if(g.libDeps.count == 0)
       out.PrintLn("from cffi import FFI");
    else
