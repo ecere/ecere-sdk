@@ -7487,7 +7487,7 @@ static void cppMacroProperty(
             o.concatx("struct ", n, sc, "_Prop", lc, ln);
             o.concatx(genloc__, indents(ind), "{", lc, ln);
             ind++;
-            o.concatx(genloc__, indents(ind), "constexpr ", n, sc, "_Prop() { };", lc, ln);
+            o.concatx(genloc__, indents(ind), "constexpr ", n, sc, "_Prop() :_() { };", lc, ln);
             o.concatx(genloc__, indents(ind), "[[no_unique_address]] int _[0];", lc, ln);
          }
          if(smod == definition)
