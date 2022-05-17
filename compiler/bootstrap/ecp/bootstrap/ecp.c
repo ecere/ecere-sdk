@@ -227,8 +227,6 @@ extern unsigned int __ecereNameSpace__ecere__sys__DeleteFile(const char *  fileN
 
 extern int snprintf(char * , size_t, const char * , ...);
 
-extern char *  __ecereNameSpace__ecere__sys__GetEnvironment(const char *  envName, char *  envValue, int max);
-
 extern void resetScanner(void);
 
 extern void ParseEc(void);
@@ -3018,12 +3016,6 @@ __ecereNameSpace__ecere__sys__DeleteFile(outputFilePath);
 }
 snprintf(command, sizeof (command), "%s%s -x c -E \"%s\"", cppCommand, cppOptions ? cppOptions : "", GetSourceFile());
 command[sizeof (command) - 1] = 0;
-{
-char verbose[2048];
-
-if(__ecereNameSpace__ecere__sys__GetEnvironment("V", verbose, sizeof (verbose)) && !strcmp(verbose, "1"))
-__ecereNameSpace__ecere__com__PrintLn(__ecereClass_char__PTR_, "ecp: note: executing preprocessor: ", __ecereClass_char__PTR_, command, (void *)0);
-}
 if((cppOutput = __ecereNameSpace__ecere__sys__DualPipeOpen((((unsigned int)(1))), command)))
 {
 int exitCode;

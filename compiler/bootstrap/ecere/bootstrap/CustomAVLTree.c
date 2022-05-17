@@ -933,7 +933,7 @@ unsigned int isInt64 = 0, isDouble = 0;
 struct __ecereNameSpace__ecere__com__AVLNode * to = (((void *)0));
 int side = (int)0;
 
-if(onCompare == (void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnCompare] || (Tclass->type == 3 && Tclass->typeSize == sizeof(long long) && !strcmp(Tclass->name, "Id")) || (Tclass->type == 2 && Tclass->typeSize == sizeof(long long)))
+if(onCompare == (void *)__ecereClass_int64->_vTbl[__ecereVMethodID_class_OnCompare] || (t == 3 && Tclass->typeSize == sizeof(long long) && !strcmp(Tclass->name, "Id")) || (t == 2 && Tclass->typeSize == sizeof(long long)))
 isInt64 = 1;
 else if(onCompare == (void *)__ecereClass_double->_vTbl[__ecereVMethodID_class_OnCompare])
 isDouble = 1;
