@@ -1684,7 +1684,7 @@ class BClass : struct
       char * targsbm; // w/ <>
       bool isTemplate;
       bool setTemplateComplete;
-      bool templateComplete;
+      // bool templateComplete; // This is not used anywhere.
       int typedTArgsCount;
       char * dataTypeString;
       bool classTypeIsTemplatable;
