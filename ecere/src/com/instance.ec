@@ -2194,7 +2194,7 @@ static void FixDerivativesBase(Class base, Class mod)
       if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass))
       {
          // Normal classes inheriting off simple classes should become no head classes
-         if(base.type == structClass && type == normalClass)
+         if(base.type == structClass && (type == normalClass || type == noHeadClass))
             type = noHeadClass;
          else
             type = base.type;
@@ -2546,7 +2546,7 @@ public dllexport Class eSystem_RegisterClass(ClassType type, const char * name, 
       if(base && !base.internalDecl && (base.type == noHeadClass || base.type == structClass || base.type == normalClass))
       {
          // Normal classes inheriting off simple classes should become no head classes
-         if(base.type == structClass && type == normalClass)
+         if(base.type == structClass && (type == normalClass || type == noHeadClass))
             type = noHeadClass;
          else
             type = base.type;
