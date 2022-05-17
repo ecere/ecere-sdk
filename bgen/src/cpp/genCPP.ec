@@ -2962,19 +2962,6 @@ public:
    bool pfx:1;
 }
 
-Class getTemplateStartBaseClass(Class templateClass)
-{
-   Class cl = templateClass;
-   for(; cl; cl = cl.base)
-   {
-      if(cl.templateClass)
-         break;
-      if(!cl.base || !cl.base.base)
-         break;
-   }
-   return cl;
-}
-
 List<Class> getTemplateLineage(Class cl, bool * complete)
 {
    List<Class> lineage { };
@@ -3002,6 +2989,9 @@ List<Class> getTemplateLineage(Class cl, bool * complete)
    return lineage;
 }
 
+// TODO: Review usage of this function:
+//   - Base/Derived and Templated/Template relationships should never be confused
+//   - Building a List is inefficient and should not be necessary
 List<Class> getCorrectLineage(Class cl, Class * templateClass)
 {
    List<Class> lineage { };
@@ -3262,89 +3252,64 @@ static bool getSpecifiedTemplateArgsSymbols(Class templateClass, Array<String> c
    return complete;
 }
 
-static bool isTemplateClassTypeComplete(Class templateClass, Array<String> cSymbolTArgs, bool cName)
+static Array<const String> listBaseClassTemplateArgs(Class bClass)
 {
-   bool complete = true;
-   int i = 0;
-   List<Class> lineage = getCorrectClassLineage(templateClass); // getClassLineage
-   Class startBaseClass = getTemplateStartBaseClass(templateClass.templateParams.count == 0 ? templateClass : templateClass.base);
-   Class clStart = startBaseClass;
-   startBaseClass = getTemplateStartBaseClass(templateClass.templateParams.count == 0 ? templateClass : templateClass.base);
-   if(clStart)
-      ;
-   for(item : lineage)
+   Array<const String> cSymbolTArgs { };
+   ClassTemplateParameter ctp;
+   uint i = 0;
+   Class c = bClass.templateClass.base; // A temporary variable to compute tClass and start parameter
+   Class tClass;                        // The class whose templateParams we will be checking
+
+   while(c && !c.templateParams.count)
+      c = c.templateClass ? c.templateClass.base : c.base;
+
+   tClass = c;
+
+   while(c && (c = c.templateClass ? c.templateClass.base : c.base))
+      i += c.templateParams.count;
+
+   for(ctp = tClass ? tClass.templateParams.first : null; ctp && i < bClass.numParams; ctp = ctp.next)
    {
-      Class cl = item;
-      if(startBaseClass && /*(*/startBaseClass == cl/* || startBaseClass.templateClass == cl)*/)
-         startBaseClass = null;
-      if(cl.templateParams.count)
+      switch(ctp.type)
       {
-         // if(!startBaseClass)
-         // {
-            ClassTemplateParameter ctp;
-            if(cl == templateClass)
+         case type:
+         {
+            // We check the template args of the templated base class passed in as bClass
+            ClassTemplateArgument * a = &bClass.templateArgs[i];
+            // TOCHECK: Default args can be overridden... if(!ctp.defaultArg.dataTypeString)
             {
-               complete = false;
-               break;
-            }
-            for(ctp = cl.templateParams.first; ctp && complete; ctp = ctp.next)
-            {
-               switch(ctp.type)
+               if(a->dataTypeClass)
                {
-                  case type:
+                  BClass dtc = a->dataTypeClass;
+                  if(a->dataTypeClass.templateClass || a->dataTypeClass.templateParams.count)
                   {
-                     ClassTemplateArgument * a = &templateClass.templateArgs[i];
-                     if(!ctp.defaultArg.dataTypeString)
-                     {
-                        // ClassTemplateArgument * a = &templateClass.templateArgs[i];
-                        if(a->dataTypeClass)
-                        {
-                           BClass dtc = a->dataTypeClass;
-                           if(a->dataTypeClass.templateClass || a->dataTypeClass.templateParams.count)
-                           {
-                              if(!isTemplateClassTypeComplete(a->dataTypeClass, null, cName))
-                              {
-                                 complete = false;
-                                 break;
-                              }
-                           }
-                           else if(strchr(a->dataTypeClass.name, '<') && strchr(a->dataTypeClass.name, '>')) debugBreakpoint();
-                           if(cSymbolTArgs)
-                              cSymbolTArgs.Add(cName ? dtc.cSymbol : dtc.cpp.name);
-                        }
-                        else if(a->dataTypeString)
-                        {
-                           Class dtscl = eSystem_FindClass(templateClass.module, a->dataTypeString);
-                           if(dtscl)
-                           {
-                              BClass dtsc = dtscl;
-                              if(cSymbolTArgs)
-                                 cSymbolTArgs.Add(cName ? dtsc.cSymbol : dtsc.cpp.name);
-                              if(!strcmp(templateClass.name, "List<ecere::net::CallAck>")) debugBreakpoint();
-                           }
-                           else
-                              complete = false;
-                        }
-                        else
-                           complete = false;
-                     }
-                     break;
+                     // FIXME: What was this condition about?
                   }
-                  case expression: break; // expressions are ignored here
-                  case identifier: break; // identifiers are ignored here
-                  default: debugBreakpoint(); break;
+                  else if(strchr(a->dataTypeClass.name, '<') && strchr(a->dataTypeClass.name, '>'))
+                     debugBreakpoint();
+                  if(cSymbolTArgs)
+                     cSymbolTArgs.Add(dtc.cpp.name);
                }
-               i++;
+               else if(a->dataTypeString)
+               {
+                  Class dtscl = eSystem_FindClass(bClass.module, a->dataTypeString);
+                  if(dtscl)
+                  {
+                     BClass dtsc = dtscl;
+                     if(cSymbolTArgs)
+                        cSymbolTArgs.Add(dtsc.cpp.name);
+                     if(!strcmp(bClass.name, "List<ecere::net::CallAck>")) debugBreakpoint();
+                  }
+               }
             }
-         //}
-         // else
-         //    i += cl.templateParams.count;
+            break;
+         }
+         case expression: break; // expressions are ignored here
+         case identifier: break; // identifiers are ignored here
       }
-      if(startBaseClass && startBaseClass.templateClass == cl)
-         startBaseClass = null;
+      i++;
    }
-   delete lineage;
-   return complete;
+   return cSymbolTArgs;
 }
 
 static void commonMemberHandling(
@@ -8033,9 +7998,9 @@ int getClassTemplateParamsStringsCPP(BClass c, String * prototype, String * defi
    }
    else if(_class.templateParams.count == 0 && _class.base && _class.base.templateClass)
    {
-      Array<String> tArgs { };
+      Array<const String> tArgs = listBaseClassTemplateArgs(_class.base);
+
       c.cpp.setTemplateComplete = true;
-      /*bool completeTemplate = */c.cpp.templateComplete = isTemplateClassTypeComplete(_class.base, tArgs, false);
       for(arg : tArgs)
       {
          u.concatx(comma, arg);
@@ -8045,14 +8010,15 @@ int getClassTemplateParamsStringsCPP(BClass c, String * prototype, String * defi
          if(!comma[0]) comma = ", ", comma2 = " _ARG "; // ___ARG
          ++count;
       }
+      delete tArgs;
    }
    else
    {
+      // TODO: The logic here should be similar and refactored as in/together with listBaseClassTemplateArgs()
       for(cl = _class; cl; cl = cl.templateClass ? cl.templateClass : cl.base)
-      {
          if(!templateClass && cl.templateParams.count)
-            templateClass = cl;
-      }
+            templateClass = cl; // TODO: Shouldn't this break?
+
       /*
       for(i : tree)
       {
