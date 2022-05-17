@@ -4472,7 +4472,7 @@ __ecereMethod___ecereNameSpace__ecere__sys__OldList_Add(&((struct __ecereNameSpa
 }
 if(ensureCOM && !strcmp(name, "ecere") && module)
 {
-name = !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM") ? "ecereCOM" : "ecere";
+name = !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM") ? "ecere" : "ecereCOM";
 if((!Load && !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM")) || (Load && (!__thisModule || !((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name || !strcmp(((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->name, "ecereCOM")) && Load != (void *)__ecereDll_Load_ecere))
 {
 struct __ecereNameSpace__ecere__com__Instance * module;
@@ -4788,7 +4788,7 @@ struct __ecereNameSpace__ecere__com__Class * prevBase = (((void *)0));
 
 if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
 {
-if(base->type == 1 && type == 0)
+if(base->type == 1 && (type == 0 || type == 5))
 type = 5;
 else
 type = base->type;
@@ -6139,7 +6139,7 @@ for(baseClass = base; baseClass->base; baseClass = baseClass->base)
 ;
 if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
 {
-if(base->type == 1 && type == 0)
+if(base->type == 1 && (type == 0 || type == 5))
 type = 5;
 else
 type = base->type;

@@ -1,0 +1,44 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "testClassStruct",
+   "Options" : {
+      "Warnings" : "All",
+      "TargetType" : "Executable",
+      "TargetFileName" : "testClassStruct",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : true
+   },
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      "testZLastFile.ec",
+      "testClassStruct.ec",
+      "../../../../extras/testing/testingFramework.ec",
+      "testCSOtherFile.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
