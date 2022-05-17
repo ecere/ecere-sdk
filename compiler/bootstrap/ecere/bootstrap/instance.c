@@ -4789,7 +4789,7 @@ struct __ecereNameSpace__ecere__com__Class * prevBase = (((void *)0));
 
 if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
 {
-if(base->type == 1 && type == 0)
+if(base->type == 1 && (type == 0 || type == 5))
 type = 5;
 else
 type = base->type;
@@ -6150,7 +6150,7 @@ for(baseClass = base; baseClass->base; baseClass = baseClass->base)
 ;
 if(base && !base->internalDecl && (base->type == 5 || base->type == 1 || base->type == 0))
 {
-if(base->type == 1 && type == 0)
+if(base->type == 1 && (type == 0 || type == 5))
 type = 5;
 else
 type = base->type;
