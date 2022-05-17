@@ -634,15 +634,19 @@ char * getTemplateClassSymbol(const char * className, bool preexpanded)
             strcat(output, part);
             strcat(output, preexpanded ? "_" : ", ");
             part = s + 1;
-            for(close--; *close; close--)
+
+            if((s = RSearchString(s, ">", close - s, true, false)))
+               *s = 0;
+            if(preexpanded)
             {
-               if(*close == '>')
-               {
-                  *close = preexpanded ? ' ' : ')'; // this might not work in preexpanded. add pass to remove spaces maybe?
-                  break;
-               }
+               // TODO: More solid logic?
+               while((s = strchr(part, ' ')))   // Trim spaces
+                  memmove(s, s + 1, strlen(s));
+               ChangeChars(part, ",<>", '_');
             }
             strcat(output, part);
+            if(!preexpanded)
+               strcat(output, ")");
             break;
          }
          /*else if(*s == '=')
