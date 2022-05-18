@@ -1591,7 +1591,7 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
 void genConstructorsInitializerList(BOutput o, BClass c)
 {
    o.z.concatx(ln);
-   o.z.concatx(genloc__, "   ", c.cpp.tname, c.cpp.targsb, " (std::initializer_list<", c.cpp.templateParamNames[0], "> list) : ", c.cpp.tname, c.cpp.targsb, " ()", ln);
+   o.z.concatx(genloc__, "   ", c.cpp.tname, " (std::initializer_list<", c.cpp.templateParamNames[0], "> list) : ", c.cpp.tname, c.cpp.targsb, " ()", ln);
    o.z.concatx(genloc__, "   {", ln);
    o.z.concatx(genloc__, "      typename std::initializer_list<", c.cpp.templateParamNames[0], ">::iterator it;", ln);
    o.z.concatx(genloc__, "      for(it = list.begin(); it != list.end(); ++it)", ln);
@@ -5982,7 +5982,7 @@ static void cppMacroConstructClass(
             // todo: expansion
             cppMacroMoveConstructors(g, o, smod == definition ? encapsulation : configuration, te, ind, /*c*/tc, t, userDataProp, 0);
             o.concatx(lc, ln);
-            o.concatx(genloc__, indents(ind), tc, " ", tt, "() : ", tc, "((C(Instance))Instance_newEx(ensureTemplatized ", tt, "(_cpp_class, ", sso, c, ssc, ").impl, false), ensureTemplatized ", tt, "(_cpp_class, ", sso, c, ssc, ")) { }", lc, ln);
+            o.concatx(genloc__, indents(ind), tc, "() : ", tc, "((C(Instance))Instance_newEx(ensureTemplatized ", tt, "(_cpp_class, ", sso, c, ssc, ").impl, false), ensureTemplatized ", tt, "(_cpp_class, ", sso, c, ssc, ")) { }", lc, ln);
             o.concatx(genloc__, indents(ind), "INSTANCE_VIRTUAL_METHODS_PROTO(", tc, ")", lc, ln);
             o.concatx(genloc__, indents(ind), "static TCPPClass<", tc, "> _cpp_class;", lc, ln);
             o.concatx(genloc__, indents(ind), "static C(bool) constructor(C(Instance) i, C(bool) alloc)", lc, ln);
