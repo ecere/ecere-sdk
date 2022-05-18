@@ -11,6 +11,9 @@
       "Libraries" : [
          "ecere"
       ],
+      "LinkerOptions" : [
+         "--no-undefined"
+      ],
       "Console" : true
    },
    "Configurations" : [
@@ -62,25 +65,7 @@
             }
          ]
       },
-      "templates.c",
-      {
-         "FileName" : "templates_bare.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "templates_explicit.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "templates_macros.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      }
+      "templates.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [

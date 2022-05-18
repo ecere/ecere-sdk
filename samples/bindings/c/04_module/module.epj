@@ -10,6 +10,9 @@
       "TargetFileName" : "module",
       "Libraries" : [
          "ecere"
+      ],
+      "LinkerOptions" : [
+         "--no-undefined"
       ]
    },
    "Configurations" : [
@@ -61,25 +64,7 @@
             }
          ]
       },
-      "module.c",
-      {
-         "FileName" : "module_bare.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "module_explicit.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "module_macros.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      }
+      "module.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [
