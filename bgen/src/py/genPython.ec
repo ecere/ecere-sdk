@@ -3013,8 +3013,10 @@ static void generateBUILD(File out, PythonGen g)
 
    out.PrintLn("");
    out.PrintLn("def isDirESDK(testpath):");
+#if 0
    out.PrintLn("   print('isDirESDK: ', testpath)");
    out.PrintLn("   print('path.basename(testpath): ', path.basename(testpath))");
+#endif
    out.PrintLn("   if path.isfile(path.join(testpath, 'crossplatform.mk')):");
    out.PrintLn("      if path.isfile(path.join(testpath, 'default.cf')):");
    out.PrintLn("         return True");
@@ -3030,7 +3032,9 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("         break");
    out.PrintLn("   return 'badpath'");
    out.PrintLn("");
+#if 0
    out.PrintLn("print('getDirESDK: ', getDirESDK(os.getcwd()))");
+#endif
    out.PrintLn("esdkDir = getDirESDK(os.getcwd())");
    out.PrintLn("if esdkDir.find('pip-req-build-') == -1 or esdkDir.find('pip-install-of') == -1:");
    out.PrintLn("   inPipInstallBuild = False #True");
@@ -3118,7 +3122,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("   os.chdir(dir)");
    //out.PrintLn("   ");
    out.PrintLn("");
-// #if 0
+#if 0
 // out.PrintLn("if __name__ == '__main__':");
    out.PrintLn("print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')");
    out.PrintLn("print('__name__:', __name__)");
@@ -3128,7 +3132,7 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("print('owd:', owd)");
    out.PrintLn("print('rel:', rel)");
    out.PrintLn("");
-// #endif // 0
+#endif // 0
 
 #if 0
    out.PrintLn("if __name__ == '__main__':");
@@ -3141,15 +3145,23 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("_CF_DIR = str(os.getenv('_CF_DIR'))");
    out.PrintLn("_cf_dir = False if _CF_DIR == '' else True");
    out.PrintLn("if _cf_dir == True:");
+#if 0
    out.PrintLn("   print(' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ')");
+#endif
    out.PrintLn("   _c_bindings_path, _ = os.path.split(dir)");
+#if 0
    out.PrintLn("   print('_c_bindings_path: ', _c_bindings_path)");
+#endif
    out.PrintLn("   _c_bindings_path, _ = os.path.split(_c_bindings_path)");
+#if 0
    out.PrintLn("   print('_c_bindings_path: ', _c_bindings_path)");
+#endif
 // out.PrintLn("   ");
 // out.PrintLn("   sys.path.append(path.realpath(path.join(dir, rel, '../../', _CF_DIR)))");
    out.PrintLn("   sys.path.append(path.realpath(path.join(dir, '../../', _CF_DIR, 'bindings/py')))");
+#if 0
    out.PrintLn("   print(' ----> (sys.path with _CF_DIR)', sys.path)");
+#endif
    out.PrintLn("if rel != '':");
    out.PrintLn("   sys.path.append(dir)");
 // out.PrintLn("   print(' -- ', dir)");
@@ -3161,9 +3173,13 @@ static void generateBUILD(File out, PythonGen g)
    out.PrintLn("      return fullpath");
    out.PrintLn("   if _cf_dir == True:");
    out.PrintLn("      fullpath = path.join(dir, _CF_DIR, 'bindings/py', filename)");
+#if 0
    out.PrintLn("      print('fullpath (raw): ', fullpath)");
+#endif
    out.PrintLn("      fullpath = path.realpath(fullpath)");
+#if 0
    out.PrintLn("      print('fullpath: ', fullpath)");
+#endif
    out.PrintLn("      if path.isfile(fullpath):");
    out.PrintLn("         return fullpath");
    out.PrintLn("   return 'badpath'");
