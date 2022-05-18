@@ -11,6 +11,9 @@
       "Libraries" : [
          "ecere"
       ],
+      "LinkerOptions" : [
+         "--no-undefined"
+      ],
       "Console" : true
    },
    "Configurations" : [
@@ -62,25 +65,7 @@
             }
          ]
       },
-      "gui.c",
-      {
-         "FileName" : "gui_bare.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "gui_explicit.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "gui_macros.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      }
+      "gui.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [
