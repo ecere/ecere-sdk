@@ -588,7 +588,7 @@ cpp_bindings_gen: $(BINARIES)
 	@$(call echo,Generating C++ bindings...)
 	$(call mkdir,$(_bg_dir))
 	$(call mkdir,$(CPP_BINDINGS_DIR))
-	$(if $(BGEN_SKIP),,$(BGEN) -dir $(CPP_BINDINGS_DIR) $(_bg_args) $(_bg_quiet) -cpp -bypassmacros $(BGEN_LIBS))
+	$(if $(BGEN_SKIP),,$(BGEN) -dir $(CPP_BINDINGS_DIR) $(_bg_args) $(_bg_quiet) -cpp $(_bg_bypass_cpp) $(BGEN_LIBS))
 
 .PHONY: cpp_bindings_build
 .NOTPARALLEL: cpp_bindings_build
