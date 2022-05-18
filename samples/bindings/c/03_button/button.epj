@@ -11,6 +11,9 @@
       "Libraries" : [
          "ecere"
       ],
+      "LinkerOptions" : [
+         "--no-undefined"
+      ],
       "Console" : true
    },
    "Configurations" : [
@@ -62,25 +65,7 @@
             }
          ]
       },
-      "button.c",
-      {
-         "FileName" : "button_bare.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "button_explicit.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      },
-      {
-         "FileName" : "button_macros.c",
-         "Options" : {
-            "ExcludeFromBuild" : true
-         }
-      }
+      "button.c"
    ],
    "ResourcesPath" : "",
    "Resources" : [
