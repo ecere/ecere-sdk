@@ -869,7 +869,7 @@ static void generateCPP(CPPGen g, File f)
    f.PrintLn(genloc__, "   if(!", firstClass.name, "::_cpp_class.impl)");
    f.PrintLn(genloc__, "   {");
    f.PrintLn(genloc__, "#ifdef _DEBUG");
-   f.PrintLn(genloc__, "      printf(\"%s_cpp_init\\n\", \"", g.lib.bindingName, "\");");
+   f.PrintLn(genloc__, "      // printf(\"%s_cpp_init\\n\", \"", g.lib.bindingName, "\");");
    f.PrintLn(genloc__, "#endif");
    f.Print(ln);
    {
