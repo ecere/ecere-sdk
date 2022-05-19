@@ -1,0 +1,87 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "test",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "$(ECERE_SDK_SRC)/bindings/c",
+         "$(ECERE_SDK_SRC)/bindings/cpp"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "test",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Configurations" : [
+      {
+         "Name" : "Embedded",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Dynamic",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Libraries" : [
+               "ecere",
+               "ecere_cpp"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "$(ECERE_SDK_BINDINGS)/c",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/bindings/c/eC.c",
+            "$(ECERE_SDK_SRC)/bindings/c/eC.h",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
+            "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
+         ],
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "ECPRFX=eC_"
+            ]
+         },
+         "Configurations" : [
+            {
+               "Name" : "Dynamic",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
+         ]
+      },
+      {
+         "Folder" : "$(ECERE_SDK_BINDINGS)/cpp",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/bindings/cpp/eC.cpp",
+            "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp",
+            "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
+            "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp"
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Dynamic",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            }
+         ]
+      },
+      "form.cpp",
+      "foo.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

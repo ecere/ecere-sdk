@@ -1,6 +1,6 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "guiAppTest",
+   "ModuleName" : "tests",
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
@@ -8,7 +8,7 @@
          "$(ECERE_SDK_SRC)/bindings/cpp"
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "guiWindowWithCube",
+      "TargetFileName" : "tests",
       "Libraries" : [
          "ecere"
       ],
@@ -95,7 +95,7 @@
             }
          ]
       },
-      "guiWindowWithCube.cpp"
+      "tests.cpp"
    ],
    "ResourcesPath" : "",
    "Resources" : [

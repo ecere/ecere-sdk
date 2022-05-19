@@ -31,20 +31,14 @@ public:
          msgBox.modal();
          return true;
       };
+
+      // lambda alternative: onRedraw = [](Window & w, Surface & surface) { surface.writeTextf(100, 100, $("Class Method!!")); };
    }
 
    void onRedraw(Surface & surface)
    {
-      surface.writeText/*f*/(100, 100, $("Class Method!!"), 14);
+      surface.writeTextf(100, 100, $("Class Method!!"));
    }
-
-   /*
-   REGISTER()
-   {
-      Window::class_registration(_class);
-      register_onRedraw(_class, [](Window & w, Surface & surface) { ... });
-   }
-   */
 };
 
 class MyApplication : public GuiApplication

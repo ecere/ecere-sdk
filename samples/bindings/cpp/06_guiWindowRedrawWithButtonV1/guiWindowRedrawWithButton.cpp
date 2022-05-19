@@ -10,7 +10,8 @@ public:
    REGISTER()
    {
       REG_Window(HelloForm);
-      DESTRUCT(HelloForm) = [](HelloForm & self) { printf("It's the end my friend!\n");/* system("pause");*/ };
+      // lambda alternative to destructor:
+      // DESTRUCT(HelloForm) = [](HelloForm & self) { printf("It's the end my friend!\n");/* system("pause");*/ };
    }
    CONSTRUCT(HelloForm, Window)
    {
@@ -35,21 +36,20 @@ public:
          msgBox.modal();
          return true;
       };
+
+      // lambda alternative to onRedraw() method:
+      // onRedraw = [](Window & w, Surface & surface) { surface.writeTextf(100, 100, "simple"); };
    }
 
    void onRedraw(Surface & surface)
    {
-      surface.writeText/*f*/(100, 100, "simple", 6);
+      surface.writeTextf(100, 100, "simple");
    }
 
-   // REGISTER()
-   // {
-      // Window::class_registration(_class);
-
-      // register_onRedraw(_class, [](Window & w, Surface & surface) { surface.writeText/*f*/(100, 100, "simple", 6); });
-
-      // DESTRUCT(HelloForm) = [](HelloForm & self) { printf("It's the end my friend!\n"); };
-   // }
+   ~HelloForm()
+   {
+      printf("It's the end my friend!\n");/* system("pause");*/
+   }
 };
 
 GuiApplication app;
