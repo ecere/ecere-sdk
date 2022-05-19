@@ -31,7 +31,7 @@ public:
          return true;
       };
 
-      onRedraw = [](Window & w, Surface & surface) { surface.writeText/*f*/(100, 100, $("Instance Method!"), 16); };
+      onRedraw = [](Window & w, Surface & surface) { surface.writeTextf(100, 100, $("Instance Method!")); };
    }
 };
 

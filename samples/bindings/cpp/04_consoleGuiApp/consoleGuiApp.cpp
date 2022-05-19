@@ -4,7 +4,7 @@
 
 // Demonstrates overriding GuiApplication class, evolving instance from constructor
 // Simpler alternative override of cycle() at instance level commented out
-// Still using C++ style override of main() (Could also override just like cycle() in constructor or REGISTER())
+// Still using C++ style override of main() (Could also override just like cycle() in constructor)
 
 class MyApp : public GuiApplication
 {
@@ -12,29 +12,18 @@ public:
    APP_CONSTRUCT(MyApp, GuiApplication)
    {
       REGISTER_APP_CLASS(MyApp, GuiApplication, *this);
-      REG_GuiApplication(MyApp);
       /*cycle = +[](GuiApplication & app, bool idle)
       {
-         eC_printLn(class_String, "   Cycling!", null);
+         printLn("   Cycling!");
          return true;
       };*/
    }
 
-   REGISTER()
-   {
-      GuiApplication::class_registration(_cpp_class);
-      /*
-      register_cycle(_class, [](GuiApplication & app, bool idle) -> C(bool)
-      {
-         eC_printLn(class_String, "   Cycling!", null);
-         return true;
-      });
-      */
-   }
+   REGISTER() { REG_GuiApplication(MyApp); }
 
    void main()
    {
-      eC_printLn(class_String, "C++: Hello, eC", null);
+      printLn("C++: Hello, eC");
       GuiApplication::main();
    }
 
@@ -52,12 +41,6 @@ public:
 };
 
 MyApp app;
-// Window w;
+// Window w;   // Uncomment to see cycle() being called infinitely
 CLASS_DEF(MyApp);
 MAIN_DEFINITION
-
-
-
-
-
-
