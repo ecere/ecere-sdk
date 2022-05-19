@@ -145,7 +145,7 @@ void cppHardcodedInstancePart1(BOutput o)
    o.z.concatx(genloc__, "   static void destructor(C(Instance) i)", ln,
                genloc__, "   {", ln,
                genloc__, "      Instance * inst = (Instance *)INSTANCEL(i, _cpp_class.impl);", ln);
-   o.z.concatx(genloc__, "      if(inst->mustFree)", ln,
+   o.z.concatx(genloc__, "      if(inst && inst->mustFree)", ln,
                genloc__, "         delete inst;", ln,
                genloc__, "   }", ln);
    o.z.concatx(genloc__, "   static void class_registration(CPPClass & _class);", ln, ln);
