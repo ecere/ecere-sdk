@@ -1201,7 +1201,7 @@ public:
 
 #if !defined(ECERE_NOGL)
 
-   void countTexture(Bitmap bitmap, AVLTree<uintptr> bitmaps, int * w, int * h, int * internalFormat)
+   private void countTexture(Bitmap bitmap, AVLTree<uintptr> bitmaps, int * w, int * h, int * internalFormat)
    {
       if(bitmaps.Add((uintptr)bitmap))
       {
@@ -1227,7 +1227,7 @@ public:
       }
    }
 
-   void countMatTextures(Material mat, int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
+   private void countMatTextures(Material mat, int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
    {
       if(nAT > 0 && mat.baseMap)      countTexture(mat.baseMap,     bitmaps[0], w + 0, h + 0, internalFormats + 0);
       if(nAT > 1 && mat.bumpMap)      countTexture(mat.bumpMap,     bitmaps[1], w + 1, h + 1, internalFormats + 1);
@@ -1236,7 +1236,7 @@ public:
       if(nAT > 4 && mat.reflectMap)   countTexture(mat.reflectMap,  bitmaps[4], w + 4, h + 4, internalFormats + 4);
    }
 
-   void countTextures(int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
+   private void countTextures(int nAT, AVLTree<uintptr> * bitmaps, int * w, int * h, int * internalFormats)
    {
       PrimitiveGroup g;
 
