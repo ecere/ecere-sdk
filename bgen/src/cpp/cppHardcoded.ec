@@ -333,7 +333,8 @@ void cppHardcodedCorePart1(CPPGen g, File f)
    f.PrintLn(genloc__, "//            x: pointer to eC instance");
    f.PrintLn(genloc__, "//            c: eC 'Class' object representing the C++ class");
    f.PrintLn(genloc__, "#define INSTANCEL(x, c) (*(void **)((char *)(x) + (c)->offset))   // For when an l-value is needed");
-   f.PrintLn(genloc__, "#define INSTANCE(x, c)  ((x) ? INSTANCEL(x, c) : 0)               // Regular one that can return null", ln);
+   // f.PrintLn(genloc__, "#define INSTANCE(x, c)  ((x) ? INSTANCEL(x, c) : 0)               // Regular one that can return null", ln);
+   f.PrintLn(genloc__, "#define INSTANCE(x, c)  ({ void * xx = x; xx ? INSTANCEL(xx, c) : 0; }) // New extension version avoiding to evaluate x twice", ln);
 
    f.PrintLn(genloc__, "#define BINDINGS_CLASS(eo) (eo && eo->_class && eo->_class->bindingsClass)", ln);
 
