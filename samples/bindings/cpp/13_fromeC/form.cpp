@@ -16,6 +16,7 @@ public:
 
    CONSTRUCT(Foo, Instance)
    {
+      /* FIXME:
       onCopy = [](Foo & self, Foo & other)
       {
          printf("%d, %d\n", other.a, other.b);
@@ -33,7 +34,9 @@ public:
          return 0;
       };
 
-      /*onDisplay = [](Foo & self, Surface & s, int x , int y , int w, void * fd, Alignment a, DataDisplayFlags f)
+      onDisplay = [](Foo & self,
+         Instance //Surface
+         & s,int x , int y , int w, void * fd, Alignment a, DataDisplayFlags f)
       {
          printf("Meh\n");
       };
@@ -42,19 +45,22 @@ public:
 
    REGISTER()
    {
-      //Instance::class_registration(_class);
+      //Instance::class_registration(_cpp_class);
       // Foo&, Surface&, int, int, int, void*, Alignment, DataDisplayFlags
       // Foo::Foo_onDisplay_Functor::FunctionType {aka void (*)(
       // Foo&, Instance&, int, int, int, void*, eC_Alignment, unsigned int
       // Foo&, Surface&, int, int, int, void*, Alignment, DataDisplayFlags
       // Foo&, Surface&, int, int, int, void*, Alignment, DataDisplayFlags
-      register_onDisplay(_class,
+      /* // register_ was changed in favor of overriding methods directly in the class
+      register_onDisplay(_cpp_class,
             [](Foo & _self, Instance & s, int x , int y , int w, void * fd, Alignment a, DataDisplayFlags f)
             {
                printf("Meh\n");
             });
+      */
    }
 };
+
 REGISTER_CLASS_DEF(Foo, Instance, app);
 
 void testStuff();
@@ -67,19 +73,19 @@ public:
    CONSTRUCT(HelloForm2, Window)
    {
       caption = $("My Second Ecere/C++ Bindings App");
-      borderStyle = BorderStyle_sizable;
+      borderStyle = BorderStyle::sizable;
       clientSize = { 640, 480 };
       hasClose = true;
       hasMaximize = true;
       hasMinimize = true;
-      background = SystemColor_formColor;
+      background = SystemColor::formColor;
       font = { "Arial", 30 };
 
       button.parent = this;
       button.position = { 200, 200 };
       button.caption = $("Yay!!");
       // button.onRedraw = [](Window & w, Surface s){ };
-      button.notifyClicked = [](Window & owner, Button & btn, int x, int y, Modifiers mods) -> C(bool)
+      button.notifyClicked = [](Window & owner, Button & btn, int x, int y, Modifiers mods) -> bool
       {
          double i = 3.14159265;
          char tmp[256];
@@ -112,11 +118,10 @@ public:
             printf("after");
             */
             Surface s { };
-            Foo * o = (Foo *)null; o->onDisplay(s, 0,0,0, null, (Alignment)0, (DataDisplayFlags)0);
+            // FIXME: Foo * o = (Foo *)null; o->onDisplay(s, 0,0,0, null, (Alignment)0, (DataDisplayFlags)0);
             //((Foo *)&obj3)->onDisplay(Surface { }, 0,0,0, null, 0, 0);
 
-            int r;
-            r = obj1.onCompare(obj2); printf("result: %d\n", r);
+            // FIXME: int r = obj1.onCompare(obj2); printf("result: %d\n", r);
             //r = obj2.onCompare(obj1); printf("result: %d\n", r);
             //r = obj1.onCompare(obj3); printf("result: %d\n", r);
             //printf("result: a = %d, b = %d\n", obj4.a, obj4.b);
@@ -136,43 +141,49 @@ public:
       //onCreate();
    }
 
-   /*static void myOnRedraw(Window & w, Surface & surface)
+   void onRedraw(Surface & surface)
    {
-      surface.writeTextf(100, 100, $("Testing stuff!"));
+      surface.writeTextf(100, 100, $("Class Method!!"));
       //surface.writeTextf(100, 100, "%d + %d = %d", 2, 3, 2+3);
-   };*/
+
+      //surface.writeTextf(100, 100, $("Testing stuff!"));
+      //surface.writeTextf(100, 100, "%d + %d = %d", 2, 3, 2+3);
+   }
 
    REGISTER()
    {
-      Window::class_registration(_class);
-      register_onRedraw(_class, [](Window & w, Surface & surface)
-      {
-         surface.writeText/*f*/(100, 100, $("Class Method!!"), 14);
-         //surface.writeTextf(100, 100, "%d + %d = %d", 2, 3, 2+3);
-      });
+      Window::class_registration(_cpp_class);
    }
 };
 REGISTER_CLASS_DEF(HelloForm2, Window, app);
 
 void testStuff()
 {
-   //eC_Class * c = eC_findClass(app.impl, "HelloForm2");
-   eC_Class * c = HelloForm2::_class.impl;
-   ((HelloForm2 *)_INSTANCE(newi(c), c))->modal();
+   eC_Class * c = eC_findClass(app.impl, "HelloForm2");
+   //eC_Class * c = HelloForm2::_cpp_class.impl;
+   //void * i = newi(c);
+   //((HelloForm2 *)INSTANCE(i, c))->modal();
+
+   // NOTE: This used to crash if INSTANCE macro evaluates newi(c) multiple times, resulting in a leaked HelloForm2 outliving its TCPPClass
+   ((HelloForm2 *)INSTANCE(newi(c), c))->modal();
+
+   //(new HelloForm2)->modal();
 }
 
 class HelloForm3 : public HelloForm2
 {
 public:
+   REGISTER() { REG_Window(HelloForm3); }
+
    CONSTRUCT(HelloForm3, HelloForm2)
    {
       background = 0x50B0F0;
       position = { 0, 0 };
       font = { "Monaco", 30, true };
 
-      onRedraw = [](Window & w, Surface & surface)
+      Window::onRedraw = [](Window & w, Surface & surface)
       {
-         surface.writeText/*f*/(100, 100, $("Instance Method!"), 16);
+         surface.writeTextf(100, 100, $("Instance Method!"));
          //surface.writeTextf(100, 100, "%d + %d = %d", 2, 3, 2+3);
       };
    }

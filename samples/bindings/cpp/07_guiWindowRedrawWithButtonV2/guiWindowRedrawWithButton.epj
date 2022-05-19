@@ -4,8 +4,8 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "$(ECERE_SDK_BINDINGS_C)",
-         "$(ECERE_SDK_BINDINGS_CPP)"
+         "$(ECERE_SDK_SRC)/bindings/c",
+         "$(ECERE_SDK_SRC)/bindings/cpp"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "guiAppTest",
@@ -16,14 +16,25 @@
    },
    "Configurations" : [
       {
-         "Name" : "Debug",
+         "Name" : "Embedded",
          "Options" : {
             "Debug" : true,
-            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ]
+         }
+      },
+      {
+         "Name" : "Dynamic",
+         "Options" : {
+            "Debug" : true,
             "PreprocessorDefinitions" : [
                "_DEBUG"
             ],
-            "FastMath" : false
+            "Libraries" : [
+               "ecere",
+               "ecere_cpp"
+            ]
          }
       }
    ],
@@ -37,15 +48,15 @@
                   {
                      "Folder" : "$(ECERE_SDK_BINDINGS_C)/eC",
                      "Files" : [
-                        "eC.c",
-                        "eC.h"
+                        "$(ECERE_SDK_SRC)/bindings/c/eC.c",
+                        "$(ECERE_SDK_SRC)/bindings/c/eC.h"
                      ]
                   },
                   {
                      "Folder" : "$(ECERE_SDK_BINDINGS_C)/ecere",
                      "Files" : [
-                        "ecere.c",
-                        "ecere.h"
+                        "$(ECERE_SDK_SRC)/bindings/c/ecere.c",
+                        "$(ECERE_SDK_SRC)/bindings/c/ecere.h"
                      ]
                   }
                ],
@@ -61,18 +72,26 @@
                   {
                      "Folder" : "$(ECERE_SDK_BINDINGS_CPP)/eC",
                      "Files" : [
-                        "eC.cpp",
-                        "eC.hpp"
+                        "$(ECERE_SDK_SRC)/bindings/cpp/eC.cpp",
+                        "$(ECERE_SDK_SRC)/bindings/cpp/eC.hpp"
                      ]
                   },
                   {
                      "Folder" : "$(ECERE_SDK_BINDINGS_CPP)/ecere",
                      "Files" : [
-                        "ecere.cpp",
-                        "ecere.hpp"
+                        "$(ECERE_SDK_SRC)/bindings/cpp/ecere.cpp",
+                        "$(ECERE_SDK_SRC)/bindings/cpp/ecere.hpp"
                      ]
                   }
                ]
+            }
+         ],
+         "Configurations" : [
+            {
+               "Name" : "Dynamic",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
             }
          ]
       },
