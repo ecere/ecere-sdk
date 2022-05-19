@@ -57,6 +57,10 @@ public class UIntPtr : uintptr // bug / issue: UIntPtr64_OnCompare fails for uin
    // perhaps the different type used with the MapIterator is the reason why it worked?
    // -- This might have been a bug in development branches caused by an optimization now fixed?
    //    Or maybe something to do with bad (uint32) pointer cast? Verify if this is still an issue and switch to uintptr.
+
+   // 2022-05-19: The problem is that while using uintptr directly works, deriving a class from it loses the byValueSystemClass flag,
+   //             so values for BOutputPtr etc. get passed by reference, while UIntPtr64_OnCompare() expects them by value
+
    int OnCompare(UIntPtr o)
    {
       if(o > this)
