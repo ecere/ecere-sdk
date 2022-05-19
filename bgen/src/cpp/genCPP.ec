@@ -1365,7 +1365,8 @@ static void processCppClass(CPPGen g, BClass c, BClass cRealBase)
                      // if(c.isGuiApplication)
                      //   o.z.concatx(genloc__, "      ecere_cpp_init(*this);", ln);
                      o.z.concatx(genloc__, "      INSTANCEL(impl, impl->_class) = this;", ln);
-                     o.z.concatx(genloc__, "      mustFree = true;", ln);
+                     // This should not have been added: o.z.concatx(genloc__, "      mustFree = true;", ln);
+                     // The object might have been allocated in place -- mustFree = true is means allocated with 'new' and held on by an eC object.
                      o.z.concatx(genloc__, "      incref(impl);", ln);
                      o.z.concatx(genloc__, "      vTbl = _cpp_class.vTbl;", ln);
                      o.z.concatx(genloc__, "      __thisModule = impl;", ln);
