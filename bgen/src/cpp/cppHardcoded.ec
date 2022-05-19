@@ -683,16 +683,19 @@ void cppHardcodedCorePart2(CPPGen g, File f,
    f.PrintLn(genloc__, "   operator TC() const { return *object; }"); // error: use of deleted function ‘GeoData::GeoData(const GeoData&)
 #endif
    f.PrintLn(genloc__, "   TC * object;", ln);
+   f.PrintLn(genloc__, "   bool ownRef = false;", ln);
 
    f.PrintLn(genloc__, "   TIH(C(Instance) eo) : TIH(*(BINDINGS_CLASS(eo) ? (TC *)INSTANCE(eo, eo->_class) : new TC(eo)))");
    f.PrintLn(genloc__, "   {");
    f.PrintLn(genloc__, "      if(!BINDINGS_CLASS(eo) || !INSTANCE(eo, eo->_class))");
    f.PrintLn(genloc__, "      {");
-   f.PrintLn(genloc__, "         object->mustFree = true;");
+   f.PrintLn(genloc__, "         ownRef = true;");
    f.PrintLn(genloc__, "      }");
    f.PrintLn(genloc__, "      else");
    f.PrintLn(genloc__, "      {");
    f.PrintLn(genloc__, "         INSTANCEL(eo, eo->_class) = object;");
+   f.PrintLn(genloc__, "         eo->_refCount++;");
+   f.PrintLn(genloc__, "         ownRef = false;");
    f.PrintLn(genloc__, "      }");
    f.PrintLn(genloc__, "   }");
    f.PrintLn(genloc__, "   TIH(TC & o) : object(&o)");
@@ -705,6 +708,7 @@ void cppHardcodedCorePart2(CPPGen g, File f,
    f.PrintLn(genloc__, "   {");
    f.PrintLn(genloc__, "      if(object && object->impl)");
    f.PrintLn(genloc__, "         object->impl->_refCount++;");
+   f.PrintLn(genloc__, "      ownRef = true;");
    f.PrintLn(genloc__, "   }", ln);
 
    f.PrintLn(genloc__, "   TIH & operator= (const TIH & h)");
@@ -712,6 +716,7 @@ void cppHardcodedCorePart2(CPPGen g, File f,
    f.PrintLn(genloc__, "      if(object && object->impl)");
    f.PrintLn(genloc__, "         deletei(object->impl);", ln);
 
+   f.PrintLn(genloc__, "      ownRef = h.ownRef;");
    f.PrintLn(genloc__, "      object = h.object;");
    f.PrintLn(genloc__, "      if(object && object->impl)");
    f.PrintLn(genloc__, "         object->impl->_refCount++;");
@@ -724,7 +729,7 @@ void cppHardcodedCorePart2(CPPGen g, File f,
    f.PrintLn(genloc__, "      {");
    f.PrintLn(genloc__, "         if(object->impl)");
    f.PrintLn(genloc__, "            object->impl->_refCount--;");
-   f.PrintLn(genloc__, "         if(object->mustFree)");
+   f.PrintLn(genloc__, "         if(ownRef)");
    f.PrintLn(genloc__, "            delete object;");
    f.PrintLn(genloc__, "      }");
    f.PrintLn(genloc__, "   }", ln);
