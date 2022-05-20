@@ -1,3 +1,27 @@
+ecere-sdk (0.44.16-1) unstable; urgency=low
+
+  * Packaged Ecere SDK 0.44.16 (Closes: #898832 #995050)
+  * Changes:
+      * compiler:
+         - Fixed building with GCC 7 (Debian #898832)
+         - Fixed building with GCC 10 (Debian #995050)
+         - Fixed building with GCC 11
+         - Fixes for WebAssembly
+         - eC runtime: fixed crashes importing module depending on "ecere"
+           without importing "ecere" itself
+         - Several other fixes
+      * IDE Improvements
+         - Fixed issues with fresh install setting up configuration files
+         - Fixed support for GDB 7+ and slow stepping on Linux
+         - Improved Syntax highlighting
+      * Documentor: Initial support for exporting HTML documentation
+      * EDA Improvements
+         - Improved dBASE driver
+         - EDB driver fixes
+      * Several other fixes and improvements
+
+ -- Jerome St-Louis <jerstlouis@gmail.com>  Thu, 30 Jun 2022 14:00:00 -0400
+
 ecere-sdk (0.44.15-1) unstable; urgency=low
 
   * Packaged Ecere SDK 0.44.15 (Closes: #811957 #826352)
