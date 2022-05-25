@@ -27,6 +27,9 @@ default:
 #include <sys/types.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
+
+#include <poll.h>
+
 #undef set
 #undef uint
 typedef int SOCKET;
@@ -42,6 +45,8 @@ import "GuiApplication"
 import "Service"
 import "Socket"
 
+private class SocketSet : byte { bool read:1, write:1, except:1; };
+
 private struct NetworkData
 {
    // Connections to the outside world
@@ -51,8 +56,6 @@ private struct NetworkData
    // Ongoing Connections
    OldList connectSockets;
    // Socket Sets
-   fd_set readSet, writeSet, exceptSet;
-   fd_set selectRS, selectWS, selectES;
 
    int ns;
 
@@ -70,6 +73,130 @@ private struct NetworkData
    Mutex mutex;
    int64 mainThreadID;
    OldList mtSemaphores;
+
+private:
+#if defined(__WIN32__)
+   fd_set readSet, writeSet, exceptSet;
+
+   void setSocket(SocketSet socketSet, SOCKET s)
+   {
+      if(socketSet.read)   FD_SET(s, &readSet);
+      if(socketSet.write)  FD_SET(s, &writeSet);
+      if(socketSet.except) FD_SET(s, &exceptSet);
+   }
+
+   void clrSocket(SocketSet socketSet, SOCKET s)
+   {
+      if(socketSet.read)   FD_CLR(s, &readSet);
+      if(socketSet.write)  FD_CLR(s, &writeSet);
+      if(socketSet.except) FD_CLR(s, &exceptSet);
+   }
+
+   void zero(SocketSet socketSet)
+   {
+      if(socketSet.read)   FD_ZERO(&readSet);
+      if(socketSet.write)  FD_ZERO(&writeSet);
+      if(socketSet.except) FD_ZERO(&exceptSet);
+   }
+
+   void getSocketSets(fd_set * rs, fd_set * ws, fd_set * es)
+   {
+      *rs = readSet;
+      *ws = writeSet;
+      *es = exceptSet;
+   }
+#else
+   struct pollfd *pollFDs;
+   int numPollFDs, allocedFDs;
+
+   void setSocket(SocketSet socketSet, SOCKET s)
+   {
+      int i;
+      for(i = 0; i < numPollFDs; i++)
+         if(pollFDs[i].fd == s)
+            break;
+      if(i == numPollFDs)
+      {
+         if(numPollFDs >= allocedFDs)
+         {
+            allocedFDs = Max(8, allocedFDs + (allocedFDs >> 1));
+            pollFDs = renew0 pollFDs struct pollfd[allocedFDs];
+         }
+         numPollFDs++;
+         pollFDs[i].fd = s;
+         pollFDs[i].events = 0;
+      }
+
+      if(socketSet.read)  pollFDs[i].events |= POLLIN;
+      if(socketSet.write) pollFDs[i].events |= POLLOUT;
+   }
+
+   void clrSocket(SocketSet socketSet, SOCKET s)
+   {
+      int i;
+      for(i = 0; i < numPollFDs; i++)
+         if(pollFDs[i].fd == s)
+            break;
+      if(i < numPollFDs)
+      {
+         if(socketSet.read)   pollFDs[i].events &= ~POLLIN;
+         if(socketSet.write)  pollFDs[i].events &= ~POLLOUT;
+         if(!pollFDs[i].events)
+         {
+            if(i < numPollFDs-1)
+               memmove(&pollFDs[i], &pollFDs[i+1], sizeof(struct pollfd) * (numPollFDs - 1 - i));
+            numPollFDs--;
+         }
+      }
+   }
+
+   void zero(SocketSet socketSet)
+   {
+      if(socketSet.read && socketSet.write)
+         numPollFDs = 0;
+      else
+      {
+         int i;
+
+         for(i = 0; i < numPollFDs; i++)
+         {
+            if(socketSet.read)  pollFDs[i].events &= ~POLLIN;
+            if(socketSet.write) pollFDs[i].events &= ~POLLOUT;
+         }
+
+         for(i = 0; i < numPollFDs; i++)
+         {
+            if(!pollFDs[i].events)
+            {
+               int start = i++;
+               int count = 1;
+
+               while(i < numPollFDs && !pollFDs[i].events) i++;
+
+               count = i - start;
+
+               if(i < numPollFDs)
+                  memmove(&pollFDs[start], &pollFDs[i], sizeof(struct pollfd) * (numPollFDs - i));
+               numPollFDs -= count;
+               i = start - 1;
+            }
+         }
+      }
+   }
+
+   struct pollfd * getPollFDs(int * count)
+   {
+      *count = numPollFDs;
+      return pollFDs;
+   }
+
+   void free()
+   {
+      delete pollFDs;
+      numPollFDs = 0;
+      allocedFDs = 0;
+   }
+#endif
 };
 
 #include <errno.h>
@@ -87,15 +214,28 @@ static class NetworkThread : Thread
 
          if(ns)
          {
+            int pollResult;
+#if defined(__WIN32__)
             struct timeval tv = { 0, 0 }; // TESTING 0 INSTEAD OF (int)(1000000 / 18.2) };
 
-            network.selectRS = network.readSet, network.selectWS = network.writeSet, network.selectES = network.exceptSet;
+            fd_set selectRS = network.readSet, selectWS = network.writeSet, selectES = network.exceptSet;
+#else
+            struct pollfd * pollFDs = network.pollFDs;
+            int nPollFDs = network.numPollFDs;
+#endif
 
             network.mutex.Release();
    #ifdef DEBUG_SOCKETS
             Log("[N] Waiting for network event...\n");
    #endif
-            if(select(ns, &network.selectRS, &network.selectWS, &network.selectES, &tv))
+
+#if defined(__WIN32__)
+            pollResult = select(ns, &selectRS, &selectWS, &selectES, &tv);
+#else
+            pollResult = poll(pollFDs, nPollFDs, 0);
+#endif
+
+            if(pollResult)
             {
                network.mutex.Wait();
                network.networkEvent = true;
@@ -184,9 +324,13 @@ bool Network_Initialize()
       network.connectSockets.Clear();
       network.connectSockets.offset = (uint)(uintptr)&((Socket)0).prev;
 
+#if defined(__WIN32__)
       FD_ZERO(&network.readSet);
       FD_ZERO(&network.writeSet);
       FD_ZERO(&network.exceptSet);
+#else
+      network.numPollFDs = 0;
+#endif
 
       network.socketsSemaphore = Semaphore { };
       network.selectSemaphore = Semaphore { };
@@ -271,6 +415,11 @@ void Network_Terminate()
 #endif
       network.networkInitialized = false;
    }
+
+#if !defined(__WIN32__)
+   network.free();
+#endif
+
 #endif
 }
 
