@@ -532,8 +532,11 @@ public:
             for(e : elements)
             {
                GraphicalElement ge = e;
-               *&ge.parent = this;
-               incref ge;
+               if(ge)
+               {
+                  *&ge.parent = this;
+                  incref ge;
+               }
             }
          }
          else
