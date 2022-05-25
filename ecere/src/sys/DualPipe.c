@@ -11,6 +11,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <poll.h>
 #endif
 
 #include <stdarg.h>
@@ -217,6 +218,7 @@ bool DualPipe_Peek(_DualPipe * dp)
    bool result = false; //true; // false
    if(!DualPipe_Eof(dp))
    {
+#if 0
       fd_set rs;
       struct timeval tv;
       int fd = fileno(dp->input);
@@ -225,6 +227,10 @@ bool DualPipe_Peek(_DualPipe * dp)
       tv.tv_sec = 0;
       tv.tv_usec = 0;
       return select(fd+1, &rs, null, null, &tv) > 0;
+#else
+      struct pollfd pollFDs[1] = { { fileno(dp->input), POLLIN } };
+      return poll(pollFDs, 1, 0) > 0;
+#endif
    }
    return result;
 #endif

@@ -23,6 +23,8 @@ default:
 #include <unistd.h>
 #include <sys/select.h>
 
+#include <poll.h>
+
 #if defined(__APPLE__)
 #define set _set
 #include <mach/mach.h>
@@ -1004,23 +1006,41 @@ static uint XTimerThread(Thread thread)
    Time lastTime, thisTime;
    lastTime = GetTime();
    */
-   for(;;)
+   while(!xTerminate)
    {
       //int result;
       //bool waitSemaphore = false;
+      int pollingResult;
+#if 0
       fd_set readSet, writeSet, exceptSet;
       struct timeval tv = { (timerDelay == MAXINT) ? 0 : (timerDelay / 1000000), (timerDelay == MAXINT) ? (int)(1000000 / 18.2) : (timerDelay % 1000000) };
 
-      if(xTerminate) break;
       FD_ZERO(&readSet);
       FD_ZERO(&writeSet);
       FD_ZERO(&exceptSet);
       FD_SET(s, &readSet);
       FD_SET(s, &exceptSet);
+
+#else
+      struct pollfd pollFDs[1] = { { s, POLLIN } };
+      int timeOut = (timerDelay == MAXINT) ? 54 /* 18.2 / seconds */ : (int)(timerDelay / 1000);
+#endif
+
       xMutex.Wait();
-      if(select(s + 1, &readSet, null, null, &tv))
+#if 0
+      pollingResult = select(s + 1, &readSet, null, null, &tv);
+#else
+      pollingResult = poll(pollFDs, 1, timeOut);
+#endif
+      if(pollingResult > 0)
       {
-         if(FD_ISSET(s, &readSet))
+         bool readyToRead;
+#if 0
+         readyToRead = FD_ISSET(s, &readSet;
+#else
+         readyToRead = (pollFDs[0].revents & POLLIN) != 0;
+#endif
+         if(readyToRead)
             gotAnXEvent = true;
       }
       if(frameExtentSupported == unknown && frameExtentRequest && GetTime() - frameExtentRequest > 1)

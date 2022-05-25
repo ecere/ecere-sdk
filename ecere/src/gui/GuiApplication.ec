@@ -68,6 +68,8 @@ default:
 #include <sys/time.h>
 #include <arpa/inet.h>
 
+#include <poll.h>
+
 #undef set
 #undef uint
 
@@ -1051,15 +1053,21 @@ public:
    bool ProcessNetworkEvents()
    {
       bool gotEvent = false;
+
    #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
       if(network.networkInitialized)
       {
          Service service;
          Socket socket, next;
-         struct timeval tv = {0, 0};
+#if defined(__WIN32__)
          fd_set rs, ws, es;
+#else
+         int nPollFDs = 0;
+         struct pollfd * pollFDs = null;
+#endif
          Service nextService;
          OldLink semPtr;
+         int pollingResult = 0;
 
          PauseNetworkEvents();
          network.mutex.Wait();
@@ -1068,11 +1076,23 @@ public:
          if(network.connectEvent || network.networkEvent)
             Log("[P] [NProcess]\n");
    #endif
-         rs = network.readSet;
-         ws = network.writeSet;
-         es = network.exceptSet;
 
-         if((network.ns && select(network.ns, &rs, &ws, &es, &tv)) || network.leftOverBytes)
+#if defined(__WIN32__)
+         if(network.ns)
+         {
+            struct timeval tv = {0, 0};
+            network.getSocketSets(&rs, &ws, &es);
+            pollingResult = select(network.ns, &rs, &ws, &es, &tv);
+         }
+#else
+         if(network.ns)
+         {
+            pollFDs = network.getPollFDs(&nPollFDs);
+            pollingResult = poll(pollFDs, nPollFDs, 0) > 0;
+         }
+#endif
+
+         if(pollingResult || network.leftOverBytes)
          {
             network.leftOverBytes = false;
 
@@ -1080,11 +1100,30 @@ public:
             for(socket = network.connectSockets.first; socket; socket = next)
             {
                next = socket.next;
-               if(!socket.processAlone && FD_ISSET(socket.s, &ws))
+               if(!socket.processAlone)
                {
-                  network.mutex.Release();
-                  socket.connectThread.Wait();
-                  network.mutex.Wait();
+                  SOCKET s = socket.s;
+                  bool readyToWrite;
+#if defined(__WIN32__)
+                  readyToWrite = FD_ISSET(s, &ws) != 0;
+#else
+                  int i;
+                  readyToWrite = false;
+                  for(i = 0; i < nPollFDs; i++)
+                  {
+                     if(pollFDs[i].fd == s)
+                     {
+                        readyToWrite = (pollFDs[i].revents & POLLOUT) != 0;
+                        break;
+                     }
+                  }
+#endif
+                  if(readyToWrite)
+                  {
+                     network.mutex.Release();
+                     socket.connectThread.Wait();
+                     network.mutex.Wait();
+                  }
                }
             }
             for(socket = network.sockets.first; socket; socket = next)
@@ -1092,8 +1131,27 @@ public:
                next = socket.next;
                if(!socket.processAlone)
                {
+                  bool readyToRead, errorCondition;
+                  SOCKET s = socket.s;
+#if defined(__WIN32__)
+                  readyToRead = FD_ISSET(s, &rs) != 0;
+                  errorCondition = FD_ISSET(s, &es) != 0;
+#else
+                  int i;
+                  readyToRead = false;
+                  errorCondition = false;
+                  for(i = 0; i < nPollFDs; i++)
+                  {
+                     if(pollFDs[i].fd == s)
+                     {
+                        readyToRead = (pollFDs[i].revents & POLLIN) != 0;
+                        errorCondition = (pollFDs[i].revents & (POLLERR | POLLHUP)) != 0;
+                        break;
+                     }
+                  }
+#endif
                   network.mutex.Release();
-                  gotEvent |= socket.ProcessSocket(&rs, &ws, &es);
+                  gotEvent |= socket.ProcessSocket(readyToRead, errorCondition);
                   network.mutex.Wait();
                }
             }
@@ -1103,7 +1161,25 @@ public:
                nextService = service.next;
                if(!service.processAlone)
                {
-                  if(FD_ISSET(service.s, &rs))
+                  bool readyToRead;
+                  SOCKET s = service.s;
+
+#if defined(__WIN32__)
+                  readyToRead = FD_ISSET(s, &rs) != 0;
+#else
+                  int i;
+                  readyToRead = false;
+                  for(i = 0; i < nPollFDs; i++)
+                  {
+                     if(pollFDs[i].fd == s)
+                     {
+                        readyToRead = (pollFDs[i].revents & POLLIN) != 0;
+                        break;
+                     }
+                  }
+#endif
+
+                  if(readyToRead)
                   {
       #ifdef DEBUG_SOCKETS
                      Logf("[P] Accepting connection (%x)\n", service.s);
@@ -1130,8 +1206,27 @@ public:
                   next = socket.next;
                   if(!socket.processAlone)
                   {
+                     SOCKET s = socket.s;
+                     bool readyToRead, errorCondition;
+#if defined(__WIN32__)
+                     readyToRead = FD_ISSET(s, &rs) != 0;
+                     errorCondition = FD_ISSET(s, &es) != 0;
+#else
+                     int i;
+                     readyToRead = false;
+                     errorCondition = false;
+                     for(i = 0; i < nPollFDs; i++)
+                     {
+                        if(pollFDs[i].fd == s)
+                        {
+                           readyToRead = (pollFDs[i].revents & POLLIN) != 0;
+                           errorCondition = (pollFDs[i].revents & (POLLERR | POLLHUP)) != 0;
+                           break;
+                        }
+                     }
+#endif
                      network.mutex.Release();
-                     gotEvent |= socket.ProcessSocket(&rs, &ws, &es);
+                     gotEvent |= socket.ProcessSocket(readyToRead, errorCondition);
                      network.mutex.Wait();
                   }
                }
@@ -1173,9 +1268,8 @@ public:
       #ifdef DEBUG_SOCKETS
                         Log("[P] Processing connected connect\n");
       #endif
-                        FD_CLR(socket.s, &network.writeSet);
-                        FD_SET(socket.s, &network.readSet);
-                        FD_SET(socket.s, &network.exceptSet);
+                        network.clrSocket({ write = true }, socket.s);
+                        network.setSocket({ read = true, except = true }, socket.s);
                         network.mutex.Release();
 
                         // printf("Calling OnConnect on %s\n", socket._class.name);

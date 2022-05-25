@@ -31,6 +31,8 @@ default:
 #include <sys/types.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
+
+#include <poll.h>
 #undef set
 #undef uint
 private:
@@ -118,8 +120,7 @@ public:
                // Fix up the links/offsets here...
                sockets.offset = (uint)(uintptr)&((Socket)0).prev;
 
-               FD_SET(s, &network.readSet);
-               FD_SET(s, &network.exceptSet);
+               network.setSocket({ read = true, except = true }, s);
                if(s >= network.ns)
                {
                   network.ns = (int)(s+1);
@@ -164,8 +165,7 @@ public:
          network.mutex.Wait();
          this.s = -1;
          network.services.Remove(this);
-         FD_CLR(s, &network.readSet);
-         FD_CLR(s, &network.exceptSet);
+         network.clrSocket({ read = true, except = true }, s);
          network.mutex.Release();
          closesocket(s);
       }
@@ -186,8 +186,9 @@ public:
       bool gotEvent = false;
       if(s != -1)
       {
-         fd_set rs, ws, es;
-         int selectResult;
+         bool readyToRead = false;
+#if defined(__WIN32__)
+         fd_set rs = { 0 }, ws, es = { 0 }; // ODD: Why do we get a warning about uninitialized rs & es without this?
          struct timeval tvTO = {0, (int)(timeOut * 1000000) };
 
          FD_ZERO(&rs);
@@ -197,23 +198,28 @@ public:
          //FD_SET(s, &ws);
          FD_SET(s, &es);
 
-         selectResult = select((int)(s+1), &rs, &ws, &es, &tvTO);
-         if(selectResult > 0)
+         if(select((int)(s+1), &rs, &ws, &es, &tvTO))
+            readyToRead = FD_ISSET(s, &rs) != 0;
+#else
+         struct pollfd pollFDs[1] = { { s, POLLIN } };
+
+         if(poll(pollFDs, 1, (int)(timeOut * 1000)) > 0)
+            readyToRead = (pollFDs[0].events & POLLIN) != 0;
+#endif
+
+         if(readyToRead)
          {
-            if(FD_ISSET(s, &rs))
+            accepted = false;
+            OnAccept();
+            if(!accepted)
             {
-               accepted = false;
-               OnAccept();
-               if(!accepted)
-               {
-                  SOCKET s;
-                  SOCKADDR_IN a;
-                  SOCKLEN_TYPE addrLen = sizeof(a);
-                  s = accept(this.s,(SOCKADDR *)&a,&addrLen);
-                  closesocket(s);
-               }
-               gotEvent |= true;
+               SOCKET s;
+               SOCKADDR_IN a;
+               SOCKLEN_TYPE addrLen = sizeof(a);
+               s = accept(this.s,(SOCKADDR *)&a,&addrLen);
+               closesocket(s);
             }
+            gotEvent |= true;
          }
       }
       return gotEvent;

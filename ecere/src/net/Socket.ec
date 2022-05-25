@@ -28,6 +28,9 @@ default:
 #include <sys/types.h>
 #include <sys/time.h>
 #include <arpa/inet.h>
+
+#include <poll.h>
+
 #undef set
 #undef uint
 private:
@@ -188,8 +191,7 @@ public:
                disconnected = false;
 
                network.mutex.Wait();
-               FD_SET(s, &network.exceptSet);
-               FD_SET(s, &network.readSet);
+               network.setSocket({ except = true, read = true }, s);
                if(s >= network.ns)
                {
                   network.ns = (int)(s+1);
@@ -308,9 +310,7 @@ public:
 
          if(s != -1)
          {
-            FD_CLR(s, &network.readSet);
-            FD_CLR(s, &network.writeSet);
-            FD_CLR(s, &network.exceptSet);
+            network.clrSocket({ read = true, write = true, except = true }, s);
          }
          // Why wasn't this here? Don't want it here :) Hmm why don't we want it here? Service created socket not getting freed in DICOMTest...
          // Trying >= 1 instead of > 1
@@ -339,7 +339,9 @@ public:
          {
          SOCKET s = this.s;
          int count;
+         #if 0
          fd_set ws, es;
+         #endif
 
          if(s != -1 && ((type == tcp && (count = SendData(buffer, size, 0))) ||
             (type == udp && (count = (int)sendto(s, buffer, size,0, (SOCKADDR *)&a, sizeof(a))))))
@@ -347,10 +349,13 @@ public:
    #if defined(__WIN32__)
             int error = WSAGetLastError();
    #endif
+
+   #if 0
             FD_ZERO(&ws);
             FD_ZERO(&es);
             FD_SET(s, &ws);
             FD_SET(s, &es);
+   #endif
    #if defined(__WIN32__)
             if(error)
    #endif
@@ -437,9 +442,8 @@ public:
             disconnectCode = (DisconnectCode)-1;
             _connected = 1;
 
-            FD_CLR(s, &network.writeSet);
-            FD_SET(s, &network.readSet);
-            FD_SET(s, &network.exceptSet);
+            network.clrSocket({ write = true }, s);
+            network.setSocket({ read = true, except = true }, s);
             if(s >= network.ns)
             {
                network.ns = (int)(s+1);
@@ -532,11 +536,7 @@ private:
       recvBytes = 0;
 
       if(s != -1)
-      {
-         FD_CLR(s, &network.readSet);
-         FD_CLR(s, &network.writeSet);
-         FD_CLR(s, &network.exceptSet);
-      }
+         network.clrSocket({ read = true, write = true, except = true }, s);
 
       disconnectCode = 0;
 
@@ -586,7 +586,7 @@ private:
          connectThread = null;
          _connected = -2;
 
-         FD_SET(s, &network.writeSet);
+         network.setSocket({ write = true }, s);
          if(s >= network.ns && !processAlone)
          {
             network.ns = (int)(s+1);
@@ -618,9 +618,8 @@ private:
             }
             else if(_connected == 1)
             {
-               FD_CLR(s, &network.writeSet);
-               FD_SET(s, &network.readSet);
-               FD_SET(s, &network.exceptSet);
+               network.clrSocket({ write = true }, s);
+               network.setSocket({ read = true, except = true }, s);
                network.sockets.Add(this);
 
                incref this;
@@ -648,7 +647,7 @@ private:
 
    bool hadLeftOver;
 
-   bool ProcessSocket(fd_set * rs, fd_set * ws, fd_set * es)
+   bool ProcessSocket(bool dataToRead, bool errorCondition)
    {
       bool result = false;
       SOCKET s;
@@ -658,7 +657,7 @@ private:
       incref this;
       // network.mutex.Wait();
       s = this.s;
-      if(FD_ISSET(s, rs) || leftOver)
+      if(dataToRead || leftOver)
       {
          int count = 0;
 
@@ -672,7 +671,7 @@ private:
                recvBufferSize += MAX_RECEIVE;
             }
 
-            if(FD_ISSET(s, rs) && disconnectCode == (DisconnectCode)-1)
+            if(dataToRead && disconnectCode == (DisconnectCode)-1)
             {
                if(type == tcp /*|| _connected*/)
                   count = ReceiveData(recvBuffer + recvBytes, recvBufferSize - recvBytes, 0);
@@ -739,7 +738,7 @@ private:
                recvBytes = 0;
          }
       }
-      else if(FD_ISSET(s, es))
+      else if(errorCondition)
       {
          result = true;
 #if 0
@@ -776,13 +775,19 @@ private:
    public bool ProcessTimeOut(Seconds timeOut)
    {
       bool gotEvent = false;
+#if defined(__WIN32__)
       struct timeval tv = {0, 0};
       struct timeval tvTO = {(uint)timeOut, (uint)((timeOut -(uint)timeOut)* 1000000)};
       fd_set rs, ws, es;
+#else
+      struct pollfd pollFDs[1] = { { s, (short)(POLLIN | POLLOUT) } };
+      int pollTimeOut = (int)(timeOut * 1000);
+#endif
       int selectResult;
       Mutex mutex;
       bool deleteMutex = false;
       bool leftOver;
+      bool dataToRead, errorCondition;
 
       mutex = this.mutex;
       mutex.Wait();
@@ -802,20 +807,34 @@ private:
             delete mutex;
          return false;
       }
+
+#if defined(__WIN32__)
       FD_ZERO(&rs);
       FD_ZERO(&ws);
       FD_ZERO(&es);
+
       FD_SET(s, &rs);
-      //FD_SET(s, &ws);
+      FD_SET(s, &ws);
       FD_SET(s, &es);
+#endif
 
       mutex.Release();
+
+#if defined(__WIN32__)
       selectResult = select((int)(s+1), &rs, &ws, &es, leftOver ? &tv : (timeOut ? &tvTO : null));
+      dataToRead = FD_ISSET(s, &rs) != 0;
+      errorCondition = FD_ISSET(s, &es) != 0;
+#else
+      selectResult = poll(pollFDs, 1, leftOver ? 0 : (pollTimeOut ? pollTimeOut : -1)) > 0;
+      dataToRead = (pollFDs[0].revents & POLLIN) != 0;
+      errorCondition = (pollFDs[0].revents & (POLLERR | POLLHUP)) != 0;
+#endif
 
       if(s != -1 && _refCount && (leftOver || selectResult))
       {
-         gotEvent |= ProcessSocket(&rs, &ws, &es);
+         gotEvent |= ProcessSocket(dataToRead, errorCondition);
       }
+
       mutex.Wait();
       if(_refCount == 1)
       {
