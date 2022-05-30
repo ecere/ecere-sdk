@@ -400,7 +400,7 @@ class OGLDisplay : struct
 {
    GLCapabilities capabilities, originalCapabilities;
    bool compat;
-   int version;
+   int version, minorVersion;
 
    ColorAlpha * flippingBuffer;
    int flipBufH, flipBufW;
@@ -459,7 +459,7 @@ class OGLSystem : struct
 #endif
    GLCapabilities capabilities;
    bool compat;
-   int version;
+   int version, minorVersion;
 
    // Buffer Data
    uint16 *shortBDBuffer;
@@ -641,7 +641,16 @@ GLXContext GLX_CreateContext(OGLSystem oglSystem, void * display, GLXFBConfig co
                if(ctx)
                {
                   if(oglDisplay)
+                  {
                      oglDisplay.compat = tryingCompat || !coreNotion;
+                     oglDisplay.version = v0;
+                     oglDisplay.minorVersion = v1;
+                  }
+                  if(oglSystem)
+                  {
+                     oglSystem.version = v0;
+                     oglSystem.minorVersion = v1;
+                  }
 
                   //if(contextVersion) *contextVersion = v0;
                   //if(isCompatible)   *isCompatible = ;
@@ -810,22 +819,21 @@ class OpenGLDisplayDriver : DisplayDriver
       // TODO: OpenGL 3.0 deprecates glGetString(GL_EXTENSIONS) in favor of looping through
       //       glGetIntegerv(GL_NUM_EXTENSIONS, &n) extensions and using glGetStringi(GL_EXTENSIONS, i)
 #if !defined(_GLES2)
-      const char * extensions = (oglDisplay.version < 3 && canCheckExtensions && (!oglDisplay || oglDisplay.compat)) ? (const char *)glGetString(GL_EXTENSIONS) : null;
+      const char * extensions = (oglDisplay && oglDisplay.version < 3 && canCheckExtensions && (!oglDisplay || oglDisplay.compat)) ? (const char *)glGetString(GL_EXTENSIONS) : null;
 #endif
 #ifdef DIAGNOSTICS
       printf("extensions: %s\n", extensions);
 #endif
 
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
-
-#if defined(__LUMIN__)
+#if defined(__LUMIN__)                                                                                                              /* TODO: Review whether mdei and gpuCommands is supported on Lumin */
       capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true, mdei = true, gpuCommands = true };
-#elif defined(_GLES3)
-      capabilities = { shaders = true, vao = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true, mdei = true, gpuCommands = true };
+#elif defined(_GLES3)                                                                                                             /* mdei is not in ES 3.3 core, gpuCommands are 3.1+ and not in WebGL2 */
+      capabilities = { shaders = true, vao = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, intAndDouble = true, gpuCommands = true };
 #elif defined(_GLES)
-      capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object"), mdei = true, gpuCommands = true };
+      capabilities = { fixedFunction = true, vertexPointer = true, vertexBuffer = true, pointSize = true, legacyFormats = true, frameBuffer = extensions && strstr(extensions, "GL_OES_framebuffer_object") };
 #elif defined(_GLES2)
-      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, mdei = true, gpuCommands = true };
+      capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true };
 #else
       capabilities =
       {
@@ -863,14 +871,10 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
          vertexBuffer = glBindBuffer != null;
          // mapBuffer = glMapBuffer != null;
-         mdei = true;
-         gpuCommands = true;
+         mdei = oglDisplay.version >= 4 && oglDisplay.minorVersion >= 3;
+         gpuCommands = oglDisplay.version >= 4;
       };
 #endif
-
-      #if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
-      capabilities.mdei = false;
-      #endif
 
 #ifdef DIAGNOSTICS
       PrintLn("max texture size: ", oglSystem.maxTextureSize);
@@ -885,21 +889,24 @@ class OpenGLDisplayDriver : DisplayDriver
       bool result = false;
       OGLSystem oglSystem = displaySystem.driverData = OGLSystem { };
 
-#if defined(__LUMIN__)
+#if defined(__LUMIN__)                                                                                                  /* TODO: Review whether mdei and gpuCommands is supported on Lumin */
       oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, vao = true, mdei = true, gpuCommands = true };
-#elif defined(_GLES3)
-      oglSystem.capabilities = { shaders = true, vao = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true, mdei = true, gpuCommands = true };
+#elif defined(_GLES3)                                                                                                                 /* mdei is not in ES 3.3 core, gpuCommands are 3.1+ and not in WebGL2 */
+      oglSystem.capabilities = { shaders = true, vao = true, vertexBuffer = true, frameBuffer = true, pointSize = true, intAndDouble = true, gpuCommands = true };
 #elif defined(_GLES)
-      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true, mdei = true, gpuCommands = true };
+      oglSystem.capabilities = { fixedFunction = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #elif defined(_GLES2)
-      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true, mdei = true, gpuCommands = true };
+      oglSystem.capabilities = { shaders = true, vertexBuffer = true, frameBuffer = true, pointSize = true };
 #else
-      oglSystem.capabilities = { compatible = glCaps_compatible, shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true, vertexBuffer = true, frameBuffer = true, vao = true, nonPow2Textures = true, mdei = true, gpuCommands = true };
+      oglSystem.capabilities =
+      {
+         compatible = glCaps_compatible, shaders = true, fixedFunction = true, immediate = true, legacy = true, pointSize = true, quads = true, intAndDouble = true,
+         vertexBuffer = true, frameBuffer = true, vao = true, nonPow2Textures = true;
+         // version is not yet set here...
+         // mdei = oglSystem.version >= 4 && oglSystem.minorVersion >= 3;
+         // gpuCommands = oglSystem.version >= 4;
+      };
 #endif
-
-      #if (defined(__ANDROID__) && !defined(__LUMIN__)) || defined(__UWP__)
-      oglSystem.capabilities.mdei = false;
-      #endif
 
 #ifdef DIAGNOSTICS
       PrintLn("OpenGL driver's CreateDisplaySystem()");
@@ -1028,6 +1035,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
                         ogl_LoadFunctions();
                         oglSystem.version = ogl_GetMajorVersion();
+                        oglSystem.minorVersion = ogl_GetMinorVersion();
 
 #ifdef _DEBUG
                         PrintLn("We've got OpenGL Version: ", (char*)glGetString(GL_VERSION), "\n");
@@ -1211,13 +1219,14 @@ class OpenGLDisplayDriver : DisplayDriver
             PrintLn("got context!");
 #endif
             glXMakeCurrent(xGlobalDisplay, oglSystem.glxDrawable, oglSystem.glContext);
-            glXMakeCurrent(xGlobalDisplay, None, null);
+
 #if 0
-            // oglSystem.version = ogl_GetMajorVersion();
 #ifdef _DEBUG
             PrintLn("We've got OpenGL Version", (char*)glGetString(GL_VERSION), "\n");
 #endif
 #endif // 0
+
+            glXMakeCurrent(xGlobalDisplay, None, null);
             result = true;
          }
       }
@@ -1229,6 +1238,12 @@ class OpenGLDisplayDriver : DisplayDriver
       oglSystem.maxTextureSize = 16384;
       oglSystem.compat = false;
    #endif
+
+#if !defined(__LUMIN__) && !defined(_GLES3) && !defined(_GLES) && !defined(_GLES2)
+      oglSystem.capabilities.mdei = oglSystem.version >= 4 && oglSystem.minorVersion >= 3;
+      oglSystem.capabilities.gpuCommands = oglSystem.version >= 4;
+#endif
+
 
       displaySystem.flags.alpha = true;
       displaySystem.flags.flipping = true;
@@ -1492,6 +1507,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
             ogl_LoadFunctions();
             oglDisplay.version = ogl_GetMajorVersion();
+            oglDisplay.minorVersion = ogl_GetMinorVersion();
 
             result = true;
          }
@@ -1499,15 +1515,19 @@ class OpenGLDisplayDriver : DisplayDriver
             ReleaseDC(display.window, oglDisplay.hdc);
 #elif defined(__UWP__)
          oglDisplay.version = 3;
+         oglDisplay.minorVersion = 3; // 3.3 ?
          result = true;
 #elif defined(__unix__) || defined(__APPLE__)
 #  if defined(__ANDROID__) || defined(__EMSCRIPTEN__) || defined(__ODROID__)
          #if defined(__LUMIN__)
          oglDisplay.version = 4;
+         oglDisplay.minorVersion = 3; // 4.3 ?
          #elif defined(__ODROID__)
          oglDisplay.version = 1;
+         oglDisplay.minorVersion = 0;
          #else
          oglDisplay.version = 2;
+         oglDisplay.minorVersion = 2.0;
          #endif
          result = true;
 #  else
@@ -1533,6 +1553,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if !defined(__APPLE__)
          oglDisplay.compat = true;
          oglDisplay.version = 4;
+         oglDisplay.minorVersion = 3;
 #endif
 
          if(visualInfo)
