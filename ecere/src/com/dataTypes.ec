@@ -382,6 +382,21 @@ static int OnCompare(Class _class, void * data1, void * data2)
                   return 0;
             }
 
+            if(_class.type == normalClass && !eClass_IsDerived(((Instance)data1)._class, _class))
+            {
+#if defined(_DEBUG)
+               PrintLn("WARNING: Comparing an instance of class ", ((Instance)data1)._class.name, " as a class ", _class.name, " that it is not derived from.");
+#endif
+               continue;
+            }
+            if(_class.type == normalClass && !eClass_IsDerived(((Instance)data2)._class, _class))
+            {
+#if defined(_DEBUG)
+               PrintLn("WARNING: Comparing an instance of class ", ((Instance)data2)._class.name, " as a class ", _class.name, " that it is not derived from.");
+#endif
+               continue;
+            }
+
             for(member = _class.membersAndProperties.first; member; member = member.next)
             {
                int memberResult = 0;
