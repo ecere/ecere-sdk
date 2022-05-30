@@ -418,6 +418,8 @@ public struct GLB
 
    bool _allocate(GLBType type, uint size, const void * data, GLBufferUsage usage)
    {
+      bool result = false;
+
       if(this != null)
       {
          if(glCaps_vertexBuffer)
@@ -436,13 +438,31 @@ public struct GLB
             GLStats::allocBuffer(buffer, size);
 #endif
             if(size)
+            {
+               int e;
+
+               while(glGetError());
+
                glBufferData(glBufferType, size, data, bufferUsages[usage]);
+               e = glGetError();
+               if(e)
+               {
+                  result = false;
+                  PrintLn("GL Error ", e, " after calling glBufferData() with size = ", size);
+               }
+               else
+                  result = true;
+            }
+            else
+               result = true;
          }
          else
+         {
             buffer = 1;
-         return true;
+            result = true;
+         }
       }
-      return false;
+      return result;
    }
 
    void _upload(GLBType type, uint offset, uint size, const void * data)
