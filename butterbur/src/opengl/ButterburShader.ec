@@ -52,7 +52,7 @@ class TempOGLDisplay : struct
 {
    GLCapabilities capabilities, originalCapabilities;
    bool compat;
-   int version;
+   int version, minorVersion;
    ColorAlpha * flippingBuffer;
    int flipBufH, flipBufW;
    bool depthWrite;

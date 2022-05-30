@@ -7,6 +7,7 @@ import "OpenGLDisplayDriver"
 
 namespace gfx::drivers;
 
+// FIXME: Since this doesn't do an equal check, we don't really need this separate Unbind?
 default dllexport void GLABUnbindBuffer(int target)
 {
    if(glCaps_vertexBuffer)
