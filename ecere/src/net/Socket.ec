@@ -477,9 +477,20 @@ public:
    dllexport void safeDecRef()
    {
       Mutex mutex = this.mutex;
-      //mutex.Wait();
-      delete this;
-      mutex.Release();
+
+      if(_refCount == 1)
+      {
+         _refCount = MAXINT - 16;
+         Free(true);
+         mutex.Release();
+         _refCount = 1;
+         delete this;
+      }
+      else
+      {
+         delete this;
+         mutex.Release();
+      }
    }
 
 private:
