@@ -202,10 +202,16 @@ public class PathBox : CommonControl
                StripLastDirectory(browsePath, browsePath);
             if(!browsePath[0])
             {
-               char path[MAX_LOCATION];
-               LocateModule(null, path);
-               StripLastDirectory(path, path);
-               strncpy(browsePath, path, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
+               if(browseDialog.currentDirectory[0])
+                  strcpy(browsePath, browseDialog.currentDirectory);
+               else
+               {
+                   // REVIEW: Do we really want this? The CWD default is probably better than executable location.
+                  char path[MAX_LOCATION];
+                  LocateModule(null, path);
+                  StripLastDirectory(path, path);
+                  strncpy(browsePath, path, MAX_LOCATION); browsePath[MAX_LOCATION-1] = '\0';
+               }
             }
             browseDialog.currentDirectory = browsePath;
             browseDialog.master = rootWindow;
