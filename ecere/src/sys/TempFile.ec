@@ -45,6 +45,14 @@ public class TempFile : File
             if(this.allocated < this.size)
                this.allocated = this.size * 2;
             this.buffer = renew0 this.buffer byte[this.allocated];
+            if(!this.buffer)
+            {
+               this.allocated = 0;
+               this.size  = 0;
+               this.position = 0;
+               written = 0;
+               writeSize = 0;
+            }
          }
       }
       if(writeSize) memcpy(this.buffer + position, buffer, writeSize);
