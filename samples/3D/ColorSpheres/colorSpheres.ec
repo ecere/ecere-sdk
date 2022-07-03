@@ -80,6 +80,12 @@ class ColorSpheres : Object
             }
       UpdateTransform();
    }
+
+   public void Free(DisplaySystem displaySystem)
+   {
+      Object::Free(displaySystem);
+      sphere.Free(displaySystem);
+   }
 }
 
 class Test3D : Window
@@ -133,6 +139,11 @@ class Test3D : Window
    {
       cube.Create(displaySystem);
       return true;
+   }
+
+   void OnUnloadGraphics()
+   {
+      cube.Free(displaySystem);
    }
 
    void OnResize(int w, int h)

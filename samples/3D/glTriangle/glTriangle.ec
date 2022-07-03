@@ -12,6 +12,7 @@ class GLTriangle : Window
    borderStyle = sizable;
    hasMaximize = true, hasMinimize = true, hasClose = true;
    size = { 640, 480 };
+   glCapabilities.compatible = true;
 
    void OnRedraw(Surface surface)
    {

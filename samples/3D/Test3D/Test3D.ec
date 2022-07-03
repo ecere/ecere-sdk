@@ -41,8 +41,8 @@ class Test3D : Window
    BitmapResource texture { "http://www.ecere.com/images/knot.png", window = this };
    Sphere sphere { };
    Cube cube { };
-   Material sphereMat { diffuse = white, ambient = blue, specular = red, power = 8 };
-   Material cubeMat { opacity = 1.0f, diffuse = white, ambient = white, flags = { doubleSided = true, translucent = true } };
+   Material sphereMat { opacity = 1.0, diffuse = white, ambient = blue, specular = red, power = 8, flags = { doubleSided = true, update = true, constantColor = true } };
+   Material cubeMat { opacity = 1.0f, diffuse = white, ambient = white, flags = { doubleSided = true, translucent = true, setupTextures = true, update = true, constantColor = true } };
 
    bool OnLoadGraphics()
    {
@@ -62,6 +62,12 @@ class Test3D : Window
       cube.transform.orientation = Euler { 50, 50 };
       cube.UpdateTransform();
       return true;
+   }
+
+   void OnUnloadGraphics()
+   {
+      cube.Free(displaySystem);
+      sphere.Free(displaySystem);
    }
 
    void OnResize(int w, int h)
