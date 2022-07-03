@@ -24,6 +24,7 @@ class Snippet : Window
    nativeDecorations = true, borderStyle = sizable, hasClose = true, hasMaximize = true, hasMinimize = true;
    background = 0;
    size = { 640, 480 };
+   glCapabilities.compatible = true;
 
    void OnRedraw(Surface surface)
    {

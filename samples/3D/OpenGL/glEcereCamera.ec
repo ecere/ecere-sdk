@@ -9,6 +9,7 @@ class GLDemo : Window
    background = black;
    hasClose = true;
    size = { 640, 480 };
+   glCapabilities.compatible = true;
 
    Camera camera { fixed, position = { 50, -50, -300 }, orientation = Euler { 25, 0, 0 }, fov = 53; };
    Light light { diffuse = white; specular = white; orientation = Euler { pitch = -45, yaw = 0 }; };
