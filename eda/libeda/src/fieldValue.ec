@@ -28,6 +28,7 @@ public:
    bool mustFree:1;
    FieldValueFormat format:3;
    bool isUnsigned:1;
+   bool isDateTime:1;
 };
 
 public struct FieldValue
