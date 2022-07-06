@@ -1441,11 +1441,11 @@ public:
          if(mFlg.resolved && destType && expType != destType)
          {
             if(destType == class(float) || destType == class(double))
-               convertFieldValue(value, real, value);
+               convertFieldValue(value, {real}, value);
             else if(destType == class(String))
-               convertFieldValue(value, text, value);
+               convertFieldValue(value, {text}, value);
             else if(destType == class(int64) || destType == class(int) || destType == class(uint64) || destType == class(uint))
-               convertFieldValue(value, integer, value);
+               convertFieldValue(value, {integer}, value);
          }
          if(object)
             evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
