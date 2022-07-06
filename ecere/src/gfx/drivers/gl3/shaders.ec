@@ -329,6 +329,7 @@ public:
          if(shader != this.shader)
          {
             modifiedUniforms = { true, true, true, true, true, true, true };
+            modifiedUniforms |= 0x100; // FIXME: Extended uniforms?
             activeState = state;
             this.shader = shader;
          }

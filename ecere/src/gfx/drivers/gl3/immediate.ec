@@ -305,18 +305,18 @@ public void glimtkEnd()
    if(glCaps_vertexBuffer)
    {
       verticesBuf->upload();
-      verticesBuf->use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), 0);
+      verticesBuf->use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), none, 0);
    }
    else
-      noAB.use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), verticesBuf->pointer);
+      noAB.use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer);
 
    if(vertexColorValues)
    {
       GLEnableClientState(COLORS);
       if(glCaps_vertexBuffer)
-         verticesBuf->use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), (void *)(2 * sizeof(float)));
+         verticesBuf->use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), none, (void *)(2 * sizeof(float)));
       else
-         noAB.use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), verticesBuf->pointer + 2);
+         noAB.use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer + 2);
 
 #if ENABLE_GL_SHADERS
       if(glCaps_shaders)
@@ -332,9 +332,9 @@ public void glimtkEnd()
    }
 
    if(glCaps_vertexBuffer)
-      verticesBuf->use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), (void *)(vertexOffset * sizeof(float)));
+      verticesBuf->use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), none, (void *)(vertexOffset * sizeof(float)));
    else
-      noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), verticesBuf->pointer + vertexOffset);
+      noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer + vertexOffset);
 
    if(normalsBuf.count && normalsBuf.count == verticesBuf->count)
    {
@@ -342,10 +342,10 @@ public void glimtkEnd()
       if(glCaps_vertexBuffer)
       {
          normalsBuf.upload();
-         normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), 0);
+         normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), none, 0);
       }
       else
-         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), normalsBuf.pointer);
+         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), none, normalsBuf.pointer);
    }
 
    GLFlushMatrices();

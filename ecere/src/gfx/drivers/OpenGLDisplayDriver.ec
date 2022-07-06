@@ -486,6 +486,7 @@ class OGLMesh : struct
    GLAB texCoords;
    GLAB texCoords2;
    GLAB colors;
+   GLAB bones;
    bool needAlloc;
    bool interleaved;
 };
@@ -3912,7 +3913,7 @@ class OpenGLDisplayDriver : DisplayDriver
             #endif
 
                if(tmu > 0)
-                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? null : mesh.texCoords);
+                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, none, oglMesh.texCoords.buffer ? null : mesh.texCoords);
                GLEnableClientState(TEXCOORDS);
             }
             if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0);
@@ -4291,6 +4292,12 @@ class OpenGLDisplayDriver : DisplayDriver
                      if(!memAllocOnly)
                         oglMesh.colors.allocate(nVertices * sizeof(ColorRGBAf), null, staticDraw);
                   }
+                  if(!mesh.flags.bones && flags.bones)
+                  {
+                     // mesh.bones = new SkinVert[nVertices];  // Handled in Mesh for now
+                     if(!memAllocOnly)
+                        oglMesh.bones.allocate(nVertices * sizeof(SkinVert), null, staticDraw);
+                  }
                }
             }
          }
@@ -4352,6 +4359,12 @@ class OpenGLDisplayDriver : DisplayDriver
                   if(!memAllocOnly)
                      oglMesh.lightVectors.allocate(nVertices * sizeof(ColorRGB), null, staticDraw);
                }
+               if(flags.bones)
+               {
+                  // mesh.bones = renew mesh.bones SkinVert[nVertices];
+                  if(!memAllocOnly)
+                     oglMesh.bones.allocate(nVertices * sizeof(SkinVert), null, staticDraw);
+               }
             }
          }
          oglMesh.needAlloc = memAllocOnly;
@@ -4394,6 +4407,8 @@ class OpenGLDisplayDriver : DisplayDriver
                   oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
                if(flags.lightVectors)
                   oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+               if(flags.bones)
+                  oglMesh.bones.allocate(mesh.nVertices * sizeof(SkinVert), mesh.boneData, staticDraw);
 
                oglMesh.needAlloc = false;
             }
@@ -4410,6 +4425,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
                if(flags.lightVectors)
                   oglMesh.lightVectors.upload(0, mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors);
+
+               if(flags.bones)
+                  oglMesh.bones.upload(0, mesh.nVertices * sizeof(SkinVert), mesh.boneData);
             }
             if(flags.interleaved)
                oglMesh.vertices.upload(vSize * mesh.baseVertex, nVertices * vSize, mesh.vertices);
@@ -4460,6 +4478,8 @@ class OpenGLDisplayDriver : DisplayDriver
                   oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
                if(flags.lightVectors)
                   oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+               if(flags.bones)
+                  oglMesh.bones.allocate(mesh.nVertices * sizeof(SkinVert), mesh.boneData, staticDraw);
                oglMesh.needAlloc = false;
             }
             else
@@ -4472,6 +4492,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
                if(flags.lightVectors)
                   oglMesh.lightVectors.upload(0, mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors);
+
+               if(flags.bones)
+                  oglMesh.bones.upload(0, mesh.nVertices * sizeof(SkinVert), mesh.boneData);
             }
          }
          else if(!mab && oglMesh.needAlloc)
@@ -4488,6 +4511,8 @@ class OpenGLDisplayDriver : DisplayDriver
                oglMesh.tangents.allocate(mesh.nVertices * 2*sizeof(Vector3Df), mesh.tangents, staticDraw);
             if(flags.lightVectors)
                oglMesh.lightVectors.allocate(mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors, staticDraw);
+            if(flags.bones)
+               oglMesh.bones.allocate(mesh.nVertices * sizeof(SkinVert), mesh.boneData, staticDraw);
             oglMesh.needAlloc = false;
          }
          else
@@ -4507,6 +4532,9 @@ class OpenGLDisplayDriver : DisplayDriver
 
             if(flags.lightVectors)
                oglMesh.lightVectors.upload(0, mesh.nVertices * sizeof(ColorRGB), mesh.lightVectors);
+
+            if(flags.bones)
+               oglMesh.bones.upload(0, mesh.nVertices * sizeof(SkinVert), mesh.boneData);
          }
       }
       SETCAPS(caps);
@@ -4621,7 +4649,7 @@ class OpenGLDisplayDriver : DisplayDriver
                oglMesh.vertices.buffer = buffer;
             }
             oglMesh.vertices.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT),
-               interleaved ? 8*sizeof(float) : 0,
+               interleaved ? 8*sizeof(float) : 0, none,
                oglMesh.vertices.buffer ? (void *)((baseVertexOffset*8)*sizeof(float)) : (void *)mesh.vertices);
 
             // *** Normals Stream ***
@@ -4629,9 +4657,9 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                GLEnableClientState(NORMALS);
                if(interleaved)
-                  oglMesh.vertices.use(normal, 3, GL_FLOAT, 8*sizeof(float), (void *)((baseVertexOffset*8+3)*sizeof(float)));
+                  oglMesh.vertices.use(normal, 3, GL_FLOAT, 8*sizeof(float), none, (void *)((baseVertexOffset*8+3)*sizeof(float)));
                else
-                  oglMesh.normals.use(normal, 3, GL_FLOAT, 0, oglMesh.normals.buffer ? (void *)((baseVertexOffset*3)*sizeof(float)) : mesh.normals);
+                  oglMesh.normals.use(normal, 3, GL_FLOAT, 0, none, oglMesh.normals.buffer ? (void *)((baseVertexOffset*3)*sizeof(float)) : mesh.normals);
             }
             else
                GLDisableClientState(NORMALS);
@@ -4644,13 +4672,48 @@ class OpenGLDisplayDriver : DisplayDriver
                {
                   GLEnableClientState(TANGENTS1);
                   GLEnableClientState(TANGENTS2);
-                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)(0*baseVertexOffset * 6 * sizeof(float)) : mesh.tangents);
-                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, oglMesh.tangents.buffer ? (void *)((0*baseVertexOffset*6 + 3) * sizeof(float)) : mesh.tangents+1);
+                  oglMesh.tangents.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, none, oglMesh.tangents.buffer ? (void *)(0*baseVertexOffset * 6 * sizeof(float)) : mesh.tangents);
+                  oglMesh.tangents.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, none, oglMesh.tangents.buffer ? (void *)((0*baseVertexOffset*6 + 3) * sizeof(float)) : mesh.tangents+1);
                }
                else
                {
                   GLDisableClientState(TANGENTS1);
                   GLDisableClientState(TANGENTS2);
+               }
+
+               if(activeShader && activeShader._class == class(DefaultShader))
+               {
+                  // *** Skinned Bones ***
+                  DefaultShader ds = (DefaultShader)activeShader;
+                  if(mesh.matBones && (mesh.boneData || mesh.flags.bones))
+                  {
+                     // Where/When should bone matrices be uploaded?
+                     ds.setBoneMatrices(mesh.matBones.count, mesh.matBones.array);
+
+                     GLEnableClientState(BONEINDICES1);
+                     GLEnableClientState(BONEINDICES2);
+                     GLEnableClientState(BONEINDICES3);
+                     GLEnableClientState(BONEWEIGHTS1);
+                     GLEnableClientState(BONEWEIGHTS2);
+                     GLEnableClientState(BONEWEIGHTS3);
+                     oglMesh.bones.use(boneIndices1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * baseVertexOffset) : &mesh.boneData[0].bones);
+                     oglMesh.bones.use(boneIndices2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * baseVertexOffset+4) : &mesh.boneData[0].bones+4);
+                     oglMesh.bones.use(boneIndices3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * baseVertexOffset+8) : &mesh.boneData[0].bones+8);
+                     oglMesh.bones.use(boneWeights1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * baseVertexOffset+MAX_BONES) : &mesh.boneData[0].weights);
+                     oglMesh.bones.use(boneWeights2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * baseVertexOffset+MAX_BONES + 4) : &mesh.boneData[0].weights+4);
+                     oglMesh.bones.use(boneWeights3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * baseVertexOffset+MAX_BONES + 8) : &mesh.boneData[0].weights+8);
+                  }
+                  else
+                  {
+                     ds.setBoneMatrices(0, null);
+
+                     GLDisableClientState(BONEINDICES1);
+                     GLDisableClientState(BONEINDICES2);
+                     GLDisableClientState(BONEINDICES3);
+                     GLDisableClientState(BONEWEIGHTS1);
+                     GLDisableClientState(BONEWEIGHTS2);
+                     GLDisableClientState(BONEWEIGHTS3);
+                  }
                }
             }
 #endif
@@ -4660,9 +4723,9 @@ class OpenGLDisplayDriver : DisplayDriver
             {
                GLEnableClientState(TEXCOORDS);
                if(interleaved)
-                  oglMesh.vertices.use(texCoord, 2, GL_FLOAT, 8*sizeof(float), (void *)((baseVertexOffset*8 + 6)*sizeof(float)));
+                  oglMesh.vertices.use(texCoord, 2, GL_FLOAT, 8*sizeof(float), none, (void *)((baseVertexOffset*8 + 6)*sizeof(float)));
                else
-                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, oglMesh.texCoords.buffer ? (void *)(baseVertexOffset*2 *sizeof(float)) : mesh.texCoords);
+                  oglMesh.texCoords.use(texCoord, 2, GL_FLOAT, 0, none, oglMesh.texCoords.buffer ? (void *)(baseVertexOffset*2 *sizeof(float)) : mesh.texCoords);
             }
             else
                GLDisableClientState(TEXCOORDS);
@@ -4674,7 +4737,7 @@ class OpenGLDisplayDriver : DisplayDriver
                if(mesh.lightVectors || mesh.flags.lightVectors)
                {
                   GLEnableClientState(LIGHTVECTORS);
-                  oglMesh.lightVectors.use(lightVector, 3, GL_FLOAT, 0, oglMesh.lightVectors.buffer ? null : mesh.lightVectors);
+                  oglMesh.lightVectors.use(lightVector, 3, GL_FLOAT, 0, none, oglMesh.lightVectors.buffer ? null : mesh.lightVectors);
                }
                else
                   GLDisableClientState(LIGHTVECTORS);
@@ -4685,18 +4748,18 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mesh.colors || mesh.flags.colors)
             {
                GLEnableClientState(COLORS);
-               oglMesh.colors.use(color, 4, GL_FLOAT, 0, oglMesh.colors.buffer ? (void *)(0*baseVertexOffset * 4 * sizeof(float)) : mesh.colors);
+               oglMesh.colors.use(color, 4, GL_FLOAT, 0, none, oglMesh.colors.buffer ? (void *)(0*baseVertexOffset * 4 * sizeof(float)) : mesh.colors);
             }
             else
                GLDisableClientState(COLORS);
          }
          else
          {
-            noAB.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, (double *)mesh.vertices);
+            noAB.use(vertex, 3, (mesh.flags.intVertices ? GL_INT : mesh.flags.doubleVertices ? GL_DOUBLE : GL_FLOAT), 0, none, (double *)mesh.vertices);
             if((mesh.normals || mesh.flags.normals) && !collectingHits)
             {
                GLEnableClientState(NORMALS);
-               noAB.use(normal, 3, GL_FLOAT, 0, mesh.normals);
+               noAB.use(normal, 3, GL_FLOAT, 0, none, mesh.normals);
             }
             else
                GLDisableClientState(NORMALS);
@@ -4707,13 +4770,47 @@ class OpenGLDisplayDriver : DisplayDriver
                {
                   GLEnableClientState(TANGENTS1);
                   GLEnableClientState(TANGENTS2);
-                  noAB.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, mesh.tangents);
-                  noAB.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, mesh.tangents+1);
+                  noAB.use(tangent1, 3, GL_FLOAT, sizeof(Vector3Df)*2, none, mesh.tangents);
+                  noAB.use(tangent2, 3, GL_FLOAT, sizeof(Vector3Df)*2, none, mesh.tangents+1);
                }
                else
                {
                   GLDisableClientState(TANGENTS1);
                   GLDisableClientState(TANGENTS2);
+               }
+
+               if(activeShader && activeShader._class == class(DefaultShader))
+               {
+                  // *** Skinned Bones ***
+                  DefaultShader ds = (DefaultShader)activeShader;
+                  if(mesh.matBones && (mesh.boneData || mesh.flags.bones) && !collectingHits)
+                  {
+                     ds.setBoneMatrices(mesh.matBones.count, mesh.matBones.array);
+
+                     GLEnableClientState(BONEINDICES1);
+                     GLEnableClientState(BONEINDICES2);
+                     GLEnableClientState(BONEINDICES3);
+                     GLEnableClientState(BONEWEIGHTS1);
+                     GLEnableClientState(BONEWEIGHTS2);
+                     GLEnableClientState(BONEWEIGHTS3);
+                     noAB.use(boneIndices1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, &mesh.boneData[0].bones);
+                     noAB.use(boneIndices2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, &mesh.boneData[0].bones+4);
+                     noAB.use(boneIndices3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, &mesh.boneData[0].bones+8);
+                     noAB.use(boneWeights1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, &mesh.boneData[0].weights);
+                     noAB.use(boneWeights2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, &mesh.boneData[0].weights+4);
+                     noAB.use(boneWeights3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, &mesh.boneData[0].weights+8);
+                  }
+                  else
+                  {
+                     ds.setBoneMatrices(0, null);
+
+                     GLDisableClientState(BONEINDICES1);
+                     GLDisableClientState(BONEINDICES2);
+                     GLDisableClientState(BONEINDICES3);
+                     GLDisableClientState(BONEWEIGHTS1);
+                     GLDisableClientState(BONEWEIGHTS2);
+                     GLDisableClientState(BONEWEIGHTS3);
+                  }
                }
             }
 #endif
@@ -4721,7 +4818,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if((mesh.texCoords || mesh.flags.texCoords1) && !collectingHits)
             {
                GLEnableClientState(TEXCOORDS);
-               noAB.use(texCoord, 2, GL_FLOAT, 0, mesh.texCoords);
+               noAB.use(texCoord, 2, GL_FLOAT, 0, none, mesh.texCoords);
             }
             else
                GLDisableClientState(TEXCOORDS);
@@ -4732,7 +4829,7 @@ class OpenGLDisplayDriver : DisplayDriver
                if((mesh.lightVectors || mesh.flags.lightVectors) && !collectingHits)
                {
                   GLEnableClientState(LIGHTVECTORS);
-                  noAB.use(lightVector, 3, GL_FLOAT, sizeof(ColorRGB), mesh.lightVectors);
+                  noAB.use(lightVector, 3, GL_FLOAT, sizeof(ColorRGB), none, mesh.lightVectors);
                }
                else
                   GLDisableClientState(LIGHTVECTORS);
@@ -4742,7 +4839,7 @@ class OpenGLDisplayDriver : DisplayDriver
             if((mesh.colors || mesh.flags.colors) && !collectingHits)
             {
                GLEnableClientState(COLORS);
-               noAB.use(color, 4, GL_FLOAT, 0, mesh.colors);
+               noAB.use(color, 4, GL_FLOAT, 0, none, mesh.colors);
             }
             else
                GLDisableClientState(COLORS);
@@ -4757,6 +4854,8 @@ class OpenGLDisplayDriver : DisplayDriver
                glLockArraysEXT(0, mesh.nVertices);
 #endif
       }
+      else
+         defaultShader.setBoneMatrices(0, null);
 #ifdef _DEBUG
       CheckGLErrors(__FILE__, __LINE__);
 #endif

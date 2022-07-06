@@ -47,7 +47,7 @@ public void GLABBindBuffer(int target, uint buffer)
 uint glabCurDrawIndirectBuffer;
 #endif
 
-public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangent2, lightVector };
+public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangent2, lightVector, boneIndices1, boneIndices2, boneIndices3, boneWeights1, boneWeights2, boneWeights3 };
 
 public enum GLBufferUsage { staticDraw, dynamicDraw, streamDraw };
 
@@ -537,15 +537,26 @@ public struct GLB
    }
 };
 
+public enum GLAttribMode { none, normalized = 1, integer, longDouble };
+
 public struct GLAB : GLB
 {
-   void use(GLBufferContents contents, int n, int type, uint stride, const void * pointer)
+   void use(GLBufferContents contents, int n, int type, uint stride, GLAttribMode mode, const void * pointer)
    {
       if(glabCurArrayBuffer != ((this != null) ? buffer : 0) && glCaps_vertexBuffer)
          GLABBindBuffer(GL_ARRAY_BUFFER, ((this != null) ? buffer : 0));
 #if ENABLE_GL_SHADERS
-      if(glCaps_shaders)                          // TODO: Review control over normalization?
-         glVertexAttribPointer(contents, n, type, type == GL_UNSIGNED_BYTE ? GL_TRUE : GL_FALSE, stride, pointer);
+      if(glCaps_shaders)
+      {
+         if(mode <= normalized)
+            glVertexAttribPointer(contents, n, type, mode == normalized, stride, pointer);
+         else if(mode == integer)
+            // FIXME: Version checks for compilation
+            glVertexAttribIPointer(contents, n, type, stride, pointer);
+         else if(mode == longDouble)
+            // FIXME: Version checks for compilation
+            glVertexAttribLPointer(contents, n, type, stride, pointer);
+      }
 #endif
 
 #if ENABLE_GL_FFP
@@ -561,7 +572,7 @@ public struct GLAB : GLB
 #endif
    }
 
-   void useVertTrans(uint count, int n, int type, uint stride, const void * pointer)
+   void useVertTrans(uint count, int n, int type, uint stride, GLAttribMode mode, const void * pointer)
    {
       if(!glCaps_intAndDouble)
       {
@@ -589,7 +600,7 @@ public struct GLAB : GLB
          {
    #if ENABLE_GL_SHADERS
             if(glCaps_shaders)
-               glVertexAttribPointer(GLBufferContents::vertex, n, GL_DOUBLE, GL_FALSE, stride, pointer);
+               glVertexAttribPointer(GLBufferContents::vertex, n, GL_DOUBLE, mode, stride, pointer);
    #endif
 
    #if ENABLE_GL_FFP
@@ -599,7 +610,7 @@ public struct GLAB : GLB
          }
       }
       else
-         use(vertex, n, type, stride, pointer);
+         use(vertex, n, type, stride, mode, pointer);
    }
 };
 

@@ -226,6 +226,12 @@
    #define TANGENTS1                      (glCaps_shaders ? GLBufferContents::tangent1 : GL_COLOR_ARRAY)
    #define TANGENTS2                      (glCaps_shaders ? GLBufferContents::tangent2 : GL_COLOR_ARRAY)
    #define LIGHTVECTORS                   GL_COLOR_ARRAY
+   #define BONEINDICES1                   (glCaps_shaders ? GLBufferContents::boneIndices1 : 0)
+   #define BONEINDICES2                   (glCaps_shaders ? GLBufferContents::boneIndices2 : 0)
+   #define BONEINDICES3                   (glCaps_shaders ? GLBufferContents::boneIndices3 : 0)
+   #define BONEWEIGHTS1                   (glCaps_shaders ? GLBufferContents::boneWeights1 : 0)
+   #define BONEWEIGHTS2                   (glCaps_shaders ? GLBufferContents::boneWeights2 : 0)
+   #define BONEWEIGHTS3                   (glCaps_shaders ? GLBufferContents::boneWeights3 : 0)
    #define GLVertexPointer(n, t, s, p)    (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p) : glVertexPointer(n, t, s, p))
    #define GLColorPointer(n, t, s, p)     (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p) : glColorPointer(n, t, s, p))
    #define GLTexCoordPointer(n, t, s, p)  (glCaps_shaders ? glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p) : glTexCoordPointer(n, t, s, p))
@@ -240,6 +246,12 @@
    #define COLORS                         GLBufferContents::color
    #define TANGENTS1                      GLBufferContents::tangent1
    #define TANGENTS2                      GLBufferContents::tangent2
+   #define BONEINDICES1                   GLBufferContents::boneIndices1
+   #define BONEINDICES2                   GLBufferContents::boneIndices2
+   #define BONEINDICES3                   GLBufferContents::boneIndices3
+   #define BONEWEIGHTS1                   GLBufferContents::boneWeights1
+   #define BONEWEIGHTS2                   GLBufferContents::boneWeights2
+   #define BONEWEIGHTS3                   GLBufferContents::boneWeights3
    #define GLVertexPointer(n, t, s, p)    glVertexAttribPointer(GLBufferContents::vertex,   n, t, GL_FALSE, s, p)
    #define GLColorPointer(n, t, s, p)     glVertexAttribPointer(GLBufferContents::color,    n, t, GL_FALSE, s, p)
    #define GLTexCoordPointer(n, t, s, p)  glVertexAttribPointer(GLBufferContents::texCoord, n, t, GL_FALSE, s, p)
@@ -253,6 +265,12 @@
    #define TEXCOORDS                      GL_TEXTURE_COORD_ARRAY
    #define COLORS                         GL_COLOR_ARRAY
    #define LIGHTVECTORS                   GL_COLOR_ARRAY
+   #define BONEINDICES1                   -1
+   #define BONEINDICES2                   -1
+   #define BONEINDICES3                   -1
+   #define BONEWEIGHTS1                   -1
+   #define BONEWEIGHTS2                   -1
+   #define BONEWEIGHTS3                   -1
    #define GLVertexPointer                glVertexPointer
    #define GLColorPointer                 glColorPointer
    #define GLTexCoordPointer              glTexCoordPointer

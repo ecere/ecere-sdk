@@ -55,6 +55,7 @@ public:
    bool multiDraw:1;
    bool transform3D:1;
    bool squishFactor:1;
+   bool bones:1;
 };
 
 public class CompiledDefaultShader : CompiledShader
@@ -94,6 +95,7 @@ public:
    int uCubeMapMatrix;
    int uAlphaFuncValue;
    int uBlackTint;
+   int uBoneMatrices, uBoneOffsets;
 
    bool initialSetup; initialSetup = true;
    bool useNearPlane;
@@ -192,9 +194,17 @@ public:
          uFogDensity       = glGetUniformLocation(program, "fogDensity");
          uFogColor         = glGetUniformLocation(program, "fogColor");
       }
+
+      if(state.bones)
+      {
+         uBoneMatrices = glGetUniformLocation(program, "boneMatrices");
+         uBoneOffsets = glGetUniformLocation(program, "boneOffsets");
+      }
 #endif
    }
 };
+
+define BONES_MAX_MATRICES = 253;
 
 public class DefaultShader : Shader
 {
@@ -241,6 +251,10 @@ public class DefaultShader : Shader
    float color[4];
    Color blackTint;
 
+   float boneMatrices[BONES_MAX_MATRICES][9];
+   Vector3Df boneOffsets[BONES_MAX_MATRICES];
+   int numBoneMatrices;
+
 public:
    DefaultShaderBits backLightState; backLightState = DefaultShaderBits { separateSpecular = true };
 
@@ -268,6 +282,15 @@ public:
       {
          glBindAttribLocation(program, GLBufferContents::tangent1,  "tangent1");
          glBindAttribLocation(program, GLBufferContents::tangent2,  "tangent2");
+      }
+      if(state.bones)
+      {
+         glBindAttribLocation(program, GLBufferContents::boneIndices1,  "boneIndices1");
+         glBindAttribLocation(program, GLBufferContents::boneIndices2,  "boneIndices2");
+         glBindAttribLocation(program, GLBufferContents::boneIndices3,  "boneIndices3");
+         glBindAttribLocation(program, GLBufferContents::boneWeights1,  "boneWeights1");
+         glBindAttribLocation(program, GLBufferContents::boneWeights2,  "boneWeights2");
+         glBindAttribLocation(program, GLBufferContents::boneWeights3,  "boneWeights3");
       }
 #endif
    }
@@ -330,6 +353,7 @@ public:
       defs.concatf("\n#define NORMALS_INV_SCALE %d",        state.normalsInvScale2   ? 1 : 0);
       defs.concatf("\n#define TEXTURE_EXTERNAL %d",         state.externalTexture    ? 1 : 0);
       defs.concatf("\n#define BLACKTINT %d",                state.blackTint          ? 1 : 0);
+      defs.concatf("\n#define SKIN_BONES %d",               state.bones              ? 1 : 0);
 
       for(i = 0; i < 8; i++)
       {
@@ -478,7 +502,37 @@ public:
          glUniform1f(shader.uFogDensity, fogDensity);
          glUniform3fv(shader.uFogColor, 1, fogColor);
       }
+
+      if(state.bones && modifiedUniforms & 0x100)
+      {
+         glUniformMatrix3fv(shader.uBoneMatrices, numBoneMatrices, GL_FALSE, (float *)boneMatrices);
+         glUniform3fv(shader.uBoneOffsets, numBoneMatrices, (float *)boneOffsets);
+      }
 #endif
+   }
+
+   void setBoneMatrices(int n, const Matrixf * matrices)
+   {
+      if(n && matrices)
+      {
+         int i;
+
+         ((DefaultShaderBits)state).bones = true;
+
+         numBoneMatrices = Min(n, BONES_MAX_MATRICES);
+         for(i = 0; i < numBoneMatrices; i++)
+         {
+            const float * ms = matrices[i].array;
+            float m[9] = { ms[0], ms[1], ms[2], ms[4], ms[5], ms[6], ms[8], ms[9], ms[10] };
+            boneOffsets[i] = { ms[12], ms[13], ms[14] };
+            memcpy(boneMatrices[i], m, sizeof(m));
+         }
+         modifiedUniforms |= 0x100; // FIXME: Derived enum?
+      }
+      else
+      {
+         ((DefaultShaderBits)state).bones = false;
+      }
    }
 
    void setCamera(Camera camera)
