@@ -1150,13 +1150,13 @@ public:
       ButterburShaderBits state = (ButterburShaderBits)this.state;
       float * attrOffset = (void *)(uintptr)(baseVertex * vertexStride);
 
-      ab.use(vertex,   3, GL_FLOAT, vertexStride, attrOffset);
+      ab.use(vertex,   3, GL_FLOAT, vertexStride, none, attrOffset);
       if(vertexStride >= 6 * sizeof(float) && state.lighting)
-         ab.use(normal,   3, GL_FLOAT, vertexStride, attrOffset + 3);
+         ab.use(normal,   3, GL_FLOAT, vertexStride, none, attrOffset + 3);
       if(vertexStride >= 8 * sizeof(float) && (state.texturing || state.normalsMapping || state.specularMapping || state.reflectionMap))
-         ab.use(texCoord, 2, GL_FLOAT, vertexStride, attrOffset + 6);
+         ab.use(texCoord, 2, GL_FLOAT, vertexStride, none, attrOffset + 6);
       if(vertexStride >= 9 * sizeof(float) && state.squishFactor)
-         ab.use((GLBufferContents)squishFactorAttribute, 1, GL_FLOAT, vertexStride, attrOffset + 8);
+         ab.use((GLBufferContents)squishFactorAttribute, 1, GL_FLOAT, vertexStride, none, attrOffset + 8);
 
       if(state.transform3D)
       {
