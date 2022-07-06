@@ -666,7 +666,7 @@ public struct GLMultiDraw
          {
             GLAB ab { vertexGLMB.ab.buffer };
             glEnableVertexAttribArray(GLBufferContents::vertex);
-            ab.use(vertex, vertNCoords, GL_FLOAT, verticesStride, null);
+            ab.use(vertex, vertNCoords, GL_FLOAT, verticesStride, none, null);
 
             this.vertexStride = verticesStride;
          }

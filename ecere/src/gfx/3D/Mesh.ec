@@ -18,6 +18,7 @@ public:
    // NOTE: neither of these two are currently kept in Mesh's flags member:
    bool memAllocOnly:1, interleaved:1;
    bool ownMEAB:1;
+   bool bones:1;
 };
 
 public class PrimitiveGroupType : uint32
@@ -219,7 +220,7 @@ private:
    }
 };
 
-union Matrixf
+public union Matrixf
 {
    float m[4][4];
    float array[16];
@@ -290,28 +291,16 @@ public:
       get { return dupVerts; }
    };
 
+   #define GPU_SKIN
+
    void ApplySkin()
    {
       MeshSkin skin = this.skin;
       if(skin && skin.skinVerts.count + (dupVerts ? dupVerts.count : 0) == nVertices)
       {
-         Vector3Df * oVertices = this.vertices, * vertices;
-         Vector3Df * oNormals = this.normals, * normals;
-         Vector3Df * oTangents = this.tangents, * tangents = null;
          Array<Matrixf> matBones { size = skin.bones.count };
-         Array<Matrixf> nmatBones { size = skin.bones.count };
-         int i, nVertices = skin.skinVerts.count;
          bool bsIdentity = skin.bsIsIdentity;
-
-         if(!oNormals) return;
-
-         if(!skin.vertices) skin.vertices = new Vector3Df[this.nVertices];
-         if(!skin.normals)  skin.normals = new Vector3Df[this.nVertices];
-         if(oTangents && !skin.tangents) skin.tangents = new Vector3Df[2*this.nVertices];
-         this.vertices = vertices = skin.vertices;
-         this.normals  = normals  = skin.normals;
-         this.tangents = tangents = skin.tangents;
-         Lock({ vertices = true, normals = true, tangents = (oTangents != null) });
+         int i;
 
          for(i = 0; i < skin.bones.count; i++)
          {
@@ -330,131 +319,182 @@ public:
                   tmp.Multiply(m, skin.invShape);
                   matBones[i] = tmp;
                }
+            }
+            else
+               matBones[i].Identity();
+         }
 
-               nmatBones[i] = m;
+#ifdef GPU_SKIN
+         delete this.matBones;
+         this.matBones = matBones;
+
+         // TODO: Handle skin change
+         if(!flags.bones)
+         {
+            Allocate({ bones = true }, this.nVertices, displaySystem);
+            Lock({ bones = true });
+
+            if(dupVerts && dupVerts.count)
+            {
+               int * dv = dupVerts.array - skin.skinVerts.count;
+               boneData = new SkinVert[this.nVertices];
+               memcpy(boneData, skin.skinVerts.array, sizeof(SkinVert) * skin.skinVerts.count);
+               for(i = skin.skinVerts.count; i < this.nVertices; i++)
+               {
+                  int ix = dv[i];
+                  boneData[i] = boneData[ix];
+               }
+            }
+            else
+               boneData = skin.skinVerts.array;
+
+            Unlock({ bones = true });
+
+            if(dupVerts && dupVerts.count)
+               delete boneData;
+            else
+               boneData = null;
+         }
+#else
+         {
+            Array<Matrixf> nmatBones { size = skin.bones.count };
+            Vector3Df * oVertices = this.vertices, * vertices;
+            Vector3Df * oNormals = this.normals, * normals;
+            Vector3Df * oTangents = this.tangents, * tangents = null;
+            int nVertices = skin.skinVerts.count;
+            if(!oNormals) return;
+
+            if(!skin.vertices) skin.vertices = new Vector3Df[this.nVertices];
+            if(!skin.normals)  skin.normals = new Vector3Df[this.nVertices];
+            if(oTangents && !skin.tangents) skin.tangents = new Vector3Df[2*this.nVertices];
+            this.vertices = vertices = skin.vertices;
+            this.normals  = normals  = skin.normals;
+            this.tangents = tangents = skin.tangents;
+            Lock({ vertices = true, normals = true, tangents = (oTangents != null) });
+
+            for(i = 0; i < skin.bones.count; i++)
+            {
+               nmatBones[i] = matBones[i];
                nmatBones[i].m[3][0] = 0;
                nmatBones[i].m[3][1] = 0;
                nmatBones[i].m[3][2] = 0;
             }
-            else
-            {
-               matBones[i].Identity();
-               nmatBones[i].Identity();
-            }
-         }
 
-         for(i = 0; i < nVertices; i++)
-         {
-            Vector3Df * vert = &vertices[i];
-            Vector3Df * nor = &normals[i];
-            Vector3Df * tan1 = &tangents[2*i+0];
-            Vector3Df * tan2 = &tangents[2*i+1];
-            SkinVert * sv = &skin.skinVerts[i];
-            int j;
-            float tw = 0;
-            Vector3Df vt { };
-            Vector3Df nt { };
-            Vector3Df t1t { };
-            Vector3Df t2t { };
-            for(j = 0; j < MAX_BONES; j++)
+            for(i = 0; i < nVertices; i++)
             {
-               int b = sv->bones[j];
-               if(b != NO_BONE)
+               Vector3Df * vert = &vertices[i];
+               Vector3Df * nor = &normals[i];
+               Vector3Df * tan1 = &tangents[2*i+0];
+               Vector3Df * tan2 = &tangents[2*i+1];
+               SkinVert * sv = &skin.skinVerts[i];
+               int j;
+               float tw = 0;
+               Vector3Df vt { };
+               Vector3Df nt { };
+               Vector3Df t1t { };
+               Vector3Df t2t { };
+               for(j = 0; j < MAX_BONES; j++)
                {
-                  float w = sv->weights[j] / 255.0f;
-                  Vector3Df v, n, t1, t2;
-                  inlineMultMatrix(v, oVertices[i], matBones[b]);
-                  tw += w;
-                  vt.x += w * v.x;
-                  vt.y += w * v.y;
-                  vt.z += w * v.z;
+                  int b = sv->bones[j];
+                  if(b != NO_BONE)
+                  {
+                     float w = sv->weights[j] / 255.0f;
+                     Vector3Df v, n, t1, t2;
+                     inlineMultMatrix(v, oVertices[i], matBones[b]);
+                     tw += w;
+                     vt.x += w * v.x;
+                     vt.y += w * v.y;
+                     vt.z += w * v.z;
 
-                  inlineMultMatrix(n, oNormals[i], nmatBones[b]);
-                  nt.x += w * n.x;
-                  nt.y += w * n.y;
-                  nt.z += w * n.z;
+                     inlineMultMatrix(n, oNormals[i], nmatBones[b]);
+                     nt.x += w * n.x;
+                     nt.y += w * n.y;
+                     nt.z += w * n.z;
+
+                     if(oTangents)
+                     {
+                        inlineMultMatrix(t1, oTangents[2*i+0], nmatBones[b]);
+                        t1t.x += w * t1.x;
+                        t1t.y += w * t1.y;
+                        t1t.z += w * t1.z;
+
+                        inlineMultMatrix(t2, oTangents[2*i+1], nmatBones[b]);
+                        t2t.x += w * t2.x;
+                        t2t.y += w * t2.y;
+                        t2t.z += w * t2.z;
+                     }
+                  }
+                  else
+                     break;
+               }
+
+               if(tw)
+               {
+                  tw = 1.0f / tw;
+                  vert->x = vt.x * tw;
+                  vert->y = vt.y * tw;
+                  vert->z = vt.z * tw;
+
+                  nor->x = nt.x * tw;
+                  nor->y = nt.y * tw;
+                  nor->z = nt.z * tw;
 
                   if(oTangents)
                   {
-                     inlineMultMatrix(t1, oTangents[2*i+0], nmatBones[b]);
-                     t1t.x += w * t1.x;
-                     t1t.y += w * t1.y;
-                     t1t.z += w * t1.z;
+                     tan1->x = t1t.x * tw;
+                     tan1->y = t1t.y * tw;
+                     tan1->z = t1t.z * tw;
 
-                     inlineMultMatrix(t2, oTangents[2*i+1], nmatBones[b]);
-                     t2t.x += w * t2.x;
-                     t2t.y += w * t2.y;
-                     t2t.z += w * t2.z;
+                     tan2->x = t2t.x * tw;
+                     tan2->y = t2t.y * tw;
+                     tan2->z = t2t.z * tw;
                   }
                }
                else
-                  break;
+               {
+                  *vert = oVertices[i];
+                  *nor = oNormals[i];
+                  if(oTangents)
+                  {
+                     *tan1 = oTangents[2*i+0];
+                     *tan2 = oTangents[2*i+1];
+                  }
+               }
+               /*vert->x *= 0.01;
+               vert->y *= 0.01;
+               vert->z *= 0.01;*/
             }
 
-            if(tw)
+            if(dupVerts)
             {
-               tw = 1.0f / tw;
-               vert->x = vt.x * tw;
-               vert->y = vt.y * tw;
-               vert->z = vt.z * tw;
-
-               nor->x = nt.x * tw;
-               nor->y = nt.y * tw;
-               nor->z = nt.z * tw;
-
-               if(oTangents)
+               int * dv = dupVerts.array - nVertices;
+               int count = nVertices + dupVerts.count;
+               for(i = nVertices; i < count; i++)
                {
-                  tan1->x = t1t.x * tw;
-                  tan1->y = t1t.y * tw;
-                  tan1->z = t1t.z * tw;
-
-                  tan2->x = t2t.x * tw;
-                  tan2->y = t2t.y * tw;
-                  tan2->z = t2t.z * tw;
+                  int ix = dv[i];
+                  vertices[i] = vertices[ix];
+                  // Assuming smooth normals for now...
+                  normals[i]  = normals[ix];
+                  if(oTangents)
+                  {
+                     tangents[2*i+0] = tangents[2*ix+0];
+                     tangents[2*i+1] = tangents[2*ix+1];
+                  }
                }
             }
-            else
-            {
-               *vert = oVertices[i];
-               *nor = oNormals[i];
-               if(oTangents)
-               {
-                  *tan1 = oTangents[2*i+0];
-                  *tan2 = oTangents[2*i+1];
-               }
-            }
-            /*vert->x *= 0.01;
-            vert->y *= 0.01;
-            vert->z *= 0.01;*/
+
+            Unlock({ vertices = true, normals = true, tangents = (oTangents != null) });
+
+            this.vertices = oVertices;
+            this.normals = oNormals;
+            if(oTangents) this.tangents = oTangents;
+            delete matBones;
+            delete nmatBones;
          }
+#endif
 
-         if(dupVerts)
-         {
-            int * dv = dupVerts.array - nVertices;
-            int count = nVertices + dupVerts.count;
-            for(i = nVertices; i < count; i++)
-            {
-               int ix = dv[i];
-               vertices[i] = vertices[ix];
-               // Assuming smooth normals for now...
-               normals[i]  = normals[ix];
-               if(oTangents)
-               {
-                  tangents[2*i+0] = tangents[2*ix+0];
-                  tangents[2*i+1] = tangents[2*ix+1];
-               }
-            }
-         }
-
-         delete matBones;
-         delete nmatBones;
-
-         Unlock({ vertices = true, normals = true, tangents = (oTangents != null) });
          SetMinMaxRadius();
 
-         this.vertices = oVertices;
-         this.normals = oNormals;
-         if(oTangents) this.tangents = oTangents;
       }
    }
 
@@ -463,11 +503,15 @@ public:
       MeshSkin skin = this.skin;
       if(skin)
       {
+#ifdef GPU_SKIN
+         delete this.matBones;
+#else
          delete skin.vertices;
          delete skin.normals;
          delete skin.tangents;
          Lock({ vertices = true, normals = true, tangents = (tangents != null) });
          Unlock({ vertices = true, normals = true, tangents = (tangents != null) });
+#endif
          SetMinMaxRadius();
       }
    }
@@ -1839,6 +1883,11 @@ private:
    // Mesh-wide indices
    uint * indices;
    int baseIndex, nIndices;
+
+#if 1 //def GPU_SKIN
+   Array<Matrixf> matBones;
+   SkinVert * boneData; // For uploading to GPU
+#endif
 };
 
 void computeNormalWeights(int n, float * vertices, uint vStride, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)
