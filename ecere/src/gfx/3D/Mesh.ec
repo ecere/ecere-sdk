@@ -189,6 +189,7 @@ public struct SkinBone
    Matrix invBindMatrix;
    Matrix bsInvBindMatrix;
    Object object;
+   Vector3Df min, max; // Bounding Box
 };
 
 public define MAX_BONES = 10;
@@ -322,6 +323,53 @@ public:
             }
             else
                matBones[i].Identity();
+
+#ifdef GPU_SKIN
+            // Calculate bones BBOXes
+            if(vertices && !flags.bones)
+            {
+               float * v = (float *)vertices;
+               int j;
+               int increment = flags.interleaved ? 8 : 3;
+               Vector3Df min, max;
+
+               min = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
+               max = {-MAXFLOAT,-MAXFLOAT,-MAXFLOAT };
+               for(j = 0; j < nVertices; j++, v += increment)
+               {
+                  SkinVert * sv = j < skin.skinVerts.count ? &skin.skinVerts[j] : &skin.skinVerts[dupVerts[j - skin.skinVerts.count]];
+                  int b;
+                  for(b = 0; b < MAX_BONES; b++)
+                  {
+                     int bone = sv->bones[j];
+                     if(bone == i)
+                     {
+                        if(sv->weights[j])
+                        {
+                           float x = v[0], y = v[1], z = v[2];
+
+                           if(x.isNan || y.isNan || z.isNan);
+                           else if(x > 1E20 || x < -1E20 || y > 1E20 || y < -1E20 || z > 1E20 || z < -1E20);
+                           else
+                           {
+                              min.x = Min(min.x, x);
+                              min.y = Min(min.y, y);
+                              min.z = Min(min.z, z);
+                              max.x = Max(max.x, x);
+                              max.y = Max(max.y, y);
+                              max.z = Max(max.z, z);
+                           }
+                        }
+                        break;
+                     }
+                     else if(bone == NO_BONE)
+                        break;
+                  }
+               }
+               skin.bones[i].min = min;
+               skin.bones[i].max = max;
+            }
+#endif
          }
 
 #ifdef GPU_SKIN
@@ -1801,11 +1849,56 @@ private:
       float * v = (float *)vertices;
       int increment = flags.interleaved ? 8 : 3;
 
+#ifdef GPU_SKIN
+      if(!skin)
+#endif
       if(!v) return;
 
       min = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
       max = {-MAXFLOAT,-MAXFLOAT,-MAXFLOAT };
 
+#ifdef GPU_SKIN
+      if(skin && matBones)
+      {
+         int i;
+         for(i = 0; i < skin.bones.count; i++)
+         {
+            SkinBone * bone = &skin.bones[i];
+            Matrixf * mat = &matBones[i];
+            Vector3Df sPoints[8] =
+            {
+               bone->min,
+               { bone->min.x, bone->min.y, bone->max.z },
+               { bone->min.x, bone->max.y, bone->min.z },
+               { bone->min.x, bone->max.y, bone->max.z },
+               { bone->max.x, bone->min.y, bone->min.z },
+               { bone->max.x, bone->min.y, bone->max.z },
+               { bone->max.x, bone->max.y, bone->min.z },
+               bone->max
+            };
+            int j;
+            for(j = 0; j < 8; j++)
+            {
+               const Vector3Df * s = &sPoints[j];
+               float x = s->x * mat->m[0][0] + s->y * mat->m[1][0] + s->z * mat->m[2][0] + mat->m[3][0];
+               float y = s->x * mat->m[0][1] + s->y * mat->m[1][1] + s->z * mat->m[2][1] + mat->m[3][1];
+               float z = s->x * mat->m[0][2] + s->y * mat->m[1][2] + s->z * mat->m[2][2] + mat->m[3][2];
+               if(x.isNan || y.isNan || z.isNan);
+               else if(x > 1E20 || x < -1E20 || y > 1E20 || y < -1E20 || z > 1E20 || z < -1E20);
+               else
+               {
+                  min.x = Min(min.x, x);
+                  min.y = Min(min.y, y);
+                  min.z = Min(min.z, z);
+                  max.x = Max(max.x, x);
+                  max.y = Max(max.y, y);
+                  max.z = Max(max.z, z);
+               }
+            }
+         }
+      }
+      else
+#endif
       for(c = 0; c<nVertices; c++, v += increment)
       {
          float x = v[0], y = v[1], z = v[2];
