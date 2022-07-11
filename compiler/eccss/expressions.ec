@@ -748,7 +748,7 @@ public:
 
          flags = flags1 | flags2;
 
-         if(flags1.resolved && val1.type.type != type.type)
+         if(flags1.resolved && val1.type.type != type.type && val1.type.type != nil)
             convertFieldValue(val1, type, val1);
 
          if(op == in)
@@ -2802,28 +2802,28 @@ static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue v
 
 static bool textGrt(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = strcmp(op1.s, op2.s) > 0;
+   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) > 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textSma(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = strcmp(op1.s, op2.s) < 0;
+   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) < 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textGrtEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = strcmp(op1.s, op2.s) >= 0;
+   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) >= 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = strcmp(op1.s, op2.s) <= 0;
+   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) <= 0;
    val.type = { type = integer };
    return true;
 }
