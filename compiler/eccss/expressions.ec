@@ -626,6 +626,16 @@ public:
             value.type.type = nil;
             flags.resolved = true; // Should resolved be set for null?
          }
+         else if(!strcmpi(identifier.string, "true"))
+         {
+            value = { { type = integer, format = boolean }, i = 1 };
+            flags.resolved = true;
+         }
+         else if(!strcmpi(identifier.string, "false"))
+         {
+            value = { { type = integer, format = boolean }, i = 0 };
+            flags.resolved = true;
+         }
          else if(destType && (destType.type == enumClass || destType == class(Color)))
          {
             //awaiting special code here
@@ -2860,7 +2870,7 @@ public void convertFieldValue(const FieldValue src, FieldTypeEx type, FieldValue
          {
             DateTime dt {};
             dt.OnGetDataFromString(src.s);
-            dest.i = (int64)(SecSince1970)(DateTime)dt;
+            dest.i = (SecSince1970)dt;
             dest.type = { integer, isDateTime = true };
          }
          else
