@@ -6,6 +6,7 @@ public import "iso8601"
 public import "lexing"
 public import "astNode"
 public import "eccss"
+public import "iso8601"
 
 default:
 extern int __ecereVMethodID_class_OnGetDataFromString;
@@ -622,7 +623,7 @@ public:
       //bool (* onGetDataFromString)(void *, void *, const char *) = (void *)destType._vTbl[__ecereVMethodID_class_OnGetDataFromString];
       if(computeType == preprocessing && identifier.string)
       {
-         if(!strcmp(identifier.string, "null"))
+         if(!strcmpi(identifier.string, "null"))
          {
             value.type.type = nil;
             flags.resolved = true; // Should resolved be set for null?
@@ -797,7 +798,7 @@ public:
                val1 = { type = { integer }, i = 0 };
             if(!flags2.resolved)
                val2 = { type = { integer }, i = 0 };
-            if(val2.type.type != type.type)
+            if(val2.type.type != nil && val2.type.type != type.type)
                convertFieldValue(val2, type, val2);
 
             if(val1.type.type != nil && val1.type.type == val2.type.type)
@@ -2857,8 +2858,18 @@ public void convertFieldValue(const FieldValue src, FieldTypeEx type, FieldValue
       }
       else if(type.type == integer)
       {
-         dest.i = strtoll(src.s, null, 0);
-         dest.type = { integer };
+         if(type.isDateTime)
+         {
+            DateTime dt {};
+            dt.OnGetDataFromString(src.s);
+            dest.i = (int64)(SecSince1970)(DateTime)dt;
+            dest.type = { integer, isDateTime = true };
+         }
+         else
+         {
+            dest.i = strtoll(src.s, null, 0);
+            dest.type = { integer };
+         }
       }
    }
    else if(src.type.type == integer)
@@ -2875,7 +2886,13 @@ public void convertFieldValue(const FieldValue src, FieldTypeEx type, FieldValue
       }
       else if(type.type == text)
       {
-         dest.s = PrintString(src.i);
+         if(src.type.isDateTime)
+         {
+            DateTime dt = (SecSince1970)src.i;
+            dest.s = printTime({ year = true, month = true, day = true, hour = true, minute = true, second = true }, dt);
+         }
+         else
+            dest.s = PrintString(src.i);
          dest.type = { text };
       }
    }
