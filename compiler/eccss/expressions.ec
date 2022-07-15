@@ -746,7 +746,7 @@ public:
             type.isDateTime = (val1.type.isDateTime || val2.type.isDateTime);
          }
 
-         tbl = &opTables[type];
+         tbl = &opTables[type.type];
 
          flags = flags1 | flags2;
 
