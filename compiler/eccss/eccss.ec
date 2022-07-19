@@ -10,7 +10,8 @@ enum ECCSSFunctionIndex : int
    strupr = 1,
    strlwr,
    subst,
-   format
+   format,
+   pow
 };
 
 static int strncpymax(String output, const String input, int count, int max)
@@ -299,6 +300,10 @@ public struct ECCSSEvaluator
                expType = class(String);
                break;
             }
+            case pow:
+            {
+               expType = class(double);
+            }
          }
       }
       return expType;
@@ -356,6 +361,15 @@ public struct ECCSSEvaluator
                {
                   value.type = { text, true };
                   value.s = formatValues(args[0].s, numArgs-1, &args[1]);
+               }
+               break;
+            }
+            case pow:
+            {
+               if(numArgs == 2 && args[0].type.type == integer)
+               {
+                  value.type = { real };
+                  value.r = pow(args[0].i, args[1].i);
                }
                break;
             }
