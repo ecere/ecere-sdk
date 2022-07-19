@@ -700,6 +700,7 @@ public class CMSSExpOperation : CMSSExpression
 public:
    CMSSTokenType op;
    CMSSExpression exp1, exp2;
+   bool falseNullComparisons;
 
    CMSSExpOperation copy()
    {
@@ -708,7 +709,8 @@ public:
          op = op,
          exp1 = exp1 ? exp1.copy() : null,
          exp2 = exp2 ? exp2.copy() : null,
-         expType = expType, destType = destType
+         expType = expType, destType = destType,
+         falseNullComparisons = falseNullComparisons
       };
       return e;
    }
@@ -843,8 +845,16 @@ public:
             else if((val1.type.type == nil || val2.type.type == nil) && (op == equal || op == notEqual))
             {
                // Null equality checks
-               value = { type = { integer }, i = (op == equal ? val1.type.type == val2.type.type : val1.type.type != val2.type.type) };
+               bool result;
+
+               if(falseNullComparisons)
+                  result = false;
+               else if(op == equal)
+                  result = val1.type.type == val2.type.type;
+               else
+                  result = val1.type.type != val2.type.type;
                flags.resolved = true;
+               value = { type = { integer }, i = result };
             }
             else
                flags.resolved = false;
