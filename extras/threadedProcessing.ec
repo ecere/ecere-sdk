@@ -494,6 +494,12 @@ public:
             stages[stage-1].addTask(task, priority);
             result = true;
          }
+#ifdef _DEBUG
+         else
+         {
+            PrintLn("WARNING: Adding ", _class.name, " task to destroyed stage ", stage);
+         }
+#endif
       }
       return result;
    }
