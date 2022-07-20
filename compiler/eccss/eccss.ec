@@ -302,7 +302,10 @@ public struct ECCSSEvaluator
             }
             case pow:
             {
+               if(args.list.count >= 1) args[0].destType = class(double);
+               if(args.list.count >= 2) args[1].destType = class(double);
                expType = class(double);
+               break;
             }
          }
       }
@@ -366,10 +369,14 @@ public struct ECCSSEvaluator
             }
             case pow:
             {
-               if(numArgs == 2 && args[0].type.type == integer)
+               if(numArgs == 2 &&
+                  (args[0].type.type == integer || args[0].type.type == real) &&
+                  (args[1].type.type == integer || args[1].type.type == real))
                {
                   value.type = { real };
-                  value.r = pow(args[0].i, args[1].i);
+                  value.r = pow(
+                     args[0].type.type == integer ? (double)args[0].i : args[0].r,
+                     args[1].type.type == integer ? (double)args[1].i : args[1].r);
                }
                break;
             }
