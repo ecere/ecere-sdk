@@ -470,10 +470,12 @@ public:
          SecSince1970 dateSec = (SecSince1970)constant.i;
          DateTime dt = dateSec;
          TemporalOptions to {year=true, month=true, day=true};
+         String dateString;
+
          if(dt.hour) to.hour = true;
          if(dt.minute) to.minute = true;
          if(dt.second) to.second = true;
-         String dateString = printTime(to, dt);
+         dateString = printTime(to, dt);
          out.Print("DateTime { '", dateString, "' }");
          delete dateString;
       }
