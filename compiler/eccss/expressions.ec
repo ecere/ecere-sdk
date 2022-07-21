@@ -218,7 +218,7 @@ Array<String> splitIdentifier(const String s)
    return values;
 }
 
-CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
+public CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
 {
    // Handling some conversions here...
    Class destType = e.destType;
