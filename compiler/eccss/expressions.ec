@@ -1422,17 +1422,6 @@ public:
             value.i = 0;
             setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags, stylesClass);
          }
-         else if(flags.resolved && c && c == class(DateTime))
-         {
-            if(instData)
-            {
-               FieldTypeEx fType { integer, isDateTime = true };
-               DateTime * dt = (DateTime *)instData;
-               DateTime dateTime = *dt;
-               value.i = (int64)(SecSince1970)dateTime;
-               value.type = fType;
-            }
-         }
          expType = c;
       }
       else if(computeType == runtime)
@@ -1457,11 +1446,21 @@ public:
 
          // TODO: Avoid constantly re-creating if constant?
          instData = createGenericInstance(this, evaluator, &flags);
+
          if(expType && instData && expType.type == normalClass)
          {
             ((Instance)instData)._refCount++;
          }
-         value = { { blob }, b = instData };
+         if((expType && expType == class(DateTime)) && instData && expType.type == structClass)
+         {
+            //FieldTypeEx fType { integer, isDateTime = true };
+            DateTime dt = *(DateTime *)instData;
+            //DateTime dateTime = *dt;
+            value = { { integer, isDateTime = true }, i = (int64)(SecSince1970)dt };
+            //value.type = fType;
+         }
+         if(!expType || expType != class(DateTime))
+            value = { { blob }, b = instData };
          if(!flags)
             flags.resolved = true;
       }
