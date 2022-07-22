@@ -757,6 +757,8 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                {
                   FieldValue val { };
                   ExpFlags flag = exp.compute(val, evaluator, runtime, stylesClass);
+                  if(stylesClass && stylesClass == class(DateTime) && val.type.type == text)
+                     convertFieldValue(val, { integer, isDateTime = true }, val);
 
                   if(mInit.dataMember && mInit.dataMember.isProperty)
                   {
