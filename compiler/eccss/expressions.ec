@@ -242,8 +242,16 @@ public CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
    }
    else if(e._class == class(CMSSExpInstance))
    {
-      Class c = e.destType;   // NOTE: At this point, expType should be set but is currently null?
+      Class c = e.expType ? e.expType : e.destType;   // NOTE: At this point, expType should be set but is currently null?
       if(c && c.type == bitClass)
+      {
+         CMSSExpression ne = CMSSExpConstant { constant = val };
+         ne.destType = e.destType;
+         ne.expType = e.expType;
+         delete e;
+         return ne;
+      }
+      else if(c && c == class(DateTime) && val.type.isDateTime)
       {
          CMSSExpression ne = CMSSExpConstant { constant = val };
          ne.destType = e.destType;
@@ -440,7 +448,7 @@ public:
       else if(type && expType && (expType != class(int64) && expType != class(uint64)) && strcmp(type.dataTypeString, expType.dataTypeString))
          type = null;
 
-      if(type)
+      if(type && !constant.type.isDateTime) // Review this type check logic
       {
          const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *) = type._vTbl[__ecereVMethodID_class_OnGetString];
          char tempString[1024];
