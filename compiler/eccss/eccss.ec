@@ -328,7 +328,7 @@ public struct ECCSSEvaluator
                   value.type = { type = text, mustFree = true };
                   value.s = CopyString(args[0].s);
                   if(fnIndex == strlwr)
-                     strupr(value.s);
+                     strlwr(value.s);
                   else
                      strupr(value.s);
                }
