@@ -429,6 +429,7 @@ public class CMSSLexer
                         {
                            case '=': type = smallerEqual, pos.pos++, pos.col++; break;
                            case '>': type = notEqual, pos.pos++, pos.col++; break;
+                           case '<': type = lShift, pos.pos++, pos.col++; break;
                            default: type = smaller;
                         }
                         break;
@@ -436,6 +437,7 @@ public class CMSSLexer
                         switch(input[pos.pos+1])
                         {
                            case '=': type = greaterEqual, pos.pos++, pos.col++; break;
+                           case '>': type = rShift, pos.pos++, pos.col++; break;
                            default: type = greater;
                         }
                         break;
