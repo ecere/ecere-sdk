@@ -121,15 +121,15 @@ static CMSSTokenType opPrec[][8] =
    { '*', '/', intDivide, '%' },
    { '+', '-' },
    { in },
+   { lShift, rShift },
    { '<', '>', smallerEqual, greaterEqual },
    { equal, notEqual, stringStartsWith, stringNotStartsW, stringEndsWith, stringNotEndsW, stringContains, stringNotContains },
-   { and },
-   { or },
    { bitAnd },
    { bitOr },
-   { bitXor },
    { bitNot },
-   { lShift, rShift }
+   { bitXor },
+   { and },
+   { or }
 };
 
 static define numPrec = sizeof(opPrec) / sizeof(opPrec[0]);
@@ -847,6 +847,8 @@ public:
                   case bitAnd:               tbl->BitAnd    (value, val1, val2); break;
                   case bitOr:                tbl->BitOr     (value, val1, val2); break;
                   case bitXor:               tbl->BitXor    (value, val1, val2); break;
+                  case lShift:               tbl->LShift    (value, val1, val2); break;
+                  case rShift:               tbl->RShift    (value, val1, val2); break;
                }
                flags.resolved = value.type.type != nil;
             }
@@ -2809,7 +2811,7 @@ static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldV
 static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub);
+   result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub) != 0;
    result.type = { type = integer };
    return true;
 }
@@ -2817,7 +2819,7 @@ static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldV
 static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s);
+   result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s) != 0;
    result.type = { type = integer };
    return true;
 }
