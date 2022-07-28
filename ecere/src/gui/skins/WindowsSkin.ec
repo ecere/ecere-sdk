@@ -666,7 +666,10 @@ public class WindowsSkin_Button : Button
          {
             if(!scaleBitmap || !buttonBitmap)
             {
-               ColorKey keys[2] = { { silver, 0.0f }, { white, 1.0f } };
+               ColorKey keys[2] = {
+                  { ColorAlpha { (byte)(opacity * 255), silver }, 0.0f },
+                  { ColorAlpha { (byte)(opacity * 255), white }, 1.0f }
+               };
                surface.Gradient(keys, sizeof(keys) / sizeof(ColorKey), 1, vertical, 0, 0, clientSize.w-1, clientSize.h-1);
             }
          }
