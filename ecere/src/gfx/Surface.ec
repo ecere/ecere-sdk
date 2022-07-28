@@ -486,21 +486,25 @@ public:
             {
                float scale = ease((percent - key->percent) / (nextKey->percent - key->percent),
                   smoothness, smoothness);
+               int ca = key->color.a;
                int cr = key->color.color.r;
                int cg = key->color.color.g;
                int cb = key->color.color.b;
+               int na = nextKey->color.a;
                int nr = nextKey->color.color.r;
                int ng = nextKey->color.color.g;
                int nb = nextKey->color.color.b;
+               int a = (int)(ca + (na - ca) * scale);
                int r = (int)(cr + (nr - cr) * scale);
                int g = (int)(cg + (ng - cg) * scale);
                int b = (int)(cb + (nb - cb) * scale);
 
+               a = Max(Min(a, 255),0);
                r = Max(Min(r, 255),0);
                g = Max(Min(g, 255),0);
                b = Max(Min(b, 255),0);
 
-               newColor = Color { (byte)r, (byte)g, (byte)b };
+               newColor = { (byte)a, { (byte)r, (byte)g, (byte)b } };
             }
             else
                newColor = key ? key->color : 0;
