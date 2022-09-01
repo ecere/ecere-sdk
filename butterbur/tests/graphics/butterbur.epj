@@ -191,7 +191,8 @@
       {
          "Folder" : "extras",
          "Files" : [
-            "../../../extras/stringTools.ec"
+            "$(ECERE_SDK_SRC)/extras/stringTools.ec",
+            "$(ECERE_SDK_SRC)/extras/iso8601.ec"
          ]
       },
       "butterbur.ec"

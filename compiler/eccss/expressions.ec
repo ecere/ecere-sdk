@@ -6,7 +6,6 @@ public import "iso8601"
 public import "lexing"
 public import "astNode"
 public import "eccss"
-public import "iso8601"
 
 default:
 extern int __ecereVMethodID_class_OnGetDataFromString;
