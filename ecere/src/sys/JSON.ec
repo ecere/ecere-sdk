@@ -87,15 +87,7 @@ OptionsMap defaultJsonOptions{[
          boolUseOGDFS = true,
          nullUseOGDFS = true,
          stringUseOGDFS = true,
-         strictOGDFS = true
-      }
-   },
-   {
-      "FlexyField" , {
-         numbersUseOGDFS = true,
-         boolUseOGDFS = true,
-         nullUseOGDFS = true,
-         stringUseOGDFS = true,
+         strictOGDFS = true,
          arrayUseOGDFS = true,
          objectUseOGDFS = true
       }
@@ -2074,7 +2066,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
       Class arrayType = (type = map._class, type.templateArgs[0].dataTypeClass);
       const String tArg = strchr(arrayType.name, '<');
       bool spacing = eCON || (tArg && (strchr(tArg + 1, '<') || strstr(tArg + 1, "GeometryData") || strstr(tArg + 1, "UMSFieldValue") ||
-            strstr(tArg + 1, "FlexyField")));
+            strstr(tArg + 1, "FieldValue")));
       MapIterator it { map = (void*)map };
       Class mapNodeClass = map._class.templateArgs[0].dataTypeClass;
       bool jsonDicMap = false;
@@ -2092,7 +2084,7 @@ static bool WriteMap(File f, Class type, Map map, int indent, bool eCON, Map<Str
                   strstr(mapDataClass.name, "MapboxGLSourceData") ||
                   strstr(mapDataClass.name, "ProcessingInput") ||
                   strstr(mapDataClass.name, "ProcessingOutput") ||
-                  strstr(mapDataClass.name, "FlexyField") ||
+                  strstr(mapDataClass.name, "FieldValue") ||
                   strstr(mapDataClass.name, "JSONSchema")
                   )*/
                );
@@ -2491,7 +2483,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                      (!strcmp(mapKeyClass.name, "String") && !strcmp(mapDataClass.name, "String")) ||
                      strstr(mapDataClass.name, "Array<eda::FieldValue>") ||
                      strstr(mapDataClass.name, "MapboxGLSourceData") ||
-                     strstr(mapDataClass.name, "FlexyField") ||
+                     strstr(mapDataClass.name, "FieldValue") ||
                      strstr(mapDataClass.name, "ProcessingInput") ||
                      strstr(mapDataClass.name, "ProcessingOutput") ||
                      strstr(mapDataClass.name, "JSONSchema")
