@@ -17,8 +17,7 @@ public enum FieldType
    // Note that the new values are not compatible with SQLiteType objects.
    array   = 6, // a points to an Array<FieldValue> object
    map     = 7, // m points to a Map<String, FieldValue> object
-   textObj = 8  // s is text representing some object
-                // (only set up automatically in FlexyField::OnGetDataFromString())
+   textObj = 8  // s is text representing some object (manually set up)
 };
 
 public enum FieldValueFormat
@@ -37,15 +36,6 @@ public:
    bool isUnsigned:1;
    bool isDateTime:1;
 };
-
-class MapGetHelper {
-   // Little helper class to read a Map object from string in
-   // FieldValue::OnGetDataFromString.
-public:
-   property Map<String, FieldValue> M {get{return M;} set{M = value;}};
-private:
-   Map<String, FieldValue> M ;
-}
 
 public struct FieldValue
 {
@@ -290,20 +280,12 @@ public struct FieldValue
       }
       else if(string[0] == '{')
       {
-         MapGetHelper tempMap = null;
-         String working = new char[strlen(string)+9];
-         sprintf(working, "{ M = %s }", string);
-
-         result = getArrayOrMap(working, class(MapGetHelper), (void*)&tempMap);
-         delete working;
-         if(result)
-         {
-            m = tempMap.M;
-            type = { map, mustFree = true };
-            tempMap.M = null;
-         }
-         delete tempMap;
-         result = true;
+         Map<String, FieldValue> tempMap = null;
+         result = getArrayOrMap(string, class(Map<String, FieldValue>), (void*)&tempMap);
+         if(!result)
+            delete tempMap;
+         m = tempMap;
+         type = { map, mustFree = true };
       }
       else if(string[0] == '[')
       {
@@ -404,7 +386,9 @@ public struct FieldValue
    {
       bool result = false;
       TempFile tmp {buffer = (byte *)string, size = strlen(string)};
-      ECONParser parser {tmp};
+      // In ECON, mode JSON-style dictionaries do not currently parse as a Map...
+      JSONParser parser = string[0] == '{' ? JSONParser { } : ECONParser { };
+      parser.f = tmp;
       result = parser.GetObject(destClass, destination) == success;
       delete parser;
       // It is the caller's responsibility to delete or keep
