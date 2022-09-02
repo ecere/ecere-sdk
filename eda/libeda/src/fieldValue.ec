@@ -187,13 +187,15 @@ public struct FieldValue
             case map:
             {
                Map<String, FieldValue> mt {};
-               MapIterator<String, FieldValue> iter {map = other.m};
-               for (iter.Next(); iter.pointer; iter.Next())
+               MapIterator<String, FieldValue> sIt { map = other.m };
+               MapIterator<String, FieldValue> dIt { map = mt };
+               while(sIt.Next())
                {
-                  const String key = iter.key;
-                  FieldValue val = iter.value;
-                  mt[key] = {};
-                  mt[key].OnCopy(val);
+                  const String key = sIt.key;
+                  FieldValue * sVal = (FieldValue *)sIt.GetData(), * dVal;
+                  dIt.Index(key, true);
+                  dVal = (FieldValue *)dIt.GetData();
+                  dVal->OnCopy(sVal);
                }
                m = mt;
                break;
