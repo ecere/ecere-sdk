@@ -414,22 +414,3 @@ public struct FieldValue
       return result;
    }
 };
-
-public struct FlexyField : FieldValue
-{
-   bool OnGetDataFromString(const char * string)
-   {
-      bool result = FieldValue::OnGetDataFromString(string);
-
-      // NOTE: FlexyField will never fail parsing...
-      if(!result)
-      {
-         // If rest points to the start of string,
-         // this was not a number, so it is a string-ish blob.
-         type = { textObj, mustFree = true };
-         b = CopyString(string);
-         result = true;
-      }
-      return result;
-   }
-};
