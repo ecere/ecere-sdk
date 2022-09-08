@@ -4,6 +4,8 @@ public enum CMSSTokenType
 {
    // Core Tokens
    none = 9999,
+   syntaxError = 3000,
+   lexingError = 2000,
    identifier = 1000,
    constant,
    stringLiteral,
@@ -519,7 +521,12 @@ public class CMSSLexer
                            lexingState = identifier;
                         }
                         else
+                        {
+                           type = lexingError;
+#ifdef _DEBUG
                            PrintLn("Invalid character: ", ch, " at line: ", pos.line, ", col: ", pos.col);
+#endif
+                        }
                         break;
                   }
                   break;

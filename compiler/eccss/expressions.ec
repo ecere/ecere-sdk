@@ -326,7 +326,12 @@ public:
 
    CMSSExpression ::parse(CMSSLexer lexer)
    {
-      return CMSSExpConditional::parse(lexer);
+      CMSSExpression e = CMSSExpConditional::parse(lexer);
+      if(lexer.type == lexingError ||
+         lexer.type == syntaxError ||
+         (lexer.nextToken && (lexer.nextToken.type == lexingError || lexer.nextToken.type == syntaxError)))
+         delete e;
+      return e;
    }
 }
 
@@ -369,7 +374,10 @@ static CMSSExpression parseSimplePrimaryExpression(CMSSLexer lexer)
    else if(lexer.nextToken.type == '[')
       return CMSSExpArray::parse(lexer);
    else
+   {
+      lexer.type = syntaxError;
       return null;
+   }
 }
 
 static CMSSExpression parsePrimaryExpression(CMSSLexer lexer)
