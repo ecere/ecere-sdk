@@ -496,15 +496,32 @@ public:
 
    CMSSStyleSheet ::loadFile(File f)
    {
+      bool result = true;
       StylingRuleBlockList list = null;
       if(f)
       {
          CMSSLexer lexer { };
          lexer.initFile(f);
          list = StylingRuleBlockList::parse(lexer);
+         if(lexer.type == lexingError ||
+            lexer.type == syntaxError ||
+            (lexer.nextToken && (lexer.nextToken.type != endOfInput)))
+         {
+#ifdef _DEBUG
+            if(lexer.type == lexingError)
+               PrintLn("ECCSS Lexing Error at line ", lexer.pos.line, ", column ", lexer.pos.col);
+            else
+               PrintLn("ECCSS Syntax Error: Unexpected token ", lexer.nextToken.type,
+                  lexer.nextToken.text ? lexer.nextToken.text : "",
+                  " at line ", lexer.pos.line, ", column ", lexer.pos.col);
+#endif
+            delete list;
+            result = false;
+         }
+
          delete lexer;
       }
-      return CMSSStyleSheet { list = list ? list : { } };
+      return result ? CMSSStyleSheet { list = list ? list : { } } : null;
    }
 
    CMSSStyleSheet ::load(const String fileName)
