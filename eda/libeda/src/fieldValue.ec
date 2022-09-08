@@ -174,13 +174,11 @@ public struct FieldValue
             case text: case textObj: s = CopyString(other.s); break;
             case array:
             {
-               Array<FieldValue> at {};
-               int n;
-               for ( n=0; n< a.count; n++ )
-               {
-                  at.Add({});
-                  at[n].OnCopy(a[n]);
-               }
+               int count = a.count, i;
+               Array<FieldValue> at { size = count };
+
+               for(i = 0; i < count; i++)
+                  at[i].OnCopy(a[i]);
                a = at;
                break;
             }
