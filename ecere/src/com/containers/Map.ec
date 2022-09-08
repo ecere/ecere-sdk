@@ -271,7 +271,7 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    {
       IteratorPointer i;
       RemoveAll();
-      if(!eClass_IsDerived(source._class, class(Map)))
+      // Don't we want to allow Copying from a map as well? if(!eClass_IsDerived(source._class, class(Map)))
       {
          for(i = source.GetFirst(); i; i = source.GetNext(i))
          {
