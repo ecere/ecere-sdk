@@ -289,26 +289,35 @@ void MapRedraw(TileMap * map, Surface surface, int vx, int vy, int vw, int vh)
    surface.SetForeground(white);
    for(x=0; x<vw; x++)
       for(y=0; y<vh; y++)
+      {
+         uint tile = TILE(x+vx,y+vy,map->maxDim);
          surface.Blit(
-            map->tileImage[map->frames[TILE(x+vx,y+vy,map->maxDim)]],
+            map->tileImage[map->frames[tile]],
             x*map->tileW,y*map->tileH,0,0,map->tileW,map->tileH);
+      }
 
    //BUILDINGS
-   for(y = vy; y < vy + vh; y++)
-      for(x = vx; x < vx + vw; x++)
-         if((unit=map->spaces[0][TILE(x,y,map->dim[0])]))
-            if((unit->pos.x == x || x == vx) && (unit->pos.y == y || y == vy))
-               UnitDisplay(map, surface, unit, vx, vy);
+   if(map->spaces[0])
+   {
+      for(y = vy; y < vy + vh; y++)
+         for(x = vx; x < vx + vw; x++)
+            if((unit=map->spaces[0][TILE(x,y,map->dim[0])]))
+               if((unit->pos.x == x || x == vx) && (unit->pos.y == y || y == vy))
+                  UnitDisplay(map, surface, unit, vx, vy);
+   }
 
    //UNITS
    for(s=1; s<map->numLayers; s++)
-   for(y = vy*map->dim[s].y/map->maxDim.y-2; y < vy*map->dim[s].y/map->maxDim.y-2 + vh*map->dim[s].y/map->maxDim.y+4; y++)
-      for(x = vx*map->dim[s].x/map->maxDim.x-2; x < vx*map->dim[s].x/map->maxDim.x-2 + vw*map->dim[s].x/map->maxDim.x+4; x++)
+      if(map->spaces[s])
       {
-         if(x>=0 && y>=0 && x<map->dim[s].x && y<map->dim[s].y)
-            if((unit=map->spaces[s][TILE(x,y,map->dim[s])]))
-               if(unit->pos.x == x && unit->pos.y == y)
-                  UnitDisplay(map, surface, unit, vx, vy);
+         for(y = vy*map->dim[s].y/map->maxDim.y-2; y < vy*map->dim[s].y/map->maxDim.y-2 + vh*map->dim[s].y/map->maxDim.y+4; y++)
+            for(x = vx*map->dim[s].x/map->maxDim.x-2; x < vx*map->dim[s].x/map->maxDim.x-2 + vw*map->dim[s].x/map->maxDim.x+4; x++)
+            {
+               if(x>=0 && y>=0 && x<map->dim[s].x && y<map->dim[s].y)
+                  if((unit=map->spaces[s][TILE(x,y,map->dim[s])]))
+                     if(unit->pos.x == x && unit->pos.y == y)
+                        UnitDisplay(map, surface, unit, vx, vy);
+            }
       }
 }
 
@@ -476,7 +485,7 @@ bool UnitGoTo(TileMap * map, TileUnit * unit, Point dest)
 void UnitUpdate(TileMap * map, TileUnit *unit)
 {
    Sequence *seq = unit->sequence;
-   if(seq)
+   //if(seq)
    {
       Point next;
       int xd,yd;
@@ -492,12 +501,12 @@ void UnitUpdate(TileMap * map, TileUnit *unit)
                 [TILENUM(unit->path[unit->pathPos],map->dim[unit->space])])
             {
                unit->event = Standing;
-               if(unit->tick<seq->frames[unit->event][unit->seqPos].wait)
+               if(unit->tick< (seq ? seq->frames[unit->event][unit->seqPos].wait : 1))
                   return;
                unit->tick=0;
 
                unit->seqPos++;
-               if(unit->seqPos>=seq->numFrames[unit->event])
+               if(unit->seqPos>= (seq ? seq->numFrames[unit->event] : 1))
                   unit->seqPos=0;
 
                if(!unit->entering)
@@ -526,10 +535,10 @@ void UnitUpdate(TileMap * map, TileUnit *unit)
          }
 
          unit->event = Moving;
-         if(unit->tick<seq->frames[unit->event][unit->seqPos].wait) return;
+         if(unit->tick< (seq ? seq->frames[unit->event][unit->seqPos].wait : 1)) return;
          unit->tick=0;
 
-         unit->displaced+=seq->frames[unit->event][unit->seqPos].walk;
+         unit->displaced+= (seq ? seq->frames[unit->event][unit->seqPos].walk : 1);
          next=unit->path[unit->pathPos];
          xd=Sgn(next.x-unit->pos.x);
          yd=Sgn(next.y-unit->pos.y);
@@ -564,14 +573,14 @@ void UnitUpdate(TileMap * map, TileUnit *unit)
                   UnitSurround(map, unit,target);
             }
          }
-         if(unit->tick<seq->frames[unit->event][unit->seqPos].wait) return;
+         if(unit->tick< (seq ? seq->frames[unit->event][unit->seqPos].wait : 1)) return;
          unit->tick=0;
          unit->retries=0;
       }
       if(unit->space)
       {
          unit->seqPos++;
-         if(unit->seqPos>=seq->numFrames[unit->event])
+         if(unit->seqPos>= (seq ? seq->numFrames[unit->event] : 1))
             unit->seqPos=0;
       }
    }
@@ -723,13 +732,13 @@ void UnitDisplay(TileMap * map, Surface surface, TileUnit * unit, int viewX, int
       exact = Point{exact.x-viewX*map->tileW, exact.y-viewY*map->tileH};
 
       if(!unit->space)
-      {
-         unit->sprite.DisplayFrame(surface,unit->seqPos,exact.x,exact.y,true,unit->filter);
+      {                                                                 // Why was this true?
+         unit->sprite.DisplayFrame(surface,unit->seqPos,exact.x,exact.y,false,unit->filter);
       }
       else
       {
          int frame;
-         if(unit->sequence->numFrames[unit->event])
+         if(unit->sequence && unit->sequence->numFrames[unit->event])
             frame=unit->sequence->frames[unit->event][unit->seqPos].frame;
          else
             frame=0;
