@@ -39,15 +39,25 @@ class Sprite
    bool Load(const char *bmpname, const char *sizefile, bool trans, bool usePaletteShades, ColorAlpha * palette, DisplaySystem displaySystem)
    {
       bool result = false;
-      File f = FileOpen(sizefile, read);
-      if(f)
+      File f = sizefile ? FileOpen(sizefile, read) : null;
+      if(f || !sizefile)
       {
          Bitmap bmpFrames {};
          if(bmpFrames.Load(bmpname, null, null))
          {
-            f.Getc((char *)&numFrames);
-            f.Read(&maxWidth,  sizeof(uint16),1);
-            f.Read(&maxHeight, sizeof(uint16),1);
+            bmpFrames.Convert(null, pixelFormat888, null);
+            if(f)
+            {
+               f.Getc((char *)&numFrames);
+               f.Read(&maxWidth,  sizeof(uint16),1);
+               f.Read(&maxHeight, sizeof(uint16),1);
+            }
+            else
+            {
+               maxWidth = bmpFrames.width;
+               maxHeight = maxWidth;
+               numFrames = bmpFrames.height / maxHeight;
+            }
             frames = new0 SpriteFrame[numFrames];
             if(frames)
             {
@@ -57,11 +67,20 @@ class Sprite
                for(c=0; c<numFrames; c++)
                {
                   byte width,height;
-                  f.Getc((char *)&width);
-                  f.Getc((char *)&height);
-                  f.Getc((char *)&frames[c].xDis);
-                  f.Getc((char *)&frames[c].yDis);
-
+                  if(f)
+                  {
+                     f.Getc((char *)&width);
+                     f.Getc((char *)&height);
+                     f.Getc((char *)&frames[c].xDis);
+                     f.Getc((char *)&frames[c].yDis);
+                  }
+                  else
+                  {
+                     width = maxWidth;
+                     height = maxHeight;
+                     frames[c].xDis = 0;
+                     frames[c].yDis = 0;
+                  }
                   frames[c].bitmap = Bitmap {};
                   if(frames[c].bitmap.Allocate(null, width,height,0,bmpFrames.pixelFormat, false))
                   {
