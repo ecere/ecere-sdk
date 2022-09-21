@@ -8758,7 +8758,22 @@ public:
    property bool noCycle
    {
       property_category $"Behavior"
-      set { style.noCycle = value; }
+      set
+      {
+         if(value != style.noCycle)
+         {
+            if(value && cycle && parent)
+            {
+               parent.childrenCycle.Delete(cycle);
+               cycle = null;
+            }
+            style.noCycle = value;
+            if(!value && !cycle && parent)
+            {
+               parent.childrenCycle.Insert(null, cycle = OldLink { data = this });
+            }
+         }
+      }
       get { return style.noCycle; }
    };
 
