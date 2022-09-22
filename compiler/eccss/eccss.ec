@@ -496,15 +496,24 @@ public:
 
    CMSSStyleSheet ::loadFile(File f)
    {
+      bool result = true;
       StylingRuleBlockList list = null;
       if(f)
       {
          CMSSLexer lexer { };
          lexer.initFile(f);
          list = StylingRuleBlockList::parse(lexer);
+         if(lexer.type == lexingError ||
+            lexer.type == syntaxError ||
+            (lexer.nextToken && (lexer.nextToken.type == lexingError || lexer.nextToken.type == syntaxError)))
+         {
+            delete list;
+            result = false;
+         }
+
          delete lexer;
       }
-      return CMSSStyleSheet { list = list ? list : { } };
+      return result ? CMSSStyleSheet { list = list ? list : { } } : null;
    }
 
    CMSSStyleSheet ::load(const String fileName)

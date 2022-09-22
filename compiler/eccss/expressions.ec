@@ -375,6 +375,12 @@ static CMSSExpression parseSimplePrimaryExpression(CMSSLexer lexer)
       return CMSSExpArray::parse(lexer);
    else
    {
+#ifdef _DEBUG
+      if(lexer.nextToken.type != syntaxError)
+         PrintLn("ECCSS Syntax Error: Unexpected token ", lexer.nextToken.type,
+            lexer.nextToken.text ? lexer.nextToken.text : "",
+            " at line ", lexer.pos.line, ", column ", lexer.pos.col);
+#endif
       lexer.type = syntaxError;
       return null;
    }
