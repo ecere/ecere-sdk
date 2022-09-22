@@ -338,7 +338,7 @@ class LWFontManager
 
    LWFMFont addFont(const String path, int glyphPaddingWidth )
    {
-      fmFont * font = fmAddFont(fm, path, glyphPaddingWidth);
+      fmFont * font = fm ? fmAddFont(fm, path, glyphPaddingWidth) : null   ;
       if(font)
          return LWFMFont { fm = this, font = font };
       return null;
@@ -445,7 +445,8 @@ class LWFontManager
 
    void setState(LWFMFont font, float size, LWFMTextAlignment alignment, int processIndex, int paddingWidth)
    {
-      fmSetState(fm, font.font, (int)size, alignment, processIndex, paddingWidth);
+      if(fm)
+         fmSetState(fm, font.font, (int)size, alignment, processIndex, paddingWidth);
    }
 
    void setColor(ColorAlpha color)
@@ -473,7 +474,10 @@ class LWFontManager
    void getExtent(float x, float y, const String text, int length, Box box)
    {
       int bounds[4];
-      fmGetTextBounds(fm, (int)x, (int)y, text, 0, length, bounds);
+      if(fm)
+         fmGetTextBounds(fm, (int)x, (int)y, text, 0, length, bounds);
+      else
+         memset(bounds, 0, sizeof(bounds));
       box = { bounds[0], bounds[2], bounds[1], bounds[3] };
    }
 }
