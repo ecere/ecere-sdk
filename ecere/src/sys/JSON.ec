@@ -1461,7 +1461,7 @@ private:
                   {
                      if((ch == '=' || ch == ':') && warnings)
                      {
-                        if(string[0] != '@')
+                        if(string[0] != '@' && string[0] != '$')
                            PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                      }
                      else if(warnings)
@@ -1522,7 +1522,7 @@ private:
                               string[0] = (char)tolower(string[0]);
                               if(warnings)
                               {
-                                 if(string[0] != '@')
+                                 if(string[0] != '@' && string[0] != '$')
                                     PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                               }
                            }
@@ -1536,7 +1536,7 @@ private:
                {
                   if(warnings)
                   {
-                     if(string[0] != '@')
+                     if(string[0] != '@' && string[0] != '$')
                         PrintLn("Warning: member ", string, " not found in class ", (String)objectType.name, " (", line, ":", col, ")");
                   }
                }
