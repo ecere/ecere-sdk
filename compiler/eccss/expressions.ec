@@ -270,6 +270,20 @@ public CMSSExpression parseCMSSExpression(const String string)
       CMSSLexer lexer { };
       lexer.initString(string);
       e = CMSSExpression::parse(lexer);
+
+      if(lexer.type == lexingError || (lexer.nextToken && lexer.nextToken.type != endOfInput))
+      {
+#ifdef _DEBUG
+         if(lexer.type == lexingError)
+            PrintLn("ECCSS Lexing Error at line ", lexer.pos.line, ", column ", lexer.pos.col);
+         else
+            PrintLn("ECCSS Syntax Error: Unexpected token ", lexer.nextToken.type,
+               lexer.nextToken.text ? lexer.nextToken.text : "",
+               " at line ", lexer.pos.line, ", column ", lexer.pos.col);
+#endif
+         delete e;
+      }
+
       delete lexer;
    }
    return e;
@@ -375,13 +389,7 @@ static CMSSExpression parseSimplePrimaryExpression(CMSSLexer lexer)
       return CMSSExpArray::parse(lexer);
    else
    {
-#ifdef _DEBUG
-      if(lexer.nextToken.type != syntaxError)
-         PrintLn("ECCSS Syntax Error: Unexpected token ", lexer.nextToken.type,
-            lexer.nextToken.text ? lexer.nextToken.text : "",
-            " at line ", lexer.pos.line, ", column ", lexer.pos.col);
-#endif
-      lexer.type = syntaxError;
+      // This could happen e.g., at the end of a list with next token being ']'
       return null;
    }
 }

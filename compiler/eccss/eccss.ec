@@ -505,8 +505,16 @@ public:
          list = StylingRuleBlockList::parse(lexer);
          if(lexer.type == lexingError ||
             lexer.type == syntaxError ||
-            (lexer.nextToken && (lexer.nextToken.type == lexingError || lexer.nextToken.type == syntaxError)))
+            (lexer.nextToken && (lexer.nextToken.type != endOfInput)))
          {
+#ifdef _DEBUG
+            if(lexer.type == lexingError)
+               PrintLn("ECCSS Lexing Error at line ", lexer.pos.line, ", column ", lexer.pos.col);
+            else
+               PrintLn("ECCSS Syntax Error: Unexpected token ", lexer.nextToken.type,
+                  lexer.nextToken.text ? lexer.nextToken.text : "",
+                  " at line ", lexer.pos.line, ", column ", lexer.pos.col);
+#endif
             delete list;
             result = false;
          }
