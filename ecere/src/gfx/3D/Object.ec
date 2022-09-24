@@ -1100,7 +1100,11 @@ public:
       if(this)
       {
          char * newName = CopyString(name);
-         object.name = newName;
+#ifdef _DEBUG
+         if(object.name)
+            PrintLn("WARNING: Adding object with name.");
+#endif
+         *&object.name = newName;
          result = children.AddName(object);
          if(result)
             object.parent = this;
@@ -1114,6 +1118,10 @@ public:
    {
       if(this)
       {
+#ifdef _DEBUG
+         if(object.name)
+            PrintLn("WARNING: Adding object with name.");
+#endif
          children.Add(object);
          object.parent = this;
          object.flags.transform = true;
@@ -1893,7 +1901,11 @@ public:
    property Camera camera { get { return camera; } }; // Fix this with inheritance? camera inherit from Object?
    property Object firstChild { get { return children.first; } };
    property Object next { get { return next; } };
-   property const char * name { get { return name; } };
+   property const char * name
+   {
+      get { return name; }
+      set { if(!parent) { delete name; name = CopyString(value); } else PrintLn("ERROR: Setting name on object with parent;"); }
+   };
    property Matrix matrix { get { value = matrix; } };
    property Object cameraTarget { set { cameraTarget = value; } get { return cameraTarget; } };
    property OldList * tracks { /* set { tracks = value; } */ get { return &tracks; } };
