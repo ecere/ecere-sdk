@@ -1372,7 +1372,7 @@ static bool ReadLight(FileInfo * info, Object object)
          light->flags.spot = true;
 
          target = Object { };
-         target.name = CopyString(targetName);
+         *&target.name = CopyString(targetName);
          info->rootObject.children.AddName(target);
          target.parent = info->rootObject;
 
@@ -1473,7 +1473,7 @@ static bool ReadEditObject(FileInfo * info, char * name)
          if(!object)
          {
             object = Object { };
-            object.name = CopyString(name);
+            *&object.name = CopyString(name);
             info->rootObject.children.AddName(object);
             object.parent = info->rootObject;
          }
@@ -1492,7 +1492,7 @@ static bool ReadEditObject(FileInfo * info, char * name)
          if(!object)
          {
             object = Object { };
-            object.name = CopyString(name);
+            *&object.name = CopyString(name);
             info->rootObject.children.AddName(object);
             object.parent = info->rootObject;
          }
@@ -1527,7 +1527,7 @@ static bool ReadEditObject(FileInfo * info, char * name)
          if(!object)
          {
             object = Object { };
-            object.name = CopyString(name);
+            *&object.name = CopyString(name);
             info->rootObject.children.AddName(object);
 
             object.parent = info->rootObject;
@@ -1538,7 +1538,7 @@ static bool ReadEditObject(FileInfo * info, char * name)
          if(!target)
          {
             target = Object { };
-            target.name = CopyString(targetName);
+            *&target.name = CopyString(targetName);
             info->rootObject.children.AddName(target);
             target.parent = info->rootObject;
          }
@@ -1841,7 +1841,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
             if(!strcmp(block.name, "$$$DUMMY"))
             {
                object = Object { };
-               object.name = block.dummyName;
+               *&object.name = block.dummyName;
                info->rootObject.children.AddName(object);
                object.transform.scaling = { 1,1,1 };
             }
@@ -1927,7 +1927,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
             if(!strcmp(block.name, "$$$DUMMY"))
             {
                object = Object { };
-               object.name = block.dummyName;
+               *&object.name = block.dummyName;
                info->rootObject.children.AddName(object);
                object.transform.scaling = { 1, 1, 1 };
                object.flags.camera = true;
@@ -1996,7 +1996,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
             if(!strcmp(block.name, "$$$DUMMY"))
             {
                object = Object { };
-               object.name = block.dummyName;
+               *&object.name = block.dummyName;
                info->rootObject.children.AddName(object);
                object.transform.scaling = { 1,1,1 };
             }
@@ -2069,7 +2069,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
             if(!strcmp(block.name, "$$$DUMMY"))
             {
                object = Object { };
-               object.name = block.dummyName;
+               *&object.name = block.dummyName;
                info->rootObject.children.AddName(object);
                object.transform.scaling = { 1, 1, 1 };
                object.flags.light = true;
@@ -2138,7 +2138,7 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
             if(!strcmp(block.name, "$$$DUMMY"))
             {
                object = Object { };
-               object.name = block.dummyName;
+               *&object.name = block.dummyName;
                info->rootObject.children.AddName(object);
                object.transform.scaling = { 1,1,1 };
             }
