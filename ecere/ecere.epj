@@ -3263,7 +3263,15 @@
                               "IncludeDirs" : [
                                  "src/gfx/newFonts/cc"
                               ]
-                           }
+                           },
+                           "Configurations" : [
+                              {
+                                 "Name" : "MemoryGuard",
+                                 "Options" : {
+                                    "MemoryGuard" : false
+                                 }
+                              }
+                           ]
                         },
                         {
                            "FileName" : "HashTable.ec",
