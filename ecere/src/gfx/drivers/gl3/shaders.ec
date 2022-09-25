@@ -15,6 +15,10 @@ import "String"
 #define puts(x) Logf("%s\n", x)
 #endif
 
+#ifdef _DEBUG
+// #define DEBUG_SHADERS
+#endif
+
 namespace gfx::drivers;
 
 // Generic Shader
@@ -179,7 +183,7 @@ public:
          if(!fragmentShaderSource && fragmentShaderFile)
             loadShader(fragmentShaderFile, &fragmentShaderSource, &fsLen);
 
-#ifdef _DEBUG
+#ifdef DEBUG_SHADERS
          PrintLn("Compiling ", _class.name, " shader for state 0x", state, " (", (DefaultShaderBits)state, ")");
          printf("We've got OpenGL Version %s\n\n", (char *)glGetString(GL_VERSION));
          printf("We've got Shading Language Version %s\n\n", (char *)glGetString(GL_SHADING_LANGUAGE_VERSION));
@@ -216,7 +220,7 @@ public:
             glGetShaderiv(vShader, GL_COMPILE_STATUS, &vStatus);
             glGetShaderInfoLog(vShader, sizeof(compileLog), null, compileLog);
 
-#ifndef _DEBUG
+#ifndef DEBUG_SHADERS
             if(compileLog[0])
 #endif
             {
@@ -228,7 +232,7 @@ public:
             glCompileShader(fShader);
             glGetShaderiv(vShader, GL_COMPILE_STATUS, &fStatus);
             glGetShaderInfoLog(fShader, sizeof(compileLog), null, compileLog);
-#ifndef _DEBUG
+#ifndef DEBUG_SHADERS
             if(compileLog[0])
 #endif
             {
@@ -251,7 +255,7 @@ public:
                glLinkProgram(program);
                glGetProgramInfoLog(program, sizeof(compileLog), null, compileLog);
 
-   #ifndef _DEBUG
+   #ifndef DEBUG_SHADERS
                if(compileLog[0])
    #endif
                {
@@ -264,7 +268,7 @@ public:
 
                glValidateProgram(program);
 
-   #ifndef _DEBUG
+   #ifndef DEBUG_SHADERS
                if(compileLog[0])
    #endif
                {
@@ -283,7 +287,7 @@ public:
                   shader.vertex = vShader;
                   shader.fragment = fShader;
 
-#ifdef _DEBUG
+#ifdef DEBUG_SHADERS
                   PrintLn("Successfully registered program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
 #endif
                }
@@ -293,7 +297,7 @@ public:
             else
                PrintLn("Failure to register program ", program, " for ", _class.name, " shader state 0x", state, " (", (DefaultShaderBits)state, ")");
          }
-   #if defined(_DEBUG) && defined(__WIN32__)
+   #if defined(DEBUG_SHADERS) && defined(__WIN32__)
          if(!shader)
             system("pause");
    #endif
