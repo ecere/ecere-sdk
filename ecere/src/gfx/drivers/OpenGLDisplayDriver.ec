@@ -224,6 +224,8 @@ static void APIENTRY openglCallbackFunction(GLenum source,
 {
    if(severity == GL_DEBUG_SEVERITY_NOTIFICATION)
       return;
+   if(type == GL_DEBUG_TYPE_PERFORMANCE && severity != GL_DEBUG_SEVERITY_HIGH)
+      return;
    PrintLn("---------------------opengl-callback-start------------");
    PrintLn("message: ", message);
    PrintLn("type: ");
