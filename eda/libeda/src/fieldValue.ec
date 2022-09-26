@@ -16,15 +16,22 @@ public enum FieldType
    // Add array and map to the enumeration of known field types.
    // Note that the new values are not compatible with SQLiteType objects.
    array   = 6, // a points to an Array<FieldValue> object
-   map     = 7, // m points to a Map<String, FieldValue> object
-   textObj = 8  // s is text representing some object (manually set up)
+   map     = 7  // m points to a Map<String, FieldValue> object
+
+   // NOTE: Currently limited to 7 non-zero values (3 bits) in FieldTypeEx
 };
 
 public enum FieldValueFormat
 {
-   // boolean allows treating a value as a boolean, writing it as either true or false
-   // each type is allowed to disregard this and use a default format instead
-   decimal, hex, octal, binary, exponential, boolean
+   decimal,       // for real
+   hex,           // for integer
+   octal,         // for integer
+   binary,        // for integer
+   exponential,   // for real
+   boolean,       // for integer
+   textObj        // for text (JSON/ECON object)
+
+   // NOTE: Currently limited to 8 values (3 bits) in FieldTypeEx
 };
 
 public class FieldTypeEx : FieldType
@@ -59,7 +66,6 @@ public struct FieldValue
       {
          case integer:  return compareInt(other);
          case real:     return compareReal(other);
-         case textObj:
          case text:     return compareText(other);
          case blob:     return Sgn((uintptr)this.b - (uintptr)other.b); // NOTE: Currently no way to compare content of blob...
          case array:    return a.OnCompare(other.a);
@@ -104,7 +110,7 @@ public struct FieldValue
          case real:
             formatFloat(temp, false);
             return CopyString(temp);
-         case text: case textObj:
+         case text:
             return CopyString(s);
          case array:
          case map:
@@ -126,7 +132,6 @@ public struct FieldValue
       {
          case integer: f.Put(i); break;
          case real:    f.Put(r); break;
-         case textObj:
          case text:    f.Put(s); break;
          case array:   a.OnSerialize(f); break;
          case map:     m.OnSerialize(f); break;
@@ -144,7 +149,6 @@ public struct FieldValue
       {
          case integer: f.Get(i); break;
          case real:    f.Get(r); break;
-         case textObj:
          case text:    f.Get(s); break;
          case array:
             {
@@ -171,7 +175,7 @@ public struct FieldValue
       {
          switch(type.type)
          {
-            case text: case textObj: s = CopyString(other.s); break;
+            case text: s = CopyString(other.s); break;
             case array:
             {
                int count = a.count, i;
@@ -208,7 +212,7 @@ public struct FieldValue
       {
          switch(type.type)
          {
-            case text: case textObj: delete s; break;
+            case text: delete s; break;
             case blob: delete b; break;
             case array:
                if(a)
@@ -239,10 +243,11 @@ public struct FieldValue
          case real: formatFloat(tempString, true); break;
          case array: formatArray(tempString, fieldData, onType); break;
          case map: formatMap(tempString, fieldData, onType); break;
-         case textObj: return s;
          case text:
          {
-            if(onType && *onType != none)
+            if(type.format == textObj)
+               return s;
+            else if(onType && *onType != none)
             {
                // NOTE: This block was originally not included in FlexyField
                TempFile f { };
