@@ -756,7 +756,16 @@ public:
    {
       CMSSExpression exp = (prec > 0) ? parse(prec-1, lexer) : parseUnaryExpression(lexer);
       while(isPrecedence(lexer.peekToken().type, prec))
-         exp = CMSSExpOperation { exp1 = exp, op = lexer.readToken().type, exp2 = (prec > 0) ? parse(prec-1, lexer) : parseUnaryExpression(lexer) };
+      {
+         CMSSTokenType op = lexer.readToken().type;
+         if(exp || op.isUnaryOperator)
+         {
+            exp = CMSSExpOperation { exp1 = exp, op = op, exp2 = (prec > 0) ? parse(prec-1, lexer) : parseUnaryExpression(lexer) };
+         }
+         else
+            // Syntax error: binary operator with only right operand
+            delete exp;
+      }
       return exp;
    }
 
