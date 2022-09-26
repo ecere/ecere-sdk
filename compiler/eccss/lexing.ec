@@ -82,7 +82,7 @@ public enum CMSSTokenType
    {
       get
       {
-         return this == '&' || this == '*' || this == '+' || this == '-' || this == '~' || this == '!';
+         return this == '-' || this == '!' || this == bitNot;
       }
    }
 
