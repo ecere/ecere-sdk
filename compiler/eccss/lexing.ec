@@ -533,7 +533,17 @@ public class CMSSLexer
                }
             }
             if(advanceChar) pos.col++, pos.pos++;
-            if(!ch) break;
+            if(!ch)
+            {
+               if(lexingState == string)
+               {
+                  type = lexingError;
+#ifdef _DEBUG
+                  PrintLn("Unterminated string literal at line: ", pos.line, ", col: ", pos.col);
+#endif
+               }
+               break;
+            }
          }
          this.pos = pos;
          this.type = type;
