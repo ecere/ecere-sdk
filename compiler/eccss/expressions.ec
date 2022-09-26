@@ -919,12 +919,22 @@ public:
          flags = flags2;
          if(flags2.resolved)
          {
-            switch(op)
+            if(val2.type.type != nil)
             {
-               case '-':    tbl->Neg(value, val2);    break;
-               case '!':    tbl->Not(value, val2);    break;
-               case bitNot: tbl->BitNot(value, val2); break;
+               switch(op)
+               {
+                  case '-':    tbl->Neg(value, val2);    break;
+                  case '!':    tbl->Not(value, val2);    break;
+                  case bitNot: tbl->BitNot(value, val2); break;
+               }
             }
+            else if(op == not)
+            {
+               flags.resolved = true;
+               value = { type = { integer }, i = !falseNullComparisons };
+            }
+            else
+               flags.resolved = false;
          }
       }
       return flags;
