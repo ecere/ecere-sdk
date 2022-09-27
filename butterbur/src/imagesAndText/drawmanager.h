@@ -192,7 +192,7 @@ int dmInit( dmContext *dm, int flags );
 void dmSetFlushCallback( dmContext *dm, void (*flush)( void *flushcontext ), void *flushcontext );
 void dmEnd( dmContext *dm );
 
-void dmReady( dmContext *dm, int viewportwidth, int viewportheight );
+void dmReady( dmContext *dm, int viewportwidth, int viewportheight, int verticalFlip );
 
 void dmClearImage( dmImage *image );
 void dmDefineImage( dmImage *image, tmTexture *texture, int offsetx, int offsety, int sizex, int sizey, int blendflag, int programindex, int layerindex );

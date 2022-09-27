@@ -1266,7 +1266,7 @@ void dmEnd( dmContext *dm )
   /* TODO: Destroy the shaders! */
 }
 
-void dmReady( dmContext *dm, int viewportwidth, int viewportheight )
+void dmReady( dmContext *dm, int viewportWidth, int viewportHeight, int verticalFlip )
 {
   int mindex;
   float norminv;
@@ -1283,7 +1283,11 @@ void dmReady( dmContext *dm, int viewportwidth, int viewportheight )
 #endif // 0
 
   // Prepare rendering pass
-  dmMatrixOrtho( dm->matrix, 0.0, (float)viewportwidth, (float)viewportheight, 0.0, -1.0, 1.0 );
+  if(verticalFlip)
+    dmMatrixOrtho( dm->matrix, 0.0, (float)viewportWidth, 0.0, (float)viewportHeight, -1.0f, 1.0 );
+  else
+    dmMatrixOrtho( dm->matrix, 0.0, (float)viewportWidth, (float)viewportHeight, 0.0, -1.0, 1.0 );
+
   norminv = 1.0f / DM_VERTEX_NORMFACTOR;
   for( mindex = 0 ; mindex < 12 ; mindex += 4 )
   {
