@@ -487,6 +487,7 @@ public class LWDrawManagerFlags : uint32 { public: bool prehistoricOpenGL:1; }
 class LWDrawManager
 {
    void * dm;
+   bool verticalFlip;
 
    LWDrawManager() { dm = new0 dmContext[1]; }
    ~LWDrawManager() { delete dm; }
@@ -554,7 +555,7 @@ class LWDrawManager
 
    void ready( int viewportwidth, int viewportheight )
    {
-      dmReady(dm, viewportwidth, viewportheight);
+      dmReady(dm, viewportwidth, viewportheight, verticalFlip);
    }
 
    void flushImages( )
