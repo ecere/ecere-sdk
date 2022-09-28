@@ -74,7 +74,7 @@ public struct FieldValue
       return 0;
    }
 
-   static inline int compareText(FieldValue other)
+   /*static inline */int compareText(FieldValue other)
    {
       if(!s && other.s) return -1;
       if(s && !other.s) return 1;
@@ -82,14 +82,14 @@ public struct FieldValue
       return strcmp(s, other.s);
    }
 
-   static inline int compareInt(FieldValue other)
+   /*static inline */int compareInt(FieldValue other)
    {
       if(i < other.i) return -1;
       if(i > other.i) return 1;
       return 0;
    }
 
-   static inline int compareReal(FieldValue other)
+   /*static inline */int compareReal(FieldValue other)
    {
       if(r < other.r) return -1;
       if(r > other.r) return 1;
