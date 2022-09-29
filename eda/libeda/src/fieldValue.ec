@@ -23,7 +23,8 @@ public enum FieldType
 
 public enum FieldValueFormat
 {
-   decimal,       // for real
+   decimal = 0,   // for integer / real
+   unset = 0,     // default for text
    hex,           // for integer
    octal,         // for integer
    binary,        // for integer
