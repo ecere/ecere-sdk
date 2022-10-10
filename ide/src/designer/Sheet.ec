@@ -1645,19 +1645,23 @@ public:
 
             dataBox.background = Color { 90, 120, 150 };
             // dataBox.background = viewsBackground;
-            editData.font = { font.faceName, font.size, font.bold };
 
-            if(eClass_IsDerived(editData._class, class(DropBox)))
+            if(editData)
             {
-               DropBox db = (DropBox)editData;
-               db.selectionColor = colorScheme.sheetSelectionColor;
-               db.selectionText = colorScheme.viewsBackground;
-            }
-            else if(eClass_IsDerived(editData._class, class(EditBox)))
-            {
-               EditBox eb = (EditBox)editData;
-               eb.selectionColor = colorScheme.sheetSelectionColor;
-               eb.selectionText = colorScheme.viewsBackground;
+               editData.font = { font.faceName, font.size, font.bold };
+
+               if(eClass_IsDerived(editData._class, class(DropBox)))
+               {
+                  DropBox db = (DropBox)editData;
+                  db.selectionColor = colorScheme.sheetSelectionColor;
+                  db.selectionText = colorScheme.viewsBackground;
+               }
+               else if(eClass_IsDerived(editData._class, class(EditBox)))
+               {
+                  EditBox eb = (EditBox)editData;
+                  eb.selectionColor = colorScheme.sheetSelectionColor;
+                  eb.selectionText = colorScheme.viewsBackground;
+               }
             }
          }
       }
@@ -1767,7 +1771,8 @@ public:
             {
                Instance current = (Instance)((void *(*)(void *))(void *)prop.Get)(object);
                propObject = valueData.p = eInstance_New(dataType);
-               CopyInstanceData(dataType, propObject, current);
+               if(current)
+                  CopyInstanceData(dataType, propObject, current);
             }
          }
          else

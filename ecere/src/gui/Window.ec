@@ -10460,6 +10460,8 @@ class WindowControllerInterface : ControllableWindow
 
 public class WindowController<class V>
 {
+   class_no_expansion;
+
    void setWindow(Window value)
    {
       uint size = class(Window).vTblSize;
