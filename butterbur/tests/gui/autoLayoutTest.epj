@@ -170,7 +170,8 @@
       {
          "Folder" : "extras",
          "Files" : [
-            "../../../extras/stringTools.ec"
+            "../../../extras/stringTools.ec",
+            "../../../extras/iso8601.ec"
          ]
       },
       "test1.ec"
