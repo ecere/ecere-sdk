@@ -372,7 +372,15 @@ public struct FieldValue
    String formatArray(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       String temp = PrintObjectNotationString( a._class, a, *onType, 0, false, keepCase);
-      strcat(tempString, temp);
+      if(temp && strlen(temp) > 16000)
+      {
+#ifdef _DEBUG
+         PrintLn("WARNING: Very large array");
+#endif
+         strcpy(tempString, "[ \"unexpected large array\" ]");
+      }
+      else
+         strcpy(tempString, temp);
       delete temp;
 
       return tempString;
@@ -382,7 +390,15 @@ public struct FieldValue
    {
       // Depending on the object notation and number of elements:
       String temp = PrintObjectNotationString( m._class, m, *onType, 0, false, keepCase);
-      strcat(tempString, temp);
+      if(temp && strlen(temp) > 16000)
+      {
+#ifdef _DEBUG
+         PrintLn("WARNING: Very large object");
+#endif
+         strcpy(tempString, "{ \"unexpected\" : \"large object\" }");
+      }
+      else
+         strcpy(tempString, temp);
       delete temp;
 
       return tempString;
