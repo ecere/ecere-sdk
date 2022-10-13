@@ -2296,7 +2296,7 @@ public bool WriteONString(File f, const String s, bool eCON, int indent)
       {
          int c = 0;
          int b = 0;
-         char buffer[1024];
+         char buffer[1024];   // TODO: Improve on fixed size restriction
          const char * string = s;
          char ch;
          while(true)
@@ -2939,7 +2939,7 @@ public String PrintObjectNotationString(Class objectType, void * object, ObjectN
       {
          f.Putc('\0');
          if(indent>0)
-           result =  StringIndent((String)f.buffer, indent * jsonIndentWidth, indentFirst);
+            result =  StringIndent((String)f.buffer, indent * jsonIndentWidth, indentFirst);
          else
             result = (String)f.StealBuffer();
       }
