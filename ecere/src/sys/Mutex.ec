@@ -137,7 +137,6 @@ public:
          pthread_mutex_lock(&mutex);
 #endif
 #endif
-
 #endif
 
 //#ifdef _DEBUG
@@ -151,7 +150,6 @@ public:
    {
       if(this)
       {
-#if !defined(__EMSCRIPTEN__)
          /*
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Releasing Mutex %x\n", (int)GetCurrentThreadID(), this);
@@ -167,6 +165,8 @@ public:
             _owningThread = 0;
 //#endif
          }
+#if !defined(__EMSCRIPTEN__)
+
 #if defined(__WIN32__)
 #ifdef _DEBUG
          ReleaseMutex(mutex);
