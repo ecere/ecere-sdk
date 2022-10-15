@@ -1611,6 +1611,7 @@ private:
             EscapeForMake(modulePath, tempPath, false, true, false);
             sprintf(s, "%s%s%s%s", ts.a, useRes ? "$(RES)" : "", modulePath, ts.b);
             items.Add(CopyString(s));
+            count++;
          }
          else if(printType == sources)
          {
@@ -1623,6 +1624,7 @@ private:
                EscapeForMake(moduleName, name, false, true, false);
                sprintf(s, "%s%s%s%s%s", ts.a, modulePath, path[0] ? SEPS : "", moduleName, ts.b);
                items.Add(CopyString(s));
+               count++;
             }
          }
          else if(printType == eCsources)
@@ -1664,6 +1666,7 @@ private:
                collision = info ? info.IsExtensionColliding(extension) : false;
                sprintf(s, "%s$(OBJ)%s%s%s$(O)%s", ts.a, moduleName, collision ? "." : "", collision ? extension : "", ts.b);
                items.Add(CopyString(s));
+               count++;
             }
             else if(printType == noPrint && containsCXX &&
                   (!strcmpi(extension, "cpp") || !strcmpi(extension, "cc") || !strcmpi(extension, "cxx")))
