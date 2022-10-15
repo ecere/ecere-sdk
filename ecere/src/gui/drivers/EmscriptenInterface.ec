@@ -816,6 +816,9 @@ class EmscriptenInterface : Interface
       printf("BBB EmscriptenInterface::Initialize -- is it working?\n");
       emscripten_run_script("statusElement.innerHTML = 'this is a test'; statusElement.hidden = false;");
 #endif
+
+      if(guiApp.desktop)
+         emscripten_set_window_title(guiApp.desktop.caption);
       return true;
    }
 
