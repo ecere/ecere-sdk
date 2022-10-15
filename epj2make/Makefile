@@ -45,7 +45,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/epj2make$(E)
+TARGET = $(OBJ)epj2make$(OUT)
 
 _ECSOURCES = \
 	../ide/src/project/Project.ec \
