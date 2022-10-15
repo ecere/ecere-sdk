@@ -8,6 +8,11 @@ namespace com;
 #endif
 
 #if defined(__EMSCRIPTEN__)
+
+#ifdef _DEBUG
+// #define EMSCRIPTEN_DEBUG
+#endif
+
  #define DISABLE_MEMMGR
  #define _NOMUTEX
 #include <emscripten.h>
@@ -6808,7 +6813,7 @@ public dllexport Application __ecere_COM_Initialize(bool guiApp, int argc, char 
 {
    Application app;
 
-#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
+#ifdef EMSCRIPTEN_DEBUG
    emscripten_log(EM_LOG_CONSOLE, "__ecere_COM_Initialize\n");
 #endif
 

@@ -5,6 +5,7 @@ asm(".symver log,log@GLIBC_2.2.5");
 #if defined(__WIN32__) || defined(__unix__) || defined(__APPLE__)
 
 #ifdef _DEBUG
+// #define EMSCRIPTEN_DEBUG
 #define GLSTATS
 #endif
 
@@ -1144,7 +1145,7 @@ class OpenGLDisplayDriver : DisplayDriver
             attribs.majorVersion = 2;
             attribs.minorVersion = 0;
             oglSystem.maxTextureSize = 16384;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
             printf("emscripten_webgl_create_context\n");
 #endif
             oglSystem.glc = emscripten_webgl_create_context("canvas", &attribs);
@@ -1157,7 +1158,7 @@ class OpenGLDisplayDriver : DisplayDriver
                   double dw = 0, dh = 0;
                   emscripten_get_element_css_size(target, &dw, &dh);
                   w = (int)dw, h = (int)dh;
-            #ifdef _DEBUG
+            #ifdef EMSCRIPTEN_DEBUG
                   printf("CreateDisplaySystem\n");
                   printf("getElementCssSize --displaydriver-- %4dx%-4d\n", w, h);
             #endif

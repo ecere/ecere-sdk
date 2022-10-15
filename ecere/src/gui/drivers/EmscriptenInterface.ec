@@ -13,6 +13,10 @@ public import "ecere"
 
 #ifdef __EMSCRIPTEN__
 
+#ifdef _DEBUG
+// #define EMSCRIPTEN_DEBUG
+#endif
+
 #include <stdio.h>
 
 // source file line number printf (sflnprintf)
@@ -236,7 +240,7 @@ static EM_BOOL touch_callback(int eventType, const EmscriptenTouchEvent *e, void
 
 static EM_BOOL wheel_callback(int eventType, const EmscriptenWheelEvent *e, void *userData)
 {
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("wheel_callback\n");
 #endif
    Window window = guiApp.desktop;
@@ -268,7 +272,7 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
    Window window = guiApp.desktop;
    Key key = 0;
    bool result = 0;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("key_callback\n");
 #endif
    switch(e->keyCode)
@@ -402,7 +406,7 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
       case 11: key = keyPadSlash; break;
 
       default:
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("%s, key: \"%s\", code: \"%s\", location: %lu,%s%s%s%s repeat: %d, locale: \"%s\", char: \"%s\", charCode: %lu, keyCode: %lu, which: %lu\n",
                emscripten_event_type_to_string(eventType), e->key, e->code, e->location,
                e->ctrlKey ? " CTRL" : "", e->shiftKey ? " SHIFT" : "", e->altKey ? " ALT" : "", e->metaKey ? " META" : "",
@@ -492,7 +496,7 @@ EM_BOOL key_callback(int eventType, const EmscriptenKeyboardEvent *e, void *user
 
 EM_BOOL pointerlockchange_callback(int eventType, const EmscriptenPointerlockChangeEvent *e, void *userData)
 {
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("pointerlockchange_callback\n");
 #endif
    if(!e->isActive)
@@ -510,7 +514,7 @@ EM_BOOL pointerlockchange_callback(int eventType, const EmscriptenPointerlockCha
       guiApp.acquiredWindow = w;
       guiApp.acquiredWindow.acquiredInput = true;
    }
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
   printf("%s, isActive: %d, pointerlock element nodeName: \"%s\", id: \"%s\"\n",
     emscripten_event_type_to_string(eventType), e->isActive, e->nodeName, e->id);
 #endif
@@ -536,7 +540,7 @@ EM_BOOL fullscreenchange_callback(int eventType, const EmscriptenFullscreenChang
 
    int w = 0, h = 0;
    double dw = 0, dh = 0;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("fullscreenchange_callback\n");
 #endif
    isFullScreen = (bool)e->isFullscreen;
@@ -565,7 +569,7 @@ EM_BOOL deviceorientation_callback(int eventType, const EmscriptenDeviceOrientat
   double gamma;
   EM_BOOL absolute;
 */
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("%s, (%g, %g, %g)\n", emscripten_event_type_to_string(eventType), e->alpha, e->beta, e->gamma);
 #endif
    return 0;
@@ -585,7 +589,7 @@ EM_BOOL devicemotion_callback(int eventType, const EmscriptenDeviceMotionEvent *
   double rotationRateGamma;
   int supportedFields;
 */
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("%s, accel: (%g, %g, %g), accelInclGravity: (%g, %g, %g), rotationRate: (%g, %g, %g), supportedFields: %s %s %s\n",
    emscripten_event_type_to_string(eventType),
    e->accelerationX, e->accelerationY, e->accelerationZ,
@@ -604,7 +608,7 @@ EM_BOOL orientationchange_callback(int eventType, const EmscriptenOrientationCha
   int orientationIndex;
   int orientationAngle;
 */
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("%s, orientationAngle: %d, orientationIndex: %d\n", emscripten_event_type_to_string(eventType), e->orientationAngle, e->orientationIndex);
 #endif
    return 0;
@@ -616,7 +620,7 @@ EM_BOOL visibilitychange_callback(int eventType, const EmscriptenVisibilityChang
   EM_BOOL hidden;
   int visibilityState;
 */
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("%s, hidden: %d, visibilityState: %d\n", emscripten_event_type_to_string(eventType), e->hidden, e->visibilityState);
 #endif
    return 0;
@@ -624,7 +628,7 @@ EM_BOOL visibilitychange_callback(int eventType, const EmscriptenVisibilityChang
 
 EM_BOOL webglcontext_callback(int eventType, const void *reserved, void *userData)
 {
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("%s.\n", emscripten_event_type_to_string(eventType));
 #endif
    return 0;
@@ -693,7 +697,7 @@ static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void 
       {
          int w = 0, h = 0;
          double dw = 0, dh = 0;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("uievent/resize\n");
          printf("documentBodyClient %4dx%-4d\n", e->documentBodyClientWidth, e->documentBodyClientHeight);
          printf("windowInner        %4dx%-4d\n", e->windowInnerWidth, e->windowInnerHeight);
@@ -701,7 +705,7 @@ static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void 
 #endif
          emscripten_get_element_css_size(target, &dw, &dh);
       // w = (int)dw, h = (int)dh;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("getElementCssSize  --interface--  %4dx%-4d\n", w, h);
 #endif
          w = e->windowInnerWidth, h = e->windowInnerHeight;
@@ -713,13 +717,13 @@ static EM_BOOL uievent_callback(int eventType, const EmscriptenUiEvent *e, void 
                guiApp.desktop.display.Resize(w, h);
          }
          //PrintLn("EMSCRIPTEN_EVENT_RESIZE: ", w, " x ", h);
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("scroll             %4dx%-4d\n", e->scrollTop, e->scrollLeft);
 #endif
          break;
       }
       default:
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("%s, detail: %ld, document.body.client size: (%d,%d), window.inner size: (%d,%d), scrollPos: (%d, %d)\n",
                emscripten_event_type_to_string(eventType), e->detail, e->documentBodyClientWidth, e->documentBodyClientHeight,
                e->windowInnerWidth, e->windowInnerHeight, e->scrollTop, e->scrollLeft);
@@ -735,7 +739,7 @@ EM_BOOL focusevent_callback(int eventType, const EmscriptenFocusEvent *e, void *
    EM_UTF8 nodeName[EM_HTML5_LONG_STRING_LEN_BYTES];
    EM_UTF8 id[EM_HTML5_LONG_STRING_LEN_BYTES];
    */
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
    printf("%s, nodeName: \"%s\", id: \"%s\"\n", emscripten_event_type_to_string(eventType), e->nodeName, e->id[0] == '\0' ? "(empty string)" : e->id);
 #endif
    return 0;
@@ -806,7 +810,7 @@ class EmscriptenInterface : Interface
 
       // emscripten_log(EM_LOG_CONSOLE, "EmscriptenInterface::Initialize OK\n");
 
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
       printf("AAA EmscriptenInterface::Initialize -- %dxOk\n", okCount);
       emscripten_run_script("Module.setStatus('Actually Running...');");
       printf("BBB EmscriptenInterface::Initialize -- is it working?\n");
