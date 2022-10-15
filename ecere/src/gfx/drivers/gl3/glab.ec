@@ -550,12 +550,18 @@ public struct GLAB : GLB
       {
          if(mode <= normalized)
             glVertexAttribPointer(contents, n, type, mode == normalized, stride, pointer);
+#if !defined(_GLES) && !defined(_GLES2) && !defined(__UWP__)
          else if(mode == integer)
             // FIXME: Version checks for compilation
             glVertexAttribIPointer(contents, n, type, stride, pointer);
+#endif
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
          else if(mode == longDouble)
             // FIXME: Version checks for compilation
             glVertexAttribLPointer(contents, n, type, stride, pointer);
+#endif
+         else
+            PrintLn("WARNING: Unsupported GLAB mode ", mode, " on this platform");
       }
 #endif
 
