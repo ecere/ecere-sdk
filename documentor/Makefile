@@ -45,7 +45,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/documentor$(E)
+TARGET = $(OBJ)documentor$(OUT)
 
 _ECSOURCES = \
 	../extras/html/htmlParser.ec \

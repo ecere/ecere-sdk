@@ -46,7 +46,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES = res/
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecere-ide$(E)
+TARGET = $(OBJ)ecere-ide$(OUT)
 
 _ECSOURCES = \
 	../extras/FileSystemIterator.ec \

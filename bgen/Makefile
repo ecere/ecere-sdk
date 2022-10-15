@@ -46,7 +46,7 @@ OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
 RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(E)
+TARGET = $(OBJ)bgen$(OUT)
 
 _ECSOURCES = \
 	extras/consoleApp.ec \
