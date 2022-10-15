@@ -3,12 +3,12 @@
 namespace gui;
 
 #ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#include <html5.h>
+#ifdef _DEBUG
+// #define EMSCRIPTEN_DEBUG
 #endif
 
-#ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#include <html5.h>
 #endif
 
 #if (defined(__unix__) || defined(__APPLE__)) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__)
@@ -698,7 +698,7 @@ public:
       Window window;
 
 #ifdef __EMSCRIPTEN__
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
       emscripten_log(EM_LOG_CONSOLE, "GuiApplication::Main\n");
       {
          bool found = false;
@@ -731,11 +731,10 @@ public:
 
          emscripten_get_element_css_size(target, &dw, &dh);
          w = (int)dw, h = (int)dh;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("getElementCssSize  --guiapplication--  %4dx%-4d\n", w, h);
          {
-            int w, h;
-            w = h = 0;
+            int w = 0, h = 0;
             emscripten_get_screen_size(&w, &h);
             printf("getScreenSize      %4dx%-4d\n", w, h);
          }
@@ -750,7 +749,7 @@ public:
       }
 #endif
 
-#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
+#ifdef EMSCRIPTEN_DEBUG
       printf("before init\n");
 
       /*
@@ -766,13 +765,8 @@ public:
       }
       */
       // emscripten_run_script("document.getElementById(UTF8ToString('canvas')).getContext('2d').fillText('test', 32, 164);");
-
-
-
-
-
-
 #endif
+
       if(Init())
       {
          if(desktop)
@@ -784,19 +778,17 @@ public:
                {
                   if(window.autoCreate && !window.created)
                   {
-#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
-
+#ifdef EMSCRIPTEN_DEBUG
                      printf("   inside window.Create()\n");
 #endif
                      if(window.Create())
                      {
-#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
-
+#ifdef EMSCRIPTEN_DEBUG
                         printf("      created\n");
 #endif
                         break;
                      }
-#if defined(__EMSCRIPTEN__) && defined(_DEBUG)
+#ifdef EMSCRIPTEN_DEBUG
                      else
                         printf("      failed?\n");
 #endif
@@ -807,7 +799,7 @@ public:
          }
 
 #ifdef __EMSCRIPTEN__
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
          printf("emscripten_set_main_loop\n");
 #endif
          emscripten_set_main_loop(emscripten_main_loop_callback, 0 /*60*/, 1);
@@ -1796,7 +1788,7 @@ private void emscripten_main_loop_callback()
       double dw = 0, dh = 0;
       emscripten_get_element_css_size(target, &dw, &dh);
       w = (int)dw, h = (int)dh;
-#ifdef _DEBUG
+#ifdef EMSCRIPTEN_DEBUG
       printf("emscripten_main_loop_callback/init\n");
       printf("getElementCssSize  %4dx%-4d\n", w, h);
 #endif
