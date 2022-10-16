@@ -529,9 +529,13 @@ LIBS += \
 	$(call _L,imm32) \
 	$(call _L,ungif) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-1_1-x64.dll)),$(call _L,crypto-1_1-x64)) \
-	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libssl-1_1-x64.dll)),$(call _L,ssl-1_1-x64)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-1_1.dll)),$(call _L,crypto-1_1)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-3-x64.dll)),$(call _L,crypto-3-x64)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-3.dll)),$(call _L,crypto-3)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libssl-1_1-x64.dll)),$(call _L,ssl-1_1-x64)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libssl-1_1.dll)),$(call _L,ssl-1_1)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libssl-3-x64.dll)),$(call _L,ssl-3-x64)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libssl-3.dll)),$(call _L,ssl-3)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libeay32.dll)),$(call _L,eay32)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/ssleay32.dll)),$(call _L,ssleay32))
 endif
