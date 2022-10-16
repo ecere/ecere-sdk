@@ -2069,7 +2069,7 @@ DeclArray astDeclArray(ASTDeclarator declarator, DeclarationInit di, bool setExp
          Type t = *type;
          if(t.arraySizeExp && t.arraySizeExp.type == constantExp && t.arraySizeExp.constant)
             d.exp = ExpConstant { constant = CopyString(t.arraySizeExp.constant) };
-         else
+         else if(t.arraySizeExp)
          {
             char * constant = null;
             char * exp = Expression2String(t.arraySizeExp);
@@ -2089,6 +2089,8 @@ DeclArray astDeclArray(ASTDeclarator declarator, DeclarationInit di, bool setExp
             delete exp;
             FreeExpression(e);
          }
+         else
+            PrintLn("WARNING: null arraySizeExp");
       }
       *type = type->arrayType;
       decl = d;
