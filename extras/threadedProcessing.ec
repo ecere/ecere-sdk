@@ -299,7 +299,10 @@ class ProcessingStage
 
       mutex.Wait();
       task.priority = priority;
-      tasks.Insert(tasks.last, task);
+      if(priority == MAXINT)
+         tasks.Insert(tasks.last, task);
+      else
+         tasks.Insert(null, task);
       semaphore.Release();
       mutex.Release();
    }
