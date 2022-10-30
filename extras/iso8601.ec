@@ -15,13 +15,13 @@ public:
    bool temporalOutside:1:8;
 };
 
-String printTime(TemporalOptions options, DateTime time)
+public String printTime(TemporalOptions options, DateTime time)
 {
    char string[1024];
    return CopyString(printTimeBuf(string, sizeof(string), options, time, 0));
 }
 
-String printTimeBuf(char * string, int maxSize, TemporalOptions options, DateTime time, int millisecond)
+public String printTimeBuf(char * string, int maxSize, TemporalOptions options, DateTime time, int millisecond)
 {
    string[0] = 0;
    if(time.year)
