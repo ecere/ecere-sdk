@@ -1,0 +1,96 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "CubicWorld",
+   "Options" : {
+      "MemoryGuard" : false,
+      "Profile" : false,
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\""
+      ],
+      "IncludeDirs" : [
+         "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3"
+      ],
+      "StrictNameSpaces" : false,
+      "TargetType" : "Executable",
+      "TargetFileName" : "CubicWorld",
+      "Libraries" : [
+         "ecere"
+      ],
+      "Console" : false
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m",
+               "GL"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      },
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "opengl32"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None"
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "butterbur",
+         "Files" : [
+            {
+               "Folder" : "opengl",
+               "Files" : [
+                  "$(ECERE_SDK_SRC)/butterbur/src/opengl/ButterburShader.ec",
+                  "$(ECERE_SDK_SRC)/butterbur/src/opengl/VersionedShader.ec",
+                  "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/gl_compat_4_4.c",
+                  "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/gl_compat_4_4.h"
+               ]
+            }
+         ]
+      },
+      "cubicWorld.ec",
+      "mandelbulb.ec",
+      "cubeTris.ec",
+      "$(ECERE_SDK_SRC)/extras/threadedProcessing.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+      {
+         "Folder" : "shaders",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.frag",
+            "$(ECERE_SDK_SRC)/butterbur/src/opengl/shaders/butterbur.vert"
+         ]
+      }
+   ]
+}
