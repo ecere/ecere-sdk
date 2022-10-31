@@ -379,7 +379,7 @@ public:
    {
       ClippingPlane p;
       int c;
-      for(p = 0; p<=ClippingPlane::bottom; p+=2)
+      for(p = 0; p < 6; p+=2)
       {
          bool out1a = true, out2a = true;
          bool out1b = true, out2b = true;
