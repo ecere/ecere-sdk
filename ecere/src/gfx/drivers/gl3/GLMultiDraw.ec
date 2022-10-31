@@ -637,18 +637,13 @@ public struct GLMultiDraw
       if(glCaps_gpuCommands)
          commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
 
-#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      if(glCaps_vao) glBindVertexArray(vao);
-#endif
-
       // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
+      if(glCaps_vao) glBindVertexArray(vao);
 
 #ifndef CLIENT_MEM_COMMANDS
       commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
 #endif
-
-      if(glCaps_vao) glBindVertexArray(vao);
 
       // Draw IDs
       if(glCaps_shaders && (!glCaps_vao || lastIDAB != idsAB.buffer))
