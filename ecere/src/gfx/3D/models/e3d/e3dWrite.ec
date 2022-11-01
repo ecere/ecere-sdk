@@ -6,7 +6,7 @@ public import "ecere"
 
 import "e3dDefs"
 
-struct E3DBlockHeader
+static struct E3DBlockHeader
 {
    E3DBlockType type __attribute__((packed));   // FIXME: __attribute__((packed)) lost by module imports?
    uint32 size       __attribute__((packed));

@@ -62,11 +62,11 @@ class ModelViewer : Window
    };
 
    FillModeValue fillMode;
-   SkyBox sky { size = { 10000, 10000, 10000 }, folder = "/ecere-sdk/ecere/src/gfx/3D/models/e3dView/skycube", extension = "jpg" };
+   SkyBox sky { size = { 10000, 10000, 10000 }, folder = "../ModelViewer/skycube", extension = "jpg" };
 
    const char * modelFile;
 
-   property String modelFile
+   property const String modelFile
    {
       set { modelFile = value; OnUnloadGraphics(); OnLoadGraphics(); }
    }
@@ -221,15 +221,17 @@ class ModelViewer : Window
    bool OnLoadGraphics()
    {                                                           // 3DS Loader currently needs DisplaySystem to load materials
       char ext[MAX_EXTENSION];
-      const String convertTo = "e3d"; //"glb"; //"e3d";
-      bool is3DS = modelFile && !strcmpi(GetExtension(modelFile, ext), "3ds");
+      const String convertTo = "glb"; //"e3d";
+      // bool is3DS = modelFile && !strcmpi(GetExtension(modelFile, ext), "3ds");
       bool isE3D = !strcmpi(ext, convertTo);
       char outName[MAX_FILENAME];
-      DisplaySystem loadDS = !isE3D ? displaySystem : null;
+      DisplaySystem loadDS = 0;//!isE3D ? displaySystem : null;
+      Map<uint, Bitmap> texturesByID { };
       E3DOptions options
       {
          shareIndices = true;
          compressedTextures = true;
+         texturesByID = texturesByID;
          // resolution = 2048;
       };
 
@@ -242,7 +244,7 @@ class ModelViewer : Window
       if(0 && modelFile && !isE3D && /*!FileExists(outName) && */model.LoadEx(modelFile, null, loadDS, options))
       // if(model.LoadEx(modelFile, null, loadDS, options))
       {
-         E3DOptions options { };
+         //E3DOptions options { };
 
          //model.Merge(null);
 
@@ -357,7 +359,7 @@ class ModelViewer : Window
 
       display.fillMode = fillMode;
 
-      // sky.Render(camera, display);
+      sky.Render(camera, display);
       display.DrawObject(model);
 
       display.fillMode = solid;
