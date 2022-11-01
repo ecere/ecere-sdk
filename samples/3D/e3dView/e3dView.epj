@@ -1,0 +1,149 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "e3dView",
+   "Options" : {
+      "Warnings" : "All",
+      "PreprocessorDefinitions" : [
+         "IMPORT_STATIC=\"\"",
+         "FLT_DS_LOAD",
+         "_7ZIP_ST"
+      ],
+      "IncludeDirs" : [
+         "../../../deps/lzma-2107"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "e3dView",
+      "Libraries" : [
+         "ecere"
+      ]
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "MemoryGuard" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "Console" : true,
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "TargetFileName" : "e3dView",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "../../../deps/lzma-2107/lzma",
+         "Files" : [
+            "7z.h",
+            "7zAlloc.c",
+            "7zAlloc.h",
+            "7zArcIn.c",
+            "7zBuf.c",
+            "7zBuf.h",
+            "7zBuf2.c",
+            "7zCrc.c",
+            "7zCrc.h",
+            "7zCrcOpt.c",
+            "7zDec.c",
+            "7zFile.c",
+            "7zFile.h",
+            "7zStream.c",
+            "7zTypes.h",
+            "7zVersion.h",
+            "Aes.c",
+            "Aes.h",
+            "AesOpt.c",
+            "Alloc.c",
+            "Alloc.h",
+            "Bcj2.c",
+            "Bcj2.h",
+            "Bcj2Enc.c",
+            "Bra.c",
+            "Bra.h",
+            "Bra86.c",
+            "BraIA64.c",
+            "Compiler.h",
+            "CpuArch.c",
+            "CpuArch.h",
+            "Delta.c",
+            "Delta.h",
+            "DllSecur.c",
+            "DllSecur.h",
+            "LzFind.c",
+            "LzFind.h",
+            "LzFindOpt.c",
+            "LzHash.h",
+            "Lzma2Dec.c",
+            "Lzma2Dec.h",
+            "Lzma2Enc.c",
+            "Lzma2Enc.h",
+            "Lzma86.h",
+            "Lzma86Dec.c",
+            "Lzma86Enc.c",
+            "LzmaDec.c",
+            "LzmaDec.h",
+            "LzmaEnc.c",
+            "LzmaEnc.h",
+            "LzmaLib.c",
+            "LzmaLib.h",
+            "MtCoder.c",
+            "MtCoder.h",
+            "MtDec.c",
+            "MtDec.h",
+            "Ppmd.h",
+            "Ppmd7.c",
+            "Ppmd7.h",
+            "Ppmd7Dec.c",
+            "Ppmd7Enc.c",
+            "Precomp.h",
+            "RotateDefs.h",
+            "Sort.c",
+            "Sort.h"
+         ]
+      },
+      {
+         "Folder" : "$(ECERE_SDK_SRC)/ecere/src/gfx/3D/models/e3d",
+         "Files" : [
+            "$(ECERE_SDK_SRC)/ecere/src/gfx/3D/models/e3d/e3dDefs.ec",
+            "$(ECERE_SDK_SRC)/ecere/src/gfx/3D/models/e3d/e3dRead.ec",
+            "$(ECERE_SDK_SRC)/ecere/src/gfx/3D/models/e3d/e3dWrite.ec",
+            "e3d.ec"
+         ]
+      },
+      "modelView.ec",
+      "e3dView.ec"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
