@@ -608,6 +608,7 @@ public:
 
       switch(type)
       {
+         case fixedQuaternion:
          case fixed:
          {
             Vector3D offset;
