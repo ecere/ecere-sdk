@@ -9,7 +9,7 @@
          "_7ZIP_ST"
       ],
       "IncludeDirs" : [
-         "../../../deps/lzma-2107"
+         "$(ECERE_SDK_SRC)/deps/lzma-2107"
       ],
       "TargetType" : "Executable",
       "TargetFileName" : "e3dView",
@@ -18,7 +18,7 @@
          "lzma"
       ],
       "LibraryDirs" : [
-         "../../../deps/lzma-2107/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
+         "$(ECERE_SDK_SRC)/deps/lzma-2107/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
       ]
    },
    "Platforms" : [
