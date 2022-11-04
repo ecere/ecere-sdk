@@ -11,7 +11,7 @@
       "IncludeDirs" : [
          "."
       ],
-      "TargetType" : "Executable",
+      "TargetType" : "StaticLibrary",
       "TargetFileName" : "lzma"
    },
    "Configurations" : [
@@ -33,7 +33,6 @@
          "Options" : {
             "Debug" : false,
             "Optimization" : "Speed",
-            "TargetType" : "StaticLibrary",
             "FastMath" : true
          }
       }
