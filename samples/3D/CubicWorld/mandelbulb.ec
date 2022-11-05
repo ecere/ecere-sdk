@@ -23,7 +23,7 @@ struct Mandelbulb
       {
          if(i > 0)
          {
-            double theta = atan2(sqrt(Z.a*Z.a + Z.b*Z.b), Z.c) * power;
+            double theta = atan2(1.0 / FastInvSqrtDouble(Z.a*Z.a + Z.b*Z.b), Z.c) * power;
             double phi = atan2(Z.b, Z.a) * power;
             double raised = zm*zm*zm*zm*zm*zm*zm*zm;
             double sinT = sin(theta);

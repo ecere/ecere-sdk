@@ -398,6 +398,8 @@ Shader activeShader;
 
 static int displayWidth, displayHeight;
 
+uint defaultVAO; // Only works with a single display / context
+
 static bool useSingleGLContext = false;
 class OGLDisplay : struct
 {
@@ -1373,8 +1375,11 @@ class OpenGLDisplayDriver : DisplayDriver
 #if ENABLE_GL_VAO
       if(oglDisplay.capabilities.vao)
       {
+         // VAOs cannot be shared across contexts, but in single context mode
+         // we should re-use the same VAO across displays.
          glGenVertexArrays(1, &oglDisplay.vao);
-         glBindVertexArray(oglDisplay.vao);
+         defaultVAO = oglDisplay.vao; // NOTE: This currently only works with a single display / context
+         GLABBindVertexArray(oglDisplay.vao);
       }
 #endif
 
@@ -1413,8 +1418,7 @@ class OpenGLDisplayDriver : DisplayDriver
          GLDisableClientState(TANGENTS1);
          GLDisableClientState(TANGENTS2);
 #if ENABLE_GL_VAO
-         if(glBindVertexArray)
-            glBindVertexArray(0);
+         GLABBindVertexArray(0);
 #endif
          if(glUseProgram)
             glUseProgram(0);
@@ -1425,7 +1429,7 @@ class OpenGLDisplayDriver : DisplayDriver
 
 #if ENABLE_GL_VAO
       if(glCaps_vao)
-         glBindVertexArray(oglDisplay.vao);
+         GLABBindVertexArray(oglDisplay.vao);
 #endif
 
       GLEnableClientState(VERTICES);
@@ -2039,7 +2043,7 @@ class OpenGLDisplayDriver : DisplayDriver
       if(glCaps_vao)
       {
          OGLDisplay oglDisplay = display.driverData;
-         glBindVertexArray(oglDisplay.vao);
+         GLABBindVertexArray(oglDisplay.vao);
       }
 #endif
       GLABBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -10,28 +10,26 @@ import "threadedProcessing"
 
 // #define SINGLE_MANDELBULB
 
+uint visibleChunks;
+uint renderedInstances;
+
 GLMultiDraw mdWorld { };
 GLArrayTexture atTextures { };
 
-define CUBES_X = 64; //128;
-define CUBES_Y = 64; //128;
-define CUBES_Z = 64; //128;
+define CUBES_X = 64;
+define CUBES_Y = 64;
+define CUBES_Z = 64;
 define CUBES_COUNT = CUBES_X * CUBES_Y * CUBES_Z;
 
-//define fogDensity = 0.00018f;
-
-//define fogDensity = 0; //0.00009f;   // with: float fog = clamp(exp(-fogZ * fogZ), 0.0, 1.0);  in butterbur.frag:431
-define fogDensity = 0.00009f;   // with: float fog = clamp(exp(-fogZ * fogZ), 0.0, 1.0);  in butterbur.frag:431
-
-//define fogDensity = 0.00006f;
+define fogDensity = 0.00009f;
 
 Color fogColor = skyBlue;
 
 define viewDistance = 5;
 
-define numTextures = 9; //512;
+define numTextures = 9;
 
-define maxLoadedChunks = Min(256, (uint)((1LL<<31) / (12 * CUBES_COUNT))); // 512;
+define maxLoadedChunks = Min(256, (uint)((1LL<<31) / (12 * CUBES_COUNT)));
 CubeChunk loadedChunks[maxLoadedChunks];
 FreeSpots freeChunks { };
 
@@ -86,7 +84,6 @@ struct CubeChunk
       delete materials;
    }
 
-#ifdef SINGLE_MANDELBULB
    bool load()
    {
       Mandelbulb mandelbulb { power = 8, size = { 100, 100, 100 } };
@@ -100,50 +97,8 @@ struct CubeChunk
       float oz = this.oz * CUBES_Z;
       float scale = 1.0f / 12;
 
-      tr = transforms = new float[CUBES_COUNT * 3];
-      mat = materials = new uint[CUBES_COUNT];
-      j = 0;
-
-      for(z = 0; z < CUBES_Z; z++)
-         for(y = 0; y < CUBES_Y; y++)
-            for(x = 0; x < CUBES_X; x++)
-            {
-               Vector3Df p
-               {
-                  (0.5f - CUBES_X/2 - (x + ox) * scale) + 30,
-                  (0.5f - CUBES_Y/2 - (y + oy) * scale) + 60,
-                  (0.5f - CUBES_Z/2 - (z + oz) * scale) + 60
-               };
-               uint t = mandelbulb.isPointInside({ p.x, p.z, p.y }, 5);
-               if(t)
-               {
-                  Vector3Df cp { 0.5f - CUBES_X/2 + x, 0.5f - CUBES_Y/2 + y, 0.5f - CUBES_Z/2 + z };
-
-                  // Transform is relative to center of chunk
-                  tr[3 * j + 0] = (float)cp.x;
-                  tr[3 * j + 1] = (float)cp.y;
-                  tr[3 * j + 2] = (float)cp.z;
-                  mat[j] = (t - 1 + e) % 9;
-
-                  j++;
-               }
-            }
-
-      count = j;
-      transforms = renew transforms float[count * 3];
-      materials = renew materials uint[count];
-      loaded = true;
-      return true;
-   }
-#else
-   bool load()   // Castles in the Sky
-   {
-      Mandelbulb mandelbulb { };
-      int x, y, z;
-      float * tr;
-      uint * mat;
-      int i, j;
-      int e;
+#ifndef SINGLE_MANDELBULB
+      // Castles in the Sky
       uint seed = (uint)(oz * 1024 * 1024 + oy * 1024 + ox);
       int sx, sy, sz;
       int dx, dy, dz;
@@ -159,6 +114,7 @@ struct CubeChunk
       dz = GetRandom(-sz/4, sz/4);
       e = GetRandom(0, 8);
       randomMutex.Release();
+#endif
 
       tr = transforms = new float[CUBES_COUNT * 3];
       mat = materials = new uint[CUBES_COUNT];
@@ -168,6 +124,15 @@ struct CubeChunk
          for(y = 0; y < CUBES_Y; y++)
             for(x = 0; x < CUBES_X; x++)
             {
+#ifdef SINGLE_MANDELBULB
+               Vector3Df p
+               {
+                  (0.5f - CUBES_X/2 - (x + ox) * scale) + 30,
+                  (0.5f - CUBES_Y/2 - (y + oy) * scale) + 60,
+                  (0.5f - CUBES_Z/2 - (z + oz) * scale) + 60
+               };
+               uint t = mandelbulb.isPointInside({ p.x, p.z, p.y }, 5);
+#else
                Vector3Df p
                {
                   0.5f - CUBES_X/2 + x + dx,
@@ -175,6 +140,7 @@ struct CubeChunk
                   0.5f - CUBES_Z/2 + z + dz
                };
                uint t = mandelbulb.isPointInside(p, 6);
+#endif
                if(t)
                {
                   Vector3Df cp { 0.5f - CUBES_X/2 + x, 0.5f - CUBES_Y/2 + y, 0.5f - CUBES_Z/2 + z };
@@ -195,7 +161,6 @@ struct CubeChunk
       loaded = true;
       return true;
    }
-#endif
 
    void unload()
    {
@@ -242,113 +207,93 @@ struct CubeChunk
       return result;
    }
 
-   void prepareMultiDraw()
+   void uploadInstances()
    {
-      int vertNCoords = 3, verticesStride = 32;
-      uint i, j;
       const uint maxLoadedCubes = maxLoadedChunks * CUBES_COUNT;
+      int i, j;
+      uint chunkOffset = index * CUBES_COUNT;
+
+      // mdWorld.transforms = transforms.array; // TOCHECK: Do we need this for non-MDEI fallbacks?
+      if(!mdWorld.transformsAB.buffer)
+         mdWorld.transformsAB.allocate(maxLoadedCubes * 3 * sizeof(float), null, staticDraw);
+      mdWorld.transformsAB.upload(chunkOffset * 3 * sizeof(float), count * sizeof(float) * 3, transforms);
+
+      if(!mdWorld.idsAlloced)
+         mdWorld.resizeIDs(maxLoadedCubes);
+      j = chunkOffset;
+      for(i = 0; i < count; i++)
+         mdWorld.drawIDs[j++] = materials[i]; // TOCHECK: Do we need this for non-MDEI fallbacks?
+      mdWorld.idsAB.upload(chunkOffset * sizeof(uint), count * sizeof(uint), materials);
+
+      if(!mdWorld.commandsAlloced)
+         // We can only draw one block at a time since we need to change the view matrix in between
+         mdWorld.resizeCommands(1); // maxLoadedChunks);
+
+      delete transforms;
+      delete materials;
+
+      uploaded = true;
+   }
+
+   void setupVAOInstances()
+   {
+      // Per-instance transforms and IDs (array texture layers)
       uint chunkOffset = index * CUBES_COUNT;
 
       if(!uploaded)
-      {
-         // mdWorld.transforms = transforms.array;
-         if(!mdWorld.transformsAB.buffer)
-            mdWorld.transformsAB.allocate(maxLoadedCubes * 3 * sizeof(float), null, staticDraw);
-         mdWorld.transformsAB.upload(chunkOffset * 3 * sizeof(float), count * sizeof(float) * 3, transforms);
-
-         if(!mdWorld.idsAlloced)
-            mdWorld.resizeIDs(maxLoadedCubes);
-         j = chunkOffset;
-         for(i = 0; i < count; i++)
-            mdWorld.drawIDs[j++] = materials[i]; // TOCHECK: Do we need this for non-MDEI fallbacks?
-         mdWorld.idsAB.upload(chunkOffset * sizeof(uint), count * sizeof(uint), materials);
-
-         if(!mdWorld.commandsAlloced)
-            // We can only draw one block at a time since we need to change the view matrix in between
-            mdWorld.resizeCommands(1); // maxLoadedChunks);
-
-         delete transforms;
-         delete materials;
-
-         uploaded = true;
-      }
-
-      mdWorld.commands[mdWorld.commandsCount] =
-      {
-         count = 36,
-         instanceCount = count,
-         firstIndex = 0,
-         baseVertex = 0,
-         baseInstance = chunkOffset
-      };
-      mdWorld.commandsCount++;
-
-#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      if(glCaps_vao) glBindVertexArray(mdWorld.vao);
-#endif
+         uploadInstances();
 
       // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
-#if !defined(CLIENT_MEM_COMMANDS) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
-      mdWorld.commandsB.upload(0, mdWorld.commandsCount * sizeof(GLDrawCommand), mdWorld.commands);
-#endif
-
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       // Initial transform buffer setup
-      if(!glCaps_vao || mdWorld.lastTransformAB != mdWorld.transformsAB.buffer)
+      if(glCaps_shaders && (!glCaps_vao || mdWorld.lastTransformAB != mdWorld.transformsAB.buffer))
       {
-         GLABBindBuffer(GL_ARRAY_BUFFER, mdWorld.transformsAB.buffer);
-         if(mdWorld.transformSize == 3)
-         {
-            glVertexAttribPointer(posOffsetAttribute, mdWorld.transformSize, GL_FLOAT, GL_FALSE, 0, 0);
-            glVertexAttribDivisor(posOffsetAttribute, 1);
-            glEnableVertexAttribArray(posOffsetAttribute);
-         }
+         mdWorld.transformsAB.use(posOffsetAttribute, 3 /*mdWorld.transformSize*/, GL_FLOAT, 0, none, null);
+         glEnableVertexAttribArray(posOffsetAttribute);
+         glVertexAttribDivisor(posOffsetAttribute, 1);
          mdWorld.lastTransformAB = mdWorld.transformsAB.buffer;
       }
 
       // Initial textureID buffer setup
-#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
       if(glCaps_shaders && (!glCaps_vao || mdWorld.lastIDAB != mdWorld.idsAB.buffer))
       {
-         GLABBindBuffer(GL_ARRAY_BUFFER, mdWorld.idsAB.buffer);
-         glVertexAttribIPointer(drawIDAttribute, 1, GL_UNSIGNED_INT, sizeof(uint), 0);
+         mdWorld.idsAB.use(drawIDAttribute, 1, GL_UNSIGNED_INT, 0, integer, null);
          glVertexAttribDivisor(drawIDAttribute, 1);
          glEnableVertexAttribArray(drawIDAttribute);
          mdWorld.lastIDAB = mdWorld.idsAB.buffer;
       }
 #endif
-      if(glCaps_shaders && (!glCaps_vao || mdWorld.lastVBO != mdWorld.vertexGLMB.ab.buffer))
-      {
-         if(vertNCoords)
-         {
-            GLAB ab { mdWorld.vertexGLMB.ab.buffer };
-            glEnableVertexAttribArray(GLBufferContents::vertex);
-            ab.use(vertex, vertNCoords, GL_FLOAT, verticesStride, none, null);
-            glEnableVertexAttribArray(GLBufferContents::normal);
-            ab.use(normal, vertNCoords, GL_FLOAT, 32, none, (void *)(uintptr)12);
-            glEnableVertexAttribArray(GLBufferContents::texCoord);
-            ab.use(texCoord, 2, GL_FLOAT, 32, none, (void *)(uintptr)24);
+   }
 
-            mdWorld.vertexStride = verticesStride;
-         }
-         mdWorld.lastVBO = mdWorld.vertexGLMB.ab.buffer;
-      }
-      if(glCaps_vertexBuffer && (!glCaps_vao || mdWorld.lastIBO != mdWorld.indexGLMB.ab.buffer))
+   void addDrawCommand()
+   {
+      uint chunkOffset = index * CUBES_COUNT;
+      mdWorld.commands[mdWorld.commandsCount] =
       {
-         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mdWorld.indexGLMB.ab.buffer);
-         mdWorld.lastIBO = mdWorld.indexGLMB.ab.buffer;
-      }
+         count = 36,                // 36 indices
+         instanceCount = count,     // 'count' cubes
+         firstIndex = 0,
+         baseVertex = 0,
+         baseInstance = chunkOffset // start of chunk in transforms & IDs buffers
+      };
+      mdWorld.commandsCount++;
+
+      renderedInstances += count;
+
+#if !defined(CLIENT_MEM_COMMANDS) && ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
+      mdWorld.commandsB.upload(0, mdWorld.commandsCount * sizeof(GLDrawCommand), mdWorld.commands);
+#endif
    }
 
    void draw(Vector3D cPos)
    {
       Vector3D chunkPos { ox * CUBES_X, oy * CUBES_Y, oz * CUBES_Z };
-      mdWorld.commandsCount = 0;
-      prepareMultiDraw();
-      glmsPushMatrix();
-      glmsTranslated(chunkPos.x - cPos.x, chunkPos.y - cPos.y, chunkPos.z - cPos.z);
-      GLFlushMatrices();
+      setupVAOInstances();
+      addDrawCommand();
+      GLPushMatrix();
+      GLTranslated(chunkPos.x - cPos.x, chunkPos.y - cPos.y, chunkPos.z - cPos.z);
       mdWorld.draw();
-      glmsPopMatrix();
+      GLPopMatrix();
    }
 };
 
@@ -572,6 +517,33 @@ class CubicWorld : Window
       return true;
    }
 
+   void setupVAOVertices()
+   {
+      // Per-vertex attributes (VBO)
+      const int verticesStride = 32;   // x,y,z + normal + u,v texture coordinates: 8 x 32-bit (4 bytes) floats
+
+      if(glCaps_shaders && (!glCaps_vao || mdWorld.lastVBO != mdWorld.vertexGLMB.ab.buffer))
+      {
+         GLAB ab { mdWorld.vertexGLMB.ab.buffer };
+         glEnableVertexAttribArray(GLBufferContents::vertex);
+         ab.use(vertex, 3, GL_FLOAT, verticesStride, none, null);
+         glEnableVertexAttribArray(GLBufferContents::normal);
+         ab.use(normal, 3, GL_FLOAT, verticesStride, none, (void *)(uintptr)12);
+         glEnableVertexAttribArray(GLBufferContents::texCoord);
+         ab.use(texCoord, 2, GL_FLOAT, verticesStride, none, (void *)(uintptr)24);
+
+         mdWorld.vertexStride = verticesStride;
+         mdWorld.lastVBO = mdWorld.vertexGLMB.ab.buffer;
+      }
+
+      // Triangle primitives indices into VBO
+      if(glCaps_vertexBuffer && (!glCaps_vao || mdWorld.lastIBO != mdWorld.indexGLMB.ab.buffer))
+      {
+         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mdWorld.indexGLMB.ab.buffer);
+         mdWorld.lastIBO = mdWorld.indexGLMB.ab.buffer;
+      }
+   }
+
    bool OnLoadGraphics()
    {
       setupGL(display);
@@ -672,6 +644,8 @@ class CubicWorld : Window
       Vector3D cPos;
       int i;
 
+      PrintLn("========\nRendering:");
+
       setupGL(display);
 
       surface.Clear(depthBuffer);
@@ -702,16 +676,25 @@ class CubicWorld : Window
 
       glEnable(GL_CULL_FACE);
 
+      GLABBindVertexArray(mdWorld.vao);
+
+      setupVAOVertices();
+
+      visibleChunks = 0;
+      renderedInstances = 0;
       for(i = 0; i < maxLoadedChunks; i++)
       {
          CubeChunk * chunk = &loadedChunks[i];
          if(chunk->visible && chunk->loaded)
+         {
+            mdWorld.commandsCount = 0;
             chunk->draw(cPos);
+            visibleChunks++;
+         }
       }
+      PrintLn("   ", visibleChunks, " chunks; ", renderedInstances, " cube instances");
 
-#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      if(glCaps_vao) glBindVertexArray(defaultVAO);
-#endif
+      GLABBindVertexArray(defaultVAO);
       GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
       DefaultShader::shader().select();

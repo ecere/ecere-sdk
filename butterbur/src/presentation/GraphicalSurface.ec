@@ -113,7 +113,7 @@ public class GraphicalSurface : MultiPresentation
 #endif
 
       glDisable(GL_SCISSOR_TEST);
-      if(glCaps_vao) glBindVertexArray(0);
+      if(glCaps_vao) GLABBindVertexArray(0);
       glBindFramebuffer(GL_FRAMEBUFFER, texturesFramebuffer);
       butterburShader.activate();
       butterburShader.lighting(false);
@@ -268,7 +268,7 @@ public class GraphicalSurface : MultiPresentation
       butterburShader.textureArray(false);
       glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
       glEnable(GL_SCISSOR_TEST);
-      if(glCaps_vao) glBindVertexArray(defaultVAO);
+      if(glCaps_vao) GLABBindVertexArray(defaultVAO);
       DefaultShader::shader().texturing(false);
       DefaultShader::shader().texturing(true);
       DefaultShader::shader().activate();

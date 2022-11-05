@@ -639,7 +639,7 @@ public struct GLMultiDraw
 
       // TOCHECK: No attrib divisor support in ES 2 -- will it be needed?
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      if(glCaps_vao) glBindVertexArray(vao);
+      if(glCaps_vao) GLABBindVertexArray(vao);
 
 #ifndef CLIENT_MEM_COMMANDS
       commandsB.upload(0, commandsCount * sizeof(GLDrawCommand), commands);
@@ -681,7 +681,7 @@ public struct GLMultiDraw
       // TOCHECK: Should this re-do all the use() here if there is no VAO support?
 
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      if(glCaps_vao) glBindVertexArray(vao);
+      if(glCaps_vao) GLABBindVertexArray(vao);
 #endif
       GLFlushMatrices();
 
@@ -696,10 +696,18 @@ public struct GLMultiDraw
          GLAB ab { vertexGLMB.ab.buffer };
          Shader shader = activeShader;
 
-         GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexGLMB.ab.buffer);
+         if(!glCaps_vao)   // Don't modify VAO state.
+         {
+            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexGLMB.ab.buffer);
 
-         glDisableVertexAttribArray((GLBufferContents)drawIDAttribute);
-         glDisableVertexAttribArray((GLBufferContents)posOffsetAttribute);
+            glDisableVertexAttribArray((GLBufferContents)drawIDAttribute);
+            glDisableVertexAttribArray((GLBufferContents)posOffsetAttribute);
+         }
+         else if(vao == defaultVAO)
+            PrintLn("WARNING: MultiDraw with default VAO");
+         else if(!glabCurVertexArray)
+            PrintLn("WARNING (MultiDraw): No VAO selected");
+
          for(n = 0; n < commandsCount; n++)
          {
             const GLDrawCommand *cmd = &commands[n];
@@ -783,7 +791,7 @@ public struct GLMultiDraw
 #endif
 #endif
 #if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
-      if(glCaps_vao) glBindVertexArray(0);
+      if(glCaps_vao) GLABBindVertexArray(0);
 #endif
    }
 };
