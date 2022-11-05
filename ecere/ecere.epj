@@ -478,16 +478,13 @@
          "Name" : "Emscripten",
          "Options" : {
             "Warnings" : "Normal",
-            "Debug" : true,
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ETC2_COMPRESS",
                "ECERE_STATIC",
-               "NOBLENDING",
                "ECERE_NOSSL",
                "ECERE_YESNET",
                "ECERE_NOCURL",
-               "_DEBUG",
                "_GLES3"
             ],
             "TargetType" : "StaticLibrary",

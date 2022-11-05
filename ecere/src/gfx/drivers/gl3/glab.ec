@@ -925,8 +925,13 @@ public struct GLFB
       this.h = height;
 
       {
+#if !defined(_DEBUG) && defined(__EMSCRIPTEN__)
+         // Expensive check in WebGL?
+         result = true;
+#else
          int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
          result = status == GL_FRAMEBUFFER_COMPLETE;
+#endif
 
 #ifdef _DEBUG
          if(!result)
