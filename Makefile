@@ -918,9 +918,9 @@ endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecc$(B32_SFX)$(E) $(BINDIR)/ecc$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecp$(B32_SFX)$(E) $(BINDIR)/ecp$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)ecs$(B32_SFX)$(E) $(BINDIR)/ecs$(B32_SFX)$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(E) $(BINDIR)/epj2make$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(E) $(BINDIR)/bgen$(E)
-	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(E) $(BINDIR)/documentor$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)epj2make$(B32_SFX)$(E) $(BINDIR)/epj2make$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(B32_SFX)$(E) $(BINDIR)/bgen$(E)
+	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(B32_SFX)$(E) $(BINDIR)/documentor$(E)
 ifdef CodeGuard
 	install $(INSTALL_FLAGS) $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/CodeGuard$(E)
 endif
