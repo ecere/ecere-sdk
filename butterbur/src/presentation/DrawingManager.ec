@@ -134,7 +134,7 @@ public class MDManager : DrawingManager
          }
       }
 
-      if(glCaps_vao) glBindVertexArray(0);
+      if(glCaps_vao) GLABBindVertexArray(0);
    }
 }
 
@@ -227,7 +227,7 @@ class Perspective3DManager : MDManager
       GLFlushMatrices();
 
       texture.bind();
-      if(glCaps_vao) glBindVertexArray(md.vao);
+      if(glCaps_vao) GLABBindVertexArray(md.vao);
       for(n = 0; n < md.commandsCount; n++)
       {
          const GLDrawCommand *cmd = &md.commands[n];
@@ -251,7 +251,7 @@ class Perspective3DManager : MDManager
          glDisableVertexAttribArray(transform2Attribute);
          glDisableVertexAttribArray(transform3Attribute);
       }*/
-      if(glCaps_vao) glBindVertexArray(0);
+      if(glCaps_vao) GLABBindVertexArray(0);
 
       butterburShader.transform3D = false;
    }
@@ -264,7 +264,7 @@ class Perspective3DManager : MDManager
          {
             PrimitiveGroup group;
 
-            if(glCaps_vao) glBindVertexArray(defaultVAO);
+            if(glCaps_vao) GLABBindVertexArray(defaultVAO);
             glDisplay.SelectMesh(mesh);
 
             for(group = mesh.groups.first; group; group = group.next)
@@ -283,7 +283,7 @@ class Perspective3DManager : MDManager
                glDisplay.DrawPrimitives((PrimitiveSingle *)&group.type, mesh);
             }
 
-            if(glCaps_vao) glBindVertexArray(0);
+            if(glCaps_vao) GLABBindVertexArray(0);
          }
       }
    }

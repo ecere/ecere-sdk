@@ -15,7 +15,7 @@ default dllexport void GLABUnbindBuffer(int target)
       glBindBuffer(target, 0);
       if(target == GL_ARRAY_BUFFER)
          glabCurArrayBuffer = 0;
-      else if(target == GL_ELEMENT_ARRAY_BUFFER)
+      else if(target == GL_ELEMENT_ARRAY_BUFFER && (!glCaps_vao || glabCurVertexArray == defaultVAO))
          glabCurElementBuffer = 0;
 // NOTE: Actually ES 3.1 is required, separate define?
 #if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
@@ -33,7 +33,7 @@ public void GLABBindBuffer(int target, uint buffer)
       glBindBuffer(target, buffer);
       if(target == GL_ARRAY_BUFFER)
          glabCurArrayBuffer = buffer;
-      else if(target == GL_ELEMENT_ARRAY_BUFFER)
+      else if(target == GL_ELEMENT_ARRAY_BUFFER && (!glCaps_vao || glabCurVertexArray == defaultVAO))
          glabCurElementBuffer = buffer;
 // NOTE: Actually ES 3.1 is required, separate define?
 #if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
@@ -43,10 +43,6 @@ public void GLABBindBuffer(int target, uint buffer)
    }
 }
 
-#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
-uint glabCurDrawIndirectBuffer;
-#endif
-
 public enum GLBufferContents { vertex, normal, texCoord, color, tangent1, tangent2, lightVector, boneIndices1, boneIndices2, boneIndices3, boneWeights1, boneWeights2, boneWeights3 };
 
 public enum GLBufferUsage { staticDraw, dynamicDraw, streamDraw };
@@ -55,7 +51,29 @@ static GLint bufferUsages[] = { GL_STATIC_DRAW, GL_DYNAMIC_DRAW, 0x88E0 /*GL_STR
 
 public define noAB = GLAB { 0 };
 
-uint glabCurArrayBuffer;
+public void GLABBindVertexArray(uint vao)
+{
+#if (!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3)
+   if(glCaps_vao) // && vao != glabCurVertexArray) // VAOs are not shared across contexts / displays
+   {
+#ifdef _DEBUG
+      if(vao != glabCurVertexArray)
+         ;//PrintLn("WARNING: Redundant VAO binding");
+#endif
+      glBindVertexArray(vao);
+      glabCurVertexArray = vao;
+   }
+#endif
+}
+
+uint glabCurVertexArray;      // Currently bound VAO.
+
+uint glabCurArrayBuffer;      // Buffer currently bound for GL_ARRAY_BUFFER. *NOT* part of VAO state
+uint glabCurElementBuffer;    // Buffer currently bound for GL_ELEMENT_ARRAY_BUFFER. This *IS* part of the VAO state. With VAOs, this is for 'defaultVAO'.
+
+#if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
+uint glabCurDrawIndirectBuffer;
+#endif
 
 static short *shortVPBuffer = null;
 static uint shortVPSize = 0;
@@ -508,7 +526,7 @@ public struct GLB
             {
                if(buffer == glabCurArrayBuffer)
                   GLABBindBuffer(GL_ARRAY_BUFFER, 0);
-               else if(buffer == glabCurElementBuffer)
+               else if(buffer == glabCurElementBuffer && (!glCaps_vao || glabCurVertexArray == defaultVAO))
                   GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 #if !defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
                else if(buffer == glabCurDrawIndirectBuffer)
@@ -620,8 +638,6 @@ public struct GLAB : GLB
    }
 };
 
-uint glabCurElementBuffer;
-
 public define noEAB = GLEAB { 0 };
 
 public struct GLCAB : GLB
@@ -657,11 +673,13 @@ public struct GLEAB : GLB
 #endif
          ))
       {
-
-#if !defined(__EMSCRIPTEN__)
-         if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
-#endif
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         if(!glCaps_vao || glabCurVertexArray == defaultVAO)
+         {
+            if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
+               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         }
+         else if(glCaps_vao && !glabCurVertexArray)
+            PrintLn("WARNING (draw): No VAO selected");
          if(!glCaps_intAndDouble)
             type = GL_UNSIGNED_SHORT;
 
@@ -680,11 +698,14 @@ public struct GLEAB : GLB
 #endif
          ))
       {
-#if !defined(__EMSCRIPTEN__)
-         if(glCaps_vertexBuffer)
-#endif
-         if(glabCurElementBuffer != ((this != null) ? buffer : 0))
-            GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         if(!glCaps_vao || glabCurVertexArray == defaultVAO)
+         {
+            if(glCaps_vertexBuffer && glabCurElementBuffer != ((this != null) ? buffer : 0))
+               GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ((this != null) ? buffer : 0));
+         }
+         else if(glCaps_vao && !glabCurVertexArray)
+            PrintLn("WARNING (draw2): No VAO selected");
+
          if(!glCaps_intAndDouble)
             type = GL_UNSIGNED_SHORT;
 

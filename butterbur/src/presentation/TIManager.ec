@@ -69,19 +69,19 @@ public class TIManager : DrawingManager
       float transform[2] = { originOffset.x, originOffset.y };
       if(drawManager)
          drawManager.ready(width, height);
-      if(glCaps_vao) glBindVertexArray(defaultVAO);
+      if(glCaps_vao) GLABBindVertexArray(defaultVAO);
       presentation.prepareDraw(renderFlags, this, transform);
    }
 
    void draw()
    {
       // TODO: Proper VAO support for text & images?
-      if(glCaps_vao) glBindVertexArray(defaultVAO);
+      if(glCaps_vao) GLABBindVertexArray(defaultVAO);
       if(drawManager)
          drawManager.flushImages();
       if(glCaps_shaders)
          glEnableVertexAttribArray(GLBufferContents::vertex);
-      if(glCaps_vao) glBindVertexArray(0);
+      if(glCaps_vao) GLABBindVertexArray(0);
    }
 
    void addTextCommand(const String text, GEFont font, float opacity, Alignment2D alignment, float * transform)

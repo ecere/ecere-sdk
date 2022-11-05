@@ -428,7 +428,8 @@ void main(void)
 
 #if FOG_ON
    {
-      float fog = clamp(exp(fogZ), 0.0, 1.0);
+      float fog = clamp(exp(-fogZ * fogZ), 0.0, 1.0);
+      //float fog = clamp(exp(fogZ), 0.0, 1.0);
       c = vec4(fog * c.xyz + (1.0 - fog) * fogColor, c.w);
    }
 #endif
