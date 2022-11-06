@@ -1267,4 +1267,27 @@ public:
       }
       return result;
    }
+
+   bool LoadFromFiles(DisplaySystem displaySystem, File files[6], const String extension, bool oldStyle)
+   {
+      int i;
+      bool result = true;
+      for(i = 0; result && i < 6; i++)
+      {
+         Bitmap face = i > 0 ? { sRGB2Linear = sRGB2Linear } : this;
+         if(face.LoadFromFile(files[i], extension, null))
+         {
+            face.driverData = driverData;
+            result = displaySystem.driver.MakeDDBitmap(displaySystem, face, true, (i + 1) | (oldStyle << 3));
+         }
+         else
+            result = false;
+         if(i > 0)
+         {
+            face.driverData = 0;
+            delete face;
+         }
+      }
+      return result;
+   }
 };
