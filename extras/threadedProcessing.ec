@@ -178,7 +178,7 @@ class ProcessingStage
             case clear:
                mutex.Release();
                // TO REVIEW: // if(task.status.waitedOn) This was leaking? -- turned this around completely?
-               if(!task.status.cancel || !task.status.waitedOn)
+               if(!(task.status.cancel && task.status.waitedOn))
                {
                   processing.onTaskCleared(task);
                   delete task;
@@ -228,7 +228,7 @@ class ProcessingStage
             {
                case awaitProcessing:   // error to mark for processing again...
                case clear:
-                  if(!task.status.cancel || !task.status.waitedOn)
+                  if(!(task.status.cancel && task.status.waitedOn))
                   {
                      processing.onTaskCleared(task);
                      delete task;
@@ -507,8 +507,9 @@ public:
       return result;
    }
 
-   void cancelTask(ProcessingTask task, bool wait)
+   bool cancelTask(ProcessingTask task, bool wait)
    {
+      bool result = false;
       if(task)
       {
          bool done = false;
@@ -523,6 +524,8 @@ public:
                {
                   stage.cancelTask(task, wait);
                   done = true;
+
+                  result = true;
                }
                stage.mutex.Release();
             }
@@ -530,6 +533,7 @@ public:
                break;
          }
       }
+      return result;
    }
 
    void cancelAllTasks(int stage)
