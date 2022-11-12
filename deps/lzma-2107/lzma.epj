@@ -12,7 +12,7 @@
          "."
       ],
       "TargetType" : "StaticLibrary",
-      "TargetFileName" : "lzma"
+      "TargetFileName" : "7z-lzma"
    },
    "Configurations" : [
       {
