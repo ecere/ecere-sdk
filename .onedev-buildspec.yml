@@ -34,14 +34,38 @@ jobs:
       - apt -y install libasound2-dev
       - apt -y install libcurl4-openssl-dev
       - apt -y install libfontconfig1-dev
-      - make -j2 && cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-x86_64.tar.gz
-        linux
+#       make bindings CXXFLAGS="-std=c++1z -fno-exceptions -fno-rtti" -j2 &&
+      - make -j2 &&
+        mkdir output &&
+        make install DESTDIR=output &&
+        cd output &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux-x86_64.tar.gz * &&
+        cd .. &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps-linux-x86_64.tar.gz deps &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec ide/res/actions default.cf crossplatform.mk &&
+        cd obj &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz *
     useTTY: true
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
-    name: Artefacts
+    name: ArtefactsBinaries
+    sourcePath: output
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux-x86_64.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsBinaries
     sourcePath: obj
-    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-linux-x86_64.tar.gz'
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsDeps
+    sourcePath: .
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps-linux-x86_64.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsExtrasButterburSource
+    sourcePath: .
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !PullRequestUpdateTrigger
