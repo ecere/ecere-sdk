@@ -200,7 +200,9 @@ define outputDefaultFileExt = "";
 #ifdef __WIN32__
 #define WIN32_LEAN_AND_MEAN
 #define Sleep _Sleep
+#define Size _Size
 #include <windows.h>
+#undef Size
 #undef MoveFileEx
 #undef Sleep
 #undef MessageBox
