@@ -4,9 +4,7 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "include",
-         "i686-pc-mingw32/include",
-         "i686-pc-mingw32"
+         "include"
       ],
       "TargetType" : "StaticLibrary",
       "TargetFileName" : "ffi"
@@ -15,9 +13,6 @@
       {
          "Name" : "win32",
          "Options" : {
-            "PreprocessorDefinitions" : [
-               "X86_WIN64"
-            ],
             "IncludeDirs" : [
                "i686-w64-mingw32/include",
                "i686-w64-mingw32"
@@ -98,7 +93,8 @@
                ]
             },
             "src/x86/internal.h",
-            "src/x86/internal64.h"
+            "src/x86/internal64.h",
+            "src/x86/sysv.S"
          ]
       }
    ],
