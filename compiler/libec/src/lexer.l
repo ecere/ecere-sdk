@@ -138,6 +138,8 @@ default:
 "__int128"           { return(INT128); }
 "__float128"         { return(FLOAT128); }
 "_Float128"          { return(FLOAT128); }
+"__float16"         { return(FLOAT16); }
+"_Float16"          { return(FLOAT16); }
 "__builtin_va_list"  { return(VALIST); }
 "__builtin_va_arg"   { return(VAARG); }
 "Bool"               { return(BOOL); }

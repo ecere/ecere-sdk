@@ -65,6 +65,7 @@ public enum TokenType
   _int64 = INT64,
   _int128 = INT128,
   _float128 = FLOAT128,
+  _float16 = FLOAT16,
   _long = LONG,
   _signed = SIGNED,
   _unsigned = UNSIGNED,
@@ -1383,7 +1384,7 @@ public enum TypeKind
    voidType, charType, shortType, intType, int64Type, longType, floatType,
    doubleType, classType, structType, unionType, functionType, arrayType, pointerType,
    ellipsisType, enumType, methodType, vaListType, /*typedObjectType, anyObjectType, classPointerType, */ dummyType,
-   subClassType, templateType, thisClassType, intPtrType, intSizeType, _BoolType, int128Type, float128Type /* TODO! */
+   subClassType, templateType, thisClassType, intPtrType, intSizeType, _BoolType, int128Type, float128Type, float16Type /* TODO! */
 };
 
 public class Type : struct

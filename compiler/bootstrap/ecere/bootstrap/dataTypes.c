@@ -330,6 +330,8 @@ extern long long __ecereNameSpace__ecere__com__eClass_GetProperty(struct __ecere
 
 extern void __ecereNameSpace__ecere__com__eClass_SetProperty(struct __ecereNameSpace__ecere__com__Class * _class, const char *  name, long long value);
 
+extern unsigned int __ecereNameSpace__ecere__com__eClass_IsDerived(struct __ecereNameSpace__ecere__com__Class * _class, struct __ecereNameSpace__ecere__com__Class * from);
+
 extern void *  __ecereNameSpace__ecere__com__eInstance_New(struct __ecereNameSpace__ecere__com__Class * _class);
 
 static int __ecereNameSpace__ecere__com__Integer_OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, int * data1, int * data2)
@@ -1614,13 +1616,13 @@ return len;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int;
 
+extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
+
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_double;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_float;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass_int64;
-
-extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Instance;
 
 extern struct __ecereNameSpace__ecere__com__Class * __ecereClass___ecereNameSpace__ecere__com__Container;
 
@@ -2098,165 +2100,6 @@ __ecerePointer___ecereNameSpace__ecere__com__SerialBuffer->count = value;
 __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size && __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecereProp___ecereNameSpace__ecere__com__SerialBuffer_size) : (void)0, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size && __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size->selfWatchable ? __ecereNameSpace__ecere__com__eInstance_FireSelfWatchers(this, __ecerePropM___ecereNameSpace__ecere__com__SerialBuffer_size) : (void)0;
 }
 
-static int __ecereNameSpace__ecere__com__OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, void * data1, void * data2)
-{
-struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
-
-if(_class->type == 0 || _class->type == 5 || _class->type == 1)
-{
-if(data1 && data2)
-{
-for(; _class && _class->type != 1000; _class = _class->base)
-{
-struct __ecereNameSpace__ecere__com__DataMember * member;
-
-if(_class->noExpansion)
-{
-if(data1 > data2)
-return 1;
-else if(data1 < data2)
-return -1;
-else
-return 0;
-}
-for(member = _class->membersAndProperties.first; member; member = member->next)
-{
-int memberResult = 0;
-
-if(member->id < 0)
-continue;
-if(member->isProperty || member->type == 0)
-{
-struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;
-
-if(!memberType)
-memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, member->dataTypeString);
-if(memberType)
-{
-if(member->isProperty)
-{
-struct __ecereNameSpace__ecere__com__Property * prop = (struct __ecereNameSpace__ecere__com__Property *)member;
-
-if(!prop->conversion && prop->Get && prop->Set)
-{
-if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
-{
-if(!strcmp(memberType->dataTypeString, "char *"))
-{
-char * a = ((char * (*)(void *))(void *)prop->Get)(data1);
-char * b = ((char * (*)(void *))(void *)prop->Get)(data2);
-
-memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, a, b);
-}
-}
-else
-{
-struct __ecereNameSpace__ecere__com__DataValue value1, value2;
-
-if(!strcmp(memberType->dataTypeString, "float"))
-{
-value1.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data1);
-value2.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data2);
-}
-else if(!strcmp(memberType->dataTypeString, "double"))
-{
-value1.__anon1.d = ((double (*)(void *))(void *)prop->Get)(data1);
-value2.__anon1.d = ((double (*)(void *))(void *)prop->Get)(data2);
-}
-else
-{
-value1.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data1);
-value2.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data2);
-}
-memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
-}
-}
-}
-else
-{
-if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
-{
-if(memberType->type == 0 || memberType->type == 5)
-{
-memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, *(void **)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), *(void **)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)));
-}
-else
-{
-memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, (unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), (unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-}
-}
-else
-{
-struct __ecereNameSpace__ecere__com__DataValue value1, value2;
-
-if(memberType->typeSize == 8)
-{
-value1.__anon1.ui64 = *(uint64 *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-value2.__anon1.ui64 = *(uint64 *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-}
-else
-{
-value1.__anon1.i = *(int *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-value2.__anon1.i = *(int *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-}
-memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
-}
-}
-}
-else
-{
-}
-}
-else
-{
-memberResult = __ecereNameSpace__ecere__com__DataMember_OnCompare(member, (unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), (unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
-}
-if(memberResult)
-return memberResult;
-}
-}
-}
-else if(!data1 && data2)
-return 1;
-else if(data1 && !data2)
-return -1;
-}
-else if(_class->type == 3)
-{
-struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
-
-return ((int (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnCompare])(dataType, data1, data2);
-}
-else
-{
-int result = 0;
-
-if(data1 && data2)
-{
-if(_class->typeSize == 8)
-{
-if(*(uint64 *)data1 > *(uint64 *)data2)
-result = 1;
-else if(*(uint64 *)data1 < *(uint64 *)data2)
-result = -1;
-}
-else
-{
-if(*(unsigned int *)data1 > *(unsigned int *)data2)
-result = 1;
-else if(*(unsigned int *)data1 < *(unsigned int *)data2)
-result = -1;
-}
-}
-else if(!data1 && data2)
-return 1;
-else if(data1 && !data2)
-return -1;
-return result;
-}
-return 0;
-}
-
 static void __ecereNameSpace__ecere__com__OnSerialize(struct __ecereNameSpace__ecere__com__Class * _class, void * data, struct __ecereNameSpace__ecere__com__Instance * channel)
 {
 struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
@@ -2452,6 +2295,173 @@ unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__
 __internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Class *, const void *, const char *  string))__ecereClass_int->_vTbl[__ecereVMethodID_class_OnGetDataFromString]);
 __internal_VirtualMethod ? __internal_VirtualMethod(__ecereClass_int, (void *)&a, (((void *)0))) : (unsigned int)1;
 }));
+}
+
+static int __ecereNameSpace__ecere__com__OnCompare(struct __ecereNameSpace__ecere__com__Class * _class, void * data1, void * data2)
+{
+struct __ecereNameSpace__ecere__com__Instance * module = _class->module;
+
+if(_class->type == 0 || _class->type == 5 || _class->type == 1)
+{
+if(data1 && data2)
+{
+for(; _class && _class->type != 1000; _class = _class->base)
+{
+struct __ecereNameSpace__ecere__com__DataMember * member;
+
+if(_class->noExpansion)
+{
+if(data1 > data2)
+return 1;
+else if(data1 < data2)
+return -1;
+else
+return 0;
+}
+if(_class->type == 0 && !__ecereNameSpace__ecere__com__eClass_IsDerived(((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)data1))->_class, _class))
+{
+continue;
+}
+if(_class->type == 0 && !__ecereNameSpace__ecere__com__eClass_IsDerived(((struct __ecereNameSpace__ecere__com__Instance *)(char *)((struct __ecereNameSpace__ecere__com__Instance *)data2))->_class, _class))
+{
+continue;
+}
+for(member = _class->membersAndProperties.first; member; member = member->next)
+{
+int memberResult = 0;
+
+if(member->id < 0)
+continue;
+if(member->isProperty || member->type == 0)
+{
+struct __ecereNameSpace__ecere__com__Class * memberType = member->dataTypeClass;
+
+if(!memberType)
+memberType = member->dataTypeClass = __ecereNameSpace__ecere__com__eSystem_FindClass(module, member->dataTypeString);
+if(memberType)
+{
+if(member->isProperty)
+{
+struct __ecereNameSpace__ecere__com__Property * prop = (struct __ecereNameSpace__ecere__com__Property *)member;
+
+if(!prop->conversion && prop->Get && prop->Set)
+{
+if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
+{
+if(!strcmp(memberType->dataTypeString, "char *"))
+{
+char * a = ((char * (*)(void *))(void *)prop->Get)(data1);
+char * b = ((char * (*)(void *))(void *)prop->Get)(data2);
+
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, a, b);
+}
+}
+else
+{
+struct __ecereNameSpace__ecere__com__DataValue value1, value2;
+
+if(!strcmp(memberType->dataTypeString, "float"))
+{
+value1.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data1);
+value2.__anon1.f = ((float (*)(void *))(void *)prop->Get)(data2);
+}
+else if(!strcmp(memberType->dataTypeString, "double"))
+{
+value1.__anon1.d = ((double (*)(void *))(void *)prop->Get)(data1);
+value2.__anon1.d = ((double (*)(void *))(void *)prop->Get)(data2);
+}
+else
+{
+value1.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data1);
+value2.__anon1.i = ((int (*)(void *))(void *)prop->Get)(data2);
+}
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
+}
+}
+}
+else
+{
+if(memberType->type == 1 || memberType->type == 0 || memberType->type == 5)
+{
+if(memberType->type == 0 || memberType->type == 5)
+{
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, *(void **)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)), *(void **)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset)));
+}
+else
+{
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, (unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), (unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+}
+}
+else
+{
+struct __ecereNameSpace__ecere__com__DataValue value1, value2;
+
+if(memberType->typeSize == 8)
+{
+value1.__anon1.ui64 = *(uint64 *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+value2.__anon1.ui64 = *(uint64 *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+}
+else
+{
+value1.__anon1.i = *(int *)((unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+value2.__anon1.i = *(int *)((unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+}
+memberResult = ((int (*)(void *, void *, void *))(void *)memberType->_vTbl[__ecereVMethodID_class_OnCompare])(memberType, &value1, &value2);
+}
+}
+}
+else
+{
+}
+}
+else
+{
+memberResult = __ecereNameSpace__ecere__com__DataMember_OnCompare(member, (unsigned char *)data1 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset), (unsigned char *)data2 + (((member->_class->type == 0) ? member->_class->offset : 0) + member->offset));
+}
+if(memberResult)
+return memberResult;
+}
+}
+}
+else if(!data1 && data2)
+return 1;
+else if(data1 && !data2)
+return -1;
+}
+else if(_class->type == 3)
+{
+struct __ecereNameSpace__ecere__com__Class * dataType = __ecereNameSpace__ecere__com__eSystem_FindClass(module, _class->dataTypeString);
+
+return ((int (*)(void *, void *, void *))(void *)dataType->_vTbl[__ecereVMethodID_class_OnCompare])(dataType, data1, data2);
+}
+else
+{
+int result = 0;
+
+if(data1 && data2)
+{
+if(_class->typeSize == 8)
+{
+if(*(uint64 *)data1 > *(uint64 *)data2)
+result = 1;
+else if(*(uint64 *)data1 < *(uint64 *)data2)
+result = -1;
+}
+else
+{
+if(*(unsigned int *)data1 > *(unsigned int *)data2)
+result = 1;
+else if(*(unsigned int *)data1 < *(unsigned int *)data2)
+result = -1;
+}
+}
+else if(!data1 && data2)
+return 1;
+else if(data1 && !data2)
+return -1;
+return result;
+}
+return 0;
 }
 
 static const char * __ecereNameSpace__ecere__com__OnGetString(struct __ecereNameSpace__ecere__com__Class * _class, void * data, char * tempString, void * fieldData, unsigned int * _onType)
