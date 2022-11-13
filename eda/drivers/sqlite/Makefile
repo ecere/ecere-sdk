@@ -43,7 +43,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 ifdef LINUX_TARGET
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO).0.44
@@ -94,7 +94,7 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
-			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
+			 -I../../../deps/libffi-3.4.4/i686-w64-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DSQLITE_DEFAULT_LOCKING_MODE=1 \
 			 -DSQLITE_ENABLE_RTREE=1 \
@@ -102,7 +102,7 @@ PRJ_CFLAGS += \
 
 CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(WINDOWS_TARGET), \
-			 -I../../../deps/libffi-3.0.11/i686-pc-mingw32/include,) \
+			 -I../../../deps/libffi-3.4.4/i686-w64-mingw32/include,) \
 	 $(if $(DEBUG), -g, -O2) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DSQLITE_DEFAULT_LOCKING_MODE=1 \
 			 -DSQLITE_ENABLE_RTREE=1 \
@@ -118,7 +118,7 @@ ifdef WINDOWS_TARGET
 
 ifndef STATIC_LIBRARY_TARGET
 OFLAGS += \
-	 -L../../../deps/libffi-3.0.11/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
+	 -L../../../deps/libffi-3.4.4/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,gnurx-0)
 endif
@@ -190,7 +190,7 @@ ifdef LINUX_TARGET
 	ln -sf $(LP)$(MODULE)$(SO).0.44 $(OBJ)$(LP)$(MODULE)$(SO)
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO).0
 	ln -sf $(LP)$(MODULE)$(SO).0.44 ../../../$(SODESTDIR)$(LP)$(MODULE)$(SO)
-endif	
+endif
 
 # SYMBOL RULES
 
