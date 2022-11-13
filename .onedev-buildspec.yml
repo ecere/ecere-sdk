@@ -36,6 +36,7 @@ jobs:
       - apt -y install libfontconfig1-dev
       - apt -y install mingw-w64
       - apt -y install wget
+      - apt -y install git
 #       make bindings CXXFLAGS="-std=c++1z -fno-exceptions -fno-rtti" -j2 &&
       - make -j2 &&
         mkdir output &&
@@ -43,32 +44,50 @@ jobs:
         cd output &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux-x86_64.tar.gz * &&
         cd .. &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps-linux-x86_64.tar.gz deps &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec ide/res/actions default.cf crossplatform.mk &&
         cd obj &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz * &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz linux &&
         cd .. &&
         wget https://ecere.com/tmp/win32-patches.tar.gz &&
         tar xf win32-patches.tar.gz &&
         ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
         ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
-        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg
+        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg &&
+        mkdir output-win32 &&
+        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg DESTDIR=output-win32 install &&
+        cd output-win32 &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz * &&
+        cd .. &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps.tar.gz deps &&
+        cd obj &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz win32 &&
+        cd ..
     useTTY: true
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
-    name: ArtefactsBinaries
+    name: ArtefactsLinuxInstall
     sourcePath: output
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
-    name: ArtefactsBinaries
+    name: ArtefactsWindowsInstall
+    sourcePath: output-win32
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsLinuxBinaries
     sourcePath: obj
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
+    name: ArtefactsWindowsBinaries
+    sourcePath: obj
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
     name: ArtefactsDeps
     sourcePath: .
-    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps-linux-x86_64.tar.gz'
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
     name: ArtefactsExtrasButterburSource
