@@ -3,10 +3,12 @@ static define dateString = $"August 4, 2016";
 static define builtOnString = $"built on ";
 static define withoutMinGW = $" (Without MinGW)";
 
+#if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define GetFreeSpace _GetFreeSpace
 #include <windows.h>
 #undef GetFreeSpace
+#endif
 
 #ifdef ECERE_STATIC
 import static "ecere"
@@ -34,6 +36,7 @@ static void SetBuildString(Label label)
 
 static bool IsAdministrator()
 {
+#if defined(__WIN32__)
    BOOL b;
    SID_IDENTIFIER_AUTHORITY NtAuthority = { SECURITY_NT_AUTHORITY };
    PSID AdministratorsGroup;
@@ -45,6 +48,9 @@ static bool IsAdministrator()
        FreeSid(AdministratorsGroup);
    }
    return b == TRUE;
+#else
+   return false; //true;
+#endif
 }
 
 struct CheckItem
@@ -1362,6 +1368,7 @@ void ModifyPath(char * systemPath, char * userPath)
 
 void AssociateExtension(const char * extension, const char * description, const char *name, const char * action, const char * path)
 {
+#if defined(__WIN32__)
    HKEY key;
    DWORD status;
    char keyName[1024];
@@ -1394,6 +1401,7 @@ void AssociateExtension(const char * extension, const char * description, const 
       RegSetValueExW(key, null, 0, REG_SZ, (byte *)wKeyName, (uint)(wcslen(wKeyName) + 1)*sizeof(uint16));
    }
    RegCloseKey(key);
+#endif
 }
 
 class InstallThread : Thread
@@ -1521,6 +1529,7 @@ class InstallThread : Thread
          settings.language = GetLanguageString();
 
          // Set LANGUAGE environment variable
+#if defined(__WIN32__)
          {
             HKEY key = null;
             uint16 wLanguage[256];
@@ -1538,6 +1547,7 @@ class InstallThread : Thread
                RegCloseKey(key);
             }
          }
+#endif
 
          settingsContainer.Save();
          {
@@ -1555,6 +1565,7 @@ class InstallThread : Thread
          ((GuiApplication)__thisModule).Unlock();
          ((GuiApplication)__thisModule).SignalEvent();
 
+#if defined(__WIN32__)
          {
             HKEY key;
             DWORD status;
@@ -1574,6 +1585,7 @@ class InstallThread : Thread
             //RegSetValueEx(key, "NoRepair", 0, REG_DWORD, (byte *)&nomodify, sizeof(nomodify));
             RegCloseKey(key);
          }
+#endif
 
          // Add paths
          if(pathOptions[PathOptions::AddECEREPaths].selected
@@ -1582,6 +1594,7 @@ class InstallThread : Thread
 #endif
             )
          {
+#if defined(__WIN32__)
             HKEY userKey = null, systemKey = null;
             DWORD status, size;
             char userPath[8192] = "";
@@ -1591,6 +1604,7 @@ class InstallThread : Thread
 
             wUserPath[0] = 0;
             wSystemPath[0] = 0;
+#endif
 
             ((GuiApplication)__thisModule).Lock();
             installProgress.installing.caption = "Registering paths...";
@@ -1599,6 +1613,7 @@ class InstallThread : Thread
 
             if(options[0].selected)
             {
+#if defined(__WIN32__)
                if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_ALL_ACCESS, &systemKey) == ERROR_SUCCESS)
                {
                   size = sizeof(wSystemPath);
@@ -1610,9 +1625,11 @@ class InstallThread : Thread
                   RegSetValueExW(systemKey, L"path", 0, REG_EXPAND_SZ, (byte *)wSystemPath, (uint)(wcslen(wSystemPath)+1) * 2);
                   RegCloseKey(systemKey);
                }
+#endif
             }
             else
             {
+#if defined(__WIN32__)
                if(RegOpenKeyEx(HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, KEY_QUERY_VALUE, &systemKey) == ERROR_SUCCESS)
                {
                   size = sizeof(wSystemPath);
@@ -1632,6 +1649,7 @@ class InstallThread : Thread
                UTF8toUTF16Buffer(userPath, wUserPath, sizeof(wUserPath) / sizeof(uint16));
                RegSetValueExW(userKey, L"path", 0, REG_EXPAND_SZ, (byte *)wUserPath, (uint)(wcslen(wUserPath)+1) * 2);
                RegCloseKey(userKey);
+#endif
             }
             // SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 1000, NULL);
          }
@@ -1643,7 +1661,9 @@ class InstallThread : Thread
          {
             char destPath[MAX_LOCATION];
             char startMenuPath[MAX_LOCATION] = "";
+#if defined(__WIN32__)
             HKEY key;
+#endif
 
             ((GuiApplication)__thisModule).Lock();
             installProgress.installing.caption = $"Installing Start Menu Icons...";
@@ -1652,6 +1672,7 @@ class InstallThread : Thread
 
             strcpy(destPath, userProfile);
 
+#if defined(__WIN32__)
             if(RegOpenKeyEx(options[0].selected ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER,
                "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS)
             {
@@ -1662,6 +1683,7 @@ class InstallThread : Thread
                UTF16toUTF8Buffer(wStartMenuPath, startMenuPath, sizeof(startMenuPath));
                RegCloseKey(key);
             }
+#endif
             if(!startMenuPath[0] && userProfile[0])
             {
                strcpy(startMenuPath, userProfile);
@@ -1709,9 +1731,12 @@ class InstallThread : Thread
          // Install Desktop Icon
          if(options[IconOptions::DesktopIcon].selected)
          {
+#if defined(__WIN32__)
             HKEY key;
+#endif
             char desktopPath[MAX_LOCATION];
 
+#if defined(__WIN32__)
             if(RegOpenKeyEx(options[0].selected ? HKEY_LOCAL_MACHINE : HKEY_CURRENT_USER,
                "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders", 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS)
             {
@@ -1721,6 +1746,7 @@ class InstallThread : Thread
                UTF16toUTF8Buffer(wDesktopPath, desktopPath, sizeof(desktopPath));
                RegCloseKey(key);
             }
+#endif
             if(!desktopPath[0] && userProfile[0])
             {
                strcpy(desktopPath, userProfile);
@@ -1740,7 +1766,9 @@ class InstallThread : Thread
             }
          }
 
+#if defined(__WIN32__)
          SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, (LPARAM)"Environment", SMTO_NORMAL, 1000, NULL);
+#endif
 
          // Install QuickLaunch Icon
          if(options[IconOptions::QuickLaunchIcon].selected)

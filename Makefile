@@ -494,9 +494,9 @@ installer:
 	$(_MAKE) prepinstall ARCH=
 	$(_MAKE) prepinstall ARCH=x32
 	@$(call echo,Building Ecere runtime for installer...)
-	+cd ecere && @$(_MAKE) -f Makefile.installer ARCH=x32
+	+cd ecere && $(_MAKE) -f Makefile.installer ARCH=x32
 	@$(call echo,Building Installer for Windows...)
-	+cd installer && @$(_MAKE) ARCH=x32
+	+cd installer && $(_MAKE) ARCH=x32
 	@$(call echo,The Ecere SDK Windows Installer is fully built.)
 endif
 

@@ -1,3 +1,4 @@
+#if defined(__WIN32__)
 #define COBJMACROS
 #define WIN32_LEAN_AND_MEAN
 #define UNICODE
@@ -10,6 +11,7 @@
 #undef Array
 #undef byte
 #undef int64
+#endif
 
 #ifdef ECERE_STATIC
 import static "ecere"
@@ -19,6 +21,7 @@ import "ecere"
 
 bool CreateLink(char * lpszPathObj, char * lpszPathLink, char * lpszDesc)
 {
+#if defined(__WIN32__)
     HRESULT hres;
     IShellLink* psl;
 
@@ -48,4 +51,7 @@ bool CreateLink(char * lpszPathObj, char * lpszPathLink, char * lpszDesc)
         IShellLinkW_Release(psl);
     }
     return hres == 0;
+#else
+    return true;
+#endif
 }
