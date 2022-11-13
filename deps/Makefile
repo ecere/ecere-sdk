@@ -47,7 +47,7 @@ curl:
 
 ffi:
 	@$(call echo,Building libffi...)
-	+cd libffi-3.0.11 && $(_MAKE)
+	+cd libffi-3.4.4 && $(_MAKE)
 
 cleantarget:
 	+cd freetype-2.3.12 && $(_MAKE) cleantarget
@@ -56,7 +56,7 @@ cleantarget:
 	+cd jpeg-9a && $(_MAKE) cleantarget
 	+cd libungif-4.1.1 && $(_MAKE) cleantarget
 	+cd curl-7.51.0 && $(_MAKE) cleantarget
-	+cd libffi-3.0.11 && $(_MAKE) cleantarget
+	+cd libffi-3.4.4 && $(_MAKE) cleantarget
 
 clean:
 	+cd freetype-2.3.12 && $(_MAKE) clean
@@ -65,7 +65,7 @@ clean:
 	+cd jpeg-9a && $(_MAKE) clean
 	+cd libungif-4.1.1 && $(_MAKE) clean
 	+cd curl-7.51.0 && $(_MAKE) clean
-	+cd libffi-3.0.11 && $(_MAKE) clean
+	+cd libffi-3.4.4 && $(_MAKE) clean
 
 realclean:
 	+cd freetype-2.3.12 && $(_MAKE) realclean
@@ -74,7 +74,7 @@ realclean:
 	+cd jpeg-9a && $(_MAKE) realclean
 	+cd libungif-4.1.1 && $(_MAKE) realclean
 	+cd curl-7.51.0 && $(_MAKE) realclean
-	+cd libffi-3.0.11 && $(_MAKE) realclean
+	+cd libffi-3.4.4 && $(_MAKE) realclean
 
 wipeclean:
 	+cd freetype-2.3.12 && $(_MAKE) wipeclean
@@ -83,7 +83,7 @@ wipeclean:
 	+cd jpeg-9a && $(_MAKE) wipeclean
 	+cd libungif-4.1.1 && $(_MAKE) wipeclean
 	+cd curl-7.51.0 && $(_MAKE) wipeclean
-	+cd libffi-3.0.11 && $(_MAKE) wipeclean
+	+cd libffi-3.4.4 && $(_MAKE) wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

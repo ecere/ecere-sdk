@@ -1,0 +1,109 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "ffi",
+   "Options" : {
+      "Warnings" : "All",
+      "IncludeDirs" : [
+         "include",
+         "i686-pc-mingw32/include",
+         "i686-pc-mingw32"
+      ],
+      "TargetType" : "StaticLibrary",
+      "TargetFileName" : "ffi"
+   },
+   "Platforms" : [
+      {
+         "Name" : "win32",
+         "Options" : {
+            "PreprocessorDefinitions" : [
+               "X86_WIN64"
+            ],
+            "IncludeDirs" : [
+               "i686-w64-mingw32/include",
+               "i686-w64-mingw32"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "Optimization" : "None",
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "Debug" : false,
+            "Optimization" : "Speed",
+            "FastMath" : true
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "x86",
+               "Files" : [
+                  {
+                     "FileName" : "win32.S",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "Folder" : "x64",
+               "Files" : [
+                  "src/x86/win64.S"
+               ]
+            },
+            "prep_cif.c",
+            "raw_api.c",
+            "types.c",
+            "closures.c",
+            "i686-pc-mingw32/include/ffi.h",
+            "src/x86/ffi.c",
+            "src/x86/ffitarget.h",
+            "src/x86/asmnames.h",
+            {
+               "FileName" : "src/x86/ffi64.c",
+               "Platforms" : [
+                  {
+                     "Name" : "win32",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            {
+               "FileName" : "src/x86/ffiw64.c",
+               "Platforms" : [
+                  {
+                     "Name" : "linux",
+                     "Options" : {
+                        "ExcludeFromBuild" : true
+                     }
+                  }
+               ]
+            },
+            "src/x86/internal.h",
+            "src/x86/internal64.h"
+         ]
+      }
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}
