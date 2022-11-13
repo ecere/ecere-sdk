@@ -34,6 +34,8 @@ jobs:
       - apt -y install libasound2-dev
       - apt -y install libcurl4-openssl-dev
       - apt -y install libfontconfig1-dev
+      - apt -y install mingw-w64
+      - apt -y install wget
 #       make bindings CXXFLAGS="-std=c++1z -fno-exceptions -fno-rtti" -j2 &&
       - make -j2 &&
         mkdir output &&
@@ -44,7 +46,13 @@ jobs:
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps-linux-x86_64.tar.gz deps &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec ide/res/actions default.cf crossplatform.mk &&
         cd obj &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz *
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz * &&
+        cd .. &&
+        wget https://ecere.com/tmp/win32-patches.tar.gz &&
+        tar xf win32-patches.tar.gz &&
+        ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
+        ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
+        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg
     useTTY: true
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
