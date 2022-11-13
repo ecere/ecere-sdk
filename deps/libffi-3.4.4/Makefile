@@ -3,7 +3,7 @@
 # CORE VARIABLES
 
 MODULE := ffi
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -40,7 +40,7 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
 TARGET_NAME := ffi
 
@@ -54,7 +54,8 @@ _OBJECTS = \
 	$(OBJ)closures$(O) \
 	$(OBJ)ffi$(O) \
 	$(if $(WINDOWS_TARGET),,$(OBJ)ffi64$(O)) \
-	$(if $(LINUX_TARGET),,$(OBJ)ffiw64$(O))
+	$(if $(LINUX_TARGET),,$(OBJ)ffiw64$(O)) \
+	$(OBJ)sysv$(O)
 
 OBJECTS = $(_OBJECTS)
 
@@ -66,7 +67,8 @@ SOURCES = \
 	src/closures.c \
 	src/x86/ffi.c \
 	$(if $(WINDOWS_TARGET),,src/x86/ffi64.c) \
-	$(if $(LINUX_TARGET),,src/x86/ffiw64.c)
+	$(if $(LINUX_TARGET),,src/x86/ffiw64.c) \
+	src/x86/sysv.S
 
 RESOURCES =
 
@@ -80,7 +82,6 @@ LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
-			 -DX86_WIN64 \
 			 -Ii686-w64-mingw32/include \
 			 -Ii686-w64-mingw32,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
@@ -162,6 +163,9 @@ ifneq ($(or $(WINDOWS_TARGET),$(OSX_TARGET)),)
 $(OBJ)ffiw64$(O): src/x86/ffiw64.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/ffiw64.c) -o $(call quote_path,$@)
 endif
+
+$(OBJ)sysv$(O): src/x86/sysv.S
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/sysv.S) -o $(call quote_path,$@)
 
 cleantarget:
 	$(call rm,$(OBJ)objects.lst)
