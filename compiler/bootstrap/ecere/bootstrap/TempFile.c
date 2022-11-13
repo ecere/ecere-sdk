@@ -448,6 +448,14 @@ __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated *= 2;
 if(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated < __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size)
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = __ecerePointer___ecereNameSpace__ecere__sys__TempFile->size * 2;
 __ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer = __ecereNameSpace__ecere__com__eSystem_Renew0(__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer, sizeof(unsigned char) * (__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated));
+if(!__ecerePointer___ecereNameSpace__ecere__sys__TempFile->buffer)
+{
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->allocated = 0;
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->size = 0;
+__ecerePointer___ecereNameSpace__ecere__sys__TempFile->position = 0;
+written = 0;
+writeSize = 0;
+}
 }
 }
 if(writeSize)
