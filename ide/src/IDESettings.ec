@@ -558,7 +558,8 @@ class IDESettingsContainer : GlobalSettings
    static void getConfigFilePath(char * path, Class _class, char * dir, const char * configName)
    {
       if(dir) *dir = 0;
-      strcpy(path, settingsFilePath);
+      if(settingsFilePath)
+         strcpy(path, settingsFilePath);
       StripLastDirectory(path, path);
       if(oldConfig)
          PathCatSlash(path, settingsDir);
@@ -2114,7 +2115,7 @@ public:
       char path[MAX_LOCATION];
       const char * settingsFilePath = settingsContainer.settingsFilePath;
       settingsContainer.getConfigFilePath(path, _class, dir, name);
-      if(FileExists(settingsFilePath) && !FileExists(dir))
+      if(settingsFilePath && FileExists(settingsFilePath) && !FileExists(dir))
       {
          MakeDir(dir);
          if(!FileExists(dir))

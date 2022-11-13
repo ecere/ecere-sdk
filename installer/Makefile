@@ -1,13 +1,9 @@
-ifneq ($(V),1)
-.SILENT:
-endif
-
-.PHONY: all objdir cleantarget clean realclean wipeclean distclean pots
+.PHONY: all objdir cleantarget clean realclean distclean
 
 # CORE VARIABLES
 
 MODULE := Installer
-VERSION := 
+VERSION :=
 CONFIG := release
 ifndef COMPILER
 COMPILER := default
@@ -44,13 +40,16 @@ include $(_CF_DIR)default.cf
 
 OBJ = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/
 
-RES = 
+RES =
 
-TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/setup-ecere-0.44.15-win32$(E)
+TARGET_NAME := setup-ecere-0.44.16pre-win32
+
+TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(TARGET_NAME)$(E)
 
 _ECSOURCES = \
 	../ide/src/IDESettings.ec \
 	../ide/src/OldIDESettings.ec \
+	../ide/src/designer/SyntaxColorScheme.ec \
 	src/installer.ec \
 	../extras/gui/controls/StringsBox.ec \
 	../ide/src/licensing.ec \
@@ -298,7 +297,6 @@ RESOURCES5 = \
 	../share/man/man1/epj2make.1 \
 	../LICENSE \
 	../README.md \
-	../doc/tao.pdf \
 	../doc/tao.pdf
 RESOURCES6 = \
 	coursework/Chapter\ 1\ -\ Getting\ Started/Lab1.1/helloWorld.ec \
@@ -885,11 +883,9 @@ RESOURCES23 = \
 	../samples/android/helloAndroid.epj \
 	../samples/android/note.txt \
 	../samples/LICENSE \
-	../extras/gui/controls/CheckListBox.ec \
 	../extras/gui/controls/LogBox.ec \
 	../extras/gui/controls/PasswordBox.ec \
 	../extras/gui/controls/SearchBox.ec \
-	../extras/gui/controls/StringsBox.ec \
 	../extras/gui/skins/SimSkin.ec \
 	../extras/gui/IconBag.ec \
 	../extras/gui/layout.ec \
@@ -1198,31 +1194,17 @@ RESOURCES31 = \
 	../extras/wia.ec \
 	../extras/windowsShortcut.ec \
 	../extras/XMLParser.ec \
-	../extras/createLink.ec \
 	../extras/stringTools.ec \
-	../extras/res/licenses/freetype.LICENSE \
-	../extras/res/licenses/harfbuzz.LICENSE \
-	../extras/res/licenses/jpg.LICENSE \
-	../extras/res/licenses/png.LICENSE \
-	../extras/res/licenses/sqlite.LICENSE \
-	../extras/res/licenses/tango.COPYING \
-	../extras/res/licenses/ungif.LICENSE \
-	../extras/res/licenses/upx.LICENSE \
-	../extras/res/licenses/zlib.README \
-	../LICENSE \
-	../extras/res/licenses/MinGW-w64.LICENSE \
-	../extras/res/licenses/tdm-gcc.LICENSE \
-	../extras/res/licenses/ffi.LICENSE \
-	../obj/win32.x32/bin/documentor.exe \
-	../obj/win32.x32/bin/ecere-ide.exe \
-	../obj/win32.x32/bin/ear.exe \
-	../obj/win32.x32/bin/ec.dll
+	../obj/win32.x32/bin/documentor32.exe \
+	../obj/win32.x32/bin/ecere-ide32.exe \
+	../obj/win32.x32/bin/ear32.exe
 RESOURCES32 = \
-	../obj/win32.x32/bin/ecc.exe \
+	../obj/win32.x32/bin/ec.dll \
+	../obj/win32.x32/bin/ecc32.exe \
 	../obj/win32.x32/bin/ecereCOM.dll \
-	../obj/win32.x32/bin/ecp.exe \
-	../obj/win32.x32/bin/ecs.exe \
-	../obj/win32.x32/bin/epj2make.exe \
+	../obj/win32.x32/bin/ecp32.exe \
+	../obj/win32.x32/bin/ecs32.exe \
+	../obj/win32.x32/bin/epj2make32.exe \
 	../obj/win32.x32/bin/EDA.dll \
 	../obj/win32.x32/bin/EDASQLite.dll \
 	../obj/win32.x32/bin/ecere.dll \
@@ -1253,9 +1235,9 @@ RESOURCES32 = \
 	tdm/binutils-2.25-tdm64-1/bin/strip.exe \
 	tdm/binutils-2.25-tdm64-1/bin/windmc.exe \
 	tdm/binutils-2.25-tdm64-1/bin/windres.exe \
-	tdm/binutils-2.25-tdm64-1/include/ansidecl.h \
-	tdm/binutils-2.25-tdm64-1/include/bfd.h
+	tdm/binutils-2.25-tdm64-1/include/ansidecl.h
 RESOURCES33 = \
+	tdm/binutils-2.25-tdm64-1/include/bfd.h \
 	tdm/binutils-2.25-tdm64-1/include/bfdlink.h \
 	tdm/binutils-2.25-tdm64-1/include/dis-asm.h \
 	tdm/binutils-2.25-tdm64-1/include/plugin-api.h \
@@ -2301,10 +2283,8 @@ RESOURCES100 = \
 	tdm/make-3.82.90/licenses/COPYING
 RESOURCES101 = \
 	tdm/libgnurx-2.7/bin/gnurx-0.dll \
-	tdm/libgnurx-2.7/include/regex.h
-RESOURCES91 = \
-	tdm/libgnurx-2.5.1-32/bin/libgnurx-0.dll \
 	tdm/libgnurx-2.7/include/regex.h \
+	tdm/libgnurx-2.5.1-32/bin/libgnurx-0.dll \
 	tdm/binutils-2.25-tdm64-1/share/info/as.info \
 	tdm/binutils-2.25-tdm64-1/share/info/bfd.info \
 	tdm/binutils-2.25-tdm64-1/share/info/binutils.info \
@@ -2349,19 +2329,6 @@ RESOURCES102 = \
 	tdm/binutils-2.25-tdm64-1/share/man/man1/strip.1 \
 	tdm/binutils-2.25-tdm64-1/share/man/man1/windmc.1 \
 	tdm/binutils-2.25-tdm64-1/share/man/man1/windres.1 \
-	tdm/gcc-5.1.0-tdm64-1-c++/share/man/man1/g++.1 \
-	tdm/gcc-5.1.0-tdm64-1-core/share/info/cpp.info \
-	tdm/gcc-5.1.0-tdm64-1-core/share/info/cppinternals.info \
-	tdm/gcc-5.1.0-tdm64-1-core/share/info/gcc.info \
-	tdm/gcc-5.1.0-tdm64-1-core/share/info/gccinstall.info \
-	tdm/gcc-5.1.0-tdm64-1-core/share/info/gccint.info \
-	tdm/gcc-5.1.0-tdm64-1-core/share/info/libquadmath.info \
-	tdm/gcc-5.1.0-tdm64-1-core/share/man/man1/cpp.1 \
-	tdm/gcc-5.1.0-tdm64-1-core/share/man/man1/gcc.1 \
-	tdm/gcc-5.1.0-tdm64-1-core/share/man/man1/gcov.1 \
-	tdm/gcc-5.1.0-tdm64-1-core/share/man/man7/fsf-funding.7 \
-	tdm/gcc-5.1.0-tdm64-1-core/share/man/man7/gfdl.7 \
-	tdm/gcc-5.1.0-tdm64-1-core/share/man/man7/gpl.7 \
 	tdm/doc/gdb/info/gdb.info \
 	tdm/doc/gdb/man/gdb.1 \
 	tdm/doc/gnurx/info/regex.info \
@@ -5732,33 +5699,23 @@ RESOURCES296 = \
 	locale/pt_BR.mo \
 	locale/ru.mo \
 	locale/zh_CN.mo \
-	../extras/res/types/countryCode/es.png \
-	../extras/res/types/countryCode/gb.png \
-	../extras/res/types/countryCode/hu.png \
-	../extras/res/types/countryCode/cn.png \
-	../extras/res/types/countryCode/pt.png \
-	../extras/res/types/countryCode/vn.png \
-	../extras/res/types/countryCode/ru.png \
-	../extras/res/types/countryCode/in.png \
-	../extras/res/types/countryCode/nl.png \
-	../extras/res/types/countryCode/il.png \
-	../extras/res/types/countryCode/br.png \
 	../ide/res/icon.png \
 	ecere.png \
 	ryoanji.png \
 	ryoanji-progress.png
+
+ifdef USE_RESOURCES_EAR
+RESOURCES_EAR = $(OBJ)resources.ear
+else
+RESOURCES_EAR = $(RESOURCES)
+endif
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
 ifndef STATIC_LIBRARY_TARGET
 LIBS += \
 	$(call _L,ecereInstaller) \
-	$(call _L,ole32) \
-	$(call _L,uuid) \
-	$(call _L,winmm) \
-	$(call _L,mpr) \
 	$(call _L,z) \
-	$(call _L,imm32) \
 	$(call _L,png)
 endif
 
@@ -5767,6 +5724,21 @@ PRJ_CFLAGS += \
 			 -DECERE_STATIC
 
 ECFLAGS += -module $(MODULE)
+# PLATFORM-SPECIFIC OPTIONS
+
+ifdef WINDOWS_TARGET
+
+ifndef STATIC_LIBRARY_TARGET
+LIBS += \
+	$(call _L,ole32) \
+	$(call _L,uuid) \
+	$(call _L,winmm) \
+	$(call _L,mpr) \
+	$(call _L,imm32)
+endif
+
+endif
+
 CECFLAGS += -cpp $(_CPP)
 
 ifndef STATIC_LIBRARY_TARGET
@@ -5781,7 +5753,7 @@ endif
 all: objdir $(TARGET)
 
 objdir:
-	$(call mkdir,$(OBJ))
+	$(if $(wildcard $(OBJ)),,$(call mkdir,$(OBJ)))
 	$(if $(ECERE_SDK_SRC),$(if $(wildcard $(call escspace,$(ECERE_SDK_SRC)/crossplatform.mk)),,@$(call echo,Ecere SDK Source Warning: The value of ECERE_SDK_SRC is pointing to an incorrect ($(ECERE_SDK_SRC)) location.)),)
 	$(if $(ECERE_SDK_SRC),,$(if $(ECP_DEBUG)$(ECC_DEBUG)$(ECS_DEBUG),@$(call echo,ECC Debug Warning: Please define ECERE_SDK_SRC before using ECP_DEBUG, ECC_DEBUG or ECS_DEBUG),))
 
@@ -5792,7 +5764,7 @@ $(OBJ)$(MODULE).main.ec: $(SYMBOLS) $(COBJECTS)
 	$(call addtolistfile,$(IMPORTS),$(OBJ)symbols.lst)
 	$(ECS) $(ARCH_FLAGS) $(ECSLIBOPT) @$(OBJ)symbols.lst -symbols obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX) -o $(call quote_path,$@)
 
-pots: $(OBJ)$(MODULE).main.ec	
+pots: $(OBJ)$(MODULE).main.ec
 
 $(OBJ)$(MODULE).main.c: $(OBJ)$(MODULE).main.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(OBJ)$(MODULE).main.ec -o $(OBJ)$(MODULE).main.sym -symbols $(OBJ)
@@ -5809,7 +5781,7 @@ endif
 	$(call addtolistfile,$(OBJ)$(MODULE).main$(O),$(OBJ)objects.lst)
 	$(call addtolistfile,$(ECOBJECTS),$(OBJ)objects.lst)
 ifndef STATIC_LIBRARY_TARGET
-	$(CC) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME)
+	$(LD) $(OFLAGS) @$(OBJ)objects.lst $(LIBS) -o $(TARGET) $(INSTALLNAME) $(SONAME)
 ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
@@ -6060,8 +6032,8 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/freetype.LICENSE ../extras/res/licenses/harfbuzz.LICENSE ../extras/res/licenses/jpg.LICENSE ../extras/res/licenses/png.LICENSE ../extras/res/licenses/sqlite.LICENSE ../extras/res/licenses/tango.COPYING ../extras/res/licenses/ungif.LICENSE ../extras/res/licenses/upx.LICENSE ../extras/res/licenses/zlib.README ../LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/licenses/MinGW-w64.LICENSE ../extras/res/licenses/tdm-gcc.LICENSE ../extras/res/licenses/ffi.LICENSE "licenses"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/ecere.dll ../obj/win32.x32/lib/libecereVanilla.a ../obj/win32.x32/bin/EcereAudio.dll "ecere-sdk32"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/documentor.exe ../obj/win32.x32/bin/ecere-ide.exe "ecere-sdk32/ide"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/ear.exe ../obj/win32.x32/bin/ec.dll ../obj/win32.x32/bin/ecc.exe ../obj/win32.x32/bin/ecereCOM.dll ../obj/win32.x32/bin/ecp.exe ../obj/win32.x32/bin/ecs.exe ../obj/win32.x32/bin/epj2make.exe "ecere-sdk32/compiler"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/documentor32.exe ../obj/win32.x32/bin/ecere-ide32.exe "ecere-sdk32/ide"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/ear32.exe ../obj/win32.x32/bin/ec.dll ../obj/win32.x32/bin/ecc32.exe ../obj/win32.x32/bin/ecereCOM.dll ../obj/win32.x32/bin/ecp32.exe ../obj/win32.x32/bin/ecs32.exe ../obj/win32.x32/bin/epj2make32.exe "ecere-sdk32/compiler"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32.x32/bin/EDA.dll ../obj/win32.x32/bin/EDASQLite.dll "ecere-sdk32/eda"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/gdb/gdb.exe tdm/gdb/i686-w64-mingw32-gdb.exe "tdm/gdb/bin"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/binutils-2.25-tdm64-1/COPYING.winpthreads.txt tdm/binutils-2.25-tdm64-1/COPYING3-gcc-tdm.txt tdm/binutils-2.25-tdm64-1/COPYING3.LIB-gcc-tdm.txt "tdm/binutils/licenses"
@@ -6576,6 +6548,9 @@ $(OBJ)IDESettings.sym: ../ide/src/IDESettings.ec
 $(OBJ)OldIDESettings.sym: ../ide/src/OldIDESettings.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../ide/src/OldIDESettings.ec) -o $(call quote_path,$@)
 
+$(OBJ)SyntaxColorScheme.sym: ../ide/src/designer/SyntaxColorScheme.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,../ide/src/designer/SyntaxColorScheme.ec) -o $(call quote_path,$@)
+
 $(OBJ)installer.sym: src/installer.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/installer.ec) -o $(call quote_path,$@)
 
@@ -6599,6 +6574,9 @@ $(OBJ)IDESettings.c: ../ide/src/IDESettings.ec $(OBJ)IDESettings.sym | $(SYMBOLS
 $(OBJ)OldIDESettings.c: ../ide/src/OldIDESettings.ec $(OBJ)OldIDESettings.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,../ide/src/OldIDESettings.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
+$(OBJ)SyntaxColorScheme.c: ../ide/src/designer/SyntaxColorScheme.ec $(OBJ)SyntaxColorScheme.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,../ide/src/designer/SyntaxColorScheme.ec) -o $(call quote_path,$@) -symbols $(OBJ)
+
 $(OBJ)installer.c: src/installer.ec $(OBJ)installer.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,src/installer.ec) -o $(call quote_path,$@) -symbols $(OBJ)
 
@@ -6616,30 +6594,33 @@ $(OBJ)CheckListBox.c: ../extras/gui/controls/CheckListBox.ec $(OBJ)CheckListBox.
 
 # OBJECT RULES
 
-$(OBJ)IDESettings.o: $(OBJ)IDESettings.c
+$(OBJ)IDESettings$(O): $(OBJ)IDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)IDESettings.c) -o $(call quote_path,$@)
 
-$(OBJ)OldIDESettings.o: $(OBJ)OldIDESettings.c
+$(OBJ)OldIDESettings$(O): $(OBJ)OldIDESettings.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)OldIDESettings.c) -o $(call quote_path,$@)
 
-$(OBJ)installer.o: $(OBJ)installer.c
+$(OBJ)SyntaxColorScheme$(O): $(OBJ)SyntaxColorScheme.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)SyntaxColorScheme.c) -o $(call quote_path,$@)
+
+$(OBJ)installer$(O): $(OBJ)installer.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)installer.c) -o $(call quote_path,$@)
 
-$(OBJ)StringsBox.o: $(OBJ)StringsBox.c
+$(OBJ)StringsBox$(O): $(OBJ)StringsBox.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)StringsBox.c) -o $(call quote_path,$@)
 
-$(OBJ)licensing.o: $(OBJ)licensing.c
+$(OBJ)licensing$(O): $(OBJ)licensing.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)licensing.c) -o $(call quote_path,$@)
 
-$(OBJ)createLink.o: $(OBJ)createLink.c
+$(OBJ)createLink$(O): $(OBJ)createLink.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)createLink.c) -o $(call quote_path,$@)
 
-$(OBJ)CheckListBox.o: $(OBJ)CheckListBox.c
+$(OBJ)CheckListBox$(O): $(OBJ)CheckListBox.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)CheckListBox.c) -o $(call quote_path,$@)
 
 ifdef WINDOWS_TARGET
 
-$(OBJ)resources.o: ../ide/src/resources.rc
+$(OBJ)resources$(O): ../ide/src/resources.rc
 	$(WINDRES) $(WINDRES_FLAGS) $< "$(call escspace,$(call quote_path,$@))"
 endif
 
@@ -6647,7 +6628,7 @@ $(OBJ)$(MODULE).main$(O): $(OBJ)$(MODULE).main.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)$(MODULE).main.c -o $(call quote_path,$@)
 
 cleantarget:
-	$(call rm,$(OBJ)$(MODULE).main.o $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
+	$(call rm,$(OBJ)$(MODULE).main$(O) $(OBJ)$(MODULE).main.c $(OBJ)$(MODULE).main.ec $(OBJ)$(MODULE).main$(I) $(OBJ)$(MODULE).main$(S))
 	$(call rm,$(OBJ)symbols.lst)
 	$(call rm,$(OBJ)objects.lst)
 	$(call rm,$(TARGET))

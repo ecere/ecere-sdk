@@ -7,19 +7,28 @@
 
       ],
       "TargetType" : "Executable",
-      "TargetFileName" : "setup-ecere-0.44.15-win32",
+      "TargetFileName" : "setup-ecere-0.44.16pre-win32",
       "Libraries" : [
-         "ole32",
-         "uuid",
-         "winmm",
-         "mpr",
-         "z",
-         "imm32"
+         "z"
       ],
       "LibraryDirs" : [
-         "../deps/zlib-1.2.8/obj/release.win32.x32"
+         "../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
       ]
    },
+   "Platforms" : [
+      {
+         "Name" : "win32",
+         "Options" : {
+            "Libraries" : [
+               "ole32",
+               "uuid",
+               "winmm",
+               "mpr",
+               "imm32"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Release",
@@ -30,12 +39,7 @@
             ],
             "Libraries" : [
                "ecereInstaller",
-               "ole32",
-               "uuid",
-               "winmm",
-               "mpr",
                "z",
-               "imm32",
                "png"
             ],
             "LibraryDirs" : [
@@ -44,7 +48,21 @@
                "../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ],
             "FastMath" : true
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "ole32",
+                     "uuid",
+                     "winmm",
+                     "mpr",
+                     "imm32"
+                  ]
+               }
+            }
+         ]
       },
       {
          "Name" : "Debug",
@@ -52,17 +70,26 @@
             "Debug" : true,
             "Optimization" : "None",
             "Libraries" : [
-               "ole32",
-               "uuid",
-               "winmm",
-               "mpr",
-               "z",
-               "imm32",
-               "ecere"
+               "ecere",
+               "z"
             ],
             "Console" : true,
             "FastMath" : false
-         }
+         },
+         "Platforms" : [
+            {
+               "Name" : "win32",
+               "Options" : {
+                  "Libraries" : [
+                     "ole32",
+                     "uuid",
+                     "winmm",
+                     "mpr",
+                     "imm32"
+                  ]
+               }
+            }
+         ]
       }
    ],
    "Files" : [
@@ -70,7 +97,8 @@
          "Folder" : "ide",
          "Files" : [
             "../ide/src/IDESettings.ec",
-            "../ide/src/OldIDESettings.ec"
+            "../ide/src/OldIDESettings.ec",
+            "../ide/src/designer/SyntaxColorScheme.ec"
          ]
       },
       {
@@ -2256,20 +2284,20 @@
             {
                "Folder" : "ide",
                "Files" : [
-                  "../obj/win32.x32/bin/documentor.exe",
-                  "../obj/win32.x32/bin/ecere-ide.exe"
+                  "../obj/win32.x32/bin/documentor32.exe",
+                  "../obj/win32.x32/bin/ecere-ide32.exe"
                ]
             },
             {
                "Folder" : "compiler",
                "Files" : [
-                  "../obj/win32.x32/bin/ear.exe",
+                  "../obj/win32.x32/bin/ear32.exe",
                   "../obj/win32.x32/bin/ec.dll",
-                  "../obj/win32.x32/bin/ecc.exe",
+                  "../obj/win32.x32/bin/ecc32.exe",
                   "../obj/win32.x32/bin/ecereCOM.dll",
-                  "../obj/win32.x32/bin/ecp.exe",
-                  "../obj/win32.x32/bin/ecs.exe",
-                  "../obj/win32.x32/bin/epj2make.exe"
+                  "../obj/win32.x32/bin/ecp32.exe",
+                  "../obj/win32.x32/bin/ecs32.exe",
+                  "../obj/win32.x32/bin/epj2make32.exe"
                ]
             },
             {
