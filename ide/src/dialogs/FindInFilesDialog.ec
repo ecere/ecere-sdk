@@ -682,7 +682,7 @@ private:
                sprintf(substring, $" with file name matching \"%s\"", nameCriteria);
             else
                substring[0] = '\0';
-            if(contentCriteria && contentCriteria[0])
+            if(contentCriteria[0])
                sprintf(containing, $" containing \"%s\"", contentCriteria);
             else
                containing[0] = '\0';
