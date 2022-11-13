@@ -93,10 +93,10 @@ endif
 # CROSS_TARGET
 ifneq ($(TARGET_PLATFORM),$(HOST_PLATFORM))
    CROSS_TARGET := defined
-else
+endif
+
 ifneq ($(TARGET_ARCH),$(HOST_ARCH))
    CROSS_BITDEPTH := defined
-endif
 endif
 
 ifeq ($(HOST_ARCH),x86_64)

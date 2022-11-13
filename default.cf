@@ -6,7 +6,11 @@ ifdef WINDOWS_TARGET
   GCC_PREFIX=x86_64-w64-mingw32-
  else
    ifndef WINDOWS_HOST
-     GCC_PREFIX=x86_64-w64-mingw32-
+     ifeq ($(ARCH),x32)
+       GCC_PREFIX=i686-w64-mingw32-
+     else
+       GCC_PREFIX=x86_64-w64-mingw32-
+     endif
    endif
  endif
 endif

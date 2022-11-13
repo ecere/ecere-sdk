@@ -339,10 +339,10 @@ ifndef LINUX_HOST
 	$(call cp,compiler/libec2/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(HOST_LP)ec2$(HOST_SO),$(XOBJLIBDIR))
 endif
 endif
-	$(call cp,ear/cmd/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(HOST_E),$(XOBJBINDIR))
-	$(call cp,compiler/ecc/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(HOST_E),$(XOBJBINDIR))
-	$(call cp,compiler/ecp/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(HOST_E),$(XOBJBINDIR))
-	$(call cp,compiler/ecs/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(HOST_E),$(XOBJBINDIR))
+	$(call cp,ear/cmd/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ear$(B32_SFX)$(HOST_E),$(XOBJBINDIR))
+	$(call cp,compiler/ecc/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecc$(B32_SFX)$(HOST_E),$(XOBJBINDIR))
+	$(call cp,compiler/ecp/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecp$(B32_SFX)$(HOST_E),$(XOBJBINDIR))
+	$(call cp,compiler/ecs/obj/release.$(HOST_PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/ecs$(B32_SFX)$(HOST_E),$(XOBJBINDIR))
 
 endif
 
