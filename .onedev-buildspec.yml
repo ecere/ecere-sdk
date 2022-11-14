@@ -14,9 +14,13 @@ jobs:
     image: ubuntu:18.04
     interpreter: !DefaultInterpreter
       commands:
+      - dpkg --add-architecture i386
       - apt -y update
       - apt -y install build-essential
+      - apt -y install gcc-multilib
+      - apt -y install mingw-w64
       - apt -y install make
+      - apt -y install upx-ucl
       - apt -y install zlib1g-dev
       - apt -y install libpng-dev
       - apt -y install libjpeg62-dev
@@ -27,47 +31,66 @@ jobs:
       - apt -y install libxrender-dev
       - apt -y install libgl1-mesa-dev
       - apt -y install libxext-dev
-      - apt -y install upx-ucl
       - apt -y install libsqlite3-dev
       - apt -y install libssl-dev
       - apt -y install libffi-dev
       - apt -y install libasound2-dev
       - apt -y install libcurl4-openssl-dev
       - apt -y install libfontconfig1-dev
-      - apt -y install mingw-w64
+      - apt -y install zlib1g-dev:i386
+      - apt -y install libpng-dev:i386
+      - apt -y install libjpeg62-dev:i386
+#      - apt -y install libgif-dev:i386
+      - apt -y install libncurses5-dev:i386
+      - apt -y install libfreetype6-dev:i386
+      - apt -y install libx11-dev:i386
+      - apt -y install libxrender-dev:i386
+      - apt -y install libgl1-mesa-dev:i386
+      - apt -y install libxext-dev:i386
+      - apt -y install libsqlite3-dev:i386
+      - apt -y install libssl-dev:i386
+      - apt -y install libffi-dev:i386
+      - apt -y install libasound2-dev:i386
+      - apt -y install libcurl4-openssl-dev:i386
+      - apt -y install libfontconfig1-dev:i386
       - apt -y install wget
       - apt -y install git
 #       make bindings CXXFLAGS="-std=c++1z -fno-exceptions -fno-rtti" -j2 &&
-      - make -j2 &&
-        mkdir output &&
-        make install DESTDIR=output &&
-        cd output &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux-x86_64.tar.gz * &&
-        cd .. &&
+      - make -j2 && mkdir output && make install DESTDIR=output &&
+        apt -y install libgif-dev:i386 &&
+        make ARCH=x32 -j2 && make ARCH=x32 install DESTDIR=output &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec ide/res/actions default.cf crossplatform.mk &&
+        cd output && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux.tar.gz * && cd .. &&
         cd obj &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz linux &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz linux.x32 &&
         cd .. &&
         wget https://ecere.com/tmp/win32-patches.tar.gz &&
         tar xf win32-patches.tar.gz &&
         ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
         ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
+        ln -s $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
+        ln -s $(pwd)/win32/regex-x32/libgnurx-0.dll /usr/i686-w64-mingw32/lib/ &&
+        apt -y install libgif-dev &&
         make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg &&
         mkdir output-win32 &&
         make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg DESTDIR=output-win32 install &&
-        cd output-win32 &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz * &&
-        cd .. &&
+        cd output-win32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz * && cd .. &&
+        apt -y install libgif-dev:i386 &&
+        make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg &&
+        mkdir output-win32-x32 && make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg DESTDIR=output-win32-x32 install &&
+        cd output-win32-x32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-i686.tar.gz * && cd .. &&
+        make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg installer &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps.tar.gz deps &&
-        cd obj &&
-        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz win32 &&
-        cd ..
+        cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz win32 &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-i686.tar.gz win32.x32 && cd .. &&
+        cp installer/obj/release.win32.x32/setup-ecere-0.44.16pre-win32.exe @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-setup-ecere-0.44.16pre-win32.exe
     useTTY: true
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
     name: ArtefactsLinuxInstall
     sourcePath: output
-    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux-x86_64.tar.gz'
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
     name: ArtefactsWindowsInstall
@@ -75,14 +98,29 @@ jobs:
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
+    name: ArtefactsWindows32BitInstall
+    sourcePath: output-win32-x32
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-i686.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
     name: ArtefactsLinuxBinaries
     sourcePath: obj
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
+    name: ArtefactsLinux32BitBinaries
+    sourcePath: obj
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
     name: ArtefactsWindowsBinaries
     sourcePath: obj
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsWindows32BitBinaries
+    sourcePath: obj
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-i686.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
     name: ArtefactsDeps
@@ -94,6 +132,11 @@ jobs:
     sourcePath: .
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: WindowsInstaller
+    sourcePath: .
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-setup-ecere-0.44.16pre-win32.exe'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   triggers:
   - !PullRequestUpdateTrigger
     projects: ecere-sdk
@@ -104,4 +147,7 @@ jobs:
   retryDelay: 30
   cpuRequirement: 250
   memoryRequirement: 256
+  caches:
+  - key: '@project_name@Cache'
+    path: /var/cache/apt/archives
   timeout: 3600

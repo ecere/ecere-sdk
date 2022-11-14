@@ -238,7 +238,7 @@ ifdef CROSS_TARGET
 else
 	@$(call echo,Building 2nd stage ecere...)
 endif
-	+cd ecere && $(_MAKE) nores $(XBOOT)
+	+cd ecere && $(_MAKE) nores $(XBOOT)	# TOCHECK: Even when not using cross-target?
 	+cd ear && $(_MAKE) nores $(XBOOT)
 	+cd ecere && $(_MAKE) cleaneceretarget
 ifdef CROSS_TARGET
@@ -351,6 +351,10 @@ epj2make: prepbinaries
 	+cd epj2make && $(_MAKE)
 
 libec2: compiler
+ifdef CROSS_TARGET
+	@$(call echo,Building libec2 (host)...)
+	+cd compiler/libec2 && $(_MAKE) $(XBOOT)
+endif
 	@$(call echo,Building libec2...)
 	+cd compiler/libec2 && $(_MAKE)
 
