@@ -126,7 +126,7 @@ _BG_SOV := $(SO)$(_BG_VER)
 _BG_CONFIG := release
 
 _BG_CFLAGS_c = $(CFLAGS)
-_BG_CFLAGS_cpp = $(CFLAGS) $(CXXFLAGS)
+_BG_CFLAGS_cpp = $(CFLAGS)
 _BG_LDFLAGS_c = $(LDFLAGS)
 _BG_LDFLAGS_cpp = $(LDFLAGS)
 _BG_OFLAGS = $(OFLAGS)
