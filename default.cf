@@ -39,6 +39,7 @@ ifdef TRAVIS
 export CPP     = $(CC)
 else
 export CC      = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)
+export CXX     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)g++$(_SYSROOT)$(if $(GCC_CC_FLAGS),$(space)$(GCC_CC_FLAGS),)
 export CPP     = $(CCACHE_COMPILE)$(DISTCC_COMPILE)$(GCC_PREFIX)gcc$(_SYSROOT)
 endif
 export AS      = $(GCC_PREFIX)as
