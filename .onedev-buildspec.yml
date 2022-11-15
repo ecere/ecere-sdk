@@ -166,6 +166,8 @@ jobs:
   cpuRequirement: 250
   memoryRequirement: 256
   caches:
-  - key: '@project_name@Cache'
+  - key: '@project_name@AptCache'
     path: /var/cache/apt/archives
+  - key: '@project_name@AptList'
+    path: /var/lib/apt/lists
   timeout: 3600
