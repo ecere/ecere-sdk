@@ -167,7 +167,7 @@ jobs:
   memoryRequirement: 256
   caches:
   - key: '@project_name@AptCache'
-    path: /var/cache/apt/archives
+    path: /var/cache/apt
   - key: '@project_name@AptList'
     path: /var/lib/apt/lists
   - key: '@project_name@pip'
