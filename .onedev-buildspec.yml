@@ -170,4 +170,6 @@ jobs:
     path: /var/cache/apt/archives
   - key: '@project_name@AptList'
     path: /var/lib/apt/lists
+  - key: '@project_name@pip'
+    path: /root/.cache/pip
   timeout: 3600
