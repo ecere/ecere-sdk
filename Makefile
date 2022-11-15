@@ -238,7 +238,8 @@ ifdef CROSS_TARGET
 else
 	@$(call echo,Building 2nd stage ecere...)
 endif
-	+cd ecere && $(_MAKE) nores $(XBOOT)	# TOCHECK: Even when not using cross-target?
+# TOCHECK: $(XBOOT) Even when not using cross-target?
+	+cd ecere && $(_MAKE) nores $(XBOOT)
 	+cd ear && $(_MAKE) nores $(XBOOT)
 	+cd ecere && $(_MAKE) cleaneceretarget
 ifdef CROSS_TARGET
