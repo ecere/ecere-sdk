@@ -17,6 +17,8 @@ jobs:
       - dpkg --add-architecture i386
       - apt -y update
       - apt -y install build-essential
+      - apt -y install gcc-8
+      - apt -y install g++-8
       - apt -y install gcc-multilib
       - apt -y install mingw-w64
       - apt -y install make
@@ -55,8 +57,18 @@ jobs:
       - apt -y install libfontconfig1-dev:i386
       - apt -y install wget
       - apt -y install git
-#       make bindings CXXFLAGS="-std=c++1z -fno-exceptions -fno-rtti" -j2 &&
+      - apt -y install python3-pip
+      - pip3 install cffi
       - make -j2 && mkdir output && make install DESTDIR=output &&
+        rm /usr/bin/gcc &&
+        rm /usr/bin/g++ &&
+        ln -s /usr/bin/gcc-8 /usr/bin/gcc &&
+        ln -s /usr/bin/g++-8 /usr/bin/g++ &&
+        make bindings &&
+        rm /usr/bin/gcc &&
+        rm /usr/bin/g++ &&
+        ln -s /usr/bin/gcc-7 /usr/bin/gcc &&
+        ln -s /usr/bin/g++-7 /usr/bin/g++ &&
         apt -y install libgif-dev:i386 &&
         make ARCH=x32 -j2 && make ARCH=x32 install DESTDIR=output &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec ide/res/actions default.cf crossplatform.mk &&
@@ -65,6 +77,7 @@ jobs:
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz linux &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz linux.x32 &&
         cd .. &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings-linux-x86_64.tar.gz bindings &&
         wget https://ecere.com/tmp/win32-patches.tar.gz &&
         tar xf win32-patches.tar.gz &&
         ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
@@ -111,6 +124,11 @@ jobs:
     name: ArtefactsLinux32BitBinaries
     sourcePath: obj
     artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz'
+    condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
+  - !PublishArtifactStep
+    name: ArtefactsLinuxBindings
+    sourcePath: .
+    artifacts: '@project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings-linux-x86_64.tar.gz'
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
     name: ArtefactsWindowsBinaries
