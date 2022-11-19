@@ -337,14 +337,15 @@ public:
                max = {-MAXFLOAT,-MAXFLOAT,-MAXFLOAT };
                for(j = 0; j < nVertices; j++, v += increment)
                {
-                  SkinVert * sv = j < skin.skinVerts.count ? &skin.skinVerts[j] : &skin.skinVerts[dupVerts[j - skin.skinVerts.count]];
+                  int ix = (j < skin.skinVerts.count) ? j : dupVerts[j - skin.skinVerts.count];
+                  SkinVert * sv = &skin.skinVerts[ix];
                   int b;
                   for(b = 0; b < MAX_BONES; b++)
                   {
-                     int bone = sv->bones[j];
+                     int bone = sv->bones[b];
                      if(bone == i)
                      {
-                        if(sv->weights[j])
+                        if(sv->weights[b])
                         {
                            float x = v[0], y = v[1], z = v[2];
 
