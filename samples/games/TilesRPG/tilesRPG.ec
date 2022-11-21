@@ -132,6 +132,8 @@ public:
    TileUnit * unit;
 }
 
+enum GameState { realm, shop, fight, training, sorcerer, end };
+
 class Player : Creature
 {
    type = player;
@@ -285,9 +287,51 @@ Array<Creature> creatures { };
 define SHOP_ITEMS_POS = Point { 24, 240 };
 define SHOP_ITEMS_SPACING = Point { 48, 48 };
 
+Time lastAttackTime;
+
 class StatsUI : Window
 {
    background = black;
+
+   Button btnFight
+   {
+      this;
+
+      caption = $"Attack";
+      hotKey = a;
+      anchor = { top = 120 };
+      size = { 80, 20 };
+      visible = false;
+      bitmap = { "sword.png", window = this };
+      bitmapAlignment = left;
+
+      bool NotifyClicked(Button button, int mx, int my, Modifiers mods)
+      {
+         Creature opponent = null;
+         int x, px = player.unit->pos.x;
+         int y, py = player.unit->pos.y;
+         for(y = py - 1; y <= py + 1; y++)
+            for(x = px - 1; x <= px + 1; x++)
+            {
+               TileUnit * unit = null;
+               if(x >= 0 && y >= 0 && x < theMap->dim[1].x && y < theMap->dim[1].y &&
+                 (unit = theMap->spaces[1][theMap->dim[0].x * y + x]))
+               {
+                  if(unit->data && ((Creature)unit->data).type != player)
+                  {
+                     opponent = unit->data;
+                     break;
+                  }
+               }
+            }
+         if(opponent)
+         {
+            lastAttackTime = GetTime();
+            btnFight.disabled = true;
+         }
+         return true;
+      }
+   };
 
    void OnRedraw(Surface surface)
    {
@@ -459,13 +503,17 @@ class ShopUI : Window
 
 Bitmap shopItemsBitmap { };
 
-class App : GuiApplication
+define app = (TilesRPGApp) __thisModule.application;
+
+class TilesRPGApp : GuiApplication
 {
    driver = "OpenGL";
    timerResolution = 60;
 
    bool wasInForest;
    Time lastSpawnTime;
+
+   GameState state; state = realm;
 
    Creature findOpponent()
    {
@@ -480,7 +528,7 @@ class App : GuiApplication
       }
       opponent.health = opponent.maxHealth;
       opponent.mana = opponent.maxMana;
-      // state = fight;
+      state = fight;
       return opponent;
    }
 
@@ -521,14 +569,18 @@ class App : GuiApplication
                for(y = py - 2; y < py + 2; y++)
                   for(x = px - 2; x < px + 2; x++)
                   {
+                     TileUnit * unit;
                      if(x >= 0 && y >= 0 && x < theMap->dim[1].x && y < theMap->dim[1].y &&
-                       theMap->spaces[1][theMap->dim[0].x * y + x])
-                       unitsAround++;
+                       (unit = theMap->spaces[1][theMap->dim[0].x * y + x]))
+                     {
+                        if(unit->data && ((Creature)unit->data).type != player)
+                           unitsAround++;
+                     }
                   }
                if(unitsAround < 6)
                {
-                  TileUnit * unit = UnitCreate(theMap, 1, px, py, null);
                   Creature creature = findOpponent();
+                  TileUnit * unit = UnitCreate(theMap, 1, px, py, creature);
 
                   unit->direction = rx == -1 ? (ry == 1 ? NorthEast : ry == 0 ? East : SouthEast) :
                                     rx ==  0 ? (ry == 1 ? North : South) :
@@ -545,6 +597,33 @@ class App : GuiApplication
          }
          wasInForest = true;
       }
+      else
+         wasInForest = false;
+
+      {
+         int unitsAround = 0;
+         int x, px = player.unit->pos.x;
+         int y, py = player.unit->pos.y;
+         for(y = py - 1; y <= py + 1; y++)
+            for(x = px - 1; x <= px + 1; x++)
+            {
+               TileUnit * unit = null;
+               if(x >= 0 && y >= 0 && x < theMap->dim[1].x && y < theMap->dim[1].y &&
+                 (unit = theMap->spaces[1][theMap->dim[0].x * y + x]))
+               {
+                  if(unit->sprite != unitSprites[player])
+                     unitsAround++;
+               }
+            }
+         if(unitsAround  && state == realm)
+            state = fight;
+         else if(!unitsAround && state == fight)
+            state = realm;
+         if(time - lastAttackTime > 1)
+            mainWindow.stasUI.btnFight.disabled = false;
+      }
+
+      mainWindow.stasUI.btnFight.visible = state == fight;
 
       if(player.unit->pos.x >= SHOP_POS.x && player.unit->pos.x <= SHOP_POS.x + 2 &&
          player.unit->pos.y >= SHOP_POS.y && player.unit->pos.y <= SHOP_POS.y + 2)
@@ -750,7 +829,7 @@ class TilesRPGWindow : Window
       }
 
       // Create the character unit
-      player.unit = UnitCreate(theMap, 1, NILREM_START.x, NILREM_START.y, null);
+      player.unit = UnitCreate(theMap, 1, NILREM_START.x, NILREM_START.y, player);
       player.unit->direction = South;
       player.unit->w = 1;
       player.unit->h = 1;
