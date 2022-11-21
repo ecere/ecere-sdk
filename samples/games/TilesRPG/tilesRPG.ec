@@ -14,6 +14,14 @@ define MAPH = 20;
 
 define SHOP_POS = Point { 30, 20 };
 
+enum TilesType
+{
+   grass = 0,
+   forest = 1,
+   rock = 2,
+   water = 3
+};
+
 enum ItemType
 {
    none = -1,
@@ -423,7 +431,7 @@ class ShopUI : Window
                0, i * 32, 32, 32);
          }
       }
-      if(selectedItem != -1)
+      if(selectedItem != none)
       {
          int ix = selectedItem % 5;
          int iy = selectedItem / 5;
@@ -471,7 +479,7 @@ class App : GuiApplication
       else if(vy > 0 && player.unit->pos.y < vy + MAPH/4)
          vy--;
 
-      if(theMap->frames[player.unit->pos.y * theMap->dim[1].x + player.unit->pos.x] == 1)
+      if(theMap->frames[player.unit->pos.y * theMap->dim[1].x + player.unit->pos.x] == TilesType::forest)
       {
          if(GetRandom(1, 100) > 95)
          {
@@ -519,8 +527,8 @@ class MainMap : Window
 {
    void OnRedraw(Surface surface)
    {
-      int w = clientSize.w;
-      int h = clientSize.h;
+      //int w = clientSize.w;
+      //int h = clientSize.h;
 
       surface.background = skyBlue;
 
@@ -669,10 +677,8 @@ class TilesRPGWindow : Window
                {
                   char ch = mapLine[x];
                   if(ch >= '0' && ch <= '9')
-                  {
                      theMap->frames[y * theMap->maxDim.x + x ] =
-                        ch - '0';
-                  }
+                        (uint16)(ch - '0');
                   else
                      break;
                }
@@ -696,9 +702,11 @@ class TilesRPGWindow : Window
       }
 
       // Initialize the creatures and buildings sprites
-      UnitType u;
-      for(u = player; u <= shop; u++)
-         unitSprites[u] = { };
+      {
+         UnitType u;
+         for(u = player; u <= shop; u++)
+            unitSprites[u] = { };
+      }
 
       // Create the character unit
       player.unit = UnitCreate(theMap, 1, NILREM_START.x, NILREM_START.y, null);
@@ -746,9 +754,11 @@ class TilesRPGWindow : Window
       delete mapTiles;
 
       // Load the creatures and buildings sprites
-      UnitType u;
-      for(u = player; u <= shop; u++)
-         unitSprites[u].Load(unitSpritesFiles[u], null, true, false, null, displaySystem);
+      {
+         UnitType u;
+         for(u = player; u <= shop; u++)
+            unitSprites[u].Load(unitSpritesFiles[u], null, true, false, null, displaySystem);
+      }
 
       shopItemsBitmap.LoadT("items.png", null, displaySystem);
       return result;

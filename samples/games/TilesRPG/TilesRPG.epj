@@ -1,6 +1,6 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "GameingTime",
+   "ModuleName" : "TilesRPG",
    "Options" : {
       "Warnings" : "All",
       "TargetType" : "Executable",
