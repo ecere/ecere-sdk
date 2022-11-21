@@ -357,13 +357,13 @@ struct CodePosition start;
 struct CodePosition end;
 } ecere_gcc_struct;
 
-void ReadString(char * output, char * string)
+void ReadString(char * output, unsigned int outputSize, const char * string)
 {
 int len = strlen(string);
 int c, d = 0;
 unsigned int quoted = 0, escaped = 0;
 
-for(c = 0; c < len; c++)
+for(c = 0; c < len && d < outputSize - 1; c++)
 {
 char ch = string[c];
 
@@ -416,7 +416,11 @@ else if(quoted)
 if(ch == '\\')
 escaped = 1;
 else
+{
+if(ch == '\n')
+quoted = 0;
 output[d++] = ch;
+}
 }
 }
 }
@@ -11971,7 +11975,7 @@ struct __ecereNameSpace__ecere__sys__OldList * specs = MkList();
 struct Declarator * decl;
 char string[1024];
 
-ReadString(string, sourceExp->__anon1.__anon2.string);
+ReadString(string, sizeof (string), sourceExp->__anon1.__anon2.string);
 decl = SpecDeclFromString(string, specs, (((void *)0)));
 FreeExpContents(sourceExp);
 FreeType(sourceExp->expType);
@@ -13728,7 +13732,7 @@ else if(value->type == 3)
 {
 char temp[1024];
 
-ReadString(temp, value->__anon1.__anon2.string);
+ReadString(temp, sizeof (temp), value->__anon1.__anon2.string);
 ((void (*)(void *, void *))(void *)prop->Set)(inst->data, temp);
 }
 }
@@ -19886,7 +19890,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_NameSpace
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ModuleVisibility", "bool ModuleVisibility(ecere::com::Module searchIn, ecere::com::Module searchFor)", ModuleVisibility, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchWithEnums_Module", "bool MatchWithEnums_Module(ecere::com::Module mainModule, Expression sourceExp, Type dest, char * string, ecere::sys::OldList conversions)", MatchWithEnums_Module, module, 2);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("MatchTypeExpression", "bool MatchTypeExpression(Expression sourceExp, Type dest, ecere::sys::OldList conversions, bool skipUnitBla, bool warnConst)", MatchTypeExpression, module, 2);
-__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReadString", "void ReadString(char * output, char * string)", ReadString, module, 1);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ReadString", "void ReadString(char * output, uint outputSize, const char * string)", ReadString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("UnescapeString", "int UnescapeString(char * d, char * s, int len)", UnescapeString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("OffsetEscapedString", "char * OffsetEscapedString(char * s, int len, int offset)", OffsetEscapedString, module, 1);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("GetOperand", "Operand GetOperand(Expression exp)", GetOperand, module, 1);

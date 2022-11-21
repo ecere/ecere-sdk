@@ -257,7 +257,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                /*if(propertyDef.category)
                {
                   char temp[1024];
-                  ReadString(temp, propertyDef.category);
+                  ReadString(temp, sizeof(temp), propertyDef.category);
                   prop.category = CopyString(temp);  // LEAK: To free in parsed classes...
                }*/
                // TODO: Support property category in parsing mode

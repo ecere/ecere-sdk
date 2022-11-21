@@ -3129,8 +3129,9 @@ class CodeEditor : Window
                                                       case stringExp:
                                                          if(propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                          {
-                                                            String temp = new char[strlen(computed.string)+1];
-                                                            ReadString(temp, computed.string);
+                                                            int len = strlen(computed.string);
+                                                            String temp = new char[len+1];
+                                                            ReadString(temp, len+1, computed.string);
                                                             ((void (*)(void *, void *))(void *)prop.Set)(instance, temp);
                                                             delete temp;
 
@@ -3434,8 +3435,9 @@ class CodeEditor : Window
                                                                                  case stringExp:
                                                                                     if(propertyClass.dataTypeString && strstr(propertyClass.dataTypeString, "char *"))
                                                                                     {
-                                                                                       String temp = new char[strlen(computed.string)+1];
-                                                                                       ReadString(temp, computed.string);
+                                                                                       int len = strlen(computed.string);
+                                                                                       String temp = new char[len+1];
+                                                                                       ReadString(temp, len + 1, computed.string);
                                                                                        ((void (*)(void *, void *))(void *)prop.Set)(control, temp);
                                                                                        delete temp;
 

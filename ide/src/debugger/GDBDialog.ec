@@ -42,56 +42,31 @@ static uint TokenizeList(char * string, const uint maxTokens, const char seperat
 // String Unescape Copy
 // TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
 // Seems very similar to ReadString in pass15.ec (which also misses numeric escape codes :) )
-static void struscpy(char * d, char * s)
+static void struscpy(char * d, int outputSize, const char * s)
 {
    int j, k;
-   j = k = 0;
-   while(s[j])
+   char ch;
+
+   for(j = 0, k = 0; (ch = s[j]) && k < outputSize-1; j++, k++)
    {
-      switch(s[j])
-      {
-         case '\\':
-            switch(s[++j])
-            {
-               case 'n':
-                  d[k] = '\n';
-                  break;
-               case 't':
-                  d[k] = '\t';
-                  break;
-               case 'a':
-                  d[k] = '\a';
-                  break;
-               case 'b':
-                  d[k] = '\b';
-                  break;
-               case 'f':
-                  d[k] = '\f';
-                  break;
-               case 'r':
-                  d[k] = '\r';
-                  break;
-               case 'v':
-                  d[k] = '\v';
-                  break;
-               case '\\':
-                  d[k] = '\\';
-                  break;
-               case '\"':
-                  d[k] = '\"';
-                  break;
-               default:
-                  d[k] = '\\';
-                  d[++k] = s[j];
-            }
-            break;
-         default:
-            d[k] = s[j];
-      }
-      ++j;
-      ++k;
+      if(ch == '\\')
+         switch((ch = s[++j]))
+         {
+            case 'n':  d[k] = '\n'; break;
+            case 't':  d[k] = '\t'; break;
+            case 'a':  d[k] = '\a'; break;
+            case 'b':  d[k] = '\b'; break;
+            case 'f':  d[k] = '\f'; break;
+            case 'r':  d[k] = '\r'; break;
+            case 'v':  d[k] = '\v'; break;
+            case '\\': d[k] = '\\'; break;
+            case '\"': d[k] = '\"'; break;
+            default:   d[k] = '\\'; j--;
+         }
+      else
+         d[k] = ch;
    }
-   d[k] = s[j];
+   d[k] = 0;
 }
 
 static char * StripBrackets(char * string)
@@ -532,7 +507,7 @@ class GDBDialog : Window
                      StripQuotes(s, s);
                      if(TrimEscapedNewLineChar(s))
                      {
-                        struscpy(s, s);
+                        struscpy(s, strlen(s)+1, s);
                         root.AddString(s);
                      }
                      break;

@@ -3756,7 +3756,7 @@ bool MatchTypeExpression(Expression sourceExp, Type dest, OldList conversions, b
             Declarator decl;
             char string[1024];
 
-            ReadString(string, sourceExp.string);
+            ReadString(string, sizeof(string), sourceExp.string);
             decl = SpecDeclFromString(string, specs, null);
 
             FreeExpContents(sourceExp);
@@ -4368,12 +4368,12 @@ OPERATOR_TABLE_ALL(uchar, UChar)
 //OpTable ucharOps =  {  UCharAdd,  UCharSub,  UCharMul,  UCharDiv,  UCharMod,  UCharExp,  UCharNot,  UCharBwn,  UCharOr,  UCharAnd,  UCharEqu,  UCharNqu,  UCharGrt,  UCharSma,  UCharGrtEqu,  UCharSmaEqu,  UCharNeg,  UCharLBitSft,  UCharRBitSft };
 
 // TOFIX: THIS DOESN'T HANDLE NUMERIC ESCAPE CODES (OCTAL/HEXADECIMAL...)?
-public void ReadString(char * output,  char * string)
+public void ReadString(char * output, uint outputSize, const char * string)
 {
    int len = strlen(string);
    int c,d = 0;
    bool quoted = false, escaped = false;
-   for(c = 0; c<len; c++)
+   for(c = 0; c<len && d < outputSize-1; c++)
    {
       char ch = string[c];
       if(escaped)
@@ -4404,7 +4404,11 @@ public void ReadString(char * output,  char * string)
             if(ch == '\\')
                escaped = true;
             else
+            {
+               if(ch == '\n')
+                  quoted = false; // Unquote if we've moved on to a new line, as should only happen with code being edited
                output[d++] = ch;
+            }
          }
       }
    }
@@ -5158,7 +5162,9 @@ void ComputeInstantiation(Expression exp)
                               else if(value.type == stringExp)
                               {
                                  char temp[1024];
-                                 ReadString(temp, value.string);
+
+                                 ReadString(temp, sizeof(temp), value.string);
+
                                  ((void (*)(void *, void *))(void *)prop.Set)(inst.data, temp);
                               }
                            }
@@ -5266,6 +5272,7 @@ void ComputeInstantiation(Expression exp)
          }
       }
    }
+
    if(_class && _class.type == bitClass)
    {
       exp.constant = PrintHexUInt(bits);
