@@ -54,9 +54,9 @@ class Sprite
             }
             else
             {
-               maxWidth = bmpFrames.width;
+               maxWidth = (uint16)bmpFrames.width;
                maxHeight = maxWidth;
-               numFrames = bmpFrames.height / maxHeight;
+               numFrames = (byte)bmpFrames.height / maxHeight;
             }
             frames = new0 SpriteFrame[numFrames];
             if(frames)
@@ -76,8 +76,8 @@ class Sprite
                   }
                   else
                   {
-                     width = maxWidth;
-                     height = maxHeight;
+                     width = (byte)maxWidth;
+                     height = (byte)maxHeight;
                      frames[c].xDis = 0;
                      frames[c].yDis = 0;
                   }
