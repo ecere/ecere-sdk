@@ -463,8 +463,31 @@ class App : GuiApplication
 {
    driver = "OpenGL";
    timerResolution = 60;
+
+   bool wasInForest;
+   Time lastSpawnTime;
+
+   Creature findOpponent()
+   {
+      Creature opponent;
+      while(true)
+      {
+         int c = GetRandom(0, badGuys.count-1);
+         opponent = eInstance_New(badGuys[c]);
+         if(opponent.xp < 40 || opponent.xp <= player.xp)
+            break;
+         delete opponent;
+      }
+      opponent.health = opponent.maxHealth;
+      opponent.mana = opponent.maxMana;
+      // state = fight;
+      return opponent;
+   }
+
    bool Cycle(bool idle)
    {
+      Time time = GetTime();
+
       player.unit->tick++;
       UnitUpdate(theMap, player.unit);
       mainWindow.Update(null);
@@ -481,28 +504,46 @@ class App : GuiApplication
 
       if(theMap->frames[player.unit->pos.y * theMap->dim[1].x + player.unit->pos.x] == TilesType::forest)
       {
-         if(GetRandom(1, 100) > 95)
+         Time timeSinceLastSpawn = time - lastSpawnTime;
+         if(wasInForest && GetRandom(1, (int)(timeSinceLastSpawn * 20)) > 95)
          {
             // Create the character unit
             int rx = GetRandom(0, 2)-1, ry = GetRandom(0, 2)-1;
             int px = player.unit->pos.x + rx;
             int py = player.unit->pos.y + ry;
+
             if((rx || ry) && px >= 0 && py >= 0 && px < theMap->dim[1].x && py < theMap->dim[1].y &&
                !theMap->spaces[1][theMap->dim[0].x * py + px] &&
                theMap->frames[py * theMap->dim[1].x + px] == 1)
             {
-               TileUnit * unit = UnitCreate(theMap, 1, px, py, null);
-               Creature creature = Goblin { unit = unit };
-               unit->direction = rx == -1 ? (ry == 1 ? NorthEast : ry == 0 ? East : SouthEast) :
-                                 rx ==  0 ? (ry == 1 ? North : South) :
-                                            (ry == 1 ? NorthWest : ry == 0 ? West : SouthWest);
-               unit->w = 1;
-               unit->h = 1;
-               unit->sprite = unitSprites[creature.type];
-               UnitPlace(theMap, unit);
-               creatures.Add(creature);
+               int unitsAround = 0;
+               int x, y;
+               for(y = py - 2; y < py + 2; y++)
+                  for(x = px - 2; x < px + 2; x++)
+                  {
+                     if(x >= 0 && y >= 0 && x < theMap->dim[1].x && y < theMap->dim[1].y &&
+                       theMap->spaces[1][theMap->dim[0].x * y + x])
+                       unitsAround++;
+                  }
+               if(unitsAround < 6)
+               {
+                  TileUnit * unit = UnitCreate(theMap, 1, px, py, null);
+                  Creature creature = findOpponent();
+
+                  unit->direction = rx == -1 ? (ry == 1 ? NorthEast : ry == 0 ? East : SouthEast) :
+                                    rx ==  0 ? (ry == 1 ? North : South) :
+                                               (ry == 1 ? NorthWest : ry == 0 ? West : SouthWest);
+                  unit->w = 1;
+                  unit->h = 1;
+                  unit->sprite = unitSprites[creature.type];
+                  UnitPlace(theMap, unit);
+                  creatures.Add(creature);
+
+                  lastSpawnTime = time;
+               }
             }
          }
+         wasInForest = true;
       }
 
       if(player.unit->pos.x >= SHOP_POS.x && player.unit->pos.x <= SHOP_POS.x + 2 &&
