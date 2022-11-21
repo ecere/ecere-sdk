@@ -33,7 +33,7 @@ class ReminderWindow : Window
       char unescaped[16384];
       if(app.argc > 1)
       {
-         struscpy(unescaped, app.argv[1]);
+         struscpy(unescaped, sizeof(unescaped), app.argv[1]);
          message.contents = unescaped;
       }
 
@@ -110,55 +110,29 @@ class ReminderApp : GuiApplication
 
 define app = ((ReminderApp)__thisModule);
 
-static void struscpy(char * d, const char * s)
+static void struscpy(char * d, int outputSize, const char * s)
 {
    int j, k;
-   j = k = 0;
-   while(s[j])
-   {
-      switch(s[j])
-      {
-         case '\\':
-            switch(s[++j])
-            {
-               case 'n':
-                  d[k] = '\n';
-                  break;
-               case 't':
-                  d[k] = '\t';
-                  break;
-               case 'a':
-                  d[k] = '\a';
-                  break;
-               case 'b':
-                  d[k] = '\b';
-                  break;
-               case 'f':
-                  d[k] = '\f';
-                  break;
-               case 'r':
-                  d[k] = '\r';
-                  break;
-               case 'v':
-                  d[k] = '\v';
-                  break;
-               case '\\':
-                  d[k] = '\\';
-                  break;
-               case '\"':
-                  d[k] = '\"';
-                  break;
-               default:
-                  d[k] = '\\';
-                  d[++k] = s[j];
-            }
-            break;
-         default:
-            d[k] = s[j];
-      }
-      ++j;
-      ++k;
-   }
-   d[k] = s[j];
-}
+   char ch;
 
+   for(j = 0, k = 0; (ch = s[j]) && k < outputSize-1; j++, k++)
+   {
+      if(ch == '\\')
+         switch((ch = s[++j])))
+         {
+            case 'n':  d[k] = '\n'; break;
+            case 't':  d[k] = '\t'; break;
+            case 'a':  d[k] = '\a'; break;
+            case 'b':  d[k] = '\b'; break;
+            case 'f':  d[k] = '\f'; break;
+            case 'r':  d[k] = '\r'; break;
+            case 'v':  d[k] = '\v'; break;
+            case '\\': d[k] = '\\'; break;
+            case '\"': d[k] = '\"'; break;
+            default:   d[k] = '\\'; j--;
+         }
+      else
+         d[k] = ch;
+   }
+   d[k] = 0;
+}

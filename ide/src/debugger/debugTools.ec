@@ -711,7 +711,7 @@ void DebugComputeExpression(Expression exp)
                                     else if(value.type == stringExp)
                                     {
                                        char temp[1024];
-                                       ReadString(temp, value.string);
+                                       ReadString(temp, sizeof(temp), value.string);
                                        ((void (*)(void *, void *))(void *)prop.Set)(inst.data, temp);
                                     }
                                  }
