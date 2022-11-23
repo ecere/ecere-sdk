@@ -1,14 +1,12 @@
 [![GitHub version](https://badge.fury.io/gh/ecere%2Fecere-sdk.svg)](https://github.com/ecere/ecere-sdk/releases/latest)
-[![Travis status](https://api.travis-ci.org/ecere/ecere-sdk.svg?branch=ec2)](https://travis-ci.org/ecere/ecere-sdk)
 [![Ecere docs](https://img.shields.io/badge/docs-being_improved-yellow.svg)](http://ecere.org/overview)<br>
-[![GitHub size](https://reposs.herokuapp.com/?path=ecere/ecere-sdk&style=flat)](https://github.com/ecere/ecere-sdk/graphs/traffic)
-[![GitHub license](https://img.shields.io/badge/license-BSD%203--Clause%20(Revised)-blue.svg)](https://tldrlegal.com/license/bsd-3-clause-license-(revised))<br>
-[![Ecere web](https://img.shields.io/badge/web-ecere.org-9DA1CA.svg)](http://ecere.org)
-[![Ecere web](https://img.shields.io/badge/web-ec--lang.org-9DA1CA.svg)](http://ec-lang.org)
-[![Ecere forum](https://img.shields.io/badge/forum-ecere.org%2Fforums-9DA1CA.svg)](http://ecere.org/forums)
-[![Ecere tracker](https://img.shields.io/badge/tracker-ecere.org%2Fmantis-9DA1CA.svg)](http://ecere.org/mantis)
+[![GitHub size](https://img.shields.io/github/repo-size/ecere/ecere-sdk)](https://github.com/ecere/ecere-sdk/pulse)
+[![BSD-3 License](https://img.shields.io/badge/license-BSD%203--Clause%20(Revised)-blue.svg)](https://tldrlegal.com/license/bsd-3-clause-license-(revised))<br>
+[![Ecere SDK](https://img.shields.io/badge/web-ecere.org-9DA1CA.svg)](http://ecere.org)
+[![eC Language](https://img.shields.io/badge/web-ec--lang.org-9DA1CA.svg)](http://ec-lang.org)
+[![Ecere forums](https://img.shields.io/badge/forum-ecere.org%2Fforums-9DA1CA.svg)](http://ecere.org/forums)
+[![Issues tracker](https://img.shields.io/badge/tracker-ecere.org%2Fmantis-9DA1CA.svg)](http://ecere.org/mantis)
 [![Libera chat](https://img.shields.io/badge/irc-%20Libera_%23ecere-9DA1CA.svg)](https://web.libera.chat/?theme=cli#ecere)<br>
-[![Meetup group](https://img.shields.io/badge/meetup-Ottawa-88B094.svg)](http://www.meetup.com/eC-Programming-Language-Meetup)
 
 # Ecere SDK
 #### Free Open Source Software released under the New BSD license
