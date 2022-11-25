@@ -185,8 +185,10 @@ private:
 
 public struct SkinBone
 {
+   // data:
    String name;
    Matrix invBindMatrix;
+   // calculated:
    Matrix bsInvBindMatrix;
    Object object;
    Vector3Df min, max; // Bounding Box
@@ -204,11 +206,11 @@ public struct SkinVert
 public class MeshSkin
 {
 public:
-   Matrix bindShapeMatrix;
-   Array<SkinBone> bones { };
-   Array<SkinVert> skinVerts { };
-   Matrix invShape;
-   bool bsIsIdentity;
+   Matrix bindShapeMatrix;          // data
+   Array<SkinBone> bones { };       // data (count: number of bones)
+   Array<SkinVert> skinVerts { };   // data (count: number of mesh vertices - number of duplicate vertices)
+   Matrix invShape;                 // calculated
+   bool bsIsIdentity;               // calculated
 
 private:
    Vector3Df * vertices, * normals, * tangents;

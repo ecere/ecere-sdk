@@ -2274,10 +2274,10 @@ private:
 
    ObjectFlags flags;
 
-   OldList tracks;
+   OldList/*<FrameTrack>*/ tracks;
    unsigned startFrame, endFrame;
    int frame;
-   Vector3Df pivot;
+   Vector3Df pivot;  // Only used by 3DS driver
 
    public Transform transform;
    Matrix matrix;
