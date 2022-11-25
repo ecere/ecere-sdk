@@ -14,6 +14,7 @@ enum E3DBlockType : uint16
       mesh             = 0x1010,
          meshID        = 0x1020,
          meshBBox      = 0x1021,
+         meshDuplVerts = 0x1022,
          attributes          = 0x2000,
             attrVertices     = 0x2010,      // float x,y,z vertices
             attrVerticesDbl  = 0x2011,      // double x,y,z vertices
@@ -30,12 +31,29 @@ enum E3DBlockType : uint16
             attrColors       = 0x2070,      // byte r,g,b,a
             attrTangentsSign = 0x2080,      // 10_10_10_2 -- first extra bit: sign for co-tangent
             attrTangentsBT   = 0x2081,      // 2x 10_10_10_2
-            attrSkin         = 0x2090,      // skin bones and weights
+            attrBoneWeights  = 0x2090,      // skin bones and weights - (excluding dup vertices)
+                                            // byte max number of bones; count * 1..255 byte bone ID (0 indicating no bone);
+                                            // count * 0..1 weight mapped to 0..255
+            attrBoneWeights2 = 0x2091,      // Alternative skin bones and weights (additional skins)
+            attrBoneWeights3 = 0x2092,
+            attrBoneWeights4 = 0x2093,
+            attrBoneWeights5 = 0x2094,
+            attrBoneWeights6 = 0x2095,
+            attrBoneWeights7 = 0x2096,
+            attrBoneWeights8 = 0x2097,
+
             attrInterleaved  = 0x2800,      // currently supporting: [vertices, normals, texCoords]
          triFaces16     = 0x1030,
          triFaces32     = 0x1031,
          facesMaterials = 0x1040,
-         bones          = 0x1050,
+         skin           = 0x1050,
+            skinName          = 0x1051,   // name string
+            skinBindMatrix    = 0x1052,   // 4x4 32-bit float which bone definitions inverse bind matrices are relative to
+            skinBones         = 0x1053,   // byte number of bones, for each bone:
+                                          //    nodeID or nodeName referencing a node;
+                                          //    4x4 32-bit float inverse bind matrix (relative to skin bind matrix)
+            skinBoneWeights   = 0x1054,   // byte 0..7: set of bone weights to use for this skin
+
          parts          = 0x1060,
 
    nodes             = 0x3000,
@@ -101,7 +119,29 @@ enum E3DBlockType : uint16
          textureJPG             = 0x9102,
          textureJPG2K           = 0x9103,
 
-   animations          = 0xA000
+   animations         = 0xA000,
+      animation       = 0xA010,
+         animationName          = 0xA021, // String name
+         animationFrames        = 0xA022, // (uint) Start, end and default frame
+         animationTrack         = 0xA100, // An animation frame track
+                                          //    nodeID or nodeName reference;
+                                          //    (uint) number of keys;
+                                          //    number of keys * (uint) frameNumber;
+                                          //    1-byte bool looping flag
+            frameTCBEase        = 0xA110, // Tension, continuity, bias and easeFrom / easeTo for each key: 32-bit floats
+            ftkPosition         = 0xA210, // Translation -- 3 (x,y,z) float positions per key
+            ftkScaling          = 0xA220, // Scaling -- 3 (x,y,z) float scaling per key
+            ftkRotation         = 0xA230, // Rotation -- 4 (w,x,y,z) float quaternion orientation per key
+            ftkYaw              = 0xA240, // Yaw orientation -- float yaw orientation (in degrees) per key
+            ftkPitch            = 0xA250, // Pitch orientation -- float pitch orientation (in degrees) per key
+            ftkRoll             = 0xA260, // Roll orientation -- float roll orientation (in degrees) per key
+            ftkCameraFieldOfView= 0xA270, // Camera field of view -- float camera field of view (in degrees) per key
+            ftkCameraRoll       = 0xA280, // Camera roll -- float camera roll (in degrees) per key
+            ftkLightHotSpot     = 0xA290, // Light hot spot -- float light hot spot (in degrees) per key
+            ftkLightFallOff     = 0xA2A0, // Light fall off -- float light fall off (in degrees) per key
+            ftkLightColor       = 0xA2B0, // Light color -- 3 (r,g,b) float 0..1 light color per key
+            ftkHide             = 0xA2C0, // Hide node -- 1 boolean byte (0: displayed, 1: hidden) per key
+            ftkMorph            = 0xA300  // Morph -- Reserved for morph definition (per key)
 };
 
 struct E3DBlockHeader
