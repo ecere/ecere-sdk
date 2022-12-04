@@ -836,7 +836,7 @@ public:
             if(display3D.mesh != mesh)
             {
 #if !defined(_GLES) && !defined(_GLES2) && !defined(ECERE_NOGL)
-               if(!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags)
+               if(!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true, bones = true } || mesh.flags != display3D.mesh.flags)
 #endif
                   driver.SelectMesh(this, mesh);
             }
@@ -921,7 +921,7 @@ public:
 
             if(!group && display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags)
+               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true, bones = true } || mesh.flags != display3D.mesh.flags)
 #endif
                )
                displaySystem.driver.SelectMesh(this, mesh);
@@ -1210,7 +1210,7 @@ public:
             subclass(DisplayDriver) driver = displaySystem.driver;
             if(display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags)
+               && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true, bones = true } || mesh.flags != display3D.mesh.flags)
 #endif
                )
                driver.SelectMesh(this, mesh);
@@ -1316,7 +1316,7 @@ public:
                newMatrix   = past ? false : &sort->object.matrix != matrix;
                newMesh     = past ? false : (display3D.mesh != mesh
 #if !defined(ECERE_NOGL)
-                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true } || mesh.flags != display3D.mesh.flags /* || is16Bit */)
+                  && (!mesh.mab || !display3D.mesh || display3D.mesh.mab != mesh.mab || mesh.flags & { tangents = true, colors = true, bones = true } || mesh.flags != display3D.mesh.flags /* || is16Bit */)
                         // TODO: Don't combine for different baseVertex for 16 bit indices?
 #endif
                   );
@@ -1392,7 +1392,7 @@ public:
 #if defined(_GLES) || defined(_GLES2)
                   meshBaseVertex = 0;
 #else
-                  if(mesh.flags & { tangents = true, colors = true })
+                  if(mesh.flags & { tangents = true, colors = true, bones = true })
                      meshBaseVertex = 0;
 #endif
 

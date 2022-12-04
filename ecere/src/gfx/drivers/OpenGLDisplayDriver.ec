@@ -4230,7 +4230,7 @@ class OpenGLDisplayDriver : DisplayDriver
       bool result = false;
       OGLMesh oglMesh = mesh.data;
       bool memAllocOnly = flags.memAllocOnly;
-      bool interleaved = flags.interleaved;
+      bool interleaved = flags.interleaved || (oglMesh && oglMesh.interleaved);
       flags &= ~{ memAllocOnly = true, interleaved = true };
 
       if(!oglMesh)
@@ -4641,7 +4641,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #if defined(_GLES) || defined(_GLES2)
          baseVertexOffset = mesh.baseVertex;
 #else
-         if(mesh.flags & { tangents = true, colors = true })
+         if(mesh.flags & { tangents = true, colors = true, bones = true })
             baseVertexOffset = mesh.baseVertex;
 #endif
 
@@ -4703,12 +4703,12 @@ class OpenGLDisplayDriver : DisplayDriver
                      GLEnableClientState(BONEWEIGHTS1);
                      GLEnableClientState(BONEWEIGHTS2);
                      GLEnableClientState(BONEWEIGHTS3);
-                     oglMesh.bones.use(boneIndices1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * baseVertexOffset) : &mesh.boneData[0].bones);
-                     oglMesh.bones.use(boneIndices2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * baseVertexOffset+4) : &mesh.boneData[0].bones+4);
-                     oglMesh.bones.use(boneIndices3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * baseVertexOffset+8) : &mesh.boneData[0].bones+8);
-                     oglMesh.bones.use(boneWeights1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * baseVertexOffset+MAX_BONES) : &mesh.boneData[0].weights);
-                     oglMesh.bones.use(boneWeights2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * baseVertexOffset+MAX_BONES + 4) : &mesh.boneData[0].weights+4);
-                     oglMesh.bones.use(boneWeights3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * baseVertexOffset+MAX_BONES + 8) : &mesh.boneData[0].weights+8);
+                     oglMesh.bones.use(boneIndices1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * 0*baseVertexOffset) : &mesh.boneData[0].bones);
+                     oglMesh.bones.use(boneIndices2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * 0*baseVertexOffset+4) : &mesh.boneData[0].bones+4);
+                     oglMesh.bones.use(boneIndices3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), integer, oglMesh.bones.buffer ? (void *)(sizeof(SkinVert) * 0*baseVertexOffset+8) : &mesh.boneData[0].bones+8);
+                     oglMesh.bones.use(boneWeights1, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * 0*baseVertexOffset+MAX_BONES) : &mesh.boneData[0].weights);
+                     oglMesh.bones.use(boneWeights2, 4, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * 0*baseVertexOffset+MAX_BONES + 4) : &mesh.boneData[0].weights+4);
+                     oglMesh.bones.use(boneWeights3, 2, GL_UNSIGNED_BYTE, sizeof(SkinVert), normalized, oglMesh.bones.buffer ? (void *)(uintptr)(sizeof(SkinVert) * 0*baseVertexOffset+MAX_BONES + 8) : &mesh.boneData[0].weights+8);
                   }
                   else
                   {
@@ -4902,7 +4902,7 @@ class OpenGLDisplayDriver : DisplayDriver
             eab.draw2(getPrimitiveType(type.primitiveType), nIndices,
                indices32Bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
                eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices,
-                  (mesh.flags & { tangents = true, colors = true }) ? 0 : *&mesh.baseVertex);
+                  (*&mesh.flags & { tangents = true, colors = true, bones = true }) ? 0 : *&mesh.baseVertex);
          // TODO: Do this somewhere else... GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
 #ifdef _DEBUG
