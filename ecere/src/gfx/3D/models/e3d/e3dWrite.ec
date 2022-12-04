@@ -54,6 +54,8 @@ void writeE3D(File f, Object object, E3DWriteContext ctx)
    if(ctx.allMeshes.count)
       mainBlocks.Add({ meshes,  object, writeMeshes });
    mainBlocks.Add({ nodes,  object, writeObjects });
+   if(ctx.allAnimatedObjects.count)
+      mainBlocks.Add({ animations, object, writeAnimations });
 
    if(!compressed)
       for(b : mainBlocks)
@@ -153,6 +155,9 @@ static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)  // TODO: A
    uint cStride = sizeof(ColorRGBAf);
    uint tStride = sizeof(Pointf);
    uint gStride = 2*sizeof(Vector3Df);
+   Array<SkinVert> skinVerts = null;
+   byte maxBones = 0;
+   uint dupVertCount = mesh.dupVerts ? mesh.dupVerts.count : 0;
 
    if(features.vertices)
    {
@@ -204,6 +209,15 @@ static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)  // TODO: A
       vSize += 8;
       // if(mesh.flags.interleaved) gStride = sizeof(float) * 8;
    }
+   if(/*features.bones && */mesh.skin)
+   {
+      skinVerts = mesh.skin.skinVerts;
+      maxBones = (byte)sizeof(mesh.skin.skinVerts[0].bones);
+      type = attrBoneWeights;
+      f.Write(&type, sizeof(E3DBlockType), 1);
+      f.Write(&vSize, sizeof(uint16), 1);
+      vSize += maxBones * 2;
+   }
    type = 0;
    f.Write(&type, sizeof(E3DBlockType), 1);
    f.Write(&vSize, sizeof(uint16), 1);
@@ -232,6 +246,17 @@ static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)  // TODO: A
          uint32 b = vecfPack10i(tangent0 + 1, null);
          f.Write(&n, sizeof(uint), 1);
          f.Write(&b, sizeof(uint), 1);
+      }
+      if(skinVerts) // && i < nVertices - dupVertCount)  // Do we want a changing vSize?
+      {
+         int j = i;
+         int startDup = nVertices - dupVertCount;
+
+         if(i >= startDup)
+            j = mesh.dupVerts[i - startDup];
+
+         f.Write(skinVerts[j].bones,   sizeof(byte), maxBones);
+         f.Write(skinVerts[j].weights, sizeof(byte), maxBones);
       }
    }
 }
@@ -441,6 +466,48 @@ static void writeParts(E3DWriteContext ctx, File f, Mesh mesh)
    f.Write(parts.array, sizeof(MeshPart), parts.count);
 }
 
+static void writeDuplVerts(E3DWriteContext ctx, File f, Mesh mesh)
+{
+   Array<int> dupVerts = mesh.dupVerts;
+   f.Write(dupVerts.array, sizeof(int), dupVerts.count);
+}
+
+static void writeMatrix(E3DWriteContext ctx, File f, Matrix matrix)
+{
+   int i;
+
+   for(i = 0; i < 16; i++)
+   {
+      float v = (float)matrix.array[i];
+      f.Write(&v, sizeof(float), 1);
+   }
+}
+
+static void writeSkinBones(E3DWriteContext ctx, File f, Array<SkinBone> bones)
+{
+   byte count = (byte)bones.count;
+   int i;
+
+   f.Write(&count, sizeof(byte), 1);
+
+   for(i = 0; i < count; i++)
+   {
+      writeString(ctx, f, bones[i].name); // Could also be nodeID
+      writeMatrix(ctx, f, bones[i].invBindMatrix);
+   }
+}
+
+static void writeSkin(E3DWriteContext ctx, File f, Mesh mesh)
+{
+   MeshSkin skin = mesh.skin;
+   byte boneWeights = 0;
+
+   // writeE3DBlock(ctx, f, skinName, skin.name, writeString);
+   writeE3DBlock(ctx, f, skinBindMatrix, &skin.bindShapeMatrix, writeMatrix);
+   writeE3DBlock(ctx, f, skinBones, skin.bones, writeSkinBones);
+   writeE3DBlock(ctx, f, skinBoneWeights, &boneWeights, writeByte);
+}
+
 static void writeMesh(E3DWriteContext ctx, File f, Mesh mesh)
 {
    if(mesh)
@@ -448,11 +515,15 @@ static void writeMesh(E3DWriteContext ctx, File f, Mesh mesh)
       int id = ctx.meshToID[(uintptr)mesh];
       writeE3DBlock(ctx, f, meshID,         &id,  writeInt);
       writeE3DBlock(ctx, f, attributes,     mesh, writeAttributes);
+      if(mesh.dupVerts && mesh.dupVerts.count)
+         writeE3DBlock(ctx, f, meshDuplVerts,  mesh, writeDuplVerts);
       if(mesh.nVertices > 65536)
          writeE3DBlock(ctx, f, triFaces32,     mesh, writeTriFaces32);
       else
          writeE3DBlock(ctx, f, triFaces16,     mesh, writeTriFaces16);
       writeE3DBlock(ctx, f, facesMaterials, mesh, writeFaceMaterials);
+      if(mesh.skin)
+         writeE3DBlock(ctx, f, skin, mesh, writeSkin);
       if(mesh.parts)
          writeE3DBlock(ctx, f, parts,          mesh, writeParts);
    }
@@ -472,6 +543,12 @@ void calculateMeshes(E3DWriteContext ctx, Object object)
          computeFacesMaterials(ctx, mesh);
       }
    }
+   if(object.tracks->count)
+   {
+      ctx.allAnimatedObjects.size++;
+      ctx.allAnimatedObjects[ctx.allAnimatedObjects.count-1] = object;
+   }
+
    for(c = object.firstChild; c; c = c.next)
       calculateMeshes(ctx, c);
 }
@@ -480,6 +557,142 @@ static void writeMeshes(E3DWriteContext ctx, File f, Object object)
 {
    for(m : ctx.allMeshes)
       writeE3DBlock(ctx, f, mesh, m, writeMesh);
+}
+
+static struct TrackAndObject
+{
+   Object object;
+   FrameTrack track;
+};
+
+static void writeTCBEase(E3DWriteContext ctx, File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      f.Write(&track.keys[i].tension, sizeof(float), 1);
+      f.Write(&track.keys[i].continuity, sizeof(float), 1);
+      f.Write(&track.keys[i].bias, sizeof(float), 1);
+      f.Write(&track.keys[i].easeFrom, sizeof(float), 1);
+      f.Write(&track.keys[i].easeTo, sizeof(float), 1);
+   }
+}
+
+static void writeFTKVector3Df(E3DWriteContext ctx, File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+      f.Write(&track.keys[i].scaling.x, sizeof(float), 3);
+}
+
+static void writeFTKQuaternionf(E3DWriteContext ctx, File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      Quaternion qd = track.keys[i].orientation;
+      float q[4] = { (float)qd.w, (float)qd.x, (float)qd.y, (float)qd.z };
+      f.Write(q, sizeof(float), 4);
+   }
+}
+
+static void writeFTKFloat(E3DWriteContext ctx, File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+      f.Write(&track.keys[i].roll, sizeof(float), 1);
+}
+
+static void writeFTKBool(E3DWriteContext ctx, File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      byte hide = bool::false;   //  track.keys[i].hide  // TODO: no hide keys yet?
+      f.Write(&hide, sizeof(byte), 1);
+   }
+}
+
+static void writeFTKMorph(E3DWriteContext ctx, File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      // TODO:
+   }
+}
+
+static void writeAnimationTrack(E3DWriteContext ctx, File f, TrackAndObject to)
+{
+   FrameTrack track = to.track;
+   Object object = to.object;
+   uint nodeID = ctx.objectToNodeID[(uintptr)object];
+   byte loop = track.type.loop;
+   int i;
+
+   f.Write(&track.numKeys, sizeof(uint), 1);
+   f.Write(&loop, sizeof(byte), 1);
+   for(i = 0; i < track.numKeys; i++)
+      f.Write(&track.keys[i].frame, sizeof(uint), 1);
+
+   writeE3DBlock(ctx, f, E3DBlockType::nodeID, &nodeID, writeInt);
+   writeE3DBlock(ctx, f, frameTCBEase, track, writeTCBEase);
+   switch(track.type.type)
+   {
+      case position:    writeE3DBlock(ctx, f, ftkPosition,           track, writeFTKVector3Df); break;
+      case scaling:     writeE3DBlock(ctx, f, ftkScaling,            track, writeFTKVector3Df); break;
+      case rotation:    writeE3DBlock(ctx, f, ftkRotation,           track, writeFTKQuaternionf); break;
+      case fov:         writeE3DBlock(ctx, f, ftkCameraFieldOfView,  track, writeFTKFloat); break;
+      case roll:        writeE3DBlock(ctx, f, ftkCameraRoll,         track, writeFTKFloat); break;
+      case colorChange: writeE3DBlock(ctx, f, ftkLightColor,         track, writeFTKVector3Df); break;
+      case hotSpot:     writeE3DBlock(ctx, f, ftkLightHotSpot,       track, writeFTKFloat); break;
+      case fallOff:     writeE3DBlock(ctx, f, ftkLightFallOff,       track, writeFTKFloat); break;
+      case hide:        writeE3DBlock(ctx, f, ftkHide,               track, writeFTKBool); break;
+      case morph:       writeE3DBlock(ctx, f, ftkMorph,              track, writeFTKMorph); break;
+      case rYaw:        writeE3DBlock(ctx, f, ftkYaw,                track, writeFTKFloat); break;
+      case rPitch:      writeE3DBlock(ctx, f, ftkPitch,              track, writeFTKFloat); break;
+      case rRoll:       writeE3DBlock(ctx, f, ftkRoll,               track, writeFTKFloat); break;
+   }
+}
+
+static void writeAnimationFrames(E3DWriteContext ctx, File f, Object object)
+{
+   int frame = object.startFrame;
+   f.Write(&frame, sizeof(int), 1);
+   frame = object.endFrame;
+   f.Write(&frame, sizeof(int), 1);
+   frame = object.frame;
+   f.Write(&frame, sizeof(int), 1);
+}
+
+static void writeAnimation(E3DWriteContext ctx, File f, Object object)
+{
+   // Only single animation for now...
+   writeE3DBlock(ctx, f, animationFrames, object, writeAnimationFrames);
+
+   for(o : ctx.allAnimatedObjects)
+   {
+      OldList * tracks = o.tracks;
+      FrameTrack track;
+      TrackAndObject to { o };
+
+      for(track = (FrameTrack)tracks->first; track; track = (FrameTrack)((ListItem)track).next)
+      {
+         to.track = track;
+         writeE3DBlock(ctx, f, animationTrack, &to, writeAnimationTrack);
+      }
+   }
+}
+
+static void writeAnimations(E3DWriteContext ctx, File f, Object object)
+{
+   writeE3DBlock(ctx, f, animation, object, writeAnimation);
 }
 
 static void writeVector3D(E3DWriteContext ctx, File f, Vector3D v)
@@ -499,6 +712,14 @@ static void writeQuaternion(E3DWriteContext ctx, File f, Quaternion v)
 
 static void writeObject(E3DWriteContext ctx, File f, Object object)
 {
+   int oNodeID = ctx.nodeID++;
+
+   ctx.objectToNodeID[(uintptr)object] = oNodeID;
+
+   writeE3DBlock(ctx, f, nodeID, &oNodeID, writeInt);
+   if(object.name)
+      writeE3DBlock(ctx, f, nodeName, (void *)object.name, writeString);
+
    if(object.mesh)
    {
       int id = ctx.meshToID[(uintptr)object.mesh];
@@ -520,6 +741,7 @@ static void writeObject(E3DWriteContext ctx, File f, Object object)
 
 static void writeObjects(E3DWriteContext ctx, File f, Object object)
 {
+   ctx.nodeID = 1;
    writeE3DBlock(ctx, f, meshNode, object, writeObject);
 }
 
@@ -540,6 +762,11 @@ static void writeMaterials(E3DWriteContext ctx, File f, Object object)
       MaterialInfo info { m, id++ };
       writeE3DBlock(ctx, f, material, info, writeMaterial);
    }
+}
+
+static void writeByte(E3DWriteContext ctx, File f, byte * data)
+{
+   f.Write(data, sizeof(byte), 1);
 }
 
 static void writeInt(E3DWriteContext ctx, File f, int * data)

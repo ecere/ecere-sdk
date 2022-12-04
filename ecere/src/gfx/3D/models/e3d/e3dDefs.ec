@@ -32,8 +32,9 @@ enum E3DBlockType : uint16
             attrTangentsSign = 0x2080,      // 10_10_10_2 -- first extra bit: sign for co-tangent
             attrTangentsBT   = 0x2081,      // 2x 10_10_10_2
             attrBoneWeights  = 0x2090,      // skin bones and weights - (excluding dup vertices)
-                                            // byte max number of bones; count * 1..255 byte bone ID (0 indicating no bone);
+                                            // count * 1..255 byte bone ID (0 indicating no bone);
                                             // count * 0..1 weight mapped to 0..255
+                                            // (max number of bones implied from next offset increment)
             attrBoneWeights2 = 0x2091,      // Alternative skin bones and weights (additional skins)
             attrBoneWeights3 = 0x2092,
             attrBoneWeights4 = 0x2093,
@@ -124,10 +125,10 @@ enum E3DBlockType : uint16
          animationName          = 0xA021, // String name
          animationFrames        = 0xA022, // (uint) Start, end and default frame
          animationTrack         = 0xA100, // An animation frame track
-                                          //    nodeID or nodeName reference;
                                           //    (uint) number of keys;
                                           //    number of keys * (uint) frameNumber;
                                           //    1-byte bool looping flag
+                                          //    nodeID or nodeName reference;
             frameTCBEase        = 0xA110, // Tension, continuity, bias and easeFrom / easeTo for each key: 32-bit floats
             ftkPosition         = 0xA210, // Translation -- 3 (x,y,z) float positions per key
             ftkScaling          = 0xA220, // Scaling -- 3 (x,y,z) float scaling per key
@@ -274,6 +275,9 @@ class E3DWriteContext : struct
    Array<bool> texUsePNG { };
    int firstTexture;
    AVLTree<int> texUsed { };
+   Array<Object> allAnimatedObjects { };
+   Map<uintptr, int> objectToNodeID { };
+   uint nodeID;
 
    ~E3DWriteContext()
    {
