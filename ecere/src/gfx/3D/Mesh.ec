@@ -401,10 +401,13 @@ public:
 
             Unlock({ bones = true });
 
-            if(dupVerts && dupVerts.count)
-               delete boneData;
-            else
-               boneData = null;
+            if(displaySystem)
+            {
+               if(dupVerts && dupVerts.count)
+                  delete boneData;
+               else
+                  boneData = null;
+            }
          }
 #else
          {
@@ -1821,6 +1824,12 @@ public:
          delete texCoords;
       if(!skin)
          delete normals;
+
+      if(dupVerts && dupVerts.count)
+         delete boneData;
+      else
+         boneData = null;
+
       delete colors;
       delete lightVectors;
 
