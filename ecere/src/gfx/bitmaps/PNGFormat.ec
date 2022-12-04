@@ -276,7 +276,7 @@ class PNGFormat : BitmapFormat
             bitmap = null;
       }
 
-      if(bitmap)
+      if(bitmap && bitmap.picture)
       {
          File f = FileOpen(filename, write);
          if(f)

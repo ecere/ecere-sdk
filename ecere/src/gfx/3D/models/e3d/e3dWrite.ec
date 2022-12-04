@@ -600,15 +600,25 @@ static struct TextureInfo
    bool usePNG;
 };
 
-static void writeJPG(E3DWriteContext ctx, File f, Bitmap texture)
+static void writeJPG(E3DWriteContext ctx, File f, Bitmap srcTexture)
 {
    TempFile tmp { };
    char fn[100];
    int quality = JPEG_QUALITY;
+   Bitmap texture = srcTexture;
+
    sprintf(fn, "File://%p", tmp);
+   if(srcTexture.bitmaps)
+   {
+      texture = { };
+      texture.Copy(srcTexture.bitmaps[0]);
+      texture.pixelFormat = pixelFormatRGBA;
+   }
    if(texture.pixelFormat != pixelFormat888)
    {
       void * back = texture.driver;
+      if(texture == srcTexture)
+         texture = { }, texture.Copy(srcTexture);
       texture.driver = class(LFBDisplayDriver);
       texture.Convert(null, pixelFormat888, null);
       texture.driver = back;
@@ -617,16 +627,27 @@ static void writeJPG(E3DWriteContext ctx, File f, Bitmap texture)
    tmp.Seek(0, start);
    f.Write(tmp.buffer, 1, tmp.size);
    delete tmp;
+   if(texture != srcTexture)
+      delete texture;
 }
 
-static void writePNG(E3DWriteContext ctx, File f, Bitmap texture)
+static void writePNG(E3DWriteContext ctx, File f, Bitmap srcTexture)
 {
    TempFile tmp { };
    char fn[100];
+   Bitmap texture = srcTexture;
    sprintf(fn, "File://%p", tmp);
+   if(srcTexture.bitmaps)
+   {
+      texture = { };
+      texture.Copy(srcTexture.bitmaps[0]);
+      texture.pixelFormat = pixelFormatRGBA;
+   }
    if(texture.pixelFormat != pixelFormatRGBA)
    {
       void * back = texture.driver;
+      if(texture == srcTexture)
+         texture = { }, texture.Copy(srcTexture);
       texture.driver = class(LFBDisplayDriver);
       texture.Convert(null, pixelFormatRGBA, null);
       texture.driver = back;
@@ -635,6 +656,8 @@ static void writePNG(E3DWriteContext ctx, File f, Bitmap texture)
    tmp.Seek(0, start);
    f.Write(tmp.buffer, 1, tmp.size);
    delete tmp;
+   if(texture != srcTexture)
+      delete texture;
 }
 
 static void writeString(E3DWriteContext ctx, File f, const String s)
@@ -679,29 +702,36 @@ static void writeTexture(E3DWriteContext ctx, File f, TextureInfo info)
             int quality = JPEG_QUALITY;
             PixelFormat wantedFormat = info.usePNG ? pixelFormatRGBA : pixelFormat888;
             char path[MAX_LOCATION];
+            Bitmap texture { };
+
+            texture.Copy(info.texture.bitmaps ? info.texture.bitmaps[0] : info.texture);
+            if(info.texture.bitmaps)
+               texture.pixelFormat = pixelFormatRGBA;
 
             strcpy(path, ctx.path);
-            PathCat(path, "textures");
-            if(maxTexSize && info.texture.width > maxTexSize && info.texture.height > maxTexSize)
+            PathCat(path, ctx.texturesPath ? ctx.texturesPath: "textures");
+            if(maxTexSize && texture.width > maxTexSize && texture.height > maxTexSize)
                sprintf(name, "%d-%d.%s", info.id, maxTexSize, ext);
             else
                sprintf(name, "%d.%s", info.id, ext);
             MakeDir(path);
             PathCat(path, name);
 
-            if(maxTexSize && info.texture.width > maxTexSize && info.texture.height > maxTexSize)
+            if(maxTexSize && texture.width > maxTexSize && texture.height > maxTexSize)
             {
-               info.texture = resizeTexture(info.texture, maxTexSize);
+               texture = resizeTexture(texture, maxTexSize);
             }
 
-            if(info.texture.pixelFormat != wantedFormat)
+            if(texture.pixelFormat != wantedFormat)
             {
-               void * back = info.texture.driver;
-               info.texture.driver = class(LFBDisplayDriver);
-               info.texture.Convert(null, wantedFormat, null);
-               info.texture.driver = back;
+               void * back = texture.driver;
+               texture.driver = class(LFBDisplayDriver);
+               texture.Convert(null, wantedFormat, null);
+               texture.driver = back;
             }
-            info.texture.Save(path, ext, info.usePNG ? null : &quality);
+            texture.Save(path, ext, info.usePNG ? null : &quality);
+
+            delete texture;
          }
       }
    }
