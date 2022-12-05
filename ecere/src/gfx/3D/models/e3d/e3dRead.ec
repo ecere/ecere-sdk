@@ -50,6 +50,84 @@ static String readString(File f)
    return s;
 }
 
+static void readMatrix(File f, Matrix matrix)
+{
+   int i;
+
+   for(i = 0; i < 16; i++)
+   {
+      float v;
+      f.Read(&v, sizeof(float), 1);
+      matrix.array[i] = (double)v;
+   }
+}
+
+static void readTCBEase(File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      f.Read(&track.keys[i].tension, sizeof(float), 1);
+      f.Read(&track.keys[i].continuity, sizeof(float), 1);
+      f.Read(&track.keys[i].bias, sizeof(float), 1);
+      f.Read(&track.keys[i].easeFrom, sizeof(float), 1);
+      f.Read(&track.keys[i].easeTo, sizeof(float), 1);
+   }
+}
+
+static void readFTKVector3Df(File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+      f.Read(&track.keys[i].scaling.x, sizeof(float), 3);
+}
+
+static void readFTKQuaternionf(File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      Quaternion qd;
+      float q[4];
+      f.Read(q, sizeof(float), 4);
+      qd = { w = q[0], x = q[1], y = q[2], z = q[3] };
+      track.keys[i].orientation = qd;
+   }
+}
+
+static void readFTKFloat(File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+      f.Read(&track.keys[i].roll, sizeof(float), 1);
+}
+
+static void readFTKBool(File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      byte hide = bool::false;
+      f.Read(&hide, sizeof(byte), 1);
+      // track.keys[i].hide = hide; // TODO: no hide keys yet?
+   }
+}
+
+static void readFTKMorph(File f, FrameTrack track)
+{
+   int i;
+
+   for(i = 0; i < track.numKeys; i++)
+   {
+      // TODO:
+   }
+}
+
 #if defined(__GNOSIS3__)
 TempFile downloadFile(const String url);
 #else
@@ -168,6 +246,38 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   o.transform.scaling = { 1,1,1 };
                }
                readSubBlocks = true;
+               break;
+            }
+            case nodeID:
+            {
+               uint id = 0;
+               f.Read(&id, sizeof(uint), 1);
+               if(containerType == animationTrack)
+               {
+                  FrameTrack track = (FrameTrack)data;
+                  Object object = ctx.nodesByID[id];
+                  if(object)
+                     object.tracks->Add(track);
+                  else
+                  {
+                     PrintLn("WARNING: Node not found for animation track");
+                     // delete track; // TODO: How to free this?
+                  }
+               }
+               else if(object)
+                  ctx.nodesByID[id] = object;
+               break;
+            }
+            case nodeName:
+            {
+               Object p = object.parent;
+               String name = readString(f);
+               if(p)
+               {
+                  p.Remove(object);
+                  p.AddName(object, name);
+               }
+               delete name;
                break;
             }
             case scaling:
@@ -479,12 +589,21 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                int nVertices = mesh.nVertices;
                // bool qVerts = false;
                uint vSize = 0;
-               uint vOffset = 0, nOffset = 0, t1Offset = 0, t2Offset = 0, tnOffset = 0, cOffset = 0;
+               uint vOffset = 0, nOffset = 0, t1Offset = 0, t2Offset = 0, tnOffset = 0, cOffset = 0, bOffset = 0;
                bool signBitan = false;
+               bool lastWasBones = false;
+               uint maxBones = 0;
+               MeshSkin skin = null;
+
                while(pos < bEnd && f.Read(&type, sizeof(E3DBlockType), 1))
                {
                   uint16 offset = 0;
                   f.Read(&offset, sizeof(uint16), 1);
+                  if(lastWasBones)
+                  {
+                     maxBones = (offset - bOffset) / 2;
+                     lastWasBones = false;
+                  }
                   pos += 4;
                   if(!type)
                   {
@@ -501,8 +620,16 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      case attrColors: features.colors = true; cOffset = offset; break;
                      case attrTangentsSign: features.tangents = true; tnOffset = offset; signBitan = true; break;
                      case attrTangentsBT: features.tangents = true; tnOffset = offset; break;
+                     case attrBoneWeights:
+                        // features.bones = true;
+                        bOffset = offset;
+                        lastWasBones = true;
+                        skin = { };
+                        skin.skinVerts.size = nVertices;
+                        break;
                   }
                }
+               mesh.skin = skin;
                allocedFeatures = features;
                allocedFeatures.vertices = true;
                if(allocedFeatures == { vertices = true, normals = true, texCoords1 = true })
@@ -514,6 +641,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   Vector3Df * vertex = null, * normal = null, * tangent = null, * bitangent = null;
                   Pointf * texCoord = null, * texCoord2 = null;
                   ColorRGBAf * color = null;
+                  SkinVert * bones = null;
                   int i;
 
                   if(allocedFeatures.interleaved)
@@ -533,7 +661,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      if(!signBitan && features.tangents) bitangent = mesh.tangents+1;
                      if(features.texCoords1) texCoord = (Pointf*)((byte *)mesh.texCoords);
                      // if(features.texCoords2) texCoord2 = (Pointf*)((byte *)mesh.texCoords2);
-                     if(features.colors) color = (ColorRGBAf*)((byte *)mesh.colors + cOffset);
+                     if(features.colors) color = (ColorRGBAf*)((byte *)mesh.colors /*+ cOffset*/);     // REVIEW: cOffset here?
+                     if(skin /*features.bones*/) bones = skin.skinVerts.array;
                   }
 
                   for(i = 0; i < nVertices; i++)
@@ -561,6 +690,12 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                         f.Seek(vStart + cOffset, start), f.Read(&c, sizeof(uint32), 1);
                         *color = { c.r/255.0f, c.g/255.0f, c.b/255.0f, c.a/255.0f };
                      }
+                     if(skin) //features.bones)
+                     {
+                        f.Seek(vStart + bOffset, start);
+                        f.Read(bones->bones,   sizeof(byte), maxBones); // Asuming maxBones is 10 for now
+                        f.Read(bones->weights, sizeof(byte), maxBones);
+                     }
                      if(tangent)
                      {
                         uint32 t, bt;
@@ -578,6 +713,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      if(texCoord2)texCoord2= (void *)((byte *)texCoord2+ (loadIL ? 32 : 8));
                      if(tangent)  tangent  = (void *)((byte *)tangent  + (loadIL ? 32 : signBitan ? 12 : 24));
                      if(bitangent)bitangent= (void *)((byte *)bitangent+ (loadIL ? 32 : 24));
+                     if(bones)    bones    = bones + 1;
                   }
                }
                break;
@@ -719,6 +855,93 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                mesh.FreePrimitiveGroup(group);
                break;
             }
+            case meshDuplVerts:
+            {
+               // PrintLn("Duplicate Vertices!");
+               break;
+            }
+            case skin:
+               readSubBlocks = true;
+               break;
+            case skinBindMatrix:
+            {
+               MeshSkin skin = mesh.skin;
+
+               readMatrix(f, skin.bindShapeMatrix);
+               skin.bsIsIdentity = skin.bindShapeMatrix.isIdentity();
+               if(skin.bsIsIdentity)
+                  skin.invShape.Identity();
+               else
+                  skin.invShape.Inverse(skin.bindShapeMatrix);
+               break;
+            }
+            case skinBones:
+            {
+               byte count;
+               int i;
+               MeshSkin skin = mesh.skin;
+               Array<SkinBone> bones = skin.bones;
+
+               f.Read(&count, sizeof(byte), 1);
+               bones.size = count;
+
+               for(i = 0; i < count; i++)
+               {
+                  bones[i].name = readString(f); // Could also be nodeID
+                  readMatrix(f, bones[i].invBindMatrix);
+                  bones[i].bsInvBindMatrix.Multiply(skin.bindShapeMatrix, bones[i].invBindMatrix);
+               }
+               break;
+            }
+            case animations: readSubBlocks = true; break;
+            case animation: readSubBlocks = true; break;
+            case animationName:
+               break;
+            case animationFrames:
+            {
+               int frame;
+               f.Read(&frame, sizeof(int), 1);
+               object.startFrame = frame;
+               f.Read(&frame, sizeof(int), 1);
+               object.endFrame = frame;
+               f.Read(&frame, sizeof(int), 1);
+               object.frame = frame;
+               break;
+            }
+            case animationTrack:
+            {
+               uint loop;
+               FrameTrack track { };
+               int i;
+
+               f.Read(&track.numKeys, sizeof(uint), 1);
+               pos += 4;
+               f.Read(&loop, sizeof(byte), 1);
+               pos ++;
+               track.type.loop = loop != 0;
+               track.keys = new0 FrameKey[track.numKeys];
+               for(i = 0; i < track.numKeys; i++)
+                  f.Read(&track.keys[i].frame, sizeof(uint), 1);
+               pos += sizeof(uint) * track.numKeys;
+
+               readSubBlocks = true;
+               subData = track;
+               break;
+            }
+            case frameTCBEase: { FrameTrack track = (FrameTrack) data; readTCBEase(f, track); break; }
+            case ftkPosition: { FrameTrack track = (FrameTrack) data; track.type.type = position; readFTKVector3Df(f, track); break; }
+            case ftkScaling: { FrameTrack track = (FrameTrack) data; track.type.type = scaling; readFTKVector3Df(f, track); break; }
+            case ftkRotation: { FrameTrack track = (FrameTrack) data; track.type.type = rotation; readFTKQuaternionf(f, track); break; }
+            case ftkYaw: { FrameTrack track = (FrameTrack) data; track.type.type = rYaw; readFTKFloat(f, track); break; }
+            case ftkPitch: { FrameTrack track = (FrameTrack) data; track.type.type = rPitch; readFTKFloat(f, track); break; }
+            case ftkRoll: { FrameTrack track = (FrameTrack) data; track.type.type = rRoll; readFTKFloat(f, track); break; }
+            case ftkCameraFieldOfView: { FrameTrack track = (FrameTrack) data; track.type.type = fov; readFTKFloat(f, track); break; }
+            case ftkCameraRoll: { FrameTrack track = (FrameTrack) data; track.type.type = roll; readFTKFloat(f, track); break; }
+            case ftkLightHotSpot: { FrameTrack track = (FrameTrack) data; track.type.type = hotSpot; readFTKFloat(f, track); break; }
+            case ftkLightFallOff: { FrameTrack track = (FrameTrack) data; track.type.type = fallOff; readFTKFloat(f, track); break; }
+            case ftkLightColor: { FrameTrack track = (FrameTrack) data; track.type.type = colorChange; readFTKVector3Df(f, track); break; }
+            case ftkHide: { FrameTrack track = (FrameTrack) data; track.type.type = hide; readFTKBool(f, track); break; }
+            case ftkMorph: { FrameTrack track = (FrameTrack) data; track.type.type = morph; readFTKMorph(f, track); break; }
             case parts:
             {
                uint nParts = (uint)((bEnd - pos) / sizeof(MeshPart));
@@ -955,6 +1178,26 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
    indent--;
 }
 
+static void resolveBones(Object root, Object object)
+{
+   Object c;
+   if(object.mesh && object.mesh.skin)
+   {
+      int i;
+
+      for(i = 0; i < object.mesh.skin.bones.count; i++)
+      {
+         SkinBone * bone = &object.mesh.skin.bones[i];
+         String name = bone->name;
+         Object o = root.Find(name);
+         bone->object = o;
+      }
+   }
+
+   for(c = object.firstChild; c; c = c.next)
+      resolveBones(root, c);
+}
+
 void readE3D(File f, const String fileName, Object object, DisplaySystem displaySystem, E3DOptions options)
 {
    char path[MAX_LOCATION];
@@ -983,6 +1226,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
 
    StripLastDirectory(fileName, path);
    readBlocks(ctx, f, displaySystem, 0, 0, f.GetSize(), object);
+   resolveBones(object, object);
 
    if(freeTexturesByID)
       delete ctx.texturesByID;
