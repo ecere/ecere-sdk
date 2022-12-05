@@ -128,8 +128,10 @@ enum E3DBlockType : uint16
                                           //    (uint) number of keys;
                                           //    number of keys * (uint) frameNumber;
                                           //    1-byte bool looping flag
-                                          //    nodeID or nodeName reference;
+                                          //    [TCBEase and Frame Track Key sub-blocks]
+                                          //    [nodeID and/or nodeName sub-blocks (references)]
             frameTCBEase        = 0xA110, // Tension, continuity, bias and easeFrom / easeTo for each key: 32-bit floats
+            ftkRotationOrder    = 0xA120, // 0: xyz, 1: xzy, 2: yxz, 3: yzx, 4: zxy, 5: zyx (default: zxy)
             ftkPosition         = 0xA210, // Translation -- 3 (x,y,z) float positions per key
             ftkScaling          = 0xA220, // Scaling -- 3 (x,y,z) float scaling per key
             ftkRotation         = 0xA230, // Rotation -- 4 (w,x,y,z) float quaternion orientation per key

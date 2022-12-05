@@ -127,11 +127,12 @@ public struct Transform
 
 public enum FrameTrackType : uint16 { position = 1, rotation, scaling, fov, roll, colorChange, morph, hotSpot, fallOff, hide, rYaw, rPitch, rRoll };
 
-public class FrameTrackBits
+public class FrameTrackBits : uint32
 {
 public:
-   FrameTrackType type;
+   FrameTrackType type:16;
    bool loop:1;
+   EulerRotationOrder rotationOrder:8;
 };
 
 public struct FrameKey

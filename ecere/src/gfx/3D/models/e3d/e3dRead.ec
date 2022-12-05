@@ -257,7 +257,12 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   FrameTrack track = (FrameTrack)data;
                   Object object = ctx.nodesByID[id];
                   if(object)
+                  {
+                     FrameTrackType type = track.type.type;
                      object.tracks->Add(track);
+                     if(type == rYaw || type == rPitch || type == rRoll)
+                        object.rotationOrder = track.type.rotationOrder;
+                  }
                   else
                   {
                      PrintLn("WARNING: Node not found for animation track");
@@ -929,6 +934,14 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                break;
             }
             case frameTCBEase: { FrameTrack track = (FrameTrack) data; readTCBEase(f, track); break; }
+            case ftkRotationOrder:
+            {
+               FrameTrack track = (FrameTrack) data;
+               byte rotationOrder;
+               f.Read(&rotationOrder, sizeof(byte), 1);
+               track.type.rotationOrder = (EulerRotationOrder)rotationOrder;
+               break;
+            }
             case ftkPosition: { FrameTrack track = (FrameTrack) data; track.type.type = position; readFTKVector3Df(f, track); break; }
             case ftkScaling: { FrameTrack track = (FrameTrack) data; track.type.type = scaling; readFTKVector3Df(f, track); break; }
             case ftkRotation: { FrameTrack track = (FrameTrack) data; track.type.type = rotation; readFTKQuaternionf(f, track); break; }
