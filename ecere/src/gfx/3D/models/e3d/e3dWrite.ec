@@ -633,6 +633,7 @@ static void writeAnimationTrack(E3DWriteContext ctx, File f, TrackAndObject to)
    FrameTrack track = to.track;
    Object object = to.object;
    uint nodeID = ctx.objectToNodeID[(uintptr)object];
+   FrameTrackType type = track.type.type;
    byte loop = track.type.loop;
    int i;
 
@@ -640,10 +641,14 @@ static void writeAnimationTrack(E3DWriteContext ctx, File f, TrackAndObject to)
    f.Write(&loop, sizeof(byte), 1);
    for(i = 0; i < track.numKeys; i++)
       f.Write(&track.keys[i].frame, sizeof(uint), 1);
+   if(type == rYaw || type == rPitch || type == rRoll)
+   {
+      byte rotationOrder = (byte)object.rotationOrder;
+      writeE3DBlock(ctx, f, ftkRotationOrder, &rotationOrder, writeByte);
+   }
 
-   writeE3DBlock(ctx, f, E3DBlockType::nodeID, &nodeID, writeInt);
    writeE3DBlock(ctx, f, frameTCBEase, track, writeTCBEase);
-   switch(track.type.type)
+   switch(type)
    {
       case position:    writeE3DBlock(ctx, f, ftkPosition,           track, writeFTKVector3Df); break;
       case scaling:     writeE3DBlock(ctx, f, ftkScaling,            track, writeFTKVector3Df); break;
@@ -659,6 +664,8 @@ static void writeAnimationTrack(E3DWriteContext ctx, File f, TrackAndObject to)
       case rPitch:      writeE3DBlock(ctx, f, ftkPitch,              track, writeFTKFloat); break;
       case rRoll:       writeE3DBlock(ctx, f, ftkRoll,               track, writeFTKFloat); break;
    }
+   // Needs to be last for now...
+   writeE3DBlock(ctx, f, E3DBlockType::nodeID, &nodeID, writeInt);
 }
 
 static void writeAnimationFrames(E3DWriteContext ctx, File f, Object object)
