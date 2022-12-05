@@ -261,7 +261,13 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      FrameTrackType type = track.type.type;
                      object.tracks->Add(track);
                      if(type == rYaw || type == rPitch || type == rRoll)
+                     {
+                        Euler euler;
                         object.rotationOrder = track.type.rotationOrder;
+
+                        euler.FromQuaternion(object.transform.orientation, object.rotationOrder);
+                        object.eulerOrientation = euler;
+                     }
                   }
                   else
                   {
