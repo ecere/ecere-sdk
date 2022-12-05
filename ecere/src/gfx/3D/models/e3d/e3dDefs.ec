@@ -253,6 +253,8 @@ class E3DContext : struct
    Map<uint, bool> meshOwned { };
 
    void (*saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
+
+   Map<uint, Object> nodesByID { };
 }
 
 class E3DWriteContext : struct
