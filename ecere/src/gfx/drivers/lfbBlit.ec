@@ -507,24 +507,42 @@ static void FILTER_888(Bitmap src, Bitmap dst, int dx, int dy, int sx, int sy, i
          {
             int x0 = (int)(x * scaleX);
             int xc = Min(x0 + 2, sw) - x0;
-            uint addSrc = srcStride - xc;
-            uint64 a = 0, r = 0, g = 0, b = 0;
-            int i, j, numPixels = yc * xc;
+            uint64 a, r, g, b;
+            int numPixels = yc * xc;
             ColorAlpha * src = ySrc + x0;
 
-            for(i = y0; i < y0 + yc; i++, src += addSrc)
+            if(numPixels == 4)
             {
-               for(j = 0; j < xc; j++)
-               {
-                  ColorAlpha pixel = *(src++);
-                  Color c = pixel.color;
-                  a += pixel.a, r += c.r, g += c.g, b += c.b;
-               }
+               ColorAlpha pixel00 = src[0];
+               ColorAlpha pixel01 = src[1];
+               ColorAlpha pixel10 = src[srcStride];
+               ColorAlpha pixel11 = src[srcStride+1];
+               a = ((uint64)(pixel00 & 0xFF000000) + (pixel01 & 0xFF000000) + (pixel10 & 0xFF000000) + (pixel11 & 0xFF000000)) >> 26;
+               r = (        (pixel00 & 0x00FF0000) + (pixel01 & 0x00FF0000) + (pixel10 & 0x00FF0000) + (pixel11 & 0x00FF0000)) >> 18;
+               g = (        (pixel00 & 0x0000FF00) + (pixel01 & 0x0000FF00) + (pixel10 & 0x0000FF00) + (pixel11 & 0x0000FF00)) >> 10;
+               b = (        (pixel00 & 0x000000FF) + (pixel01 & 0x000000FF) + (pixel10 & 0x000000FF) + (pixel11 & 0x000000FF)) >>  2;
             }
-            a /= numPixels;
-            r /= numPixels;
-            g /= numPixels;
-            b /= numPixels;
+            else
+            {
+               uint addSrc = srcStride - xc;
+               int i, j;
+
+               a = 0, r = 0, g = 0, b = 0;
+
+               for(i = 0; i < yc; i++, src += addSrc)
+               {
+                  for(j = 0; j < xc; j++)
+                  {
+                     ColorAlpha pixel = *(src++);
+                     Color c = pixel.color;
+                     a += pixel.a, r += c.r, g += c.g, b += c.b;
+                  }
+               }
+               a /= numPixels;
+               r /= numPixels;
+               g /= numPixels;
+               b /= numPixels;
+            }
 
             *dest = ColorAlpha { (byte) a, { (byte) r, (byte) g, (byte) b } };
          }
