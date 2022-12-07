@@ -107,6 +107,10 @@ endif
 LDFLAGS +=$(if $(LINUX_TARGET), -Wl$(comma)--no-undefined,)
 LDFLAGS +=$(if $(OSX_TARGET), -framework cocoa -framework OpenGL -L/usr/local/opt/openssl/lib,)
 
+ifdef LINUX_TARGET
+CFLAGS += -isystem /usr/include/openssl-1.1
+endif
+
 ifdef BSD_TARGET
 EXCLUDED_LIBS += $(space)dl
 CFLAGS += -isystem /usr/local/include -isystem /usr/local/include/freetype2
