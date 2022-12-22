@@ -124,6 +124,7 @@ static char exeLocation[MAX_LOCATION];
 
 #define forArgsPassing 2
 int __ecereNameSpace__ecere__sys__Tokenize(char * string, int maxTokens, char* tokens[], int esc);
+int __ecereNameSpace__ecere__sys__TokenizeWith(char * string, int maxTokens, char* tokens[], const char * tokenizers, int esc);
 char * __ecereNameSpace__ecere__sys__RSearchString(const char * buffer, const char * subStr, int maxLen, bool matchCase, bool matchWord);
 char * __ecereNameSpace__ecere__sys__GetLastDirectory(const char * string, char * output);
 char * __ecereNameSpace__ecere__sys__PathCat(char * string, const char * addedPath);
@@ -557,7 +558,11 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
       if(paths[attempts])
       {
          if(strcmp(paths[attempts], "/usr/lib/ec/lib") && strcmp(paths[attempts], "/usr/lib32/ec/lib"))
+         {
+#ifdef _DEBUG
             printf("attempting lib path: %s\n", paths[attempts]);
+#endif
+         }
          strcpy(fileName, paths[attempts++]);
       }
       else
@@ -582,6 +587,42 @@ void * Instance_Module_Load(const char * libLocation, const char * name, void **
       library = dlopen(fileName, RTLD_LAZY);
 #endif
    }
+
+#if defined(__linux__) && !defined(__ESCRIPTEN__)
+   // TODO: Verify if this issue with IDE SetEnvironment() from the CodeEditor taking effect
+   //       is also an issue on other platforms
+   if(!library)
+   {
+      char * env;
+      if((env = getenv("LD_LIBRARY_PATH")))
+      {
+         char * s = strdup(env);
+         char * tokens[128];
+         int n = __ecereNameSpace__ecere__sys__TokenizeWith(s, sizeof(tokens) / sizeof(tokens[0]), tokens, ":", 1);
+         int i;
+
+         GetExtension(name, extension);
+
+         for(i = 0; i < n; i++)
+         {
+            char * path = tokens[i];
+
+            sprintf(fileName, "%s/lib%s%s",
+               path, name, extension[0] ? "" :
+      #if defined(__APPLE__)
+               ".dylib"
+      #else
+               ".so"
+      #endif
+            );
+            library = dlopen(fileName, RTLD_LAZY);
+            if(library)
+               break;
+         }
+         free(s);
+      }
+   }
+#endif
 
    if(library)
    {
