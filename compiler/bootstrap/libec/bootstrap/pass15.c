@@ -11629,7 +11629,11 @@ case 3:
 type->alignment = size = sizeof(int);
 break;
 case 4:
-type->alignment = size = sizeof(long long);
+type->alignment = __alignof__(struct
+{
+long long a;
+} ecere_gcc_struct);
+size = sizeof(long long);
 break;
 case 22:
 type->alignment = size = targetBits / 8;
@@ -11640,7 +11644,11 @@ type->alignment = size = targetBits / 8;
 type->pointerAlignment = 1;
 break;
 case 5:
-type->alignment = size = sizeof(long);
+type->alignment = __alignof__(struct
+{
+long a;
+} ecere_gcc_struct);
+size = sizeof(long);
 break;
 case 2:
 type->alignment = size = sizeof(short);
@@ -11649,7 +11657,11 @@ case 6:
 type->alignment = size = sizeof(float);
 break;
 case 7:
-type->alignment = size = sizeof(double);
+type->alignment = __alignof__(struct
+{
+double a;
+} ecere_gcc_struct);
+size = sizeof(double);
 break;
 case 8:
 {
@@ -11668,7 +11680,8 @@ else if(_class && (_class->type == 3 || _class->type == 4 || _class->type == 2 |
 {
 if(!_class->dataType)
 _class->dataType = ProcessTypeString(_class->dataTypeString, 0);
-size = type->alignment = ComputeTypeSize(_class->dataType);
+size = ComputeTypeSize(_class->dataType);
+type->alignment = _class->dataType->alignment;
 }
 else
 {
@@ -11809,7 +11822,13 @@ type->alignment = baseType->alignment;
 type->pointerAlignment = baseType->pointerAlignment;
 }
 else
-type->alignment = size = sizeof(uint64);
+{
+type->alignment = __alignof__(struct
+{
+uint64 a;
+} ecere_gcc_struct);
+size = sizeof(uint64);
+}
 break;
 }
 case 15:

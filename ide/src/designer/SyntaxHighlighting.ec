@@ -562,7 +562,7 @@ class CSHL : SyntaxHighlighting
       "asm", "_asm", "__asm", "restrict", "__restrict__", "__restrict",
 
       "wchar_t", "int8_t", "int16_t", "int32_t", "int64_t", "uint8_t", "uint16_t", "uint32_t", "uint64_t",
-      "size_t", "ssize_t",
+      "size_t", "ssize_t", "__alignof__",
 
       // Preprocessor
       "#include", "#define", "#pragma", "#if", "#else", "#elif", "#ifdef", "#ifndef", "#endif", "#undef", "#line", "#cpu",

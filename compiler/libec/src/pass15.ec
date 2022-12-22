@@ -751,13 +751,23 @@ public int ComputeTypeSize(Type type)
          case _BoolType: type.alignment = size = sizeof(char); break;   // Assuming 1 byte _Bool
          case charType: type.alignment = size = sizeof(char); break;
          case intType: type.alignment = size = sizeof(int); break;
-         case int64Type: type.alignment = size = sizeof(int64); break;
+         case int64Type:
+            type.alignment = __alignof__(struct { int64 a;});
+            size = sizeof(int64);
+            break;
          case intPtrType: type.alignment = size = targetBits / 8; type.pointerAlignment = true; break;
          case intSizeType: type.alignment = size = targetBits / 8; type.pointerAlignment = true; break;
-         case longType: type.alignment = size = sizeof(long); break;
+         case longType:
+            type.alignment = __alignof__(struct { long a;});
+            size = sizeof(long);
+            break;
          case shortType: type.alignment = size = sizeof(short); break;
          case floatType: type.alignment = size = sizeof(float); break;
-         case doubleType: type.alignment = size = sizeof(double); break;
+         case doubleType:
+            // https://stackoverflow.com/a/44878752/981959
+            type.alignment = __alignof__(struct { double a;});
+            size = sizeof(double);
+            break;
          case classType:
          {
             Class _class = type._class ? type._class.registered : null;
@@ -780,7 +790,8 @@ public int ComputeTypeSize(Type type)
             {
                if(!_class.dataType)
                   _class.dataType = ProcessTypeString(_class.dataTypeString, false);
-               size = type.alignment = ComputeTypeSize(_class.dataType);
+               size = ComputeTypeSize(_class.dataType);
+               type.alignment = _class.dataType.alignment;
             }
             else
             {
@@ -926,7 +937,10 @@ public int ComputeTypeSize(Type type)
                type.pointerAlignment = baseType.pointerAlignment;
             }
             else
-               type.alignment = size = sizeof(uint64);
+            {
+               type.alignment = __alignof__(struct { uint64 a;});
+               size = sizeof(uint64);
+            }
             break;
          }
          case enumType:
