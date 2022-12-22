@@ -4769,6 +4769,10 @@ class Documentor : GuiApplication
       quit = true;
       if(commandThread.created)
       {
+         // This hangs in __lll_lock_wait_private() when running Documentor in IDE on Linux:
+         // Related:
+         //    https://stackoverflow.com/questions/288062/is-close-fclose-on-stdin-guaranteed-to-be-correct
+         //    https://stackoverflow.com/questions/9219642/fclose-hang-after-cloned-threads-on-linux
          console.CloseInput();
          console.CloseOutput();
          app.Unlock();
