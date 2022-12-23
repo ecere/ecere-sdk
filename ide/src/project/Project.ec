@@ -1917,7 +1917,8 @@ private:
 
                               if(linking)
                               {
-                                 if((pointer = strstr(line, "undefined"))  ||
+                                 if(  (pointer = strstr(line, "cannot find")) ||
+                                      (pointer = strstr(line, "undefined"))  ||
                                       (pointer = strstr(line, "multiple definition")) ||
                                       (pointer = strstr(line, "No such file")) ||
                                       (pointer = strstr(line, "token")))
