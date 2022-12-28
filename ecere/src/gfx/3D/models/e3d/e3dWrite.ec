@@ -45,8 +45,10 @@ void writeE3D(File f, Object object, E3DWriteContext ctx)
 {
    Array<BlockInfo> mainBlocks { };
 
+   ctx.nodeID = 1;
    calculateMeshes(ctx, object);
    writeE3DBlock(ctx, f, version,   object, writeVersion);
+
    if(ctx.textures.count)
       mainBlocks.Add({ textures,  object, writeTextures });
    if(ctx.materials.count)
@@ -69,6 +71,7 @@ void writeE3D(File f, Object object, E3DWriteContext ctx)
    ctx.allMeshes.RemoveAll();
    ctx.meshFaceMaterials.Free();
    ctx.meshToID.Free();
+   ctx.objectToNodeID.Free();
 
    ctx.firstTexture = ctx.textures.count;
    ctx.texUsed.Free();
@@ -492,7 +495,7 @@ static void writeSkinBones(E3DWriteContext ctx, File f, Array<SkinBone> bones)
 
    for(i = 0; i < count; i++)
    {
-      writeString(ctx, f, bones[i].name); // Could also be nodeID
+      writeString(ctx, f, bones[i].name); // name would need to identify parent skeleton...
       writeMatrix(ctx, f, bones[i].invBindMatrix);
    }
 }
@@ -532,6 +535,10 @@ static void writeMesh(E3DWriteContext ctx, File f, Mesh mesh)
 void calculateMeshes(E3DWriteContext ctx, Object object)
 {
    Object c;
+   int oNodeID = ctx.nodeID++;
+
+   ctx.objectToNodeID[(uintptr)object] = oNodeID;
+
    if(object.flags.mesh && object.mesh)
    {
       Mesh mesh = object.mesh;
@@ -717,11 +724,24 @@ static void writeQuaternion(E3DWriteContext ctx, File f, Quaternion v)
    f.Write(v, sizeof(Quaternion), 1);
 }
 
+static struct SkeletonInfo
+{
+   Object skeleton;
+   bool writeTag;
+};
+
+static void writeSkeleton(E3DWriteContext ctx, File f, SkeletonInfo info)
+{
+   Object skeleton = info.skeleton;
+   int skeletonID = ctx.objectToNodeID[(uintptr)skeleton];
+   char * tag = skeleton.tag;
+   writeInt(ctx, f, &skeletonID);
+   writeString(ctx, f, info.writeTag && tag ? tag : "");
+}
+
 static void writeObject(E3DWriteContext ctx, File f, Object object)
 {
-   int oNodeID = ctx.nodeID++;
-
-   ctx.objectToNodeID[(uintptr)object] = oNodeID;
+   int oNodeID = ctx.objectToNodeID[(uintptr)object];
 
    writeE3DBlock(ctx, f, nodeID, &oNodeID, writeInt);
    if(object.name)
@@ -730,7 +750,33 @@ static void writeObject(E3DWriteContext ctx, File f, Object object)
    if(object.mesh)
    {
       int id = ctx.meshToID[(uintptr)object.mesh];
+      MeshSkin skin = object.mesh.skin;
+
       writeE3DBlock(ctx, f, meshID, &id, writeInt);
+
+      if(skin && skin.bones.count)
+      {
+         Object skeleton = null;
+         int i;
+         for(i = 0; i < skin.bones.count; i++)
+         {
+            skeleton = skin.bones[i].object;
+            if(skeleton)
+               break;
+         }
+
+         // FIXME: Improve on skeleton root identification
+         while(skeleton && // Skeleton
+               skeleton.parent && // RootNode
+               skeleton.parent.parent && // top-level
+               skeleton.parent.parent.parent) // need to go up
+            skeleton = skeleton.parent;
+         if(skeleton)
+         {
+            SkeletonInfo skeletonInfo { skeleton, i == 0 };
+            writeE3DBlock(ctx, f, E3DBlockType::skeleton, &skeletonInfo, writeSkeleton);
+         }
+      }
    }
    if(object.transform.scaling.x != 1 || object.transform.scaling.y != 1 || object.transform.scaling.z != 1)
       writeE3DBlock(ctx, f, scaling,     object.transform.scaling,     writeVector3Df);
@@ -742,13 +788,19 @@ static void writeObject(E3DWriteContext ctx, File f, Object object)
    {
       Object o;
       for(o = object.firstChild; o; o = o.next)
-         writeE3DBlock(ctx, f, meshNode, o, writeObject);
+      {
+         if(o.flags.mesh)
+            writeE3DBlock(ctx, f, meshNode, o, writeObject);
+         else if(o.flags.camera)
+            writeE3DBlock(ctx, f, cameraNode, o, writeObject);
+         else if(o.flags.light)
+            writeE3DBlock(ctx, f, lightNode, o, writeObject);
+      }
    }
 }
 
 static void writeObjects(E3DWriteContext ctx, File f, Object object)
 {
-   ctx.nodeID = 1;
    writeE3DBlock(ctx, f, meshNode, object, writeObject);
 }
 

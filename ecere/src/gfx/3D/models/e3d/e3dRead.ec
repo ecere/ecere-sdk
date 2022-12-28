@@ -248,6 +248,21 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                readSubBlocks = true;
                break;
             }
+            case skeleton:
+            {
+               String tag;
+               Object skeleton;
+               int id;
+               const String name = object.name;
+
+               f.Read(&id, sizeof(int), 1);
+               tag = readString(f);
+
+               object.tag = (void *)(uintptr)id;
+               if(tag)
+                  ctx.skeletonTags[id] = tag;
+               break;
+            }
             case nodeID:
             {
                uint id = 0;
@@ -898,7 +913,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
 
                for(i = 0; i < count; i++)
                {
-                  bones[i].name = readString(f); // Could also be nodeID
+                  bones[i].name = readString(f);
                   readMatrix(f, bones[i].invBindMatrix);
                   bones[i].bsInvBindMatrix.Multiply(skin.bindShapeMatrix, bones[i].invBindMatrix);
                }
@@ -1197,24 +1212,40 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
    indent--;
 }
 
-static void resolveBones(Object root, Object object)
+static void resolveBones(E3DContext ctx, Object skeleton, Object object)
 {
    Object c;
+
    if(object.mesh && object.mesh.skin)
    {
       int i;
 
-      for(i = 0; i < object.mesh.skin.bones.count; i++)
+      if(!skeleton && object.tag)
       {
-         SkinBone * bone = &object.mesh.skin.bones[i];
-         String name = bone->name;
-         Object o = root.Find(name);
-         bone->object = o;
+         uint id = (uint)(uintptr)object.tag;
+         skeleton = ctx.nodesByID[id];
+         if(skeleton)
+            skeleton.tag = ctx.skeletonTags[id];
+         object.tag = null;
+      }
+
+      if(skeleton)
+      {
+         for(i = 0; i < object.mesh.skin.bones.count; i++)
+         {
+            SkinBone * bone = &object.mesh.skin.bones[i];
+            if(!bone->object)
+            {
+               String name = bone->name;
+               Object o = skeleton.Find(name);
+               bone->object = o;
+            }
+         }
       }
    }
 
    for(c = object.firstChild; c; c = c.next)
-      resolveBones(root, c);
+      resolveBones(ctx, skeleton, c);
 }
 
 void readE3D(File f, const String fileName, Object object, DisplaySystem displaySystem, E3DOptions options)
@@ -1245,7 +1276,8 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
 
    StripLastDirectory(fileName, path);
    readBlocks(ctx, f, displaySystem, 0, 0, f.GetSize(), object);
-   resolveBones(object, object);
+
+   resolveBones(ctx, null, object);
 
    if(freeTexturesByID)
       delete ctx.texturesByID;
