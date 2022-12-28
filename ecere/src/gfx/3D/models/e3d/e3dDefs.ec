@@ -51,7 +51,7 @@ enum E3DBlockType : uint16
             skinName          = 0x1051,   // name string
             skinBindMatrix    = 0x1052,   // 4x4 32-bit float which bone definitions inverse bind matrices are relative to
             skinBones         = 0x1053,   // byte number of bones, for each bone:
-                                          //    nodeID or nodeName referencing a node;
+                                          //    nodeName referencing a node;
                                           //    4x4 32-bit float inverse bind matrix (relative to skin bind matrix)
             skinBoneWeights   = 0x1054,   // byte 0..7: set of bone weights to use for this skin
 
@@ -64,7 +64,7 @@ enum E3DBlockType : uint16
          scaling             = 0x3030,
          orientation         = 0x3031,
          position            = 0x3032,
-
+         skeleton            = 0x3040,
          // Can have sub-nodes!
 
       cameraNode             = 0x3011,
@@ -257,6 +257,7 @@ class E3DContext : struct
    void (*saveCompressedCallback)(void * context, const String name, int width, int height, Bitmap bitmap);
 
    Map<uint, Object> nodesByID { };
+   Map<uint, String> skeletonTags { };
 }
 
 class E3DWriteContext : struct
