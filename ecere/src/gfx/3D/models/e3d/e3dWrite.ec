@@ -143,7 +143,7 @@ static void writeColorRGB(E3DWriteContext ctx, File f, ColorRGB c)
 
 static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)  // TODO: Add option to write tangent, colors, or remove before calling E3D writer
 {
-   MeshFeatures features = mesh.flags & ~MeshFeatures { /*tangents = true, */colors = true };   // TWEAKED: Don't write tangents, colors for FLT's
+   MeshFeatures features = mesh.flags & ~MeshFeatures { tangents = true, colors = true };   // TWEAKED: Don't write tangents, colors for FLT's
    E3DBlockType type;
    int i;
    int nVertices = mesh.nVertices;
