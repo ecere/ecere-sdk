@@ -12,8 +12,12 @@
 #include <math.h>
 #include <assert.h>
 
-#if defined __SSE4_1__ || defined __AVX2__ || defined _MSC_VER
+#if defined __SSE4_1__ || defined __AVX2__ || (defined _MSC_VER && !defined(__UWP__))
 #include <x86intrin.h>
+#endif
+
+#if defined(__UWP__)
+#undef __ARM_NEON
 #endif
 
 #ifndef _bswap

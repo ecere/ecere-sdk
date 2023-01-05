@@ -16,13 +16,14 @@ import "SSLSocket"
 #define Interface Interface_
 #define Socket Socket_
 #define Alignment Alignment_
+#define int64 int64_
 #include <curl/curl.h>
 #undef Size
 #undef String
 #undef Interface
 #undef Socket
 #undef Alignment
-
+#undef int64
 #undef CompareString
 
 #include <string.h>

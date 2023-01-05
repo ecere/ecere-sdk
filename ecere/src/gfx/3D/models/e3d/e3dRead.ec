@@ -6,6 +6,15 @@ public import "ecere"
 
 import "e3dDefs"
 
+#if defined(__UWP__)
+// FIXME:
+int uwp_strcmpi(const char * a, const char * b)
+{
+   return strcmp(a, b);
+}
+#define strcmpi uwp_strcmpi
+#endif
+
 static struct E3DBlockHeader
 {
    E3DBlockType type __attribute__((packed));

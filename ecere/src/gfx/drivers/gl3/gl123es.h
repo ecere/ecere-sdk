@@ -55,7 +55,11 @@
 
    #include <GLES3/gl3.h>
    #include <GLES3/gl32.h>
+
+#if !defined(__UWP__)
    #include <GLES/gl.h>
+#endif
+
 #else
    #include <GLES2/gl2.h>
 #endif

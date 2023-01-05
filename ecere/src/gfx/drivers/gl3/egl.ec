@@ -42,11 +42,15 @@ default void (* _ptrc_glMapBuffer)(int, GLenum, const void *, GLsizei, GLsizei);
 MLHandle graphics_client = ML_INVALID_HANDLE;
 #endif
 
+bool egl_init_display(EGLNativeWindowType window)
+
+/*
 #if defined(__ANDROID__)
 bool egl_init_display(struct ANativeWindow * window)
 #else
 bool egl_init_display(uint window)
 #endif
+*/
 {
    EGLint attribs[] =
    {
