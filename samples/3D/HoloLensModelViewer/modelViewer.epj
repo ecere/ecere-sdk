@@ -4,15 +4,19 @@
    "Options" : {
       "Warnings" : "All",
       "IncludeDirs" : [
-         "C:/gnosis2/deps/lzma-1701",
-         "C:/ecere-sdk/ecere/src/gfx/drivers/gl3"
+         "../../../ecere/src/gfx/drivers/gl3",
+         "../../../deps/lzma-2107"
       ],
       "TargetType" : "SharedLibrary",
       "TargetFileName" : "modelViewer",
       "Libraries" : [
          "ecere",
          "libGLESv2",
-         "legacy_stdio_definitions"
+         "legacy_stdio_definitions",
+         "lib7z-lzma.lib"
+      ],
+      "LibraryDirs" : [
+         "../../../deps/lzma-2107/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
       ]
    },
    "Configurations" : [
@@ -64,50 +68,17 @@
          ]
       },
       {
-         "Folder" : "lzma",
+         "Folder" : "src",
          "Files" : [
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7z.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zAlloc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zAlloc.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zArcIn.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zBuf.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zBuf.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zBuf2.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zCrc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zCrc.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zCrcOpt.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zDec.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zFile.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zFile.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zStream.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zTypes.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/7zVersion.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Aes.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Aes.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/AesOpt.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Alloc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Alloc.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Bcj2.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Bcj2.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Bcj2Enc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Bra.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Bra.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Bra86.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/BraIA64.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Compiler.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/CpuArch.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/CpuArch.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Delta.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Delta.h",
             {
-               "FileName" : "$(GNOSIS_SDK_SRC)/deps/lzma-1701/DllSecur.c",
+               "FileName" : "./app.cpp",
+               "Options" : {
+                  "ExcludeFromBuild" : true
+               }
+            },
+            {
+               "FileName" : "./app.h",
                "Configurations" : [
-                  {
-                     "Name" : "Debug",
-                     "Options" : {
-                        "ExcludeFromBuild" : true
-                     }
-                  },
                   {
                      "Name" : "Release",
                      "Options" : {
@@ -116,52 +87,6 @@
                   }
                ]
             },
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/DllSecur.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzFind.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzFind.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzFindMt.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzFindMt.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzHash.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma2Dec.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma2Dec.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma2Enc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma2Enc.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma86.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma86Dec.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Lzma86Enc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzmaDec.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzmaDec.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzmaEnc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzmaEnc.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzmaLib.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/LzmaLib.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/MtCoder.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/MtCoder.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Ppmd.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Ppmd7.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Ppmd7.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Ppmd7Dec.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Ppmd7Enc.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Precomp.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/RotateDefs.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Sha256.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Sha256.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Sort.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Sort.h",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Threads.c",
-            "$(GNOSIS_SDK_SRC)/deps/lzma-1701/Threads.h"
-         ]
-      },
-      {
-         "Folder" : "src",
-         "Files" : [
-            {
-               "FileName" : "../app.cpp",
-               "Options" : {
-                  "ExcludeFromBuild" : true
-               }
-            },
-            "../app.h",
             "./modelViewer.ec"
          ],
          "Configurations" : [
