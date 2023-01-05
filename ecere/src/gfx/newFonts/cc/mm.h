@@ -16,8 +16,14 @@
 
 #include <stdio.h>
 // #include <stdlib.h>
+
+#if !defined(__WIN32__)
 #include <sys/time.h>
 #include <sys/types.h>
+#else
+#define WIN32_LEAN_AND_MEAN
+#include <winsock.h>
+#endif
 
 #define OFFSET(s, m) ((unsigned int)(uintptr_t) (&((s *) 0)->m))
 

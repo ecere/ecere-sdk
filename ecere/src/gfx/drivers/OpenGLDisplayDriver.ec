@@ -3656,7 +3656,7 @@ class OpenGLDisplayDriver : DisplayDriver
          glDepthMask((byte)bool::true);
          oglDisplay.depthWrite = true;
 
-#ifndef __EMSCRIPTEN__
+#if !defined(__EMSCRIPTEN__) && !defined(__UWP__)
          glEnable(GL_MULTISAMPLE);
 #endif
       }

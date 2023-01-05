@@ -53,8 +53,12 @@ int stat_glibcwrapper(const char *fn, struct stat * buf);
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #define String String_
+#define Size Size_
+#define Alignment Alignment_
 #include <windows.h>
 #undef String
+#undef Size
+#undef Alignment
 #include <io.h>
 
 errno_t _chsize_s(int fd, __int64 size);

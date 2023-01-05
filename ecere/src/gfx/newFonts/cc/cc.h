@@ -43,11 +43,21 @@ asm(".symver exp,exp@GLIBC_2.2.5");
 #if CC_WINDOWS
 
 #if defined(__UWP__) || !defined(__MINGW32__)
+/*
 struct timeval
 {
    long tv_sec;
    long tv_usec;
 };
+*/
+#define WIN32_LEAN_AND_MEAN
+#define Size Size_
+#define Alignment Alignment_
+#define String String_
+#include <winsock.h>
+#undef Size
+#undef Alignment
+#undef String
 #endif
 
 #if !defined(ssize_t) && !defined(__MINGW32__)
