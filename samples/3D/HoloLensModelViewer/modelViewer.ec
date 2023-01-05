@@ -161,15 +161,11 @@ class HoloLensApp : GuiApplication
          Euler hmdEuler;
 #if defined(__UWP__)
          float mat[16];
+         int i;
 
          glGetFloatv(GLEXT_HOLOGRAPHIC_MONO_VIEW_MATRIX_ANGLE, mat);
-         matrix =
-         { {
-            mat[ 0], mat[ 1], mat[ 2], mat[ 3],
-            mat[ 4], mat[ 5], mat[ 6], mat[ 7],
-            mat[ 8], mat[ 9], mat[10], mat[11],
-            mat[12], mat[13], mat[14], mat[15]
-         } };
+         for(i = 0; i < 16; i++)
+            matrix.array[i] = mat[i];
 #else
          matrix.Identity();
 #endif
