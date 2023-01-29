@@ -1097,7 +1097,7 @@ private:
          result = success;
       else
       {
-         result = typeMismatch;
+         result = typeMismatch;  // NOTE: This could also result from a syntax error
          //  The catch-all takes care of objects created
          //  in the normalClass check if any:
          // the case of type == null is treated in the first if
@@ -2426,19 +2426,27 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
 {
    const String tName = objectType.templateClass ? objectType.templateClass.name : objectType.name;
    bool spacing = compactTypes.Find(tName) == null;
+
    if(object)
    {
       const char * string = null;
       bool quote = true;
       ObjectNotationType onType = eCON ? econ : json;
+      char buffer[16384]; // TODO: Improve OnGetString() to support returning dynamic memory that must be freed
+      bool writtenString = false;
 
       if(objectType._vTbl[__ecereVMethodID_class_OnGetString] != objectType.base._vTbl[__ecereVMethodID_class_OnGetString])
       {
-         char buffer[16384]; // TODO: Improve OnGetString() to support returning dynamic memory that must be freed
          buffer[0] = 0;
          string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, &onType);
          quote = false;
       }
+      else if(objectType.type == normalClass && !strcmp(objectType.dataTypeString, "char *"))
+      {
+         WriteONString(f, (const String)object, eCON, indent);
+         writtenString = true;
+      }
+
       if(string)
       {
          // TOCHECK: ProjectNode.ec why do we add quotes in OnGetString there?
@@ -2448,18 +2456,18 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
             if(quote) f.Puts("\"");
          }
       }
-      else if (eClass_IsDerived(objectType,class(Array)))
+      else if(eClass_IsDerived(objectType,class(Array)))
       {
          // A file containing only [ 1, 2, 3 ] is supported by the parser so the writer should too.
          //  Why would we want a (JS|eC)ON file with the array internals rather than its contents?
          WriteArray(f, objectType, (Container)object, indent, eCON, stringMap, capitalize);
       }
-      else if (eClass_IsDerived(objectType,class(Map)))
+      else if(eClass_IsDerived(objectType,class(Map)))
       {
          // If it is a Map, cut to the right call
          WriteMap(f, objectType, (Map)object,  indent,  eCON, stringMap,  capitalize);
       }
-      else
+      else if(!writtenString)
       {
          Class _class = (objectType.type == normalClass) ? ((Instance)object)._class : objectType;
          Property prop;
