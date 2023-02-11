@@ -2743,18 +2743,32 @@ class Debugger
                   DataMember m;
                   bool getString = true;
                   byte * data = null;
-                  for(m = c.membersAndProperties.first; m; m = m.next)
+                  Class bc;
+
+                  for(bc = c; bc && getString; bc = bc.inheritanceAccess == publicAccess ? bc.base : null)
                   {
-                     if(!m.isProperty && m.type == normalMember)
+                     for(m = bc.membersAndProperties.first; m; m = m.next)
                      {
-                        Class type = m.dataTypeClass;
-                        if(!type)
-                           type = m.dataTypeClass = eSystem_FindClass(c.module, m.dataTypeString);
-                        if(!type || type.type == noHeadClass || type.type == normalClass)
+                        if(!m.isProperty)
                         {
-                           // Avoid trying to stringify types referencing debugged process memory
-                           getString = false;
-                           break;
+                           if(m.type == normalMember)
+                           {
+                              Class type = m.dataTypeClass;
+                              if(!type)
+                                 type = m.dataTypeClass = eSystem_FindClass(bc.module, m.dataTypeString);
+                              if(!type || type.type == noHeadClass || type.type == normalClass)
+                              {
+                                 // Avoid trying to stringify types referencing debugged process memory
+                                 getString = false;
+                                 break;
+                              }
+                           }
+                           else
+                           {
+                              // Avoid trying to stringify types referencing debugged process memory
+                              // (should be recursive, but for now union/struct often contain debugged memory e.g., FieldValue
+                              getString = false;
+                           }
                         }
                      }
                   }
