@@ -2987,7 +2987,8 @@ void ApplyUnitConverters(Expression exp)
                if(convert)
                {
                   double (*convertFn)(double) = (useGet ? (void *)convert.Get : (void *)convert.Set);
-                  if(convertFn)
+                  if(convertFn
+                     && convertFn != (void *)(uintptr)1) // FIXME: Why does this happen w/ e.g., Meters conversion?
                      value = convertFn(value);
                }
                FreeExpContents(exp);
