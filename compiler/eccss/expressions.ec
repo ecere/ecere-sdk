@@ -806,12 +806,16 @@ public:
 
          if(op == in)
          {
-            CMSSExpList l = (CMSSExpList)exp2;
+            CMSSList<CMSSExpression> l = (CMSSList<CMSSExpression>)exp2;
             if(l && l._class == class(CMSSExpBrackets))
             {
                l = ((CMSSExpBrackets)l).list;
             }
-            if(l && l._class == class(CMSSExpList))
+            else if(l && l._class == class(CMSSExpArray))
+            {
+               l = ((CMSSExpArray)l).elements;
+            }
+            if(l && eClass_IsDerived(l._class, class(CMSSList<CMSSExpression>)))
             {
                FieldValue v { type = { type = nil } };
                for(e : l.list)
