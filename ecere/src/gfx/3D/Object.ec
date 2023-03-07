@@ -28,7 +28,7 @@ public class ObjectFlags
 {
 public:
    bool root:1, viewSpace:1, ownMesh:1, translucent:1, flipWindings:1, keysLoaded:1, transform:1, mesh:1, light:1, camera:1, localMatrixSet:1;
-   bool computeLightVectors:1, skinApplied:1;
+   bool computeLightVectors:1, skinApplied:1, hide:1;
    int hierarchy:16:16;
 };
 
