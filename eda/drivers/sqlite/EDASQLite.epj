@@ -41,7 +41,8 @@
          "Name" : "win32",
          "Options" : {
             "IncludeDirs" : [
-               "../../../deps/libffi-3.4.4/i686-w64-mingw32/include"
+               "../../../deps/libffi-3.4.4/i686-w64-mingw32/include",
+               "../../../deps/sqlite-3.41.0"
             ],
             "Libraries" : [
                "gnurx-0"
@@ -181,7 +182,7 @@
    ],
    "Files" : [
       {
-         "FileName" : "sqlite3.c",
+         "FileName" : "../../../deps/sqlite-3.41.0/sqlite3.c",
          "Options" : {
             "FastMath" : false
          },
@@ -230,7 +231,7 @@
          ]
       },
       {
-         "FileName" : "sqlite3.h",
+         "FileName" : "../../../deps/sqlite-3.41.0/sqlite3.h",
          "Platforms" : [
             {
                "Name" : "linux",

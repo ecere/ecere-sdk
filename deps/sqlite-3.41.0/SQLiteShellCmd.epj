@@ -1,0 +1,78 @@
+{
+   "Version" : 0.2,
+   "ModuleName" : "SQLiteShellCmd",
+   "Options" : {
+      "Warnings" : "All",
+      "Optimization" : "None",
+      "PreprocessorDefinitions" : [
+         "SQLITE_ENABLE_RTREE=1"
+      ],
+      "TargetType" : "Executable",
+      "TargetFileName" : "sqlite3",
+      "TargetDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
+      "ObjectsDirectory" : "obj/$(MODULE).$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)",
+      "Console" : true
+   },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl"
+            ]
+         }
+      },
+      {
+         "Name" : "apple",
+         "Options" : {
+            "Libraries" : [
+               "pthread",
+               "dl"
+            ]
+         }
+      }
+   ],
+   "Configurations" : [
+      {
+         "Name" : "Debug",
+         "Options" : {
+            "Debug" : true,
+            "PreprocessorDefinitions" : [
+               "_DEBUG"
+            ],
+            "FastMath" : false
+         }
+      },
+      {
+         "Name" : "Release",
+         "Options" : {
+            "NoLineNumbers" : true,
+            "Optimization" : "Speed",
+            "FastMath" : true,
+            "InstallCommands" : [
+               "$(if $(WINDOWS_HOST),$(call cp,$(TARGET),\"$(BINDIR)/\"),install $(INSTALL_FLAGS) $(TARGET) $(BINDIR)/$(MODULE)$(E))"
+            ]
+         }
+      }
+   ],
+   "Files" : [
+      {
+         "FileName" : "shell.c",
+         "Options" : {
+            "FastMath" : false
+         }
+      },
+      {
+         "FileName" : "sqlite3.c",
+         "Options" : {
+            "FastMath" : false
+         }
+      },
+      "sqlite3.h"
+   ],
+   "ResourcesPath" : "",
+   "Resources" : [
+
+   ]
+}

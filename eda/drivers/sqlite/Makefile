@@ -75,7 +75,7 @@ _OBJECTS = \
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 
 SOURCES = $(ECSOURCES) \
-	$(if $(LINUX_TARGET),,sqlite3.c)
+	$(if $(LINUX_TARGET),,../../../deps/sqlite-3.41.0/sqlite3.c)
 
 RESOURCES = \
 	locale/es.mo \
@@ -94,7 +94,8 @@ endif
 
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
-			 -I../../../deps/libffi-3.4.4/i686-w64-mingw32/include,) \
+			 -I../../../deps/libffi-3.4.4/i686-w64-mingw32/include \
+          -I../../../deps/sqlite-3.41.0,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DSQLITE_DEFAULT_LOCKING_MODE=1 \
 			 -DSQLITE_ENABLE_RTREE=1 \
@@ -102,7 +103,8 @@ PRJ_CFLAGS += \
 
 CUSTOM1_PRJ_CFLAGS = \
 	 $(if $(WINDOWS_TARGET), \
-			 -I../../../deps/libffi-3.4.4/i686-w64-mingw32/include,) \
+			 -I../../../deps/libffi-3.4.4/i686-w64-mingw32/include, \
+          -I../../../deps/sqlite-3.41.0) \
 	 $(if $(DEBUG), -g, -O2) $(FPIC) -w -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -DSQLITE_DEFAULT_LOCKING_MODE=1 \
 			 -DSQLITE_ENABLE_RTREE=1 \
@@ -210,8 +212,8 @@ $(OBJ)sqliteDB.c: sqliteDB.ec $(OBJ)sqliteDB.sym | $(SYMBOLS)
 
 # OBJECT RULES
 
-$(OBJ)sqlite3.o: sqlite3.c
-	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c sqlite3.c -o $(OBJ)sqlite3.o
+$(OBJ)sqlite3.o: ../../../deps/sqlite-3.41.0/sqlite3.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c ../../../deps/sqlite-3.41.0/sqlite3.c -o $(OBJ)sqlite3.o
 
 $(OBJ)sqliteDB$(O): $(OBJ)sqliteDB.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)sqliteDB.c) -o $(call quote_path,$@)
