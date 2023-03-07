@@ -983,7 +983,7 @@ public:
       for(link = class(ObjectFormat).derivatives.first; link; link = link.next)
       {
          format = link.data;
-         if(format.extension && !strcmp(format.extension, type))
+         if(format.extension && type && !strcmp(format.extension, type))
             break;
       }
       if(!link) format = null;
