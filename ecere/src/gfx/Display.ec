@@ -977,6 +977,8 @@ public:
          ObjectFlags flags = *&object.flags;
          bool viewSpace = flags.viewSpace;
 
+         if(flags.hide) return false;
+
          display3D.cullEnabled = -1;
 
          if(display3D.selection || !camera)
