@@ -8279,10 +8279,19 @@ public:
             value.children.Insert(last, this);
 
             // *** NEW HERE: ***
-            if(cycle)
-               parent.childrenCycle.Delete(cycle);
-            if(order)
-               parent.childrenOrder.Delete(order);
+            if(parent)
+            {
+               if(cycle)
+                  parent.childrenCycle.Delete(cycle);
+               if(order)
+                  parent.childrenOrder.Delete(order);
+            }
+#ifdef _DEBUG
+            else if(cycle || order)
+            {
+               PrintLn("WARNING: cycle || order but no parent?");
+            }
+#endif
             cycle = null;
             order = null;
             // *** TODO: Added this here to solve crash on setting parent to null before destroying/destructing ***

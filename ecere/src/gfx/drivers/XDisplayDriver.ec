@@ -1819,6 +1819,8 @@ class XDisplayDriver : DisplayDriver
       XDisplay xDisplay = display.driverData;
       Box * box = (updateBox != null) ? updateBox : &xDisplay.updateBox;
 
+      if(!xDisplay.gc) return;
+
       {
          XRectangle rectangle;
          rectangle.x = 0;
