@@ -2440,6 +2440,8 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
          buffer[0] = 0;
          string = ((const char *(*)())(void *)objectType._vTbl[__ecereVMethodID_class_OnGetString])(objectType, object, buffer, null, &onType);
          quote = false;
+         // NOTE: Returning null from OnGetString() means to use the default object serialization below
+         //       rather than serializing as null
       }
       else if(objectType.type == normalClass && !strcmp(objectType.dataTypeString, "char *"))
       {
