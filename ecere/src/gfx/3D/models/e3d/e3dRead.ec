@@ -251,9 +251,9 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             case skeleton:
             {
                String tag;
-               Object skeleton;
+               // Object skeleton;
                int id;
-               const String name = object.name;
+               // const String name = object.name;
 
                f.Read(&id, sizeof(int), 1);
                tag = readString(f);
