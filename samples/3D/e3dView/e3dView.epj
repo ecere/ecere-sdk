@@ -26,7 +26,8 @@
          "Name" : "linux",
          "Options" : {
             "Libraries" : [
-               "m"
+               "m",
+               "7z-lzma"
             ]
          }
       },
