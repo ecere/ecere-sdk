@@ -408,8 +408,9 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   if(ctx.saveCompressedMutex)
                      ctx.saveCompressedMutex.Wait();
 
-                  for(attempt = ( !strcmpi(ext,"etc2") || !ctx.compressedTextures ) ? 0 : 1; !f && attempt >= 0; --attempt)
+                  for(attempt = /*( !strcmpi(ext,"etc2") || !ctx.compressedTextures ) ? */0/* : 1*/; !f && attempt >= 0; --attempt)
                   {
+                     // We compress ourselves etc2 in client now...
                      // This will first try to get compressed textures, then
                      // fallback to the extension found in the model file
                      // (variable exe), however, if exe is already "etc2" or we
@@ -1144,7 +1145,12 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
                char * name = readString(f);
 
                if(ctx.curTextureID)
-                  textureList.Add(CopyString(name));
+               {
+                  if(ctx.texturesPath)
+                     textureList.Add(PrintString(ctx.texturesPath, name));
+                  else
+                     textureList.Add(CopyString(name));
+               }
 
                delete name;
                break;
