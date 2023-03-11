@@ -72,7 +72,7 @@ class TrumpDialog : Window
 
       bool NotifyClicked(Button button, int x, int y, Modifiers mods)
       {
-         Kind trump = (Kind)trumpDrop.GetTag(null);
+         Kind trump = (Kind)trumpDrop.GetTag();
          //Kind trump = trumpDrop.GetData(null);
          Destroy(trump);
          return true;
