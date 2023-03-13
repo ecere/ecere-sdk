@@ -1130,12 +1130,14 @@ public:
                               (Vector3Df *)&vertices[vStride * (i32Bit ? indices32[0] : indices16[0])]);
             planeNormal = { (float) plane.normal.x, (float) plane.normal.y, (float) plane.normal.z };
 
+            /*
             if(primitive->material.flags.doubleSided && plane.d < 0)
             {
                planeNormal.x *= -1;
                planeNormal.y *= -1;
                planeNormal.z *= -1;
             }
+            */
                          // baseIndex set but not used for Singles?
             computeNormalWeights(primitive->nIndices, vertices, vStride, indices32,
                i32Bit, 0 /*primitive->baseIndex*/, weights, edges, rEdges);
@@ -1235,18 +1237,24 @@ public:
 
          if(dupVerts)
          {
-            int * dv = dupVerts.array - nVertices;
-            int count = nVertices + dupVerts.count;
+            int dvCount = dupVerts.count, startDup = this.nVertices - dvCount;
+            int * dv = dupVerts.array;
             int i;
-            for(i = nVertices; i < count; i++)
+
+            for(i = 0; i < dvCount; i++)
             {
+               int di = startDup + i;
                int ix = dv[i];
                if(computeNormals)
-                  normals[i]  = normals[ix];
+               {
+                  normals[3*di+0] = normals[3*ix+0];
+                  normals[3*di+1] = normals[3*ix+1];
+                  normals[3*di+2] = normals[3*ix+2];
+               }
                if(computeTangents && tangents)
                {
-                  tangents[2*i+0] = tangents[2*ix+0];
-                  tangents[2*i+1] = tangents[2*ix+1];
+                  tangents[2*di+0] = tangents[2*ix+0];
+                  tangents[2*di+1] = tangents[2*ix+1];
                }
             }
          }
@@ -2019,6 +2027,10 @@ void computeNormalWeights(int n, float * vertices, uint vStride, uint * indices,
 }
 
 #ifdef NORMALS_MERGE_VERTICES
+
+#define SHARED_VERTEX_DELTA   0.00001
+#define SHARED_VERTEX_MAX_DOT 0.40
+
 struct SharedVertex
 {
    Vector3Df v, n;
@@ -2031,16 +2043,16 @@ struct SharedVertex
       float dz = v.z - b.v.z;
       double dot;
 
-      if(dx > 0.00001) return 1;
-      if(dx <-0.00001) return -1;
-      if(dy > 0.00001) return 1;
-      if(dy <-0.00001) return -1;
-      if(dz > 0.00001) return 1;
-      if(dz <-0.00001) return -1;
+      if(dx > SHARED_VERTEX_DELTA) return 1;
+      if(dx <-SHARED_VERTEX_DELTA) return -1;
+      if(dy > SHARED_VERTEX_DELTA) return 1;
+      if(dy <-SHARED_VERTEX_DELTA) return -1;
+      if(dz > SHARED_VERTEX_DELTA) return 1;
+      if(dz <-SHARED_VERTEX_DELTA) return -1;
 
       dot = n.DotProduct(b.n);
 
-      if(dot > 0.40)
+      if(dot > SHARED_VERTEX_MAX_DOT)
          return 0;
       if(n.x > b.n.x) return  1;
       if(n.x < b.n.x) return -1;
