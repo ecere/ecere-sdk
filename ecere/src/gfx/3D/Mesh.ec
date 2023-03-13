@@ -129,7 +129,8 @@ public class PrimitiveGroup : struct
 public:
    PrimitiveGroup prev, next;
    PrimitiveGroupType type;
-   int baseIndex;
+   int baseIndexMesh;   // Offset into Mesh::indices (type.sharedIndices is set)
+   int baseIndexBuffer; // Offset into GLEAB (inclusive of Mesh::baseIndex)
    union
    {
       struct { union { uint16 * indices; uint * indices32; }; int nIndices; };
@@ -169,7 +170,8 @@ public struct PrimitiveSingle
 {
 public:
    PrimitiveGroupType type;
-   int baseIndex;
+   int baseIndexMesh;   // Offset into Mesh::indices (type.sharedIndices is set)
+   int baseIndexBuffer; // Offset into index buffer (inclusive of Mesh::baseIndex)
    union
    {
       struct { union { uint16 * indices; uint * indices32; }; int nIndices; };
@@ -599,13 +601,13 @@ public:
 #if !defined(ECERE_NOGL)
                   if(meab)
                   {
-                     int baseIndex = prim->baseIndex;
+                     int baseIndex = prim->baseIndexBuffer;
                      ((OGLIndices)prim->data).buffer.buffer = 0;
                      if(baseIndex != -1)
                      {
                         uint iSize = prim->type.indices32bit ? sizeof(uint) : sizeof(uint16);
                         meab.freeBlock(BlockEntry { baseIndex * iSize, (baseIndex + prim->nIndices) * iSize-1 });
-                        prim->baseIndex = -1;
+                        prim->baseIndexBuffer = -1;
                      }
                   }
 #endif
@@ -686,13 +688,13 @@ public:
 #if !defined(ECERE_NOGL)
             if(meab)
             {
-               int baseIndex = group.baseIndex;
+               int baseIndex = group.baseIndexBuffer;
                ((OGLIndices)group.data).buffer.buffer = 0;
                if(baseIndex != -1)
                {
                   uint iSize = group.type.indices32bit ? sizeof(uint) : sizeof(uint16);
                   meab.freeBlock(BlockEntry { baseIndex * iSize, (baseIndex + group.nIndices) * iSize-1 });
-                  group.baseIndex = -1;
+                  group.baseIndexBuffer = -1;
                }
             }
 #endif
@@ -757,13 +759,13 @@ public:
 #if !defined(ECERE_NOGL)
             if(meab)
             {
-               int baseIndex = primitive.baseIndex;
+               int baseIndex = primitive.baseIndexBuffer;
                ((OGLIndices)primitive.data).buffer.buffer = 0;
                if(baseIndex != -1)
                {
                   uint iSize = primitive.type.indices32bit ? sizeof(uint) : sizeof(uint16);
                   meab.freeBlock(BlockEntry { baseIndex * iSize, (baseIndex + primitive.nIndices) * iSize-1 });
-                  primitive.baseIndex = -1;
+                  primitive.baseIndexBuffer = -1;
                }
             }
 #endif
@@ -804,7 +806,7 @@ public:
          if(primitive.type.sharedIndices && !primitive.indices && indices)
          {
             shareIndicesTweak = true;
-            primitive.indices = (uint16 *)((byte *)indices + (primitive.baseIndex * (primitive.type.indices32bit ? 4 : 2)));
+            primitive.indices = (uint16 *)((byte *)indices + (primitive.baseIndexMesh * (primitive.type.indices32bit ? 4 : 2)));
          }
 #if !defined(ECERE_NOGL)
          driver.UnlockIndices(displaySystem, primitive, primitive.type.indices32bit, primitive.nIndices, meab);
@@ -878,7 +880,7 @@ public:
             int nPoints, nIndex;
             bool i32Bit = group.type.indices32bit;
             uint32 * indices32 = i32Bit ?
-               (group.type.sharedIndices && this.indices ? this.indices + group.baseIndex : group.indices32) : null;
+               (group.type.sharedIndices && this.indices ? this.indices + group.baseIndexMesh : group.indices32) : null;
             uint16 * indices16 = i32Bit ? null : group.indices;
 
             if(group.type.primitiveType == triangles)
@@ -1307,7 +1309,8 @@ public:
                PrimitiveGroup group = mesh.AddPrimitiveGroup(g.type, g.nIndices);
                if(group)
                {
-                  group.baseIndex = g.baseIndex;
+                  group.baseIndexBuffer = g.baseIndexBuffer;
+                  group.baseIndexMesh = g.baseIndexMesh;
                   if(group.type.vertexRange)
                   {
                      group.first = g.first;
@@ -1383,7 +1386,7 @@ public:
                      if(group.type == primitive->type && group.material == primitive->material)
                      {
                         if(group.type.sharedIndices)
-                           CopyBytesBy4(indices + group.baseIndex + nIndices, primitive->indices32, primitive->nIndices);
+                           CopyBytesBy4(indices + group.baseIndexMesh + nIndices, primitive->indices32, primitive->nIndices);
                         else if(use32)
                            CopyBytesBy4(group.indices32 + nIndices, primitive->indices32, primitive->nIndices);
                         else
@@ -1529,7 +1532,7 @@ public:
                         }
                         else
                         {
-                           uint32 * indices32 = group.type.sharedIndices ? indices + group.baseIndex : group.indices32;
+                           uint32 * indices32 = group.type.sharedIndices ? indices + group.baseIndexMesh : group.indices32;
                            if(group.type.primitiveType == triangles || group.type.primitiveType == quads)
                               CopyBytesBy4(primitive->indices32, indices32 + c, nIndex);
 

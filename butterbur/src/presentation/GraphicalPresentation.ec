@@ -30,7 +30,7 @@ bool pickPrimitives(Mesh mesh, PrimitiveSingle primitive,
    bool i32bit = primitive != null ? primType.indices32bit : true;
    uint32 * indices32 = !i32bit ? null :
       primitive && primitive.indices32 != null ? primitive.indices32 : mesh.indices ?
-      mesh.indices + (primitive != null ? primitive.baseIndex : 0) : null;
+      mesh.indices + (primitive != null ? primitive.baseIndexMesh : 0) : null;
    uint16 * indices16 = !i32bit && primitive && primitive.indices != null ? primitive.indices : null;
    bool usePickingPlanes = false; // TODO: Review this... was only set to true in 'orbitWithMouse' sample?
    bool intersecting = true;

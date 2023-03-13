@@ -1309,7 +1309,7 @@ public:
                bool ix32 = !past && primitive ? primitive->type.indices32bit : false;
                uint32 * indices32 = past ? null : ix32 ?                                 // baseIndex set but not used for Singles?
 
-                  (primitive->type.sharedIndices && mesh.indices ? mesh.indices + primitive->baseIndex : primitive->indices32) :
+                  (primitive->type.sharedIndices && mesh.indices ? mesh.indices + primitive->baseIndexMesh : primitive->indices32) :
                   null;
                uint16 * indices16 = past || ix32 ? null : primitive->indices;
                Material material = past ? null : /*sort->material;  */primitive->material ? primitive->material : sort->object.material;
@@ -1712,7 +1712,7 @@ private class Display3D : struct
       int strip = 1;
       bool i32bit = primitive.type.indices32bit;
       uint32 * indices32 = !i32bit ? null :
-         primitive.indices32 != null ? primitive.indices32 : mesh.indices ? mesh.indices + primitive.baseIndex : null;
+         primitive.indices32 != null ? primitive.indices32 : mesh.indices ? mesh.indices + primitive.baseIndexMesh : null;
       uint16 * indices16 = !i32bit && primitive.indices != null ? primitive.indices : null;
       Array<MeshPart> parts = mesh.parts;
       int pi;

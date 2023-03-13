@@ -786,7 +786,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   {
                      PrimitiveGroup g = mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
                      if(displaySystem)
-                        g.baseIndex = mesh.baseIndex;
+                        g.baseIndexBuffer = mesh.baseIndex;
                   }
                }
                else
@@ -866,7 +866,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      PrimitiveGroup g;
                      g = mesh.AddPrimitiveGroup({ triangles, indices32bit = is32, sharedIndices = ctx.shareIndices }, 3 * count);
                      if(ctx.shareIndices)
-                        g.baseIndex = mesh.baseIndex + 3 * start;
+                     {
+                        g.baseIndexMesh = 3 * start;
+                        g.baseIndexBuffer = mesh.baseIndex + g.baseIndexMesh;
+                     }
                      else
                      {
                         mesh.LockPrimitiveGroup(g);

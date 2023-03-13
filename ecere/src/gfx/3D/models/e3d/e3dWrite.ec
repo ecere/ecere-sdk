@@ -295,7 +295,7 @@ static void writeTriFaces16(E3DWriteContext ctx, File f, Mesh mesh)
       {
          uint32 * indices = g.indices32;
          if(g.type.sharedIndices)
-            indices = mesh.indices + g.baseIndex;
+            indices = mesh.indices + g.baseIndexMesh;
 
          for(i = 0; i < gn; i++)
          {
@@ -309,7 +309,7 @@ static void writeTriFaces16(E3DWriteContext ctx, File f, Mesh mesh)
       {
          uint16 * indices = g.indices;
          if(g.type.sharedIndices)
-            indices = ((uint16 *)mesh.indices) + g.baseIndex;
+            indices = ((uint16 *)mesh.indices) + g.baseIndexMesh;
 
          if(g.type == quads)
          {
@@ -354,7 +354,7 @@ static void writeTriFaces32(E3DWriteContext ctx, File f, Mesh mesh)
       int i, gn = g.nIndices;
       if(g.type.indices32bit)
       {
-         uint32 * indices = g.type.sharedIndices && mesh.indices ? mesh.indices + g.baseIndex : g.indices32;
+         uint32 * indices = g.type.sharedIndices && mesh.indices ? mesh.indices + g.baseIndexMesh : g.indices32;
          for(i = 0; i < gn; i++)
             f.Write(&indices[i], sizeof(uint32), 1);
       }

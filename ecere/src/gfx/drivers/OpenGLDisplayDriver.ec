@@ -4609,10 +4609,10 @@ class OpenGLDisplayDriver : DisplayDriver
             if(mb != null)
             {
                BlockEntry block = mb.allocate(elements, size);
-               group.baseIndex = block ? block.start / ixSize : -1;
+               group.baseIndexBuffer = block ? block.start / ixSize : -1;
                oglIndices.buffer.buffer = mb.ab.buffer;
             }
-            oglIndices.buffer.upload(group.baseIndex * ixSize, size, b);
+            oglIndices.buffer.upload(group.baseIndexBuffer * ixSize, size, b);
          }
       }
       SETCAPS(caps);
@@ -4901,7 +4901,7 @@ class OpenGLDisplayDriver : DisplayDriver
          else
             eab.draw2(getPrimitiveType(type.primitiveType), nIndices,
                indices32Bit ? GL_UNSIGNED_INT : GL_UNSIGNED_SHORT,
-               eab.buffer ? (void *)(uintptr)(primitive.baseIndex * (indices32Bit ? 4 : 2)) : primitive.indices,
+               eab.buffer ? (void *)(uintptr)(primitive.baseIndexBuffer * (indices32Bit ? 4 : 2)) : primitive.indices,
                   (*&mesh.flags & { tangents = true, colors = true, bones = true }) ? 0 : *&mesh.baseVertex);
          // TODO: Do this somewhere else... GLABBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
       }
