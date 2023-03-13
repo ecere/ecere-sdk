@@ -1286,18 +1286,34 @@ public:
                memcpy(mesh.tangents, tangents, nVertices * sizeof(Vector3Df));
             if(flags.lightVectors)
                memcpy(mesh.lightVectors, lightVectors, nVertices * sizeof(Vector3Df));
+            if(dupVerts)
+               mesh.dupVerts = { dupVerts };
+
+            mesh.baseIndex = baseIndex;
+            mesh.baseVertex = baseVertex;
+            mesh.nIndices = nIndices;
+            if(parts)
+               mesh.parts = { parts };
+            if(nIndices)
+            {
+               mesh.indices = nIndices ? new uint[nIndices] : null;
+               memcpy(mesh.indices, indices, nIndices * sizeof(uint));
+            }
+            mesh.mab = mab;   // REVIEW
+            mesh.meab = meab;
 
             for(g = groups.first; g; g = g.next)
             {
                PrimitiveGroup group = mesh.AddPrimitiveGroup(g.type, g.nIndices);
                if(group)
                {
+                  group.baseIndex = g.baseIndex;
                   if(group.type.vertexRange)
                   {
                      group.first = g.first;
                      group.nVertices = g.nVertices;
                   }
-                  else
+                  else if(group.indices || group.indices32)
                   {
                      if(group.type.indices32bit)
                         memcpy(group.indices32, g.indices32, sizeof(uint32) * group.nIndices);
