@@ -1474,7 +1474,7 @@ public:
                               int c;
                               if(group.type.indices32bit)
                               {
-                                 uint32 * indices32 = group.indices32 ? group.indices32 : mesh.indices + group.baseIndex;
+                                 uint32 * indices32 = group.indices32 ? group.indices32 : mesh.indices + group.baseIndexMesh;
                                  for(c = 0; c<group.nIndices; c++)
                                     newGroup.indices32[nIndices++] = indices32[c] + vertexOffset;
                               }
@@ -1501,7 +1501,7 @@ public:
                                  int c;
                                  if(group.type.indices32bit)
                                  {
-                                    uint32 * indices32 = group.indices32 ? group.indices32 : mesh.indices + group.baseIndex;
+                                    uint32 * indices32 = group.indices32 ? group.indices32 : mesh.indices + group.baseIndexMesh;
                                     for(c = 0; c<group.nIndices; c++)
                                        newGroup.indices32[nIndices++] = indices32[c] + vertexOffset;
                                  }
@@ -1598,7 +1598,7 @@ public:
 
                   if(triangle->type.indices32bit)
                   {
-                     uint32 * indices32 = src->indices32 ? src->indices32 : mesh.indices + src->baseIndex;
+                     uint32 * indices32 = src->indices32 ? src->indices32 : mesh.indices + src->baseIndexMesh;
                      for(i = 0; i<triangle->nIndices; i++)
                         triangle->indices32[i] = indices32[i] + vertexOffset;
                   }
@@ -1635,7 +1635,7 @@ public:
 
                      if(triangle->type.indices32bit)
                      {
-                        uint32 * indices32 = src->indices32 ? src->indices32 : mesh.indices + src->baseIndex;
+                        uint32 * indices32 = src->indices32 ? src->indices32 : mesh.indices + src->baseIndexMesh;
                         for(i = 0; i<triangle->nIndices; i++)
                            triangle->indices32[i] = indices32[i] + vertexOffset;
                      }
