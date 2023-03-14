@@ -161,10 +161,27 @@ static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)  // TODO: A
    Array<SkinVert> skinVerts = null;
    byte maxBones = 0;
    uint dupVertCount = mesh.dupVerts ? mesh.dupVerts.count : 0;
+   Vector3Df * tmpVertices = null;
 
    if(features.vertices)
    {
-      vertices = mesh.vertices;
+      int startDups = nVertices - dupVertCount;
+      Mesh unmorphedMesh = mesh.unmorphedMesh;
+      if(unmorphedMesh && unmorphedMesh.nVertices == nVertices)
+         vertices = unmorphedMesh.vertices;
+      else if(unmorphedMesh && unmorphedMesh.nVertices == startDups)
+      {
+         int i;
+         Vector3Df * v;
+
+         vertices = tmpVertices = new Vector3Df[nVertices];
+         memcpy(vertices, unmorphedMesh.vertices, startDups);
+         v = vertices + startDups;
+         for(i = 0; i < dupVertCount; i++, v++)
+            *v = unmorphedMesh.vertices[mesh.dupVerts[i]];
+      }
+      else
+         vertices = mesh.vertices;
       type = attrVertices;
       f.Write(&type, sizeof(E3DBlockType), 1);
       f.Write(&vSize, sizeof(uint16), 1);
@@ -262,6 +279,7 @@ static void writeInterleaved(E3DWriteContext ctx, File f, Mesh mesh)  // TODO: A
          f.Write(skinVerts[j].weights, sizeof(byte), maxBones);
       }
    }
+   delete tmpVertices;
 }
 
 static int getFacesCount(PrimitiveGroup g)
@@ -455,17 +473,13 @@ struct FacesMaterial
    int start, count, material;
 };
 
-static void writeFaceMaterials(E3DWriteContext ctx, File f, Mesh mesh)
+static void writeFaceMaterials(E3DWriteContext ctx, File f, Array<FacesMaterial> faceMaterials)
 {
-   Array<FacesMaterial> faceMaterials = ctx.meshFaceMaterials[(uintptr)mesh];
-   //PrimitiveGroup g;
-   //for(g = mesh.groups.first; g; g = g.next)
    f.Write(faceMaterials.array, sizeof(FacesMaterial), faceMaterials.count);
 }
 
-static void writeParts(E3DWriteContext ctx, File f, Mesh mesh)
+static void writeParts(E3DWriteContext ctx, File f, Array<MeshPart> parts)
 {
-   Array<MeshPart> parts = mesh.parts;
    f.Write(parts.array, sizeof(MeshPart), parts.count);
 }
 
@@ -500,9 +514,8 @@ static void writeSkinBones(E3DWriteContext ctx, File f, Array<SkinBone> bones)
    }
 }
 
-static void writeSkin(E3DWriteContext ctx, File f, Mesh mesh)
+static void writeSkin(E3DWriteContext ctx, File f, MeshSkin skin)
 {
-   MeshSkin skin = mesh.skin;
    byte boneWeights = 0;
 
    // writeE3DBlock(ctx, f, skinName, skin.name, writeString);
@@ -511,12 +524,38 @@ static void writeSkin(E3DWriteContext ctx, File f, Mesh mesh)
    writeE3DBlock(ctx, f, skinBoneWeights, &boneWeights, writeByte);
 }
 
+static void writeMorph(E3DWriteContext ctx, File f, MeshMorph morph)
+{
+   Mesh target = morph.target;
+   int targetID = ctx.meshToID[(uintptr)target];
+   int id = ctx.morphID;
+
+   writeE3DBlock(ctx, f, morphID, &id, writeInt);
+   writeE3DBlock(ctx, f, morphName, morph.name, writeString);
+   writeE3DBlock(ctx, f, morphWeight, &morph.weight, writeFloat);
+   writeE3DBlock(ctx, f, meshID, &targetID,  writeInt);
+}
+
+static void writeMorphs(E3DWriteContext ctx, File f, Array<MeshMorph> morphs)
+{
+   int nMorphs = morphs.count, i;
+
+   f.Write(&nMorphs, sizeof(nMorphs), 1);
+   for(i = 0; i < morphs.count; i++)
+   {
+      ctx.morphID = i;
+      writeE3DBlock(ctx, f, morph, &morphs[i], writeMorph);
+   }
+}
+
 static void writeMesh(E3DWriteContext ctx, File f, Mesh mesh)
 {
    if(mesh)
    {
       int id = ctx.meshToID[(uintptr)mesh];
-      writeE3DBlock(ctx, f, meshID,         &id,  writeInt);
+      Array<FacesMaterial> faceMaterials = ctx.meshFaceMaterials[(uintptr)mesh];
+
+      writeE3DBlock(ctx, f, meshID,         &id, writeInt);
       writeE3DBlock(ctx, f, attributes,     mesh, writeAttributes);
       if(mesh.dupVerts && mesh.dupVerts.count)
          writeE3DBlock(ctx, f, meshDuplVerts,  mesh, writeDuplVerts);
@@ -524,11 +563,15 @@ static void writeMesh(E3DWriteContext ctx, File f, Mesh mesh)
          writeE3DBlock(ctx, f, triFaces32,     mesh, writeTriFaces32);
       else
          writeE3DBlock(ctx, f, triFaces16,     mesh, writeTriFaces16);
-      writeE3DBlock(ctx, f, facesMaterials, mesh, writeFaceMaterials);
+
+      if(faceMaterials)
+         writeE3DBlock(ctx, f, facesMaterials, faceMaterials, writeFaceMaterials);
       if(mesh.skin)
-         writeE3DBlock(ctx, f, skin, mesh, writeSkin);
+         writeE3DBlock(ctx, f, skin, mesh.skin, writeSkin);
       if(mesh.parts)
-         writeE3DBlock(ctx, f, parts,          mesh, writeParts);
+         writeE3DBlock(ctx, f, parts, mesh.parts, writeParts);
+      if(mesh.morphs)
+         writeE3DBlock(ctx, f, morphs, mesh.morphs, writeMorphs);
    }
 }
 
@@ -542,6 +585,24 @@ void calculateMeshes(E3DWriteContext ctx, Object object)
    if(object.flags.mesh && object.mesh)
    {
       Mesh mesh = object.mesh;
+
+      if(mesh.morphs)   // Require morphs to be first so they can be looked up
+      {
+         int i;
+         for(i = 0; i < mesh.morphs.count; i++)
+         {
+            MeshMorph * morph = &mesh.morphs[i];
+            Mesh target = morph->target;
+            if(target && !ctx.meshToID[(uintptr)target])
+            {
+               ctx.meshToID[(uintptr)target] = ctx.allMeshes.count+1;
+               ctx.allMeshes.size++;
+               ctx.allMeshes[ctx.allMeshes.count-1] = target;
+               // computeFacesMaterials(ctx, target);
+            }
+         }
+      }
+
       if(!ctx.meshToID[(uintptr)mesh])
       {
          ctx.meshToID[(uintptr)mesh] = ctx.allMeshes.count+1;
@@ -831,6 +892,11 @@ static void writeByte(E3DWriteContext ctx, File f, byte * data)
 static void writeInt(E3DWriteContext ctx, File f, int * data)
 {
    f.Write(data, sizeof(int), 1);
+}
+
+static void writeFloat(E3DWriteContext ctx, File f, float * data)
+{
+   f.Write(data, sizeof(float), 1);
 }
 
 static void writeTextureID(E3DWriteContext ctx, File f, int * data)

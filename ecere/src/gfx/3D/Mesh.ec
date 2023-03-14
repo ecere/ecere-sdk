@@ -270,6 +270,19 @@ public struct MeshPart
    uint count;
 };
 
+public struct MeshMorph
+{
+   Mesh target;
+   float weight;
+   String name;
+
+   void OnFree()
+   {
+      delete target; // For now, target is owned here
+      delete name;
+   }
+};
+
 public class Mesh : struct
 {
 public:
@@ -295,8 +308,105 @@ public:
       set { dupVerts = value; }
       get { return dupVerts; }
    };
+   property Array<MeshMorph> morphs
+   {
+      set { if(morphs) morphs.Free(), delete morphs; morphs = value; }
+      get { return morphs; }
+   }
+   property Mesh unmorphedMesh
+   {
+      set { delete unmorphedMesh; unmorphedMesh = value; }
+      get { return unmorphedMesh; }
+   }
 
    #define GPU_SKIN
+
+   void ApplyMorphs()
+   {
+      Array<MeshMorph> morphs = this.morphs;
+      if(morphs && !unmorphedMesh)
+         unmorphedMesh = Copy();
+      if(morphs)
+      {
+         int i;
+         int nMorphs = morphs.count, m;
+         int nVertices = Min(this.nVertices, unmorphedMesh.nVertices);
+         Vector3Df * vertices = this.vertices, * unmVertices = unmorphedMesh.vertices;
+         int dvCount = dupVerts ? dupVerts.count : 0;
+         // TODO: apply same computed delta approach to tangents; light vectors?
+         Vector3Df * unmNormals = unmorphedMesh.normals, * computedUnmorphedNormals = this.computedUnmorphedNormals;
+         if(!computedUnmorphedNormals)
+         {
+            Vector3Df * origUNMNormals = unmNormals;
+
+            computedUnmorphedNormals = new Vector3Df[unmorphedMesh.nVertices];
+            this.computedUnmorphedNormals = computedUnmorphedNormals;
+            unmorphedMesh.normals = computedUnmorphedNormals;
+            unmorphedMesh.ComputeNormals2(true, true);
+            unmorphedMesh.normals = origUNMNormals;
+         }
+
+         memcpy(vertices, unmVertices, (nVertices - dvCount) * sizeof(Vector3Df));
+
+         for(m = 0; m < nMorphs; m++)
+         {
+            MeshMorph morph = morphs[m];
+            __attribute__((unused)) const String n = morph.name;
+            float w = morph.weight;
+            Mesh target = morph.target;
+            if(w && target)
+            {
+               int nv = Min(nVertices, target.nVertices);
+               const Vector3Df * sv = unmVertices, * tv = target.vertices;
+               Vector3Df * v = vertices;
+
+               for(i = 0; i < nv; i++, v++, sv++, tv++)
+               {
+                  float dx = (tv->x - sv->x) * w;
+                  float dy = (tv->y - sv->y) * w;
+                  float dz = (tv->z - sv->z) * w;
+                  v->x += dx, v->y += dy, v->z += dz;
+               }
+            }
+         }
+
+         if(dupVerts)
+         {
+            Vector3Df * v = vertices + nVertices - dvCount;
+
+            for(i = 0; i < dvCount; i++, v++)
+            {
+               int dv = dupVerts[i];
+               *v = vertices[dv];
+            }
+         }
+
+         ComputeNormals2(true, true);
+
+         // Re-orient original normals based on rotation of computed normals
+         for(i = 0; i < nVertices; i++)
+         {
+            Vector3D axis;
+            double len;
+            Vector3Df normal1 = computedUnmorphedNormals[i], normal0 = normals[i];
+
+            axis.CrossProduct(
+               { normal0.x, normal0.y, normal0.z },
+               { normal1.x, normal1.y, normal1.z });
+
+            len = axis.length;
+            if(len)
+            {
+               double dot = normal0.DotProduct(normal1);
+               Degrees angle = atan2(len, dot);
+               Quaternion q;  // q is rotation between computed normals
+               axis.Scale(axis, 1.0 / len);
+               q.RotationAxis(axis, angle);
+               normals[i].MultQuaternion(unmNormals[i], q);
+            }
+         }
+      }
+   }
 
    void ApplySkin()
    {
@@ -635,6 +745,10 @@ public:
                driver.FreeMesh(displaySystem, this);
          }
          delete parts;
+
+         delete unmorphedMesh;
+         delete computedUnmorphedNormals;
+         if(morphs) morphs.Free(), delete morphs;
       }
    }
 
@@ -2020,6 +2134,10 @@ private:
    Array<Matrixf> matBones;
    SkinVert * boneData; // For uploading to GPU
 #endif
+
+   Array<MeshMorph> morphs;
+   Mesh unmorphedMesh;
+   Vector3Df * computedUnmorphedNormals;  // Normals as computed by ComputeNormals2() for unmorphed mesh
 };
 
 void computeNormalWeights(int n, float * vertices, uint vStride, uint * indices, bool ix32Bit, int base, double * weights, Vector3D * edges, Vector3D * rEdges)

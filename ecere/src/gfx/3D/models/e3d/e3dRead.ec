@@ -592,6 +592,12 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      object.SetMinMaxRadius(false);
                   }
                }
+               else if(containerType == morph)
+               {
+                  MeshMorph * morph = &mesh.morphs[mesh.morphs.count];
+                  Mesh target = ctx.meshesByID[id];
+                  morph->target = target;
+               }
                else
                   ctx.meshesByID[id] = data;
                break;
@@ -898,6 +904,44 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                // PrintLn("Duplicate Vertices!");
                break;
             }
+            case morphs:
+            {
+               int count = 0;
+               f.Read(&count, sizeof(int), 1);
+               pos += sizeof(int);
+               if(count && !mesh.morphs)
+               {
+                  mesh.morphs = { minAllocSize = count };
+                  readSubBlocks = true;
+               }
+               break;
+            }
+            case morph:
+            {
+               readSubBlocks = true;
+               break;
+            }
+            case morphID:
+            {
+               // Assuming sequential ID starting from 0 for now
+               int id = 0;
+               f.Read(&id, sizeof(int), 1);
+               break;
+            }
+            case morphName:
+            {
+               MeshMorph * morph = &mesh.morphs[mesh.morphs.count];
+               morph->name = readString(f);
+               break;
+            }
+            case morphWeight:
+            {
+               MeshMorph * morph = &mesh.morphs[mesh.morphs.count];
+               float w = 0;
+               f.Read(&w, sizeof(float), 1);
+               morph->weight = w;
+               break;
+            }
             case skin:
                readSubBlocks = true;
                break;
@@ -1007,6 +1051,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
          }
          if(readSubBlocks)
             readBlocks(ctx, f, displaySystem, header.type, pos, bEnd, subData);
+         if(header.type == morph && mesh.morphs && mesh.morphs.minAllocSize >= mesh.morphs.count + 1)
+            mesh.morphs.count++;
          if(header.type == material)
          {
             Material mat = subData;

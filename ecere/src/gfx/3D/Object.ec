@@ -1761,6 +1761,27 @@ public:
       SetMinMaxRadius(false);
    }
 
+   private bool _ApplyMorphs()
+   {
+      bool result = false;
+      Object o;
+      if(flags.mesh && mesh && mesh.morphs)
+      {
+         mesh.ApplyMorphs();
+         // flags.morphApplied = true;
+         result = true;
+      }
+      for(o = children.first; o; o = o.next)
+         result |= o._ApplyMorphs();
+      return result;
+   }
+
+   public void ApplyMorphs()
+   {
+      _ApplyMorphs();
+      SetMinMaxRadius(false);
+   }
+
    void ResetPose()
    {
       Object o;
