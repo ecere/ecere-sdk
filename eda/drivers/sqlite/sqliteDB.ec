@@ -212,7 +212,7 @@ public:
          sqlite3_bind_null(stmt, pos);
    }
 
-   void bind_value(int pos, FieldValue value)
+   void bind_value(int pos, const FieldValue value)
    {
       // TODO: 64 bit ints?
       switch(value.type.type)
