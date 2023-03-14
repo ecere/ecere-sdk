@@ -1293,7 +1293,11 @@ static void resolveBones(E3DContext ctx, Object skeleton, Object object)
          uint id = (uint)(uintptr)object.tag;
          skeleton = ctx.nodesByID[id];
          if(skeleton)
+         {
+            skeleton.flags.bone = true;
+            skeleton.flags.skeleton = true;
             skeleton.tag = ctx.skeletonTags[id];
+         }
          object.tag = null;
       }
 
@@ -1306,6 +1310,8 @@ static void resolveBones(E3DContext ctx, Object skeleton, Object object)
             {
                String name = bone->name;
                Object o = skeleton.Find(name);
+               if(o)
+                  o.flags.bone = true;
                bone->object = o;
             }
          }
