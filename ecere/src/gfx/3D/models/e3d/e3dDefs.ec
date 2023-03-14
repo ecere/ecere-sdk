@@ -15,7 +15,7 @@ enum E3DBlockType : uint16
          meshID        = 0x1020,
          meshBBox      = 0x1021,
          meshDuplVerts = 0x1022,
-         attributes          = 0x2000,
+         attributes          = 0x2000,      // uint count (limit of 65,536 vertices)
             attrVertices     = 0x2010,      // float x,y,z vertices
             attrVerticesDbl  = 0x2011,      // double x,y,z vertices
             attrQVertices    = 0x2018,      // quantized x,y,z 16-bit vertices (first, deltas)
@@ -56,7 +56,12 @@ enum E3DBlockType : uint16
             skinBoneWeights   = 0x1054,   // byte 0..7: set of bone weights to use for this skin
 
          parts          = 0x1060,
-
+         morphs         = 0x1070,         // integer Count
+            morph          = 0x1071,
+               morphID        = 0x1072,
+               morphName      = 0x1073,
+               morphWeight    = 0x1074,   // TODO: Use morph weights uniforms for GPU morphs?
+               // [meshID (reference)]    // TODO: Load as vertex attribute instead for GPU morphs? Keep as meshID for re-use?
    nodes             = 0x3000,
       meshNode             = 0x3010,
          nodeID            = 0x3020,
@@ -64,7 +69,7 @@ enum E3DBlockType : uint16
          scaling             = 0x3030,
          orientation         = 0x3031,
          position            = 0x3032,
-         skeleton            = 0x3040,
+         skeleton            = 0x3040,    // Should we change this to have skeletonID, skeletonName blocks?
          // Can have sub-nodes!
 
       cameraNode             = 0x3011,
@@ -144,7 +149,7 @@ enum E3DBlockType : uint16
             ftkLightFallOff     = 0xA2A0, // Light fall off -- float light fall off (in degrees) per key
             ftkLightColor       = 0xA2B0, // Light color -- 3 (r,g,b) float 0..1 light color per key
             ftkHide             = 0xA2C0, // Hide node -- 1 boolean byte (0: displayed, 1: hidden) per key
-            ftkMorph            = 0xA300  // Morph -- Reserved for morph definition (per key)
+            ftkMorph            = 0xA300  // Morph -- int morph index, float weight (per key)
 };
 
 struct E3DBlockHeader
@@ -283,6 +288,7 @@ class E3DWriteContext : struct
    Array<Object> allAnimatedObjects { };
    Map<uintptr, int> objectToNodeID { };
    uint nodeID;
+   uint morphID;
 
    ~E3DWriteContext()
    {
