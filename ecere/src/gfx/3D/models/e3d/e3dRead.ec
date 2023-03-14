@@ -896,30 +896,35 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             case skinBindMatrix:
             {
                MeshSkin skin = mesh.skin;
-
-               readMatrix(f, skin.bindShapeMatrix);
-               skin.bsIsIdentity = skin.bindShapeMatrix.isIdentity();
-               if(skin.bsIsIdentity)
-                  skin.invShape.Identity();
-               else
-                  skin.invShape.Inverse(skin.bindShapeMatrix);
+               if(skin)
+               {
+                  readMatrix(f, skin.bindShapeMatrix);
+                  skin.bsIsIdentity = skin.bindShapeMatrix.isIdentity();
+                  if(skin.bsIsIdentity)
+                     skin.invShape.Identity();
+                  else
+                     skin.invShape.Inverse(skin.bindShapeMatrix);
+               }
                break;
             }
             case skinBones:
             {
-               byte count;
-               int i;
                MeshSkin skin = mesh.skin;
-               Array<SkinBone> bones = skin.bones;
-
-               f.Read(&count, sizeof(byte), 1);
-               bones.size = count;
-
-               for(i = 0; i < count; i++)
+               if(skin)
                {
-                  bones[i].name = readString(f);
-                  readMatrix(f, bones[i].invBindMatrix);
-                  bones[i].bsInvBindMatrix.Multiply(skin.bindShapeMatrix, bones[i].invBindMatrix);
+                  byte count;
+                  int i;
+                  Array<SkinBone> bones = skin.bones;
+
+                  f.Read(&count, sizeof(byte), 1);
+                  bones.size = count;
+
+                  for(i = 0; i < count; i++)
+                  {
+                     bones[i].name = readString(f);
+                     readMatrix(f, bones[i].invBindMatrix);
+                     bones[i].bsInvBindMatrix.Multiply(skin.bindShapeMatrix, bones[i].invBindMatrix);
+                  }
                }
                break;
             }
