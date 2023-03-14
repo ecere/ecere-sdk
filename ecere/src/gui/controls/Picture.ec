@@ -90,7 +90,7 @@ private:
          {
             bitmap = { };
 
-            if(hasHorzScroll || hasVertScroll)
+            if(hasHorzScroll || hasVertScroll || !bitmapImage.picture)  // Allows re-using driver data
                bitmap.Copy(bitmapImage);
             else if(bitmap.Allocate(null, clientSize.w, clientSize.h, 0, bitmapImage.pixelFormat, false))
             {
