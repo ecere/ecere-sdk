@@ -25,7 +25,7 @@ public class PrimitiveGroupType : uint32
 {
 public:
    RenderPrimitiveType primitiveType:8;
-   bool vertexRange:1, indices32bit:1, sharedIndices:1;
+   bool vertexRange:1, indices32bit:1, sharedIndices:1, hide:1;
 };
 
 public enum RenderPrimitiveType : PrimitiveGroupType
@@ -179,7 +179,7 @@ public:
    };
    Material material;
 
-private:
+// FIXME: An array of PrimitiveSingle is broken with private:
    void * data;
    Vector3Df middle;
    Plane plane;
@@ -318,6 +318,8 @@ public:
       set { delete unmorphedMesh; unmorphedMesh = value; }
       get { return unmorphedMesh; }
    }
+   property PrimitiveSingle * translucentPrimitives { get { return primitives; } };
+   property int nTranslucentPrimitives { get { return nPrimitives; } };
 
    #define GPU_SKIN
 

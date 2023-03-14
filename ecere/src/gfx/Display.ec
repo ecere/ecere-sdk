@@ -844,17 +844,20 @@ public:
 
             for(; group; group = group.next)
             {
-               Material material = group.material;
-               if(!material) material = objectMaterial;
-               partlyTransparent |= material.flags & MaterialFlags { partlyTransparent = true };
-               if(material != curMaterial)
+               if(!group.type.hide)
                {
-                  curMaterial = material;
-                  driver.ApplyMaterial(this, material, mesh);
-               }
+                  Material material = group.material;
+                  if(!material) material = objectMaterial;
+                  partlyTransparent |= material.flags & MaterialFlags { partlyTransparent = true };
+                  if(material != curMaterial)
+                  {
+                     curMaterial = material;
+                     driver.ApplyMaterial(this, material, mesh);
+                  }
 
-               // *** Render Vertex Arrays ***
-               driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
+                  // *** Render Vertex Arrays ***
+                  driver.DrawPrimitives(this, (PrimitiveSingle *)&group.type, mesh);
+               }
             }
             display3D.material = curMaterial;
          }
@@ -890,7 +893,7 @@ public:
                bool backface;
                Material material = triangle->material;
 
-               if(!material || !material.opacity) continue;
+               if(!material || !material.opacity || triangle->type.hide) continue;
                if(display3D.nTriangles >= display3D.maxTriangles)
                {
                   display3D.maxTriangles = display3D.maxTriangles ? (display3D.maxTriangles * 3 / 2) : 32768;
@@ -1222,7 +1225,7 @@ public:
             {
                Material material = group.material ? group.material : objectMaterial;
                if(!material) material = defaultMaterial;
-               if(material.flags.partlyTransparent)
+               if(!group.type.hide && material.flags.partlyTransparent)
                {
                   if(material != display3D.material)
                   {
@@ -2012,7 +2015,7 @@ private class Display3D : struct
 
          for(group = mesh.groups.first; group; group = group.next)
          {
-            if(PickPrimitivesEx(mesh, (PrimitiveSingle *)&group.type, rayDiff, rayIntersect, groupIX, id))
+            if(!group.type.hide && PickPrimitivesEx(mesh, (PrimitiveSingle *)&group.type, rayDiff, rayIntersect, groupIX, id))
             {
                result = true;
                if(!intersecting)
