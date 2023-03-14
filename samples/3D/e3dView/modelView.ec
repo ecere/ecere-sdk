@@ -221,9 +221,9 @@ class ModelViewer : Window
    bool OnLoadGraphics()
    {                                                           // 3DS Loader currently needs DisplaySystem to load materials
       char ext[MAX_EXTENSION];
-      const String convertTo = "glb"; //"e3d";
+      const String convertTo = "e3d";
       // bool is3DS = modelFile && !strcmpi(GetExtension(modelFile, ext), "3ds");
-      bool isE3D = !strcmpi(ext, convertTo);
+      bool isE3D = modelFile && !strcmpi(GetExtension(modelFile, ext), convertTo);
       char outName[MAX_FILENAME];
       DisplaySystem loadDS = 0;//!isE3D ? displaySystem : null;
       Map<uint, Bitmap> texturesByID { };
