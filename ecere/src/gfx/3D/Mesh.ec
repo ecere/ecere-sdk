@@ -710,7 +710,7 @@ public:
                PrimitiveSingle * prim = &primitives[c];
                if(prim->data)
                {
-#if !defined(ECERE_NOGL)
+#if !defined(ECERE_NOGL)   // TODO: Add meab parameter to FreeIndices() to move this to OGL driver?
                   if(meab)
                   {
                      int baseIndex = prim->baseIndexBuffer;
@@ -723,7 +723,7 @@ public:
                      }
                   }
 #endif
-                  driver.FreeIndices(displaySystem, primitives[c]);
+                  driver.FreeIndices(displaySystem, prim);
                }
                if(!prim->type.vertexRange)
                   delete prim->indices;
