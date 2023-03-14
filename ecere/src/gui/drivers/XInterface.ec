@@ -3285,15 +3285,27 @@ class XInterface : Interface
 
    void GetMousePosition(int *x, int *y)
    {
-      X11Window rootWindow, childWindow;
-      int mx, my;
-      unsigned int state;
-      ((GuiApplication)__thisModule.application).Lock();
-      //XLockDisplay(xGlobalDisplay);
-      XQueryPointer(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), &childWindow,
-         &rootWindow, x, y, &mx, &my, &state);
-      //XUnlockDisplay(xGlobalDisplay);
-      ((GuiApplication)__thisModule.application).Unlock();
+      static int lastX, lastY;
+      static Time lastTime = 0, time;
+
+      time = GetTime();
+      if(time - lastTime < 0.03)  // Avoid querying too often
+         *x = lastX, *y = lastY;
+      else
+      {
+         int mx, my;
+         X11Window rootWindow, childWindow;
+         unsigned int state;
+
+         ((GuiApplication)__thisModule.application).Lock();
+         //XLockDisplay(xGlobalDisplay);
+         XQueryPointer(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), &childWindow,
+            &rootWindow, x, y, &mx, &my, &state);
+         lastX = *x, lastY = *y;
+         lastTime = time;
+         //XUnlockDisplay(xGlobalDisplay);
+         ((GuiApplication)__thisModule.application).Unlock();
+      }
    }
 
    void SetMousePosition(int x, int y)
