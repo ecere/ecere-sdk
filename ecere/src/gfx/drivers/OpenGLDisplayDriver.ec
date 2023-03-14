@@ -4561,6 +4561,8 @@ class OpenGLDisplayDriver : DisplayDriver
       GLCapabilities caps = glCaps;
       SETCAPS(oglSystem.capabilities);
 
+      // TOOD: Add MEAB parameter to move Mesh.ec code here?
+
       if(oglIndices)
       {
          oglIndices.buffer.free();
@@ -4608,9 +4610,19 @@ class OpenGLDisplayDriver : DisplayDriver
          {
             if(mb != null)
             {
-               BlockEntry block = mb.allocate(elements, size);
-               group.baseIndexBuffer = block ? block.start / ixSize : -1;
-               oglIndices.buffer.buffer = mb.ab.buffer;
+               if(group.baseIndexBuffer == -1 || !oglIndices.buffer.buffer || oglIndices.nIndices != nIndices)
+               {
+                  BlockEntry block;
+                  if(oglIndices.buffer.buffer && oglIndices.nIndices && group.baseIndexBuffer != -1)
+                  {
+                     uint start = group.baseIndexBuffer * ixSize;
+                     mb.freeBlock({start, start + group.nIndices * ixSize - 1});
+                  }
+                  block = mb.allocate(elements, size);
+                  group.baseIndexBuffer = block ? block.start / ixSize : -1;
+                  oglIndices.buffer.buffer = mb.ab.buffer;
+                  oglIndices.nIndices = nIndices;
+               }
             }
             oglIndices.buffer.upload(group.baseIndexBuffer * ixSize, size, b);
          }
