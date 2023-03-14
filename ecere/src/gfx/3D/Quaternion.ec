@@ -74,7 +74,7 @@ public struct Quaternion
       z = cr * sp * sy + sr * cp * cy;
    }
 
-   void RotationEuler(Euler euler, EulerRotationOrder rotationOrder)
+   void RotationEuler(const Euler euler, EulerRotationOrder rotationOrder)
    {
       Quaternion qPitch, qYaw, qRoll;
       qPitch.RotationAxis({ 1,0,0 }, euler.pitch);
@@ -83,7 +83,7 @@ public struct Quaternion
       rotateQuats(qPitch, qYaw, qRoll, rotationOrder);
    }
 
-   static void rotateQuats(Quaternion qPitch, Quaternion qYaw, Quaternion qRoll, EulerRotationOrder rotationOrder)
+   static void rotateQuats(const Quaternion qPitch, const Quaternion qYaw, const Quaternion qRoll, EulerRotationOrder rotationOrder)
    {
       Quaternion q, a;
       switch(rotationOrder)
@@ -406,7 +406,7 @@ public struct Euler
       }
    };
 
-   void Add(Euler e1, Euler e2)
+   void Add(const Euler e1, const Euler e2)
    {
       yaw   = e1.yaw   + e2.yaw;
       pitch = e1.pitch + e2.pitch;
