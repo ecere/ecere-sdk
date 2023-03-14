@@ -887,6 +887,14 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             }
             case meshDuplVerts:
             {
+               int n = (header.size - sizeof(E3DBlockHeader)) / sizeof(int);
+               mesh.dupVerts = { size = n };
+               f.Read(mesh.dupVerts.array, sizeof(int), n);
+               if(mesh.skin && mesh.skin.skinVerts)
+               {
+                  // TODO: Review where to adjust for duplicate vertices
+                  mesh.skin.skinVerts.size = Max(0, mesh.skin.skinVerts.count - n);
+               }
                // PrintLn("Duplicate Vertices!");
                break;
             }
