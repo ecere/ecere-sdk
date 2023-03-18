@@ -1,19 +1,8 @@
 import "neurons"
 
-enum Behavior
-{
-   RUN,
-   HIDE,
-   WANDER,
-   ATTACK
-};
+enum Behavior { run, hide, wander, attack };
 
-enum Health
-{
-   POOR,
-   OK,
-   GOOD
-};
+enum Health { poor, ok, good };
 
 struct Example
 {
@@ -26,191 +15,101 @@ struct Example
 
 static Example examples[] =
 {
-   { GOOD, false,false, 0, WANDER },
-   { GOOD, false,false, 1, WANDER },
-   { GOOD, false,true,  1, ATTACK },
-   { GOOD, false,true,  2, ATTACK },
-   { GOOD, true, false, 2, HIDE   },
-   { GOOD, true, false, 1, ATTACK },
-   { OK,   false,false, 0, WANDER },
-   { OK,   false,false, 1, HIDE   },
-   { OK,   false,true,  1, ATTACK },
-   { OK,   false,true,  2, HIDE   },
-   { OK,   true, false, 2, HIDE   },
-   { OK,   true, false, 1, HIDE   },
-   { POOR, false,false, 0, WANDER },
-   { POOR, false,false, 1, HIDE   },
-   { POOR, false,true,  1, HIDE   },
-   { POOR, false,true,  2, RUN    },
-   { POOR, true, false, 2, RUN    },
-   { POOR, true, false, 1, HIDE   }
+   { good, false,false, 0, wander },
+   { good, false,false, 1, wander },
+   { good, false,true,  1, attack },
+   { good, false,true,  2, attack },
+   { good, true, false, 2, hide   },
+   { good, true, false, 1, attack },
+   { ok,   false,false, 0, wander },
+   { ok,   false,false, 1, hide   },
+   { ok,   false,true,  1, attack },
+   { ok,   false,true,  2, hide   },
+   { ok,   true, false, 2, hide   },
+   { ok,   true, false, 1, hide   },
+   { poor, false,false, 0, wander },
+   { poor, false,false, 1, hide   },
+   { poor, false,true,  1, hide   },
+   { poor, false,true,  2, run    },
+   { poor, true, false, 2, run    },
+   { poor, true, false, 1, hide   }
 };
-
-const char * behaviors[4] = { "Run", "Hide", "Wander", "Attack" };
-
-#define NUM_EXAMPLES (sizeof(examples) / sizeof(Example))
+define numExamples = sizeof(examples) / sizeof(Example);
 
 static Example tests[] =
 {
-   { GOOD, true, true, 1 },
-   { OK,   true, true, 2 },
-   { POOR, false,false,0 },
-   { POOR, true, true, 1 },
-   { GOOD, false,true, 3 },
-   { GOOD, true, false,3 },
-   { POOR, true, false,3 }
+   { good, true, true, 1 },
+   { ok,   true, true, 2 },
+   { poor, false,false,0 },
+   { poor, true, true, 1 },
+   { good, false,true, 3 },
+   { good, true, false,3 },
+   { poor, true, false,3 }
 };
+define numTests = sizeof(tests) / sizeof(Example);
 
-#define NUM_TESTS (sizeof(tests) / sizeof(Example))
+NeuralNet nn { };
 
-#define NUM_ITERATIONS  6000
-
-#define LEARN_RATE   0.2
-
-#define NUM_INPUT    4
-#define NUM_HIDDEN   3
-#define NUM_OUTPUT   4
-
-static Neuron inputNeurons[NUM_INPUT];
-static Neuron hiddenNeurons[NUM_HIDDEN];
-static Neuron outputNeurons[NUM_OUTPUT];
-
-class NeuralApp : Application
+class NeuralApp : GuiApplication
 {
-   void Main()
+   bool Init()
    {
+      int i;
+      bool wellTrained = false;
+
       // ********** CONSTRUCT NEURAL NETWORK *****************
-      int i,h,o;
-      int c;
+      nn.construct(1, 4, 4, [ 3 ]);
 
-      RandomSeed((uint)(((uint64)(GetTime() * 1000)) & MAXDWORD));
-      // Input to hidden cells synapses
-      for(i = 0; i<NUM_HIDDEN; i++)
-         hiddenNeurons[i].Init();
-      for(i = 0; i<NUM_OUTPUT; i++)
-         outputNeurons[i].Init();
-      for(i = 0; i<NUM_INPUT; i++)
+      while(!wellTrained)
       {
-         Neuron * input = &inputNeurons[i];
+         nn.initialize(true);
 
-         input->Init();
-         input->axons.size = NUM_HIDDEN;
-         for(h = 0; h<NUM_HIDDEN; h++)
+         // ********** TRAIN NEURAL NETWORK *****************
+         for(i = 0; i < 6000; i++)
          {
-            Neuron * hidden = &hiddenNeurons[h];
-            Synapse * synapse = &input->axons[h];
-
-            if(!hidden->dendrons.size)
-               hidden->dendrons.size = NUM_INPUT;
-            hidden->dendrons[i].ptr = synapse;
-
-            synapse->dendron = input;
-            synapse->axon = hidden;
-            synapse->weight = GetRandDouble(-0.5, 0.5);
+            int j;
+            for(j = 0; j < numExamples; j++)
+            {
+               Example * example = &examples[j];
+               nn.activate([ (double)example->health, (double)example->hasKnife, (double)example->hasGun, example->ennemies ]);
+               nn.learn(example->result, 0.2);
+            }
          }
-      }
 
-      // Hidden to output cells synapses
-      for(h = 0; h<NUM_HIDDEN; h++)
-      {
-         Neuron * hidden = &hiddenNeurons[h];
-
-         hidden->axons.size = NUM_OUTPUT;
-         for(o = 0; o<NUM_OUTPUT; o++)
+         // ********** TEST NEURAL NETWORK *****************
+         for(i = 0; i < numExamples; i++)
          {
-            Neuron * output = &outputNeurons[o];
-            Synapse * synapse = &hidden->axons[o];
-
-            if(!output->dendrons.size)
-               output->dendrons.size = NUM_HIDDEN;
-            output->dendrons[h].ptr = synapse;
-
-            synapse->dendron = hidden;
-            synapse->axon = output;
-            synapse->weight = GetRandDouble(-0.5, 0.5);
+            Example * example = &examples[i];
+            Behavior winner;
+            nn.activate([ (double)example->health, (double)example->hasKnife, (double)example->hasGun, example->ennemies ]);
+            winner = (Behavior)nn.winner;
+            PrintLn(winner);
+            if(winner != example->result)
+            {
+               PrintLn("WARNING: Test failed for scenario ", *example, ", re-training");
+               break;
+            }
          }
-         hidden->bias = GetRandDouble(-0.5, 0.5);
-      }
-
-      // Output cells
-      for(o = 0; o<NUM_OUTPUT; o++)
-      {
-         Neuron * output = &outputNeurons[o];
-         output->bias = GetRandDouble(-0.5, 0.5);
-      }
-
-      // ********** TRAIN NEURAL NETWORK *****************
-      for(i = 0; i<NUM_ITERATIONS; i++)
-      {
-         int e;
-         for(e = 0; e<NUM_EXAMPLES; e++)
-         {
-            Example * example = &examples[e];
-
-            for(c = 0; c<NUM_OUTPUT; c++)
-               outputNeurons[c].Unactivate();
-
-            inputNeurons[0].activation = (double)example->health;
-            inputNeurons[1].activation = (double)example->hasKnife;
-            inputNeurons[2].activation = (double)example->hasGun;
-            inputNeurons[3].activation = example->ennemies;
-            for(c = 0; c<NUM_OUTPUT; c++)
-               outputNeurons[c].Activate();
-
-            for(c = 0; c<NUM_OUTPUT; c++)
-               outputNeurons[c].error = (double)((int)example->result == c) - outputNeurons[c].activation;
-
-            for(c = 0; c<NUM_INPUT; c++)
-               inputNeurons[c].BackPropagate();
-            for(c = 0; c<NUM_OUTPUT; c++)
-               outputNeurons[c].Teach(LEARN_RATE);
-         }
-      }
-
-      // ********** TEST NEURAL NETWORK *****************
-      for(c = 0; c<NUM_EXAMPLES; c++)
-      {
-         Example * example = &examples[c];
-         int winner;
-
-         for(o = 0; o<NUM_OUTPUT; o++)
-            outputNeurons[o].Unactivate();
-
-         inputNeurons[0].activation = (double)example->health;
-         inputNeurons[1].activation = (double)example->hasKnife;
-         inputNeurons[2].activation = (double)example->hasGun;
-         inputNeurons[3].activation = example->ennemies;
-
-         for(o = 0; o<NUM_OUTPUT; o++)
-            outputNeurons[o].Activate();
-
-         winner = Neuron_Winner(outputNeurons, NUM_OUTPUT);
-         printf("%s\n", behaviors[winner]);
+         if(i == numExamples)
+            wellTrained = true;
       }
 
       // ********** UNKNOWN TEST CASES *****************
-      printf("\n\nUnknown Cases:\n\n");
-      for(c = 0; c<NUM_TESTS; c++)
+      PrintLn("\n\nUnknown Cases:\n");
+      for(i = 0; i < numTests; i++)
       {
-         Example * example = &tests[c];
-         int winner;
-
-         for(o = 0; o<NUM_OUTPUT; o++)
-            outputNeurons[o].Unactivate();
-
-         inputNeurons[0].activation = (double)example->health;
-         inputNeurons[1].activation = (double)example->hasKnife;
-         inputNeurons[2].activation = (double)example->hasGun;
-         inputNeurons[3].activation = example->ennemies;
-
-         for(o = 0; o<NUM_OUTPUT; o++)
-            outputNeurons[o].Activate();
-
-         winner = Neuron_Winner(outputNeurons, NUM_OUTPUT);
-         printf("%s\n", behaviors[winner]);
+         Example * example = &tests[i];
+         nn.activate([ (double)example->health, (double)example->hasKnife, (double)example->hasGun, example->ennemies ]);
+         PrintLn((Behavior)nn.winner);
       }
-#if defined(__WIN32__)
-      system("pause");
-#endif
+      return true;
    }
 }
+
+NeuralNetView netView
+{
+   nn = nn;
+                        // FIXME: warnings even though array is declared <const String>
+   inputLabels.copySrc = [ (String)"health", (String)"hasKnife", (String)"hasGun", (String)"ennemies" ];
+   outputLabels.copySrc = [ (String)"run", (String)"hide", (String)"wander", (String)"attack" ];
+};

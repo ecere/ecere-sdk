@@ -3,29 +3,35 @@ import "ecere"
 struct Synapse
 {
    double weight;
-   Neuron * dendron;
-   Neuron * axon;
+   Neuron * dendron; // towards input...
+   Neuron * axon;    // towards output...
 };
+
+// #define USE_STATES
+
+#ifdef USE_STATES
 
 enum NeuronState
 {
-   CLEARED,
-   ACTIVATED,
-   PROPAGATED,
-   TAUGHT
+   cleared,
+   activated,
+   propagated,
+   taught
 };
+
+#endif
 
 struct SynapsePtr
 {
    Synapse * ptr; // TOFIX: Support pointers in generic types
 };
 
-static double Sigmoid(double x)
+static inline double Sigmoid(double x)
 {
    return 1 / (1 + exp(-x));
 }
 
-static double SigmoidDerivative(double x)
+static inline double SigmoidDerivative(double x)
 {
    return x * (1 - x);
 }
@@ -42,7 +48,9 @@ struct Neuron
    Array<SynapsePtr> dendrons;
    double activation;
    double error;
+#ifdef USE_STATES
    NeuronState state;
+#endif
 
    void Init()
    {
@@ -50,83 +58,430 @@ struct Neuron
       dendrons = { };
    }
 
+   void OnFree()
+   {
+      delete axons;
+      delete dendrons;
+   }
+
+#ifdef USE_STATES
    void Unactivate()
    {
       int c;
       for(c = 0; c<dendrons.size; c++)
       {
          Synapse * synapse = dendrons[c].ptr;
-         if(synapse->dendron->state != CLEARED)
+         if(synapse->dendron->state != cleared)
             synapse->dendron->Unactivate();
       }
-      state = CLEARED;
+      state = cleared;
    }
+#endif
 
-   void Activate()
+   void Activate() // Feed-forward algorithm
    {
+#ifdef USE_STATES
       if(dendrons.size)
+#endif
       {
+         double sum = bias;
          int c;
-         activation = bias;
-         for(c = 0; c<dendrons.size; c++)
+         for(c = 0; c < dendrons.size; c++)
          {
             Synapse * synapse = dendrons[c].ptr;
-            if(synapse->dendron->state != ACTIVATED)
-               synapse->dendron->Activate();
-            activation += synapse->dendron->activation * synapse->weight;
+            Neuron * dendron = synapse->dendron;
+#ifdef USE_STATES
+            if(dendron->state != activated)
+               dendron->Activate();
+#endif
+            sum += dendron->activation * synapse->weight;
          }
-         activation = Sigmoid(activation);
+         activation = Sigmoid(sum);
       }
-      state = ACTIVATED;
+#ifdef USE_STATES
+      state = activated;
+#endif
    }
 
    void BackPropagate()
    {
       int c;
+
       if(axons.size)
       {
-         error = 0;
-         for(c = 0; c<axons.size; c++)
+         double err = 0;
+         for(c = 0; c < axons.size; c++)
          {
             Synapse * synapse = &axons[c];
-            if(synapse->axon->state != PROPAGATED)
-               synapse->axon->BackPropagate();
-            error += synapse->axon->error * synapse->weight;
+            Neuron * axon = synapse->axon;
+#ifdef USE_STATES
+            if(axon->state != propagated)
+               axon->BackPropagate();
+#endif
+            err += axon->error * synapse->weight;
          }
+         error = err;
       }
-      error *= SigmoidDerivative(activation);
-      state = PROPAGATED;
+      if(error)
+         error *= SigmoidDerivative(activation);
+#ifdef USE_STATES
+      state = propagated;
+#endif
    }
 
    void Teach(double learnRate)
    {
-      int c;
+      int i;
+#ifdef USE_STATES
       if(dendrons.size)
+#endif
       {
-         for(c = 0; c<dendrons.size; c++)
+         for(i = 0; i < dendrons.size; i++)
          {
-            Synapse * synapse = dendrons[c].ptr;
-            if(state != TAUGHT)
-               synapse->dendron->Teach(learnRate);
-            synapse->weight += learnRate * error * synapse->dendron->activation;
+            Synapse * synapse = dendrons[i].ptr;
+            Neuron * dendron = synapse->dendron;
+#ifdef USE_STATES
+            if(state != taught)
+               dendron->Teach(learnRate);
+#endif
+            synapse->weight += learnRate * error * dendron->activation;
          }
          bias += learnRate * error;
       }
-      state = TAUGHT;
+#ifdef USE_STATES
+      state = taught;
+#endif
+   }
+
+   void Render(Surface surface, Size size, int ny, int height, int nx, int width, int nextWidth,
+      double biasRange, double weightRange)
+   {
+      double nw = Max(1, size.w / (2*width+1));     // Width of one neuron
+      double nh = Max(1, size.h / (height+1));        // Height of one neuron
+      double snw = Max(1, size.w / (2*nextWidth+1));   // Synapse width
+      double spx = snw / 2;
+      double px = nw / 2, py = (size.h - (height * Min(8, nh))) / (height);
+      int x, y, sy;
+
+      nh = Min(nh, 8.0);
+
+      sy = (int)(py/2 + (ny+1) * (py + nh));
+      x = (size.w - width * (px + nw)) / 2 + px + nx * (px + nw);
+      y = (int)(py/2 + ny * (py + nh));
+
+      surface.background = biasToColor(bias, biasRange);
+      surface.Area(x, y, (int)(x + nw-1), (int)(y + nh - 1));
+      surface.foreground = gray;
+      surface.Rectangle(x, y, (int)(x + nw-1), (int)(y + nh - 1));
+
+      if(axons)
+      {
+         int i;
+
+         for(i = 0; i < axons.count; i++)
+         {
+            int sx = (size.w - nextWidth * (spx + snw)) / 2 + spx + i * (spx + snw) + snw/2;
+            Synapse * synapse = &axons[i];
+            surface.foreground = weightToColor(synapse->weight, weightRange);
+            surface.DrawLine((int)(x + nw/2), (int)(y + nh), sx, sy);
+         }
+      }
    }
 };
 
-int Neuron_Winner(Neuron * neurons, int count)
+static inline ColorAlpha biasToColor(double value, double range)
 {
-   double bestActivation = -MAXDOUBLE;
-   int c, best;
-   for(c = 0; c<count; c++)
+   return ColorHSV { value > 0 ? 120 : 0, 100, (float)(fabs(value) * 100 / range) };
+}
+
+static inline ColorAlpha weightToColor(double value, double range)
+{
+   return ColorHSV { value > 0 ? 240 : 30, 100, (float)(fabs(value) * 100 / range) };
+}
+
+class NeuronLayer : Array<Neuron>
+{
+   void create()
    {
-      if(neurons[c].activation > bestActivation)
+      int i;
+
+      for(i = 0; i < count; i++)
+         this[i].Init();
+   }
+
+   void initialize(bool initBias, bool initWeight, bool random)
+   {
+      int i;
+
+      for(i = 0; i < count; i++)
       {
-         best = c;
-         bestActivation = neurons[c].activation;
+         Neuron * neuron = &this[i];
+         if(initBias)
+            neuron->bias = random ? GetRandDouble(-0.5, 0.5) : 0;
+         if(initWeight)
+         {
+            int j, count = neuron->axons.count;
+
+            for(j = 0; j < count; j++)
+            {
+               Synapse * synapse = &neuron->axons[j];
+               synapse->weight = random ? GetRandDouble(-0.5, 0.5) : 0.5;
+            }
+         }
       }
    }
-   return best;
+
+   void link(NeuronLayer next)
+   {
+      int i;
+
+      // Synapses from this layer to the next
+      for(i = 0; i < count; i++)
+      {
+         Neuron * neuron = &this[i];
+         int j;
+
+         neuron->axons.size = next.count;
+         for(j = 0; j < next.count; j++)
+         {
+            Neuron * nextNeuron = &next[j];
+            Synapse * synapse = &neuron->axons[j];
+
+            if(!nextNeuron->dendrons.size)
+               nextNeuron->dendrons.size = count;
+            nextNeuron->dendrons[i].ptr = synapse;
+
+            synapse->dendron = neuron;
+            synapse->axon = nextNeuron;
+         }
+      }
+   }
+
+   void render(Surface surface, Size size, int layer, int numLayers, NeuronLayer nextLayer)
+   {
+      int i;
+      double biasRange = 0.5;
+      double weightRange = 0;
+
+      for(i = 0; i < count; i++)
+      {
+         Neuron * neuron = &this[i];
+         if(neuron->axons)
+         {
+            int j;
+
+            for(j = 0; j < neuron->axons.count; j++)
+            {
+               Synapse * synapse = &neuron->axons[j];
+               double a = fabs(synapse->weight);
+               if(a > weightRange) weightRange = a;
+            }
+         }
+      }
+
+      for(i = 0; i < count; i++)
+         this[i].Render(surface, size, layer, numLayers, i, count,
+            nextLayer ? nextLayer.count : 0, biasRange, weightRange);
+   }
+
+   property int winner
+   {
+      get
+      {
+         double bestActivation = -MAXDOUBLE;
+         int i, best = 0;
+         for(i = 0; i < count; i++)
+         {
+            Neuron * neuron = &this[i];
+            if(neuron->activation > bestActivation)
+            {
+               best = i;
+               bestActivation = neuron->activation;
+            }
+         }
+         return best;
+      }
+   }
+
+   ~NeuronLayer()
+   {
+      Free();
+   }
+}
+
+class NeuralNet : Array<NeuronLayer>
+{
+   ~NeuralNet()
+   {
+      Free();
+   }
+
+   void render(Surface surface, Size size)
+   {
+      int i;
+
+      surface.background = black;
+      surface.Clear(colorBuffer);
+
+      for(i = 0; i < count; i++)
+         this[i].render(surface, size, i,
+            count, i < count - 1 ? this[i + 1] : null);
+   }
+
+   void construct(int nInnerLayers, int nInputs, int nOutputs, Container<int> nInner)
+   {
+      int i, nInnerCount = nInner ? nInner.GetCount() : 0;
+
+      size = nInnerLayers + 2;
+      for(i = 0; i < count; i++)
+      {
+         this[i] = { size =
+               i == 0 ? nInputs :
+               i == nInnerLayers+1 ? nOutputs :
+               nInnerCount ? nInner[Min(nInnerCount-1, i-1)] :
+               (nOutputs + nInputs)/2
+            };
+         this[i].create();
+         if(i)
+            this[i-1].link(this[i]);
+      }
+   }
+
+   void initialize(bool random)
+   {
+      int i;
+      uint seed = (uint)(((uint64)(GetTime() * 1000)) & MAXDWORD);
+
+      // seed = 1234567890;
+
+      if(random)
+      {
+         PrintLn("pseudo-random seed: ", seed);
+         RandomSeed(seed);
+      }
+
+      for(i = 0; i < count; i++)
+         this[i].initialize(i != 0, i != count-1, random);
+   }
+
+   void activate(Container<double> inputs)
+   {
+      NeuronLayer input = this[0];
+      int i;
+
+#ifdef USE_STATES
+      NeuronLayer output = this[count-1];
+      for(i = 0; i < output.count; i++)
+         output[i].Unactivate();
+#endif
+
+      for(i = 0; i < input.count; i++)
+         input[i].activation = inputs[i];
+
+#ifdef USE_STATES
+      for(i = 0; i < output.count; i++)
+         output[i].Activate();
+#else
+      for(i = 1; i < count; i++)
+      {
+         NeuronLayer layer = this[i];
+         int j;
+         for(j = 0; j < layer.count; j++)
+            layer[j].Activate();
+      }
+#endif
+   }
+
+   void learn(int expected, double learnRate)
+   {
+      NeuronLayer output = this[count-1];
+#ifdef USE_STATES
+      NeuronLayer input = this[0];
+#endif
+      int i;
+
+      for(i = 0; i < output.count; i++)
+      {
+         Neuron * neuron = &output[i];
+         bool fired = expected == i;
+         neuron->error = (double)fired - neuron->activation;
+      }
+
+#ifdef USE_STATES
+      for(i = 0; i < input.count; i++)
+        input[i].BackPropagate();
+
+      for(i = 0; i < output.count; i++)
+         output[i].Teach(learnRate);
+#else
+      for(i = count-1; i >= 0; i--)
+      {
+         NeuronLayer layer = this[i];
+         int j;
+         for(j = 0; j < layer.count; j++)
+            layer[j].BackPropagate();
+      }
+
+      for(i = 1; i < count; i++)
+      {
+         NeuronLayer layer = this[i];
+         int j;
+         for(j = 0; j < layer.count; j++)
+            layer[j].Teach(learnRate);
+      }
+#endif
+   }
+
+   property int winner { get { return this[count-1].winner; } }
+}
+
+class NeuralNetView : Window
+{
+   hasClose = true;
+   hasMaximize = true;
+   hasMinimize = true;
+   borderStyle = sizable;
+   anchor = { left = 0, top = 0, right = 0.566, bottom = 0.25 };
+   font = { "Arial", 12, bold = true };
+
+   void writeLabels(Surface surface, Size size, bool input)
+   {
+      int height = nn.count;
+      int ny = input ? 0 : height-1;
+      NeuronLayer layer = nn[ny];
+      int width = layer.count;
+      Array<const String> labels = input ? inputLabels : outputLabels;
+      if(labels.count == width)
+      {
+         int i;
+         double nw = Max(1, size.w / (2*width+1));  // Width of one neuron
+         double nh = Max(1, size.h / (3+1));        // Height of one neuron
+         double px = nw / 2, py = (size.h - (height * Min(8, nh))) / height;
+         int x, y;
+         int mod = Min(3, Max(1, width / 10));
+
+         nh = Min(nh, 8.0);
+         x = (size.w - width * (px + nw)) / 2 + 2*px;
+         y = (int)(py/2 + ny * (py + nh) + nh * (input ? (-3*mod) : 1));
+
+         surface.foreground = white;
+         for(i = 0; i < width; i++, x += (px + nw))
+         {
+            const String t = labels[i];
+            surface.CenterTextf(x, y + (i % mod) * 20, t, strlen(t));
+         }
+      }
+   }
+
+   void OnRedraw(Surface surface)
+   {
+      nn.render(surface, clientSize);
+      writeLabels(surface, clientSize, false);
+      writeLabels(surface, clientSize, true);
+   }
+
+public:
+   Array<const String> inputLabels { };
+   Array<const String> outputLabels { };
+   NeuralNet nn;
 }
