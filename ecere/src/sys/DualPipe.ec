@@ -61,6 +61,8 @@ public:
    {
       char ch = 0;
       int c = 0;
+      // NOTE: This will busy wait on Linux since Peek() calls poll with 0 timeout
+      //       What is the advantage over GetLine() if this still only breaks on receiving new line?
       while(c < max-1 && Peek() && Getc(&ch) && ch != '\n')
          if(ch != '\r')
             s[c++] = ch;

@@ -317,6 +317,30 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
             result = false;
       if(result)
       {
+         char * commandLineCopy;
+         char * envTokens[129];
+         char * envCopy = NULL;
+         int numEnvTokens;
+         char * tokens[129];
+         int numTokens;
+
+         commandLineCopy = __ecereNameSpace__ecere__sys__CopyString(commandLine);
+
+#if 0 //#ifdef _DEBUG
+         fprintf(stderr, "\n_DualPipeOpen (in child): %s\n\n", commandLineCopy);
+#endif
+         numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, forArgsPassing);
+#if 0 //#ifdef _DEBUG
+         { int c; for(c=0; c<numTokens; c++) fprintf(stderr, "argv[%d]: %s\n", c, tokens[c]); fprintf(stderr, "\n"); }
+#endif
+         tokens[numTokens] = null;
+         if(env)
+         {
+            envCopy = __ecereNameSpace__ecere__sys__CopyString(env);
+            numEnvTokens = __ecereNameSpace__ecere__sys__Tokenize(envCopy, sizeof(envTokens) / sizeof(envTokens[0]) - 1, envTokens, false);
+            envTokens[numEnvTokens] = null;
+         }
+
          pid = fork();
          if(pid > 0)
          {
@@ -335,9 +359,7 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
          else if(pid == 0)
          {
             // Child process
-            char * tokens[129];
-            int numTokens;
-            char * commandLineCopy = __ecereNameSpace__ecere__sys__CopyString(commandLine);
+            int exitCode = 0;
 
             if(hInput[PIPE_WRITE])
                close(hInput[PIPE_WRITE]);
@@ -358,41 +380,16 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
                close(hInput[PIPE_READ]);
             }
 
-   #if 0 //#ifdef _DEBUG
-            fprintf(stderr, "\n_DualPipeOpen (in child): %s\n\n", commandLineCopy);
-   #endif
-            numTokens = __ecereNameSpace__ecere__sys__Tokenize(commandLineCopy, sizeof(tokens) / sizeof(tokens[0]) - 1, tokens, forArgsPassing);
-   #if 0 //#ifdef _DEBUG
-            { int c; for(c=0; c<numTokens; c++) fprintf(stderr, "argv[%d]: %s\n", c, tokens[c]); fprintf(stderr, "\n"); }
-   #endif
-            tokens[numTokens] = null;
             if(env)
-            {
-               char * envTokens[129];
-               char * envCopy = __ecereNameSpace__ecere__sys__CopyString(env);
-               int numEnvTokens = __ecereNameSpace__ecere__sys__Tokenize(envCopy, sizeof(envTokens) / sizeof(envTokens[0]) - 1, envTokens, false);
-               envTokens[numEnvTokens] = null;
-
-               if(execve(tokens[0], tokens, envTokens) < 0)
-               {
-                  __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-                  __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
-                  exit(1);
-               }
-               __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-               __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
-               exit(0);
-            }
+               exitCode = execve(tokens[0], tokens, envTokens);
             else
-            {
-               if(execvp(tokens[0], (char **)tokens) < 0)
-               {
-                  __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-                  exit(1);
-               }
-               __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
-               exit(0);
-            }
+               exitCode = execvp(tokens[0], (char **)tokens) < 0;
+
+            exit(exitCode < 0);  // Should not reach here if exec was successful
+         }
+         else
+         {
+            fprintf(stderr, "pipe() returned %d (ERRNO = %d)n", pid, errno);
          }
          //if(input || output)
          {
@@ -401,6 +398,9 @@ _DualPipe * _DualPipeOpen(PipeOpenMode mode, const char * commandLine, const cha
             *outputPtr = f->output = output;
             f->pid = pid;
          }
+
+         __ecereNameSpace__ecere__com__eSystem_Delete(envCopy);
+         __ecereNameSpace__ecere__com__eSystem_Delete(commandLineCopy);
       }
       else
       {
