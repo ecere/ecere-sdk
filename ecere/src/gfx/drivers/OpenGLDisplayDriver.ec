@@ -3707,7 +3707,7 @@ class OpenGLDisplayDriver : DisplayDriver
       GLSetupFog(!flags.noFog);
 
 #if ENABLE_GL_SHADERS
-      if(glCaps_shaders)
+      if(glCaps_shaders && mesh)
          shader.setMaterial(material, *&mesh.flags);
 #endif
 
@@ -3861,7 +3861,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
 #if ENABLE_GL_SHADERS
-         if(glCaps_shaders && !flags.cubeMap)
+         if(glCaps_shaders && !flags.cubeMap && shader == defaultShader)
             GLSetupTexturing(true);
 #endif
 
@@ -3941,7 +3941,8 @@ class OpenGLDisplayDriver : DisplayDriver
             if(glClientActiveTexture) glClientActiveTexture(GL_TEXTURE0 + tmu);
          }
 #endif
-         GLSetupTexturing(false);
+         if(shader == defaultShader)
+            GLSetupTexturing(false);
       }
 
 #if ENABLE_GL_FFP && !defined(_GLES)
@@ -3958,7 +3959,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
       if((flags.cubeMap && material.baseMap) ||
-         (mesh.texCoords && (material.baseMap || material.bumpMap || material.specularMap || material.reflectMap)))
+         (mesh && mesh.texCoords && (material.baseMap || material.bumpMap || material.specularMap || material.reflectMap)))
       {
 #if ENABLE_GL_FFP
          if(!glCaps_shaders && tmu > 0)
