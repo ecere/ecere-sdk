@@ -302,13 +302,17 @@ static void writeTriFaces16(E3DWriteContext ctx, File f, Mesh mesh)
    int nFaces = 0;
    PrimitiveGroup g;
    for(g = mesh.groups.first; g; g = g.next)
-      nFaces += getFacesCount(g);
+      if(!g.type.hide)
+         nFaces += getFacesCount(g);
 
    f.Write(&nFaces, sizeof(nFaces), 1);
    for(g = mesh.groups.first; g; g = g.next)
    {
       // Assuming triangles for now
       int i, gn = g.nIndices;
+
+      if(g.type.hide) continue;
+
       if(g.type.indices32bit)
       {
          uint32 * indices = g.indices32;
@@ -363,13 +367,16 @@ static void writeTriFaces32(E3DWriteContext ctx, File f, Mesh mesh)
    int nFaces = 0;
    PrimitiveGroup g;
    for(g = mesh.groups.first; g; g = g.next)
-      nFaces += getFacesCount(g);
+      if(!g.type.hide)
+         nFaces += getFacesCount(g);
 
    f.Write(&nFaces, sizeof(nFaces), 1);
    for(g = mesh.groups.first; g; g = g.next)
    {
       // Assuming triangles for now
       int i, gn = g.nIndices;
+      if(g.type.hide) continue;
+
       if(g.type.indices32bit)
       {
          uint32 * indices = g.type.sharedIndices && mesh.indices ? mesh.indices + g.baseIndexMesh : g.indices32;
@@ -430,7 +437,8 @@ static void computeFacesMaterials(E3DWriteContext ctx, Mesh mesh)
    mesh.UnapplyTranslucency(null);
 
    for(g = mesh.groups.first; g; g = g.next)
-      nFaces += getFacesCount(g);
+      if(!g.type.hide)
+         nFaces += getFacesCount(g);
    for(g = mesh.groups.first; g; g = g.next)
    {
       // Assuming triangles for now
@@ -438,6 +446,9 @@ static void computeFacesMaterials(E3DWriteContext ctx, Mesh mesh)
       int count = getFacesCount(g);
       int materialID = 0;
       Material mat = g.material;
+
+      if(g.type.hide) continue;
+
       if(mat)
       {
          for(i = 0; i < ctx.materials.count; i++)
