@@ -285,7 +285,8 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
 
             if(object.LoadEx(mdl.model.path, null, displaySystem, null))
             {
-               Material mat
+                // Why were we applying a default material? E3D CityGML import demos?
+               /*Material mat
                {
                   // flags.partlyTransparent = true;
                   diffuse = slateGray;
@@ -293,12 +294,12 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                   opacity = ge.opacity; //1.0;// 0.75;
                   shader = butterburShader;
                };
-
+               */
 #ifdef _DEBUG
                // PrintLn("radius for ", mdl.model.path, ": ", object.wradius);
-               PrintLn("radius for ", mdl.model.path, ": ", object.wmin, " - ", object.wmax);
+               PrintLn("radius for ", mdl.model.path, ": ", object.wradius, " (", object.wmin, " - ", object.wmax, ")");
 #endif
-               object.mesh.ApplyMaterial(mat);
+                //object.mesh.ApplyMaterial(mat);
                modelData.model = object;
                modelData.freeModel = true;
             }

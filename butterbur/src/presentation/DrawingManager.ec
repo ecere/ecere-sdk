@@ -267,6 +267,8 @@ class Perspective3DManager : MDManager
             if(glCaps_vao) GLABBindVertexArray(defaultVAO);
             glDisplay.SelectMesh(mesh);
 
+            glDisplay.ApplyMaterial(GetDefaultMaterial(), null); // different material check skips if it's not reset
+
             for(group = mesh.groups.first; group; group = group.next)
             {
                Material material = group.material ? group.material : null;
@@ -279,7 +281,7 @@ class Perspective3DManager : MDManager
                butterburShader.texturing(material.baseMap ? true : false);
                butterburShader.multiDraw(false);
 
-               glDisplay.ApplyMaterial(material, mesh);
+               glDisplay.ApplyMaterial(material, mesh); // different material check skips this since it's not reset to null
                glDisplay.DrawPrimitives((PrimitiveSingle *)&group.type, mesh);
             }
 
