@@ -867,6 +867,8 @@ static void writeObject(E3DWriteContext ctx, File f, Object object)
             writeE3DBlock(ctx, f, cameraNode, o, writeObject);
          else if(o.flags.light)
             writeE3DBlock(ctx, f, lightNode, o, writeObject);
+         else
+            writeE3DBlock(ctx, f, meshNode /*object*/, o, writeObject);  // REVIEW: This is what seems to work right now for E3DRead
       }
    }
 }
