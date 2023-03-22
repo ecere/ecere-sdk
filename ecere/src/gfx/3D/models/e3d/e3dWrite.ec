@@ -916,7 +916,7 @@ static void writeMaterial(E3DWriteContext ctx, File f, MaterialInfo info)
    writeE3DBlock(ctx, f, materialFlags, &mFlags, writeInt);
    if(material.opacity < 1)
       writeE3DBlock(ctx, f, opacity, &material.opacity, writeInt);
-   if(material.emissive.r != 1 || material.emissive.g != 1 || material.emissive.b != 1)
+   if(material.emissive.r != 0 || material.emissive.g != 0 || material.emissive.b != 0)
       writeE3DBlock(ctx, f, emissive, &material.emissive, writeColorRGB);
    if(material.bumpMap)
    {
