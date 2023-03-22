@@ -179,8 +179,8 @@ public:
       while(it.Prev() && numResults < maxResults)
       {
          Presentation p = it.data;
-         if(p.pickable && p.visible)
-            numResults += p.pick(region, maxResults, results + numResults, data, vm, projParams);
+         if(p.pickable && p.visible && (p.rdrFlags.perspective ? vm != null : !vm))
+            numResults += p.pick(region, maxResults - numResults, results + numResults, data, vm, projParams);
       }
       return numResults;
    }
