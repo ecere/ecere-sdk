@@ -542,7 +542,7 @@ public:
       const Matrix * vm, const Pointd * projParams)
    {
       if(!ge) return 0;
-      if(rdrFlags.perspective)
+      if(vm && rdrFlags.perspective)
       {
          Object model = ge && ge.internal && eClass_IsDerived(ge._class, class(Model)) ? ((GEModelData)ge.internal).model : null;
          if(model)
@@ -632,7 +632,7 @@ public:
             return nPicks;
          }
       }
-      else if(rdrFlags & { overlay = true, overlayText = true, bbShapes = true, bbTextAndImages = true })
+      else if(!vm && (rdrFlags & { overlay = true, overlayText = true, bbShapes = true, bbTextAndImages = true }))
       {
          Boxf tRegion
          {
