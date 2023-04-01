@@ -1697,10 +1697,11 @@ private class Display3D : struct
 
    bool PickPrimitives(Mesh mesh, PrimitiveSingle primitive, Vector3D rayDiff, Vector3D rayIntersect)
    {
-      return PickPrimitivesEx(mesh, primitive, rayDiff, rayIntersect, 0, null);
+      float * vertices = (float *)(mesh.skin && mesh.skin.vertices ? mesh.skin.vertices : mesh.vertices);
+      return PickPrimitivesEx(mesh, vertices, primitive, rayDiff, rayIntersect, 0, null);
    }
 
-   bool PickPrimitivesEx(Mesh mesh, PrimitiveSingle primitive, Vector3D rayDiff, Vector3D rayIntersect,
+   bool PickPrimitivesEx(Mesh mesh, float * vertices, PrimitiveSingle primitive, Vector3D rayDiff, Vector3D rayIntersect,
       int groupIx, uint64 * id)
    {
       Plane * planes = localPickingPlanes;
@@ -1720,7 +1721,7 @@ private class Display3D : struct
       Array<MeshPart> parts = mesh.parts;
       int pi;
       int firstPart = 0, lastPart = 0;
-      float * vertices = (float *)(mesh.skin && mesh.skin.vertices ? mesh.skin.vertices : mesh.vertices);
+      // float * vertices = (float *)(mesh.skin && mesh.skin.vertices ? mesh.skin.vertices : mesh.vertices);
       int vStride = mesh.flags.interleaved ? 8 : 3;
 
       if(!vertices || (!indices32 && !indices16)) return false; // Need vertices and indices here...
@@ -2000,11 +2001,85 @@ private class Display3D : struct
       return PickMeshEx(object, rayIntersect, null);
    }
 
+#define GPU_SKIN
+   static inline void ::inlineMultMatrix(Vector3Df dest, const Vector3Df source, const Matrixf matrix)
+   {
+      dest.x = (float)(source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0]);
+      dest.y = (float)(source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1]);
+      dest.z = (float)(source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2]);
+   }
+
    bool PickMeshEx(Object object, Vector3D rayIntersect, uint64 * id)
    {
       Mesh mesh = object.mesh;
       bool result = false;
       Vector3D rayDiff { MAXFLOAT, MAXFLOAT, MAXFLOAT };
+      Vector3Df * vertices = mesh.vertices;
+      Vector3Df * tmpVertices = null;
+      // We need to apply bone weights for picking
+      MeshSkin skin = mesh.skin;
+      if(skin)
+      {
+#ifdef GPU_SKIN
+         Vector3Df * oVertices = mesh.vertices;
+         int nVertices = skin.skinVerts.count;
+         Array<Matrixf> matBones = mesh.matBones;
+         int i;
+
+         // Lock({ vertices = true });
+         vertices = tmpVertices = new Vector3Df[mesh.nVertices];
+
+         for(i = 0; i < nVertices; i++)
+         {
+            Vector3Df * vert = &vertices[i];
+            SkinVert * sv = &skin.skinVerts[i];
+            int j;
+            float tw = 0;
+            Vector3Df vt { };
+            for(j = 0; j < MAX_BONES; j++)
+            {
+               int b = sv->bones[j];
+               if(b != NO_BONE)
+               {
+                  float w = sv->weights[j] / 255.0f;
+                  Vector3Df v;
+                  inlineMultMatrix(v, oVertices[i], matBones[b]);
+                  tw += w;
+                  vt.x += w * v.x;
+                  vt.y += w * v.y;
+                  vt.z += w * v.z;
+               }
+               else
+                  break;
+            }
+
+            if(tw)
+            {
+               tw = 1.0f / tw;
+               vert->x = vt.x * tw;
+               vert->y = vt.y * tw;
+               vert->z = vt.z * tw;
+            }
+            else
+               *vert = oVertices[i];
+         }
+
+         if(mesh.dupVerts)
+         {
+            int * dv = mesh.dupVerts.array - nVertices;
+            int count = nVertices + mesh.dupVerts.count;
+            for(i = nVertices; i < count; i++)
+            {
+               int ix = dv[i];
+               vertices[i] = vertices[ix];
+            }
+         }
+      }
+#else
+      if(skin.vertices)
+         vertices = skin.vertices;
+#endif
+
       if(rayIntersect != null)
          rayIntersect = { MAXFLOAT, MAXFLOAT, MAXFLOAT };
 
@@ -2015,7 +2090,7 @@ private class Display3D : struct
 
          for(group = mesh.groups.first; group; group = group.next)
          {
-            if(!group.type.hide && PickPrimitivesEx(mesh, (PrimitiveSingle *)&group.type, rayDiff, rayIntersect, groupIX, id))
+            if(!group.type.hide && PickPrimitivesEx(mesh, (float *) vertices, (PrimitiveSingle *)&group.type, rayDiff, rayIntersect, groupIX, id))
             {
                result = true;
                if(!intersecting)
@@ -2030,7 +2105,7 @@ private class Display3D : struct
          int c;
          for(c = 0; c < mesh.nPrimitives; c++)
          {
-            if(PickPrimitives(mesh, mesh.primitives[c], rayDiff, rayIntersect))
+            if(PickPrimitivesEx(mesh, (float *) vertices, mesh.primitives[c], rayDiff, rayIntersect, 0, null))
             {
                result = true;
                if(!intersecting)
@@ -2038,6 +2113,8 @@ private class Display3D : struct
             }
          }
       }
+      delete tmpVertices;
+
       return result;
    }
 };
