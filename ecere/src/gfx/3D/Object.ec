@@ -1782,6 +1782,389 @@ public:
       SetMinMaxRadius(false);
    }
 
+   private static inline void ::inlineMultMatrix(Vector3Df dest, const Vector3Df source, const Matrixf matrix)
+   {
+      dest.x = (float)(source.x * matrix.m[0][0] + source.y * matrix.m[1][0] + source.z * matrix.m[2][0] + matrix.m[3][0]);
+      dest.y = (float)(source.x * matrix.m[0][1] + source.y * matrix.m[1][1] + source.z * matrix.m[2][1] + matrix.m[3][1]);
+      dest.z = (float)(source.x * matrix.m[0][2] + source.y * matrix.m[1][2] + source.z * matrix.m[2][2] + matrix.m[3][2]);
+   }
+
+   private static void inline transformVertex(int i, MeshSkin skin, Array<Matrixf> matBones, Vector3Df vert)
+   {
+      SkinVert * sv = &skin.skinVerts[i];
+      int j;
+      float tw = 0;
+      Vector3Df vt { };
+      Vector3Df * oVertices = mesh.vertices;
+
+      for(j = 0; j < MAX_BONES; j++)
+      {
+         int b = sv->bones[j];
+         if(b != NO_BONE)
+         {
+            float w = sv->weights[j] / 255.0f;
+            Vector3Df v;
+            inlineMultMatrix(v, oVertices[i], matBones[b]);
+            tw += w;
+            vt.x += w * v.x;
+            vt.y += w * v.y;
+            vt.z += w * v.z;
+         }
+         else
+            break;
+      }
+
+      if(tw)
+      {
+         tw = 1.0f / tw;
+         vert = { vt.x * tw, vt.y * tw, vt.z * tw };
+      }
+      else
+         vert = oVertices[i];
+   }
+
+   private static double testVertex(Array<Matrixf> matBones, bool bsIdentity, MeshSkin skin, SkinVert * sv, Vector3D target)
+   {
+      int i;
+      Vector3Df vert;
+      double dx, dy, dz;
+
+      for(i = 0; i < MAX_BONES; i++)
+      {
+         int b = sv->bones[i];
+         if(b != NO_BONE)
+         {
+            Matrix m;
+            SkinBone * bone = &skin.bones[b];
+            if(bone->object)
+            {
+               m.Multiply3x4(bone->bsInvBindMatrix, bone->object.matrixPtr);
+
+               if(bsIdentity)
+                  matBones[b].fromMatrix(m);
+               else
+               {
+                  Matrix tmp;
+                  tmp.Multiply3x4(m, skin.invShape);
+                  matBones[b].fromMatrix(tmp);
+               }
+            }
+         }
+      }
+      transformVertex(sv - mesh.skin.skinVerts.array, skin, matBones, vert);
+      dx = vert.x - target.x;
+      dy = vert.y - target.y;
+      dz = vert.z - target.z;
+      return dx * dx + dy * dy + dz * dz;
+   }
+
+   private static void setBoneAngle(Object boneObj, Euler a)
+   {
+      Quaternion q;
+      q.RotationEuler(a, boneObj.rotationOrder);
+      boneObj.eulerOrientation = a;
+      boneObj.transform.orientation = q;
+      boneObj.UpdateTransform();
+   }
+
+   void InverseKinematics(int boneIX, Array<Euler> limits, int vertex, const Vector3D target, int maxDepth)
+   {
+      MeshSkin skin = mesh.skin;
+      Degrees maxDelta[] = { 5, 10, 30, 45, 90, 180, 360 };
+      double depthDistance[] = { 0.01, 0.1, 0.3, 0.5, 0.6, 0.8, 1 };
+      int pass;
+
+      for(pass = 0; pass < 7; pass++)
+      {
+         double d2 = MAXDOUBLE;
+         int j;
+         int md = maxDepth; //pass > 1 ? Min(maxDepth, 2) : maxDepth;
+         for(j = 0; j < md; j++)
+         {
+            bool fromCurrent = true; //j > 0;
+            SkinBone * sBone = &skin.bones[boneIX];
+            int bix = boneIX;
+            Object boneObj = sBone->object;
+            int k;
+
+            for(k = 0; k < j; k++)
+            {
+               boneObj = boneObj.parent;
+               if(!boneObj || !boneObj.parent || boneObj.parent.flags.skeleton)
+                  break;
+            }
+
+            if(k == j)
+            {
+               int ii;
+
+               if(k)
+               {
+                  bix = -1;
+                  for(ii = 0; ii < skin.bones.count; ii++)
+                     if(skin.bones[ii].object == boneObj)
+                     {
+                        bix = ii;
+                        break;
+                     }
+               }
+               if(bix != -1)
+               {
+                  // Complementary bones (e.g., separate bones for twisting and bending)
+                  int bix2 = -1;
+                  Euler boneLimitsMin = limits[2*bix+0], boneLimitsMax = limits[2*bix+1];
+                  uint boneAxes = 0;
+
+                  if((Radians)boneLimitsMax.yaw   - (Radians)boneLimitsMin.yaw   > 1E-11) boneAxes |= 1;
+                  if((Radians)boneLimitsMax.pitch - (Radians)boneLimitsMin.pitch > 1E-11) boneAxes |= 2;
+                  if((Radians)boneLimitsMax.roll  - (Radians)boneLimitsMin.roll  > 1E-11) boneAxes |= 4;
+
+                  for(bone2 : [ boneObj.parent, boneObj.firstChild ]; bone2)
+                  {
+                     int b2 = -1;
+
+                     for(ii = 0; ii < skin.bones.count; ii++)
+                        if(skin.bones[ii].object == bone2)
+                        {
+                           b2 = ii;
+                           break;
+                        }
+
+                     if(b2 != -1)
+                     {
+                        uint b2Axes = 0;
+                        boneLimitsMin = limits[2*b2+0];
+                        boneLimitsMax = limits[2*b2+1];
+                        if((Radians)boneLimitsMax.yaw   - (Radians)boneLimitsMin.yaw   > 1E-11) b2Axes |= 1;
+                        if((Radians)boneLimitsMax.pitch - (Radians)boneLimitsMin.pitch > 1E-11) b2Axes |= 2;
+                        if((Radians)boneLimitsMax.roll  - (Radians)boneLimitsMin.roll  > 1E-11) b2Axes |= 4;
+
+                        if(!(boneAxes & b2Axes))
+                        {
+                           bix2 = b2;
+                           break;
+                        }
+                     }
+                  }
+
+                  d2 = InverseKinematicsBone(bix, bix2, limits, vertex, target, fromCurrent, maxDelta[pass]);
+               }
+            }
+
+            if(d2 < depthDistance[Min(j, sizeof(depthDistance)/sizeof(depthDistance[0])-1)]) break;
+         }
+      }
+   }
+
+   private static double InverseKinematicsBone(int boneIX1, int boneIX2,
+      Array<Euler> limits, int vertex, const Vector3D target, bool fromCurrent, Degrees maxDelta)
+   {
+      MeshSkin skin = mesh.skin;
+      Array<Matrixf> matBones { size = skin.bones.count };
+      bool bsIdentity = skin.bsIsIdentity;
+      SkinBone * bone1 = &skin.bones[boneIX1];
+      SkinBone * bone2 = boneIX2 == -1 ? null : &skin.bones[boneIX2];
+      Object boneObj1 = bone1->object, boneObj2 = bone2 ? bone2->object : null;
+      Euler minAngle1 = limits[boneIX1 * 2 + 0], maxAngle1 = limits[boneIX1 * 2 + 1];
+      Euler minAngle2 = boneIX2 == -1 ? { } : limits[boneIX2 * 2 + 0], maxAngle2 = boneIX2 == -1 ? { } : limits[boneIX2 * 2 + 1];
+      double distance2;
+      SkinVert * sv = &skin.skinVerts[vertex];
+
+      // angle.FromQuaternion(boneObj.transform.orientation, boneObj.rotationOrder);
+      // angle = { (minAngle.yaw + maxAngle.yaw)/2, (minAngle.pitch + maxAngle.pitch)/2, (minAngle.roll + maxAngle.roll)/2 };
+      Euler angle1 = fromCurrent ? boneObj1.eulerOrientation : { };
+      Euler angle2 = boneObj2 && fromCurrent ? boneObj2.eulerOrientation : { };
+
+      if(angle1.yaw < minAngle1.yaw) angle1.yaw = minAngle1.yaw;
+      if(angle1.yaw > maxAngle1.yaw) angle1.yaw = maxAngle1.yaw;
+      if(angle1.pitch < minAngle1.pitch) angle1.pitch = minAngle1.pitch;
+      if(angle1.pitch > maxAngle1.pitch) angle1.pitch = maxAngle1.pitch;
+      if(angle1.roll < minAngle1.roll) angle1.roll = minAngle1.roll;
+      if(angle1.roll > maxAngle1.roll) angle1.roll = maxAngle1.roll;
+
+      if(boneObj2)
+      {
+         if(angle2.yaw < minAngle2.yaw) angle2.yaw = minAngle2.yaw;
+         if(angle2.yaw > maxAngle2.yaw) angle2.yaw = maxAngle2.yaw;
+         if(angle2.pitch < minAngle2.pitch) angle2.pitch = minAngle2.pitch;
+         if(angle2.pitch > maxAngle2.pitch) angle2.pitch = maxAngle2.pitch;
+         if(angle2.roll < minAngle2.roll) angle2.roll = minAngle2.roll;
+         if(angle2.roll > maxAngle2.roll) angle2.roll = maxAngle2.roll;
+      }
+
+      /*if(fromCurrent) // Make maxDelta percentage instead?
+      {
+         if(minAngle.yaw < angle.yaw) minAngle.yaw = angle.yaw + (minAngle.yaw - angle.yaw) * 0.1;
+         if(maxAngle.yaw > angle.yaw) maxAngle.yaw = angle.yaw + (maxAngle.yaw - angle.yaw) * 0.1;
+         if(minAngle.pitch < angle.pitch) minAngle.pitch = angle.pitch + (minAngle.pitch - angle.pitch) * 0.1;
+         if(maxAngle.pitch > angle.pitch) maxAngle.pitch = angle.pitch + (maxAngle.pitch - angle.pitch) * 0.1;
+         if(minAngle.roll < angle.roll) minAngle.roll = angle.roll + (minAngle.roll - angle.roll) * 0.1;
+         if(maxAngle.roll > angle.roll) maxAngle.roll = angle.roll + (maxAngle.roll - angle.roll) * 0.1;
+      }
+      */
+
+      if(minAngle1.yaw < angle1.yaw - maxDelta) minAngle1.yaw = angle1.yaw - maxDelta;
+      if(minAngle1.pitch < angle1.pitch - maxDelta) minAngle1.pitch = angle1.pitch - maxDelta;
+      if(minAngle1.roll < angle1.roll - maxDelta) minAngle1.roll = angle1.roll - maxDelta;
+      if(maxAngle1.yaw > angle1.yaw + maxDelta) maxAngle1.yaw = angle1.yaw + maxDelta;
+      if(maxAngle1.pitch > angle1.pitch + maxDelta) maxAngle1.pitch = angle1.pitch + maxDelta;
+      if(maxAngle1.roll > angle1.roll + maxDelta) maxAngle1.roll = angle1.roll + maxDelta;
+
+      if(boneObj2)
+      {
+         if(minAngle2.yaw < angle2.yaw - maxDelta) minAngle2.yaw = angle2.yaw - maxDelta;
+         if(minAngle2.pitch < angle2.pitch - maxDelta) minAngle2.pitch = angle2.pitch - maxDelta;
+         if(minAngle2.roll < angle2.roll - maxDelta) minAngle2.roll = angle2.roll - maxDelta;
+         if(maxAngle2.yaw > angle2.yaw + maxDelta) maxAngle2.yaw = angle2.yaw + maxDelta;
+         if(maxAngle2.pitch > angle2.pitch + maxDelta) maxAngle2.pitch = angle2.pitch + maxDelta;
+         if(maxAngle2.roll > angle2.roll + maxDelta) maxAngle2.roll = angle2.roll + maxDelta;
+      }
+
+      setBoneAngle(boneObj1, angle1);
+      if(boneObj2)
+         setBoneAngle(boneObj2, angle2);
+
+      distance2 = testVertex(matBones, bsIdentity, skin, sv, target);
+
+      memcpy(matBones.array, mesh.matBones.array, matBones.count * sizeof(Matrixf));
+      if(boneObj1)
+      {
+         double best = distance2;
+         while(true)
+         {
+            Degrees dYaw1   = maxAngle1.yaw   - minAngle1.yaw;
+            Degrees dPitch1 = maxAngle1.pitch - minAngle1.pitch;
+            Degrees dRoll1  = maxAngle1.roll  - minAngle1.roll;
+            Degrees dYaw2   = boneObj2 ? maxAngle2.yaw   - minAngle2.yaw : 0;
+            Degrees dPitch2 = boneObj2 ? maxAngle2.pitch - minAngle2.pitch : 0;
+            Degrees dRoll2  = boneObj2 ? maxAngle2.roll  - minAngle2.roll : 0;
+            float t = 0.4;
+            int i = 0;
+            Euler angles[12];
+            bool used[12] = { false };
+
+            #define MIN_DEG   0.2 //05
+
+            if(dYaw1 < Degrees { MIN_DEG } && dPitch1 < Degrees { MIN_DEG } && dRoll1 < Degrees { MIN_DEG } &&
+               dYaw2 < Degrees { MIN_DEG } && dPitch2 < Degrees { MIN_DEG } && dRoll2 < Degrees { MIN_DEG })
+               break;
+            {
+               int winner = -1;
+               if(dYaw1)
+               {
+                  Euler a1 = angle1, a2 = angle1;
+                  a1.yaw = angle1.yaw + (minAngle1.yaw - angle1.yaw) * t;
+                  a2.yaw = angle1.yaw + (maxAngle1.yaw - angle1.yaw) * t;
+                  angles[0] = a1, angles[1] = a2;
+                  used[0] = true, used[1] = true;
+               }
+               if(dPitch1)
+               {
+                  Euler a1 = angle1, a2 = angle1;
+                  a1.pitch = angle1.pitch + (minAngle1.pitch - angle1.pitch) * t;
+                  a2.pitch = angle1.pitch + (maxAngle1.pitch - angle1.pitch) * t;
+                  angles[2] = a1, angles[3] = a2;
+                  used[2] = true, used[3] = true;
+               }
+               if(dRoll1)
+               {
+                  Euler a1 = angle1, a2 = angle1;
+                  a1.roll = angle1.roll + (minAngle1.roll - angle1.roll) * t;
+                  a2.roll = angle1.roll + (maxAngle1.roll - angle1.roll) * t;
+                  angles[4] = a1, angles[5] = a2;
+                  used[4] = true, used[5] = true;
+               }
+               if(dYaw2)
+               {
+                  Euler a1 = angle2, a2 = angle2;
+                  a1.yaw = angle2.yaw + (minAngle2.yaw - angle2.yaw) * t;
+                  a2.yaw = angle2.yaw + (maxAngle2.yaw - angle2.yaw) * t;
+                  angles[6] = a1, angles[7] = a2;
+                  used[6] = true, used[7] = true;
+               }
+               if(dPitch2)
+               {
+                  Euler a1 = angle2, a2 = angle2;
+                  a1.pitch = angle2.pitch + (minAngle2.pitch - angle2.pitch) * t;
+                  a2.pitch = angle2.pitch + (maxAngle2.pitch - angle2.pitch) * t;
+                  angles[8] = a1, angles[9] = a2;
+                  used[8] = true, used[9] = true;
+               }
+               if(dRoll2)
+               {
+                  Euler a1 = angle2, a2 = angle2;
+                  a1.roll = angle2.roll + (minAngle2.roll - angle2.roll) * t;
+                  a2.roll = angle2.roll + (maxAngle2.roll - angle2.roll) * t;
+                  angles[10] = a1, angles[11] = a2;
+                  used[10] = true, used[11] = true;
+               }
+
+               for(i = 0; i < 12; i++)
+               {
+                  if(used[i])
+                  {
+                     double d2, improvement;
+                     setBoneAngle(i < 6 ? boneObj1 : boneObj2, angles[i]);
+                     d2 = testVertex(matBones, bsIdentity, skin, sv, target);
+                     improvement = best - d2;
+                     // if(sqrt(improvement) / sqrt(d2) > 0.05) //02)
+                     if(improvement / d2 > 0.1)
+                     {
+                        best = d2;
+                        winner = i;
+                     }
+                  }
+               }
+               if(winner != -1)
+               {
+                  switch(winner)
+                  {
+                     case 0: maxAngle1.yaw = angle1.yaw; break;
+                     case 1: minAngle1.yaw = angle1.yaw; break;
+                     case 2: maxAngle1.pitch = angle1.pitch; break;
+                     case 3: minAngle1.pitch = angle1.pitch; break;
+                     case 4: maxAngle1.roll = angle1.roll; break;
+                     case 5: minAngle1.roll = angle1.roll; break;
+                     case 6: maxAngle2.yaw = angle2.yaw; break;
+                     case 7: minAngle2.yaw = angle2.yaw; break;
+                     case 8: maxAngle2.pitch = angle2.pitch; break;
+                     case 9: minAngle2.pitch = angle2.pitch; break;
+                     case 10: maxAngle2.roll = angle2.roll; break;
+                     case 11: minAngle2.roll = angle2.roll; break;
+                  }
+                  if(winner < 6)
+                     angle1 = angles[winner];
+                  else
+                     angle2 = angles[winner];
+
+                  if((winner == 0 || winner == 1) && dYaw1 < MIN_DEG)
+                     break;
+                  else if((winner == 2 || winner == 3) && dPitch1 < MIN_DEG)
+                     break;
+                  else if((winner == 4 || winner == 5) && dRoll1 < MIN_DEG)
+                     break;
+                  else if((winner == 6 || winner == 7) && dYaw2 < MIN_DEG)
+                     break;
+                  else if((winner == 8 || winner == 9) && dPitch2 < MIN_DEG)
+                     break;
+                  else if((winner == 10 || winner == 11) && dRoll2 < MIN_DEG)
+                     break;
+               }
+               else
+                  break;
+            }
+         }
+         distance2 = best;
+      }
+
+      setBoneAngle(boneObj1, angle1);
+      if(boneObj2)
+         setBoneAngle(boneObj2, angle2);
+
+      delete matBones;
+      return distance2;
+   }
+
    void ResetPose()
    {
       Object o;
@@ -2019,7 +2402,8 @@ private:
          if(flags.root || !parent || flags.skeleton)
             matrix = localMatrix;
          else
-            matrix.Multiply(localMatrix, parent.matrix);
+            // matrix.Multiply(localMatrix, parent.matrix);
+            matrix.Multiply3x4(localMatrix, parent.matrix);
 
          flags.transform = false;
 
