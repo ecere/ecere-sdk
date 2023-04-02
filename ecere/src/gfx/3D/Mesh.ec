@@ -246,6 +246,13 @@ public union Matrixf
       }
    }
 
+   void fromMatrix(Matrix m)
+   {
+      int i;
+      for(i = 0; i < 16; i++)
+         array[i] = (float)m.array[i];
+   }
+
    void Identity()
    {
       m[0][0] = 1;   m[0][1] = 0;   m[0][2] = 0;   m[0][3] = 0;
@@ -752,6 +759,70 @@ public:
          delete computedUnmorphedNormals;
          if(morphs) morphs.Free(), delete morphs;
       }
+   }
+
+   int FindClosestVertex(const Vector3D local, Vector3Df actual)
+   {
+      double distance2 = MAXDOUBLE;
+      int result = -1;
+      MeshSkin skin = this.skin;
+      Vector3Df * oVertices = vertices;
+      int nVertices = skin ? skin.skinVerts.count : this.nVertices;
+      Array<Matrixf> matBones = this.matBones;
+      int i;
+
+      for(i = 0; i < nVertices; i++)
+      {
+         Vector3Df vert;
+         double dx, dy, dz, d2;
+         if(skin)
+         {
+            SkinVert * sv = &skin.skinVerts[i];
+            int j;
+            float tw = 0;
+            Vector3Df vt { };
+
+            for(j = 0; j < MAX_BONES; j++)
+            {
+               int b = sv->bones[j];
+               if(b != NO_BONE)
+               {
+                  float w = sv->weights[j] / 255.0f;
+                  Vector3Df v;
+                  inlineMultMatrix(v, oVertices[i], matBones[b]);
+                  tw += w;
+                  vt.x += w * v.x;
+                  vt.y += w * v.y;
+                  vt.z += w * v.z;
+               }
+               else
+                  break;
+            }
+
+            if(tw)
+            {
+               tw = 1.0f / tw;
+               vert = { vt.x * tw, vt.y * tw, vt.z * tw };
+            }
+            else
+               vert = oVertices[i];
+         }
+         else
+            vert = oVertices[i];
+
+         dx = local.x - vert.x;
+         dy = local.y - vert.y;
+         dz = local.z - vert.z;
+         d2 = dx * dx + dy * dy + dz * dz;
+         if(d2 < distance2)
+         {
+            result = i;
+            distance2 = d2;
+            if(actual != null)
+               actual = vert;
+         }
+      }
+      return result;
    }
 
    bool Allocate(MeshFeatures what, int nVertices, DisplaySystem displaySystem)

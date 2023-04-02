@@ -2105,7 +2105,9 @@ private class Display3D : struct
          int c;
          for(c = 0; c < mesh.nPrimitives; c++)
          {
-            if(PickPrimitivesEx(mesh, (float *) vertices, mesh.primitives[c], rayDiff, rayIntersect, 0, null))
+            PrimitiveSingle * primitive = &mesh.primitives[c];
+
+            if(!primitive->type.hide && PickPrimitivesEx(mesh, (float *) vertices, primitive, rayDiff, rayIntersect, 0, null))
             {
                result = true;
                if(!intersecting)
