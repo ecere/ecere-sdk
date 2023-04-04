@@ -749,7 +749,7 @@ public:
    {
       if(exp1) { exp1.print(out, indent, o); if(exp2) out.Print(" "); }
       op.print(out, indent, o);
-      if(exp2) { if(exp1) out.Print(" "); exp2.print(out, indent, o); }
+      if(exp2) { if(exp1 || op == bitNot) out.Print(" "); exp2.print(out, indent, o); }
    }
 
    CMSSExpression ::parse(int prec, CMSSLexer lexer)
