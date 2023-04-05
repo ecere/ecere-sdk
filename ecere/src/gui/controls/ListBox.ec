@@ -1060,6 +1060,8 @@ public:
       {
          if(value && !style.header)
          {
+            DataField field;
+
             endBevel = Button
             {
                this;
@@ -1077,6 +1079,23 @@ public:
             incref endBevel;
             endBevel.Create();
             endBevel.visible = false;
+            for(field = fields.first; field; field = field.next)
+            {
+               if(field.headButton)
+                  field.headButton.visible = true;
+            }
+         }
+         else if(!value && style.header)
+         {
+            DataField field;
+            for(field = fields.first; field; field = field.next)
+            {
+               if(field.headButton)
+                  field.headButton.visible = false;
+            }
+            endBevel.visible = false;
+            endBevel.Destroy(0);
+            delete endBevel;
          }
          style.header = value;
       }
