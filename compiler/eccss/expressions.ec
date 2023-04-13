@@ -907,7 +907,7 @@ public:
          else
             flags.resolved = false;
 
-         if(computeType == preprocessing && flags.resolved)
+         if(computeType == preprocessing)// && flags.resolved)
          {
             if(flags1.resolved && !flags2.resolved)
                exp1 = simplifyResolved(val1, exp1);
