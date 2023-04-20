@@ -97,7 +97,7 @@ public class PictureRotate : Window
       if(!image.bitmap) return false;
       w = image.bitmap.width;
       h = image.bitmap.height;
-      camera.position.y = -Max(image.bitmap.height, image.bitmap.height) / sqrt(2);
+      camera.position.y = -Max(image.bitmap.width, image.bitmap.height) / sqrt(2);
 
       plane.UpdateTransform();
 
