@@ -523,10 +523,12 @@ class Fractal : Window
       int y = Max((clientSize.h - imageSize.h) / 2, 0);
       int w = imageSize.w;
       int h = imageSize.h;
+      Point m0 { Min(mouse0.x, mouse1.x), Min(mouse0.y, mouse1.y) };
+      Point m1 { Max(mouse0.x, mouse1.x), Max(mouse0.y, mouse1.y) };
       surface.Blit(image, x, y, scroll.x, scroll.y, image.width, image.height);
       surface.SetForeground(lime);
       if(selecting)
-         surface.Rectangle(x+mouse0.x - scroll.x, y+mouse0.y - scroll.y, x+mouse1.x - scroll.x, y+mouse1.y - scroll.y);
+         surface.Rectangle(x+m0.x - scroll.x, y+m0.y - scroll.y, x+m1.x - scroll.x, y+m1.y - scroll.y);
       if(!thread.isJulia && julia)
       {
          Complex juliaPoint = julia.thread.juliaPoint;
