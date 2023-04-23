@@ -904,6 +904,12 @@ public:
             else
                flags.resolved = false;
          }
+         else if(flags1 == 64) // FIXME: dimensions work-around
+         {
+            // For now we only extract dimensions, and don't have a setup / evaluator for them
+            value = { type = { integer }, i = 1 };
+            flags.resolved = true;
+         }
          else
             flags.resolved = false;
 
