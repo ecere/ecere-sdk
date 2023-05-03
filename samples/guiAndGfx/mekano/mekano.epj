@@ -12,6 +12,16 @@
          "ecere"
       ]
    },
+   "Platforms" : [
+      {
+         "Name" : "linux",
+         "Options" : {
+            "Libraries" : [
+               "m"
+            ]
+         }
+      }
+   ],
    "Configurations" : [
       {
          "Name" : "Debug",
@@ -122,12 +132,22 @@
             {
                "Folder" : "shaders",
                "Files" : [
-                  "../../../ecere/src/gfx/drivers/gl3/default.frag",
-                  "../../../ecere/src/gfx/drivers/gl3/default.vert"
+                  "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/default.frag",
+                  "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3/default.vert"
                ]
             }
+         ],
+         "Options" : {
+            "ExcludeFromBuild" : true
+         },
+         "Configurations" : [
+            {
+               "Name" : "Emscripten",
+               "Options" : {
+                  "ExcludeFromBuild" : false
+               }
+            }
          ]
-      },
-      "data/ecere.bmp"
+      }
    ]
 }
