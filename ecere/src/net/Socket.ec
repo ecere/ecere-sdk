@@ -791,7 +791,7 @@ private:
       struct timeval tvTO = {(uint)timeOut, (uint)((timeOut -(uint)timeOut)* 1000000)};
       fd_set rs, ws, es;
 #else
-      struct pollfd pollFDs[1] = { { s, (short)(POLLIN | POLLOUT) } };
+      struct pollfd pollFDs[1] = { { s, (short)(POLLIN /*| POLLOUT*/) } };
       int pollTimeOut = (int)(timeOut * 1000);
 #endif
       int selectResult;
@@ -825,7 +825,8 @@ private:
       FD_ZERO(&es);
 
       FD_SET(s, &rs);
-      FD_SET(s, &ws);
+      //FD_SET(s, &ws); // REVIEW: How should we handle blocking Send()?
+                        //         Setting POLLOUT will cause poll() to not wait for timeout
       FD_SET(s, &es);
 #endif
 
