@@ -366,7 +366,7 @@ class DCOMClientThread : Thread
          {
             DCOMServerObject object = objects[callMethod.objectID];
             bool hasReturnValue = callMethod.hasReturnValue; //true;
-            MethodReturnedPacket packet;
+            MethodReturnedPacket packet = null;
             unsigned int size;
             SerialBuffer buffer { };
             int methodID = callMethod.methodID;
