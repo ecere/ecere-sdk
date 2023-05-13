@@ -761,6 +761,22 @@ public:
       }
    }
 
+   void FreeCPUVertexAttributes(MeshFeatures what)
+   {
+      if(what.vertices && !nPrimitives && !skin)
+         delete vertices;
+      if(what.texCoords1 && (!skin || !mab))
+         delete texCoords;
+      if(what.normals && !skin)
+         delete normals;
+      if(what.tangents)
+         delete tangents;
+      if(what.lightVectors)
+         delete lightVectors;
+      if(what.colors)
+         delete colors;
+   }
+
    int FindClosestVertex(const Vector3D local, Vector3Df actual)
    {
       double distance2 = MAXDOUBLE;
