@@ -1156,11 +1156,19 @@ public:
 
    bool Merge(DisplaySystem displaySystem)
    {
-      return _Merge(displaySystem, true);
+      return _Merge(displaySystem,
+         { vertices = true, texCoords1 = true, normals = true,
+           tangents = true, colors = true, lightVectors = true },
+         true);
+   }
+
+   bool MergeEx(DisplaySystem displaySystem, MeshFeatures deleteCPUAttrOptions)
+   {
+      return _Merge(displaySystem, deleteCPUAttrOptions, true);
    }
 
    // TODO: Add support to Merge Vertex Colors mesh feature
-   private bool _Merge(DisplaySystem displaySystem, bool lastLevel)
+   private bool _Merge(DisplaySystem displaySystem, MeshFeatures deleteCPUAttrOptions, bool lastLevel)
    {
       bool result = false;
 
@@ -1185,7 +1193,7 @@ public:
 
          for(child = children.first; child; child = child.next)
          {
-            child._Merge(displaySystem, false);
+            child._Merge(displaySystem, deleteCPUAttrOptions, false);
             if(child.flags.mesh && child.mesh)
             {
                nVertices += child.mesh.nVertices;
@@ -1235,12 +1243,7 @@ public:
                      }
                      mesh.Unlock(0);
 
-                     if(!mesh.nPrimitives && !mesh.skin)
-                        delete *&mesh.vertices;
-                     if(!mesh.skin || !mesh.mab)
-                        delete *&mesh.texCoords;
-                     if(!this.flags.computeLightVectors && !mesh.skin)
-                        delete *&mesh.normals;
+                     mesh.FreeCPUVertexAttributes(deleteCPUAttrOptions & ~MeshFeatures { normals = this.flags.computeLightVectors });
                   }
                }
                if(child.children.count)
@@ -1687,16 +1690,8 @@ public:
             delete objectMesh;
          }
 
-         // TODO: Make this an option?
          if(lastLevel && displaySystem && mesh && !mesh.nPrimitives)
-         {
-            if(!mesh.skin)
-               delete *&mesh.vertices;
-            if(!mesh.skin || !mesh.mab)
-               delete *&mesh.texCoords;
-            if(!this.flags.computeLightVectors && !mesh.skin)
-               delete *&mesh.normals;
-         }
+            mesh.FreeCPUVertexAttributes(deleteCPUAttrOptions & ~MeshFeatures { normals = this.flags.computeLightVectors });
       }
       return result;
    }
@@ -1823,7 +1818,7 @@ public:
          vert = oVertices[i];
    }
 
-   private static double testVertex(Array<Matrixf> matBones, bool bsIdentity, MeshSkin skin, SkinVert * sv, Vector3D target)
+   private static double testVertex(Array<Matrixf> matBones, bool bsIdentity, MeshSkin skin, SkinVert * sv, const Vector3D target)
    {
       int i;
       Vector3Df vert;
