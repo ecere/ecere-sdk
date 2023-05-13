@@ -4395,7 +4395,10 @@ class OpenGLDisplayDriver : DisplayDriver
          if(!oglMesh)
             oglMesh = mesh.data = OGLMesh { needAlloc = true };
 
-         if(!flags) flags = mesh.flags;
+         if(!flags)
+            flags = mesh.flags;
+         else
+            flags &= mesh.flags;
 
          if(mab)
          {
