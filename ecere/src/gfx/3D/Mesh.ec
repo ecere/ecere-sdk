@@ -333,15 +333,18 @@ public:
    void ApplyMorphs()
    {
       Array<MeshMorph> morphs = this.morphs;
+      int nVertices = this.nVertices;
+      Vector3Df * vertices = this.vertices;
+      int dvCount = dupVerts ? dupVerts.count : 0;
+      int nVerticesNoDup = nVertices - dvCount;
+
       if(morphs && !unmorphedMesh)
          unmorphedMesh = Copy();
       if(morphs)
       {
          int i;
          int nMorphs = morphs.count, m;
-         int nVertices = Min(this.nVertices, unmorphedMesh.nVertices);
-         Vector3Df * vertices = this.vertices, * unmVertices = unmorphedMesh.vertices;
-         int dvCount = dupVerts ? dupVerts.count : 0;
+         Vector3Df * unmVertices = unmorphedMesh.vertices;
          // TODO: apply same computed delta approach to tangents; light vectors?
          Vector3Df * unmNormals = unmorphedMesh.normals, * computedUnmorphedNormals = this.computedUnmorphedNormals;
          if(!computedUnmorphedNormals)
@@ -351,11 +354,11 @@ public:
             computedUnmorphedNormals = new Vector3Df[unmorphedMesh.nVertices];
             this.computedUnmorphedNormals = computedUnmorphedNormals;
             unmorphedMesh.normals = computedUnmorphedNormals;
-            unmorphedMesh.ComputeNormals2(true, true);
+            unmorphedMesh.ComputeNormals3(true, true, false);
             unmorphedMesh.normals = origUNMNormals;
          }
 
-         memcpy(vertices, unmVertices, (nVertices - dvCount) * sizeof(Vector3Df));
+         memcpy(vertices, unmVertices, nVerticesNoDup * sizeof(Vector3Df));
 
          for(m = 0; m < nMorphs; m++)
          {
@@ -365,7 +368,7 @@ public:
             Mesh target = morph.target;
             if(w && target)
             {
-               int nv = Min(nVertices, target.nVertices);
+               int nv = Min(nVerticesNoDup, target.nVertices);
                const Vector3Df * sv = unmVertices, * tv = target.vertices;
                Vector3Df * v = vertices;
 
@@ -381,8 +384,7 @@ public:
 
          if(dupVerts)
          {
-            Vector3Df * v = vertices + nVertices - dvCount;
-
+            Vector3Df * v = vertices + nVerticesNoDup;
             for(i = 0; i < dvCount; i++, v++)
             {
                int dv = dupVerts[i];
@@ -390,7 +392,7 @@ public:
             }
          }
 
-         ComputeNormals2(true, true);
+         ComputeNormals3(true, false /*true*/, false);
 
          // Re-orient original normals based on rotation of computed normals
          for(i = 0; i < nVertices; i++)
@@ -414,6 +416,16 @@ public:
                normals[i].MultQuaternion(unmNormals[i], q);
             }
          }
+         if(dupVerts)
+         {
+            Vector3Df * n = normals + nVerticesNoDup;
+            for(i = 0; i < dvCount; i++, n++)
+            {
+               int dv = dupVerts[i];
+               *n = normals[dv];
+            }
+         }
+         Unlock(0);
       }
    }
 
@@ -1039,19 +1051,24 @@ public:
 
    void ComputeNormals(void)
    {
-      ComputeNormals2(true, true);
+      ComputeNormals3(true, true, true);
    }
 
    void ComputeNormals2(bool computeNormals, bool computeTangents)
+   {
+      ComputeNormals3(computeNormals, computeTangents, true);
+   }
+
+   void ComputeNormals3(bool computeNormals, bool computeTangents, bool unlock)
    {
       int c;
       //int * numShared = new0 int[nVertices];
       double * weightSum = new0 double[nVertices];
       PrimitiveGroup group;
 
-      if(Allocate({ interleaved = flags.interleaved,
-         normals = true, tangents = (texCoords != null || (flags.texCoords1 && flags.interleaved)) &&
-         computeTangents }, nVertices, displaySystem))
+      if(!unlock || Allocate({ interleaved = flags.interleaved,
+         normals = true, tangents = (texCoords != null || (flags.texCoords1 && flags.interleaved)) && computeTangents },
+         nVertices, displaySystem))
       {
 #ifdef NORMALS_MERGE_VERTICES
          Map<uint, uint> ixMap { };
@@ -1466,7 +1483,8 @@ public:
 
          //delete numShared;
          delete weightSum;
-         Unlock({ interleaved = flags.interleaved, normals = computeNormals, tangents = computeTangents });
+         if(unlock)
+            Unlock({ interleaved = flags.interleaved, normals = computeNormals, tangents = computeTangents });
       }
    }
 
