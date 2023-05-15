@@ -114,7 +114,7 @@ static void readFTKBool(File f, FrameTrack track)
    {
       byte hide = bool::false;
       f.Read(&hide, sizeof(byte), 1);
-      // track.keys[i].hide = hide; // TODO: no hide keys yet?
+      track.keys[i].hide = (bool)hide;
    }
 }
 
@@ -122,10 +122,9 @@ static void readFTKMorph(File f, FrameTrack track)
 {
    int i;
 
+   f.Read(&track.morphIndex, sizeof(int), 1);
    for(i = 0; i < track.numKeys; i++)
-   {
-      // TODO:
-   }
+      f.Read(&track.keys[i].weight, sizeof(float), 1);
 }
 
 #if defined(__GNOSIS3__)

@@ -692,7 +692,7 @@ static void writeFTKBool(E3DWriteContext ctx, File f, FrameTrack track)
 
    for(i = 0; i < track.numKeys; i++)
    {
-      byte hide = bool::false;   //  track.keys[i].hide  // TODO: no hide keys yet?
+      byte hide = (byte)track.keys[i].hide;
       f.Write(&hide, sizeof(byte), 1);
    }
 }
@@ -701,10 +701,9 @@ static void writeFTKMorph(E3DWriteContext ctx, File f, FrameTrack track)
 {
    int i;
 
+   writeInt(ctx, f, &track.morphIndex);
    for(i = 0; i < track.numKeys; i++)
-   {
-      // TODO:
-   }
+      f.Write(&track.keys[i].weight, sizeof(float), 1);
 }
 
 static void writeAnimationTrack(E3DWriteContext ctx, File f, TrackAndObject to)
