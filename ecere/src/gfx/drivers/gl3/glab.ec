@@ -492,14 +492,14 @@ public struct GLB
             type == commands ? GL_DRAW_INDIRECT_BUFFER :
 #endif
             type == elements ? GL_ELEMENT_ARRAY_BUFFER : GL_ARRAY_BUFFER;
-         if(size && data)
+         if(size && data && buffer)
          {
             GLABBindBuffer(glBufferType, buffer);
             glBufferSubData(glBufferType, offset, size, data);
          }
          else
          {
-            // PrintLn("GLB::_upload() called with size = 0 or null data");
+            // PrintLn("GLB::_upload() called with size = 0 or null data or buffer = 0");
          }
       }
    }
