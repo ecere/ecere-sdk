@@ -150,6 +150,8 @@ public struct FrameKey
       ColorRGB color;
       float hotSpot;
       float fallOff;
+      float weight;
+      bool hide;
    };
 };
 
@@ -162,6 +164,7 @@ public:
    FrameTrackBits type;
    uint numKeys;
    FrameKey * keys;
+   int morphIndex;
 
 private:
    void Free(void)
@@ -704,6 +707,11 @@ private:
          //value = p1 + (p2-p1) * t;
       }
       return value;
+   }
+
+   bool InterpolateBool(bool prevValue, bool nextValue, int prev, int next, float t)
+   {
+      return t < 1.0 ? prevValue : nextValue;
    }
 };
 
@@ -2531,6 +2539,21 @@ private:
                case hotSpot:
                {
                   light.hotSpot = track.InterpolateFloat(prevKey->hotSpot, nextKey->hotSpot, prev, next, t);
+                  break;
+               }
+               case hide:
+               {
+                  flags.hide = track.InterpolateBool(prevKey->hide, nextKey->hide, prev, next, t);
+                  break;
+               }
+               case morph:
+               {
+                  float weight = track.InterpolateFloat(prevKey->weight, nextKey->weight, prev, next, t);
+                  if(mesh && mesh.morphs && track.morphIndex < mesh.morphs.count)
+                  {
+                     MeshMorph * morph = &mesh.morphs[track.morphIndex];
+                     morph->weight = weight;
+                  }
                   break;
                }
             }
