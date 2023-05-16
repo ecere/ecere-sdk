@@ -1764,25 +1764,46 @@ public:
       SetMinMaxRadius(false);
    }
 
-   private bool _ApplyMorphs()
+   private bool _ApplyMorphs(bool recomputeNormals)
    {
       bool result = false;
       Object o;
       if(flags.mesh && mesh && mesh.morphs)
       {
-         mesh.ApplyMorphs();
-         // flags.morphApplied = true;
+         mesh.ApplyMorphs(recomputeNormals);
          result = true;
       }
       for(o = children.first; o; o = o.next)
-         result |= o._ApplyMorphs();
+         result |= o._ApplyMorphs(recomputeNormals);
       return result;
    }
 
-   public void ApplyMorphs()
+   public void ApplyMorphs(bool recomputeNormals)
    {
-      _ApplyMorphs();
+      _ApplyMorphs(recomputeNormals);
       SetMinMaxRadius(false);
+   }
+
+   public void CombineMorphs()
+   {
+      Object o;
+      if(flags.mesh && mesh && mesh.morphs)
+      {
+         Array<bool> combined { size = mesh.morphs.count };
+         FrameTrack track;
+         int i;
+         for(i = 0; i < combined.count; i++)
+            combined[i] = true;
+         for(track = tracks.first; track; track = track.next)
+         {
+            if(track.type.type == morph)
+               combined[track.morphIndex] = false;
+         }
+         mesh.CombineMorphs(combined);
+         delete combined;
+      }
+      for(o = children.first; o; o = o.next)
+         o.CombineMorphs();
    }
 
    private static inline void ::inlineMultMatrix(Vector3Df dest, const Vector3Df source, const Matrixf matrix)
@@ -2552,7 +2573,11 @@ private:
                   if(mesh && mesh.morphs && track.morphIndex < mesh.morphs.count)
                   {
                      MeshMorph * morph = &mesh.morphs[track.morphIndex];
-                     morph->weight = weight;
+                     if(morph->weight != weight)
+                     {
+                        morph->weight = weight;
+                        morph->updated = true;
+                     }
                   }
                   break;
                }

@@ -282,6 +282,8 @@ public struct MeshMorph
    Mesh target;
    float weight;
    String name;
+   bool updated;
+   int firstV, lastV;
 
    void OnFree()
    {
@@ -330,7 +332,84 @@ public:
 
    #define GPU_SKIN
 
-   void ApplyMorphs()
+   void CombineMorphs(Array<bool> combined)
+   {
+      Array<MeshMorph> morphs = this.morphs;
+      if(morphs && morphs.count)
+      {
+         int nVertices = this.nVertices;
+         int dvCount = dupVerts ? dupVerts.count : 0;
+         int nVerticesNoDup = nVertices - dvCount;
+         int i;
+         int nMorphs = morphs.count, m;
+         Vector3Df * unmVertices;
+         int combinedIndex = -1;
+
+         if(!unmorphedMesh)
+         {
+            unmorphedMesh = Copy();
+
+            for(m = 0; m < morphs.count; m++)
+            {
+               MeshMorph * morph = &morphs[m];
+               morph->firstV = -1;
+               morph->lastV = -1;
+            }
+         }
+
+         unmVertices = unmorphedMesh.vertices;
+
+         for(m = 0; m < nMorphs; m++)
+         {
+            MeshMorph * morph = &morphs[m];
+            __attribute__((unused)) const String n = morph->name;
+            float w = morph->weight;
+            Mesh target = morph->target;
+            if(w && target && combined[m])
+            {
+               int nv = Min(nVerticesNoDup, target.nVertices);
+               const Vector3Df * sv = unmVertices;
+               const Vector3Df * tv = target.vertices;
+               Vector3Df * cv;
+               if(combinedIndex == -1)
+               {
+                  combinedIndex = m;
+                  delete morph->name;
+                  morph->name = CopyString("[Combined Morph]");
+                  morph->weight = 1.0;
+                  cv = target.vertices;
+
+                  for(i = 0; i < nv; i++, sv++, tv++, cv++)
+                  {
+                     float dx = (tv->x - sv->x) * w;
+                     float dy = (tv->y - sv->y) * w;
+                     float dz = (tv->z - sv->z) * w;
+
+                     cv->x = dx + sv->x,
+                     cv->y = dy + sv->y,
+                     cv->z = dz + sv->z;
+                  }
+               }
+               else
+               {
+                  cv = morphs[combinedIndex].target.vertices;
+                  for(i = 0; i < nv; i++, sv++, tv++, cv++)
+                  {
+                     float dx = (tv->x - sv->x) * w;
+                     float dy = (tv->y - sv->y) * w;
+                     float dz = (tv->z - sv->z) * w;
+
+                     cv->x += dx, cv->y += dy, cv->z += dz;
+                  }
+                  morph->weight = 0;
+                  morph->target = null;
+               }
+            }
+         }
+      }
+   }
+
+   void ApplyMorphs(bool recomputeNormals)
    {
       Array<MeshMorph> morphs = this.morphs;
       int nVertices = this.nVertices;
@@ -340,6 +419,44 @@ public:
 
       if(morphs && !unmorphedMesh)
          unmorphedMesh = Copy();
+
+      if(morphs)
+      {
+         int m;
+
+         for(m = 0; m < morphs.count; m++)
+         {
+            MeshMorph * morph = &morphs[m];
+            if(morph->firstV == -1 && morph->target)
+            {
+               Mesh target = morph->target;
+               Vector3Df * sv = unmorphedMesh.vertices;
+               Vector3Df * tv = target.vertices;
+               int i;
+               int first = MAXINT;
+               int last = -1;
+               int tDVCount = target.dupVerts ? target.dupVerts.count : 0;
+
+               for(i = 0; i < target.nVertices - tDVCount; i++, sv++, tv++)
+               {
+                  float dx = (tv->x - sv->x);
+                  float dy = (tv->y - sv->y);
+                  float dz = (tv->z - sv->z);
+
+                  if(first == MAXINT)
+                  {
+                     if(dx || dy || dz)
+                        first = i, last = i;
+                  }
+                  else if(dx || dy || dz)
+                     last = i;
+               }
+
+               morph->firstV = first;
+               morph->lastV = last;
+            }
+         }
+      }
       if(morphs)
       {
          int i;
@@ -347,7 +464,19 @@ public:
          Vector3Df * unmVertices = unmorphedMesh.vertices;
          // TODO: apply same computed delta approach to tangents; light vectors?
          Vector3Df * unmNormals = unmorphedMesh.normals, * computedUnmorphedNormals = this.computedUnmorphedNormals;
-         if(!computedUnmorphedNormals)
+         if(!recomputeNormals)
+         {
+            bool updated = false;
+            for(m = 0; m < nMorphs; m++)
+               if(morphs[m].updated && morphs[m].target)
+               {
+                  updated = true;
+                  break;
+               }
+            if(!updated) return;
+         }
+
+         if(recomputeNormals && !computedUnmorphedNormals)
          {
             Vector3Df * origUNMNormals = unmNormals;
 
@@ -362,17 +491,20 @@ public:
 
          for(m = 0; m < nMorphs; m++)
          {
-            MeshMorph morph = morphs[m];
-            __attribute__((unused)) const String n = morph.name;
-            float w = morph.weight;
-            Mesh target = morph.target;
+            MeshMorph * morph = &morphs[m];
+            __attribute__((unused)) const String n = morph->name;
+            float w = morph->weight;
+            Mesh target = morph->target;
+
+            morph->updated = false;
             if(w && target)
             {
-               int nv = Min(nVerticesNoDup, target.nVertices);
-               const Vector3Df * sv = unmVertices, * tv = target.vertices;
-               Vector3Df * v = vertices;
+               int fv = morph->firstV == -1 ? 0 : morph->firstV;
+               int lv = morph->lastV == -1 ? Min(target.nVertices, nVerticesNoDup) : morph->lastV;
+               const Vector3Df * sv = unmVertices + fv, * tv = target.vertices + fv;
+               Vector3Df * v = vertices + fv;
 
-               for(i = 0; i < nv; i++, v++, sv++, tv++)
+               for(i = morph->firstV; i <= lv; i++, v++, sv++, tv++)
                {
                   float dx = (tv->x - sv->x) * w;
                   float dy = (tv->y - sv->y) * w;
@@ -392,40 +524,45 @@ public:
             }
          }
 
-         ComputeNormals3(true, false /*true*/, false);
-
-         // Re-orient original normals based on rotation of computed normals
-         for(i = 0; i < nVertices; i++)
+         if(recomputeNormals)
          {
-            Vector3D axis;
-            double len;
-            Vector3Df normal1 = computedUnmorphedNormals[i], normal0 = normals[i];
+            ComputeNormals3(true, false /*true*/, false);
 
-            axis.CrossProduct(
-               { normal0.x, normal0.y, normal0.z },
-               { normal1.x, normal1.y, normal1.z });
+            // Re-orient original normals based on rotation of computed normals
+            for(i = 0; i < nVertices; i++)
+            {
+               Vector3D axis;
+               double len;
+               Vector3Df normal1 = computedUnmorphedNormals[i], normal0 = normals[i];
 
-            len = axis.length;
-            if(len)
-            {
-               double dot = normal0.DotProduct(normal1);
-               Degrees angle = atan2(len, dot);
-               Quaternion q;  // q is rotation between computed normals
-               axis.Scale(axis, 1.0 / len);
-               q.RotationAxis(axis, angle);
-               normals[i].MultQuaternion(unmNormals[i], q);
+               axis.CrossProduct(
+                  { normal0.x, normal0.y, normal0.z },
+                  { normal1.x, normal1.y, normal1.z });
+
+               len = axis.length;
+               if(len)
+               {
+                  double dot = normal0.DotProduct(normal1);
+                  Degrees angle = atan2(len, dot);
+                  Quaternion q;  // q is rotation between computed normals
+                  axis.Scale(axis, 1.0 / len);
+                  q.RotationAxis(axis, angle);
+                  normals[i].MultQuaternion(unmNormals[i], q);
+               }
             }
-         }
-         if(dupVerts)
-         {
-            Vector3Df * n = normals + nVerticesNoDup;
-            for(i = 0; i < dvCount; i++, n++)
+            if(dupVerts)
             {
-               int dv = dupVerts[i];
-               *n = normals[dv];
+               Vector3Df * n = normals + nVerticesNoDup;
+               for(i = 0; i < dvCount; i++, n++)
+               {
+                  int dv = dupVerts[i];
+                  *n = normals[dv];
+               }
             }
+            Unlock({ normals = true, vertices = true });
          }
-         Unlock(0);
+         else
+            Unlock({ vertices = true });
       }
    }
 
