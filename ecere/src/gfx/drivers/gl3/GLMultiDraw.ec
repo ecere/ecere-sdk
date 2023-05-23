@@ -125,6 +125,8 @@ private:
 uint tempTexFBO;  // TODO: Free this on termination... glDeleteFramebuffers(1, &tempTexFBO);
 #endif
 
+public enum GLTextureFilter { nearest, linear };
+
 public struct GLArrayTexture
 {
    uint texture;
@@ -279,6 +281,17 @@ public struct GLArrayTexture
          glTexParameteri(target, GL_TEXTURE_WRAP_S, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
          glTexParameteri(target, GL_TEXTURE_WRAP_T, glClampFunction(glVersion)); //GL_CLAMP_TO_EDGE
       }
+      glBindTexture(target, 0);
+#endif
+   }
+
+   void setFilter(GLTextureFilter minFilter, GLTextureFilter magFilter)
+   {
+#if ((!defined(_GLES) && !defined(_GLES2)) || defined(_GLES3))
+      int target = GL_TEXTURE_2D_ARRAY;
+      glBindTexture(target, texture);
+      glTexParameteri(target, GL_TEXTURE_MIN_FILTER, minFilter == nearest ? GL_NEAREST : (numLevels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR));
+      glTexParameteri(target, GL_TEXTURE_MAG_FILTER, magFilter == nearest ? GL_NEAREST : GL_LINEAR);
       glBindTexture(target, 0);
 #endif
    }
