@@ -45,7 +45,7 @@ public class OptionsMap : Map<String, JSONTypeOptions>
 public class JSONTypeOptions : uint
 {
    /*
-    * bit class to hold flags tht apply to a specific class when
+    * bit class to hold flags that apply to a specific class when
     * (de)serialized (from)to JSON
     */
 
@@ -74,15 +74,14 @@ public:
 }
 
 
-OptionsMap defaultJsonOptions{[
+OptionsMap defaultJsonOptions { [
    {
       "FieldValue", {
          // Without the type part, the value is read and set, but
-         // the type remains 0 and teh bject is unusable.
+         // the type remains 0 and the object is unusable.
          // sonething like { "d" : 1.2, "type" : {"type" : 2}} would be
          // interpreted corectly, but do we want to expose so
-         // much implementataion in JSON files? FieldValue is
-         // not meant to read arrays, maps or anything else anways.
+         // much implementaion in JSON files?
          numbersUseOGDFS = true,
          boolUseOGDFS = true,
          nullUseOGDFS = true,
@@ -95,17 +94,6 @@ OptionsMap defaultJsonOptions{[
    { // from here on the classes are from gnosis3
       "ProcessInputValue", {
          // Derives from FieldValue, adds [] and {} suport.
-         numbersUseOGDFS = true,
-         boolUseOGDFS = true,
-         nullUseOGDFS = true,
-         stringUseOGDFS = true,
-         arrayUseOGDFS = true,
-         objectUseOGDFS = true
-      }
-   },
-   {
-      "GeoJSONValue", {
-         // Derives from FieldValue, adds [] suport.
          numbersUseOGDFS = true,
          boolUseOGDFS = true,
          nullUseOGDFS = true,
@@ -152,8 +140,7 @@ OptionsMap defaultJsonOptions{[
          arrayUseOGDFS = true
       }
    }
-   ]};
-
+] };
 
 FreeingAVLTree<const String> compactTypes
 { [
