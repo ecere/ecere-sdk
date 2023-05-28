@@ -911,6 +911,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                if(count && !mesh.morphs)
                {
                   mesh.morphs = { minAllocSize = count };
+                  memset(mesh.morphs.array, 0, count * sizeof(MeshMorph));
                   readSubBlocks = true;
                }
                break;
@@ -1051,7 +1052,12 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
          if(readSubBlocks)
             readBlocks(ctx, f, displaySystem, header.type, pos, bEnd, subData);
          if(header.type == morph && mesh.morphs && mesh.morphs.minAllocSize >= mesh.morphs.count + 1)
+         {
+            MeshMorph * morph = &mesh.morphs[mesh.morphs.count];
+            morph->firstV = -1;
+            morph->lastV = -1;
             mesh.morphs.count++;
+         }
          if(header.type == material)
          {
             Material mat = subData;
