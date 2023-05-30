@@ -2551,7 +2551,7 @@ static bool WriteONObject(File f, Class objectType, void * object, int indent, b
                         PrintLn("warning: Unresolved data type ", (String)prop.dataTypeString);
                      else
                      {
-                        if(type.type == enumClass || type.type == bitClass || type.type == unitClass || type.type == systemClass)
+                        if(!isTemplateArg && (type.type == enumClass || type.type == bitClass || type.type == unitClass || type.type == systemClass))
                         {
                            // TOFIX: How to swiftly handle classes with base data type?
                            if(type == class(double) || !strcmp(type.dataTypeString, "double"))
