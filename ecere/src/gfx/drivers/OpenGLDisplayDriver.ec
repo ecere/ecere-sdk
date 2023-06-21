@@ -832,6 +832,8 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
       glGetIntegerv(GL_MAX_TEXTURE_SIZE, &oglSystem.maxTextureSize);
+      if(!oglSystem.maxTextureSize)
+         PrintLn("Invalid GL Context? (0 texture size)");
 #if defined(__LUMIN__)                                                                                                              /* TODO: Review whether mdei and gpuCommands is supported on Lumin */
       capabilities = { shaders = true, vertexBuffer = true, pointSize = true, frameBuffer = true, legacyFormats = true, vao = true, mdei = true, gpuCommands = true };
 #elif defined(_GLES3)                                                                                                             /* mdei is not in ES 3.3 core, gpuCommands are 3.1+ and not in WebGL2 */
@@ -1298,6 +1300,8 @@ class OpenGLDisplayDriver : DisplayDriver
          XFree(oglSystem.visualInfo);
    #endif
       }
+      glXMakeCurrent(xGlobalDisplay, None, null);
+
       if(oglSystem.glContext)
         glXDestroyContext(xGlobalDisplay, oglSystem.glContext);
 
@@ -1571,6 +1575,8 @@ class OpenGLDisplayDriver : DisplayDriver
             GLCapabilities caps = *&display.glCapabilities;
             oglDisplay.glContext = GLX_CreateContext(oglSystem, xGlobalDisplay, fbConfig, visualInfo, oglDisplay,
                caps.compatible);
+            if(!oglDisplay.glContext)
+               PrintLn("NULL glContext!");
             //XFree(visualInfo);
          }
 
@@ -1578,7 +1584,9 @@ class OpenGLDisplayDriver : DisplayDriver
          if(oglDisplay.glContext)
          {
             //printf("CreateDisplay Got a Context\n");
-            glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext);
+            if(!glXMakeCurrent(xGlobalDisplay, (GLXDrawable)display.window, oglDisplay.glContext))
+               PrintLn("ERROR: making GL context current!");
+
             result = true;
          }
 #  endif

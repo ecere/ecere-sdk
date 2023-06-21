@@ -367,7 +367,14 @@ public:
    {
       count = source.GetCount();
       if(count > minAllocSize)
+      {
+         if(!class(T))
+         {
+            PrintLn("ERROR: Array::Copy() called with undefined type");
+            return;
+         }
          array = renew array T[count];
+      }
 
 #if !defined(MEMINFO) && defined(MEMTRACKING)
          if(array)

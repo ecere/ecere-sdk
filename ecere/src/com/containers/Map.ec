@@ -28,7 +28,15 @@ public:
    // The 'value' property cannot work if either key or value is a struct; use MapIterator::value instead
    property V value
    {
-      get { return this ? this.value : (V)0; }
+      get
+      {
+         /* No runtime type information here...
+         if(class(KT).type == structClass || class(V).type == structClass)
+            return MapIterator<KT, V> { pointer = this }.value;
+         else
+         */
+            return this ? this.value : (V)0;
+      }
       set { this.value = value; }
    };
    V value;

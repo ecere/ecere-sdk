@@ -211,12 +211,14 @@ void main(void)
    vec3 n;
 #endif
 
-#if LIGHTING_ON && !PER_VERTEX_COLOR && CONSTANT_COLOR
+#if LIGHTING_ON && !PER_VERTEX_COLOR
+#if CONSTANT_COLOR
    vec4 diffuseColor = matDiffuse;
    vec3 ambientColor = matAmbient;
-#elif !LIGHTING_ON || !PER_VERTEX_COLOR
+#else
    vec4 diffuseColor = vec4(1.0, 1.0, 1.0, 1.0);
    vec3 ambientColor = vec3(1.0, 1.0, 1.0);
+#endif
 #endif
 
 #if ENVIRONMENT_MAPPING || (LIGHTING_ON && !NON_LOCAL_VIEWER && MAT_SPECULAR)
