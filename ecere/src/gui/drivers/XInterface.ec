@@ -1099,14 +1099,18 @@ static int MyXErrorHandler(X11Display * display, XErrorEvent * event)
    if(xGlobalDisplay)
       XGetErrorText(xGlobalDisplay, event->error_code, buffer, sizeof(buffer));
 #ifdef _DEBUG
-   Logf("X Error: %s\n", buffer);
+   PrintLn /*Logf*/("X Error: ", buffer);
 #endif
    return 0;
 }
 
 static int MyXIOErrorHandler(X11Display * display)
 {
+#ifdef _DEBUG
+   PrintLn("X IO Error\n");
+#else
    Log("X IO Error\n");
+#endif
    return 0;
 }
 
@@ -2719,6 +2723,11 @@ class XInterface : Interface
                h += window.size.h - window.clientSize.h;
             }
 
+#ifdef _DEBUG
+            if(w < 1 || w > 10000 || h < 1 || h > 10000)
+               PrintLn("WARNING: likely invalid X window size");
+#endif
+
             if(window.master.rootWindow && window.master.rootWindow != guiApp.desktop && (window._isModal || window.style.interim))
             {
                Window master = window.master;
@@ -2942,12 +2951,9 @@ class XInterface : Interface
       if(window == acquiredInputWindow)
          delete acquiredInputWindow;
 
-      XDeleteContext(xGlobalDisplay, (XID)window, windowContext);
+      // XDeleteContext(xGlobalDisplay, (X11Window)window.windowHandle, windowContext);
       XSaveContext(xGlobalDisplay, (X11Window)window.windowHandle, windowContext, null);
-      XDestroyWindow(xGlobalDisplay, (X11Window)window.windowHandle);
-      XSync(xGlobalDisplay, 0);
-      while(XCheckWindowEvent(xGlobalDisplay, (X11Window)window.windowHandle, 0xFFFFFFFF, &event));
-      window.windowHandle = null;
+
       if(window.windowData)
       {
          XWindowData windowData = window.windowData;
@@ -2958,6 +2964,12 @@ class XInterface : Interface
          // printf("Setting windowData for %s to null\n", window._class.name);
          window.windowData = null;
       }
+
+      XDestroyWindow(xGlobalDisplay, (X11Window)window.windowHandle);
+      XSync(xGlobalDisplay, 0);
+      while(XCheckWindowEvent(xGlobalDisplay, (X11Window)window.windowHandle, 0xFFFFFFFF, &event));
+      window.windowHandle = null;
+
       if(lastActive == window)
          delete lastActive;
    }

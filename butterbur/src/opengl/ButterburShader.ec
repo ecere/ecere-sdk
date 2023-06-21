@@ -34,6 +34,7 @@ uint defaultVAO;
 #ifdef _DEBUG
 void checkGLErrors( const char *file, int line )
 {
+   if(!displaySystem) return;
 #if defined(__WIN32__)
    if(!glGetError) return;
 #endif
@@ -44,8 +45,6 @@ void checkGLErrors( const char *file, int line )
 #endif
 
 bool loadedGLExts;
-
-uint tempTexFBO; // TODO: Free this on termination... glDeleteFramebuffers(1, &tempTexFBO);
 
 // FIXME: This is currently duplicated here from Ecere's OGL display driver because there is no other mechanism to access defualt VAO
 class TempOGLDisplay : struct
