@@ -129,9 +129,9 @@ private:
    void OnUnloadGraphics()
    {
       if(bitmapImage)
-      {
          delete bitmap;
-      }
+      else
+         bitmap = null;
    }
 
    bool OnResizing(int * w, int * h)
