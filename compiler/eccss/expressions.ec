@@ -846,7 +846,9 @@ public:
             else
                flags.resolved = false;
          }
-         else if((flags1.resolved && flags2.resolved) || (flags.resolved && (flags1.resolved ? !val1.i : !val2.i) && op == '&'))
+         else if((flags1.resolved && flags2.resolved) ||
+            (flags.resolved && op == '&' && (flags1.resolved ? !val1.i : !val2.i)) ||
+            (flags.resolved && op == '|' && (flags1.resolved ? val1.i : val2.i)))
          {
             if(!flags1.resolved)
                val1 = { type = { integer }, i = 0 };
