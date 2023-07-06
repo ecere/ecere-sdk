@@ -398,9 +398,19 @@ public char * PathCatSlash(char * string, const char * addedPath)
                         fileName[strLen+1] = '\0';
                         if(strLen<0)
                         {
-                           fileName[0] = '/';
-                           fileName[1] = '\0';
-                           strLen = 2;
+                           if(string[0] == '/')
+                           {
+                              // Absolute path
+                              fileName[0] = '/';
+                              fileName[1] = '\0';
+                           }
+                           else
+                           {
+                              // Relative path
+                              fileName[0] = '.';
+                              fileName[1] = '/';
+                              fileName[2] = '\0';
+                           }
                         }
                      }
                   }
@@ -618,9 +628,19 @@ public char * PathCat(char * string, const char * addedPath)
                         fileName[strLen+1] = '\0';
                         if(strLen<0)
                         {
-                           fileName[0] = '/';
-                           fileName[1] = '\0';
-                           strLen = 2;
+                           if(string[0] == '/')
+                           {
+                              // Absolute path
+                              fileName[0] = '/';
+                              fileName[1] = '\0';
+                           }
+                           else
+                           {
+                              // Relative path
+                              fileName[0] = '.';
+                              fileName[1] = '/';
+                              fileName[2] = '\0';
+                           }
                         }
                      }
                   }
