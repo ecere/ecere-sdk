@@ -691,8 +691,8 @@ void Instance_Module_Free(void * library)
 
 #include <math.h>
 
-bool Float_isNan(float n) { return isnan(n); }
-bool Float_isInf(float n) { return isinf(n); }
+bool Float_isNan(float n) { return isnanf(n); }
+bool Float_isInf(float n) { return isinff(n); }
 int Float_signBit(float n) { return signbit(n); }
 float Float_nan(void) { return NAN; }
 float Float_inf(void) { return INFINITY; }
