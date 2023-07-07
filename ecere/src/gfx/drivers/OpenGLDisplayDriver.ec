@@ -3967,7 +3967,7 @@ class OpenGLDisplayDriver : DisplayDriver
 #endif
 
       if((flags.cubeMap && material.baseMap) ||
-         (mesh && mesh.texCoords && (material.baseMap || material.bumpMap || material.specularMap || material.reflectMap)))
+         (mesh && (mesh.texCoords || mesh.flags.texCoords1) && (material.baseMap || material.bumpMap || material.specularMap || material.reflectMap)))
       {
 #if ENABLE_GL_FFP
          if(!glCaps_shaders && tmu > 0)
