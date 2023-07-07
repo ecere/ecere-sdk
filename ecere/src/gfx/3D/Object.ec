@@ -1913,7 +1913,8 @@ public:
 
             for(k = 0; k < j; k++)
             {
-               boneObj = boneObj.parent;
+               if(boneObj)
+                  boneObj = boneObj.parent;
                if(!boneObj || !boneObj.parent || boneObj.parent.flags.skeleton)
                   break;
             }
@@ -1943,33 +1944,34 @@ public:
                   if((Radians)boneLimitsMax.pitch - (Radians)boneLimitsMin.pitch > 1E-11) boneAxes |= 2;
                   if((Radians)boneLimitsMax.roll  - (Radians)boneLimitsMin.roll  > 1E-11) boneAxes |= 4;
 
-                  for(bone2 : [ boneObj.parent, boneObj.firstChild ]; bone2)
-                  {
-                     int b2 = -1;
-
-                     for(ii = 0; ii < skin.bones.count; ii++)
-                        if(skin.bones[ii].object == bone2)
-                        {
-                           b2 = ii;
-                           break;
-                        }
-
-                     if(b2 != -1)
+                  if(boneObj)
+                     for(bone2 : [ boneObj.parent, boneObj.firstChild ]; bone2)
                      {
-                        uint b2Axes = 0;
-                        boneLimitsMin = limits[2*b2+0];
-                        boneLimitsMax = limits[2*b2+1];
-                        if((Radians)boneLimitsMax.yaw   - (Radians)boneLimitsMin.yaw   > 1E-11) b2Axes |= 1;
-                        if((Radians)boneLimitsMax.pitch - (Radians)boneLimitsMin.pitch > 1E-11) b2Axes |= 2;
-                        if((Radians)boneLimitsMax.roll  - (Radians)boneLimitsMin.roll  > 1E-11) b2Axes |= 4;
+                        int b2 = -1;
 
-                        if(!(boneAxes & b2Axes))
+                        for(ii = 0; ii < skin.bones.count; ii++)
+                           if(skin.bones[ii].object == bone2)
+                           {
+                              b2 = ii;
+                              break;
+                           }
+
+                        if(b2 != -1)
                         {
-                           bix2 = b2;
-                           break;
+                           uint b2Axes = 0;
+                           boneLimitsMin = limits[2*b2+0];
+                           boneLimitsMax = limits[2*b2+1];
+                           if((Radians)boneLimitsMax.yaw   - (Radians)boneLimitsMin.yaw   > 1E-11) b2Axes |= 1;
+                           if((Radians)boneLimitsMax.pitch - (Radians)boneLimitsMin.pitch > 1E-11) b2Axes |= 2;
+                           if((Radians)boneLimitsMax.roll  - (Radians)boneLimitsMin.roll  > 1E-11) b2Axes |= 4;
+
+                           if(!(boneAxes & b2Axes))
+                           {
+                              bix2 = b2;
+                              break;
+                           }
                         }
                      }
-                  }
 
                   d2 = InverseKinematicsBone(bix, bix2, limits, vertex, target, fromCurrent, maxDelta[pass]);
                }
@@ -1996,7 +1998,7 @@ public:
 
       // angle.FromQuaternion(boneObj.transform.orientation, boneObj.rotationOrder);
       // angle = { (minAngle.yaw + maxAngle.yaw)/2, (minAngle.pitch + maxAngle.pitch)/2, (minAngle.roll + maxAngle.roll)/2 };
-      Euler angle1 = fromCurrent ? boneObj1.eulerOrientation : { };
+      Euler angle1 = boneObj1 && fromCurrent ? boneObj1.eulerOrientation : { };
       Euler angle2 = boneObj2 && fromCurrent ? boneObj2.eulerOrientation : { };
 
       if(angle1.yaw < minAngle1.yaw) angle1.yaw = minAngle1.yaw;
@@ -2044,7 +2046,8 @@ public:
          if(maxAngle2.roll > angle2.roll + maxDelta) maxAngle2.roll = angle2.roll + maxDelta;
       }
 
-      setBoneAngle(boneObj1, angle1);
+      if(boneObj1)
+         setBoneAngle(boneObj1, angle1);
       if(boneObj2)
          setBoneAngle(boneObj2, angle2);
 
@@ -2181,7 +2184,8 @@ public:
          distance2 = best;
       }
 
-      setBoneAngle(boneObj1, angle1);
+      if(boneObj1)
+         setBoneAngle(boneObj1, angle1);
       if(boneObj2)
          setBoneAngle(boneObj2, angle2);
 
