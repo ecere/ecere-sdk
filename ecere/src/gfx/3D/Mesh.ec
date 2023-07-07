@@ -578,23 +578,21 @@ public:
          for(i = 0; i < skin.bones.count; i++)
          {
             SkinBone * bone = &skin.bones[i];
+            Matrix m;
+
             if(bone->object)
-            {
-               Matrix m;
-
                m.Multiply(bone->bsInvBindMatrix, bone->object.matrixPtr);
-
-               if(bsIdentity)
-                  matBones[i] = m;
-               else
-               {
-                  Matrix tmp;
-                  tmp.Multiply(m, skin.invShape);
-                  matBones[i] = tmp;
-               }
-            }
             else
-               matBones[i].Identity();
+               m = bone->bsInvBindMatrix;
+
+            if(bsIdentity)
+               matBones[i] = m;
+            else
+            {
+               Matrix tmp;
+               tmp.Multiply(m, skin.invShape);
+               matBones[i] = tmp;
+            }
 
 #ifdef GPU_SKIN
             // Calculate bones BBOXes
