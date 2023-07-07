@@ -324,8 +324,13 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             case orientation:
             {
                Quaternion v;
+               Euler euler;
+
                f.Read(&v, sizeof(Quaternion), 1);
                object.transform.orientation = v;
+
+               euler.FromQuaternion(v, object.rotationOrder);
+               object.eulerOrientation = euler;
                break;
             }
             case material:
