@@ -691,16 +691,24 @@ void Instance_Module_Free(void * library)
 
 #include <math.h>
 
+__attribute__((__optimize__("no-finite-math-only")))
 bool Float_isNan(float n) { return isnanf(n); }
+__attribute__((__optimize__("no-finite-math-only")))
 bool Float_isInf(float n) { return isinff(n); }
 int Float_signBit(float n) { return signbit(n); }
+__attribute__((__optimize__("no-finite-math-only")))
 float Float_nan(void) { return NAN; }
+__attribute__((__optimize__("no-finite-math-only")))
 float Float_inf(void) { return INFINITY; }
 
+__attribute__((__optimize__("no-finite-math-only")))
 bool Double_isNan(double n) { return isnan(n); }
+__attribute__((__optimize__("no-finite-math-only")))
 bool Double_isInf(double n) { return isinf(n); }
 int Double_signBit(double n) { return signbit(n); }
+__attribute__((__optimize__("no-finite-math-only")))
 double Double_nan(void) { return NAN; }
+__attribute__((__optimize__("no-finite-math-only")))
 double Double_inf(void) { return INFINITY; }
 
 #if defined(__clang__) && defined(_MSC_VER)
