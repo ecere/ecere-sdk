@@ -787,22 +787,7 @@ public:
 
          flags1 = exp1.compute(val1, evaluator, computeType, stylesClass);
          flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
-
-         if(op >= stringStartsWith && op <= stringNotContains)
-            type.type = text;
-         else
-         {
-            type.type = (val1.type.type == real || val2.type.type == real) ? real :
-                   (val1.type.type == integer || val2.type.type == integer) ? integer : text;
-            type.isDateTime = (val1.type.isDateTime || val2.type.isDateTime);
-         }
-
-         tbl = &opTables[type.type];
-
          flags = flags1 | flags2;
-
-         if(flags1.resolved && val1.type.type != type.type && val1.type.type != nil)
-            convertFieldValue(val1, type, val1);
 
          if(op == in)
          {
@@ -818,20 +803,36 @@ public:
             if(l && eClass_IsDerived(l._class, class(CMSSList<CMSSExpression>)))
             {
                FieldValue v { type = { type = nil } };
+               FieldValue v1 { };
+
+               v1.OnCopy(val1);
+
                for(e : l.list)
                {
                   CMSSExpression ne = e;
                   FieldValue v2 { type = { type = nil } };
                   ExpFlags f2 = ne.compute(v2, evaluator, computeType, stylesClass);
-                  if(flags1.resolved)
+                  if(flags1.resolved && v1.type.type != nil)
                   {
                      if(f2.resolved)
                      {
+                        if(op >= stringStartsWith && op <= stringNotContains)
+                           type.type = text;
+                        else
+                        {
+                           type.type = (val1.type.type == real || v2.type.type == real) ? real :
+                                  (val1.type.type == integer || v2.type.type == integer) ? integer : text;
+                           type.isDateTime = (val1.type.isDateTime || v2.type.isDateTime);
+                        }
+
+                        if(v1.type.type != type.type)
+                           convertFieldValue(v1, type, v1);
                         if(v2.type.type != type.type)
                            convertFieldValue(v2, type, v2);
                         if(v2.type.type == type.type)
                         {
-                           tbl->Equ(v, val1, v2);
+                           tbl = &opTables[type.type];
+                           tbl->Equ(v, v1, v2);
                            if(v.i)
                               break;
                         }
@@ -840,80 +841,98 @@ public:
                   else
                      flags |= f2;
                }
+               v1.OnFree();
                value = v;
                flags.resolved = v.type.type != nil;
             }
             else
                flags.resolved = false;
          }
-         else if((flags1.resolved && flags2.resolved) ||
-            (flags.resolved && op == '&' && (flags1.resolved ? !val1.i : !val2.i)) ||
-            (flags.resolved && op == '|' && (flags1.resolved ? val1.i : val2.i)))
+         else
          {
-            if(!flags1.resolved)
-               val1 = { type = { integer }, i = 0 };
-            if(!flags2.resolved)
-               val2 = { type = { integer }, i = 0 };
-            if(val2.type.type != nil && val2.type.type != type.type)
-               convertFieldValue(val2, type, val2);
-
-            if(val1.type.type != nil && val1.type.type == val2.type.type)
+            if(op >= stringStartsWith && op <= stringNotContains)
+               type.type = text;
+            else
             {
-               switch(op)
-               {
-                  case multiply:             tbl->Mul       (value, val1, val2); break;
-                  case divide:   if(val2.i)  tbl->Div       (value, val1, val2); break;
-                  case minus:                tbl->Sub       (value, val1, val2); break;
-                  case plus:                 tbl->Add       (value, val1, val2); break;
-                  case modulo:               tbl->Mod       (value, val1, val2); break;
-                  case equal:                tbl->Equ       (value, val1, val2); break;
-                  case notEqual:             tbl->Nqu       (value, val1, val2); break;
-                  case and:                  tbl->And       (value, val1, val2); break;
-                  case or:                   tbl->Or        (value, val1, val2); break;
-                  case greater:              tbl->Grt       (value, val1, val2); break;
-                  case smaller:              tbl->Sma       (value, val1, val2); break;
-                  case greaterEqual:         tbl->GrtEqu    (value, val1, val2); break;
-                  case smallerEqual:         tbl->SmaEqu    (value, val1, val2); break;
-                  case intDivide:            tbl->DivInt    (value, val1, val2); break;
-                  case stringStartsWith:     tbl->StrSrt    (value, val1, val2); break;
-                  case stringNotStartsW:     tbl->StrNotSrt (value, val1, val2); break;
-                  case stringEndsWith:       tbl->StrEnd    (value, val1, val2); break;
-                  case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); break;
-                  case stringContains:       tbl->StrCnt    (value, val1, val2); break;
-                  case stringNotContains:    tbl->StrNotCnt (value, val1, val2); break;
-                  case bitAnd:               tbl->BitAnd    (value, val1, val2); break;
-                  case bitOr:                tbl->BitOr     (value, val1, val2); break;
-                  case bitXor:               tbl->BitXor    (value, val1, val2); break;
-                  case lShift:               tbl->LShift    (value, val1, val2); break;
-                  case rShift:               tbl->RShift    (value, val1, val2); break;
-               }
-               flags.resolved = value.type.type != nil;
+               type.type = (val1.type.type == real || val2.type.type == real) ? real :
+                      (val1.type.type == integer || val2.type.type == integer) ? integer : text;
+               type.isDateTime = (val1.type.isDateTime || val2.type.isDateTime);
             }
-            else if((val1.type.type == nil || val2.type.type == nil) && (op == equal || op == notEqual))
-            {
-               // Null equality checks
-               bool result;
 
-               if(falseNullComparisons)
-                  result = false;
-               else if(op == equal)
-                  result = val1.type.type == val2.type.type;
+            tbl = &opTables[type.type];
+
+            if(flags1.resolved && val1.type.type != type.type && val1.type.type != nil)
+               convertFieldValue(val1, type, val1);
+
+            if((flags1.resolved && flags2.resolved) ||
+               (flags.resolved && op == '&' && (flags1.resolved ? !val1.i : !val2.i)) ||
+               (flags.resolved && op == '|' && (flags1.resolved ? val1.i : val2.i)))
+            {
+               if(!flags1.resolved)
+                  val1 = { type = { integer }, i = 0 };
+               if(!flags2.resolved)
+                  val2 = { type = { integer }, i = 0 };
+               if(val2.type.type != nil && val2.type.type != type.type)
+                  convertFieldValue(val2, type, val2);
+
+               if(val1.type.type != nil && val1.type.type == val2.type.type)
+               {
+                  switch(op)
+                  {
+                     case multiply:             tbl->Mul       (value, val1, val2); break;
+                     case divide:   if(val2.i)  tbl->Div       (value, val1, val2); break;
+                     case minus:                tbl->Sub       (value, val1, val2); break;
+                     case plus:                 tbl->Add       (value, val1, val2); break;
+                     case modulo:               tbl->Mod       (value, val1, val2); break;
+                     case equal:                tbl->Equ       (value, val1, val2); break;
+                     case notEqual:             tbl->Nqu       (value, val1, val2); break;
+                     case and:                  tbl->And       (value, val1, val2); break;
+                     case or:                   tbl->Or        (value, val1, val2); break;
+                     case greater:              tbl->Grt       (value, val1, val2); break;
+                     case smaller:              tbl->Sma       (value, val1, val2); break;
+                     case greaterEqual:         tbl->GrtEqu    (value, val1, val2); break;
+                     case smallerEqual:         tbl->SmaEqu    (value, val1, val2); break;
+                     case intDivide:            tbl->DivInt    (value, val1, val2); break;
+                     case stringStartsWith:     tbl->StrSrt    (value, val1, val2); break;
+                     case stringNotStartsW:     tbl->StrNotSrt (value, val1, val2); break;
+                     case stringEndsWith:       tbl->StrEnd    (value, val1, val2); break;
+                     case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); break;
+                     case stringContains:       tbl->StrCnt    (value, val1, val2); break;
+                     case stringNotContains:    tbl->StrNotCnt (value, val1, val2); break;
+                     case bitAnd:               tbl->BitAnd    (value, val1, val2); break;
+                     case bitOr:                tbl->BitOr     (value, val1, val2); break;
+                     case bitXor:               tbl->BitXor    (value, val1, val2); break;
+                     case lShift:               tbl->LShift    (value, val1, val2); break;
+                     case rShift:               tbl->RShift    (value, val1, val2); break;
+                  }
+                  flags.resolved = value.type.type != nil;
+               }
+               else if((val1.type.type == nil || val2.type.type == nil) && (op == equal || op == notEqual))
+               {
+                  // Null equality checks
+                  bool result;
+
+                  if(falseNullComparisons)
+                     result = false;
+                  else if(op == equal)
+                     result = val1.type.type == val2.type.type;
+                  else
+                     result = val1.type.type != val2.type.type;
+                  flags.resolved = true;
+                  value = { type = { integer }, i = result };
+               }
                else
-                  result = val1.type.type != val2.type.type;
+                  flags.resolved = false;
+            }
+            else if(flags1 == 64) // FIXME: dimensions work-around
+            {
+               // For now we only extract dimensions, and don't have a setup / evaluator for them
+               value = { type = { integer }, i = 1 };
                flags.resolved = true;
-               value = { type = { integer }, i = result };
             }
             else
                flags.resolved = false;
          }
-         else if(flags1 == 64) // FIXME: dimensions work-around
-         {
-            // For now we only extract dimensions, and don't have a setup / evaluator for them
-            value = { type = { integer }, i = 1 };
-            flags.resolved = true;
-         }
-         else
-            flags.resolved = false;
 
          if(computeType == preprocessing)
          {
@@ -2806,14 +2825,14 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
 static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = op1.s && op2.s ? !strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
+   val.i = op1.s && op2.s ? !strcmp/*i*/(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = op1.s && op2.s ? strcmpi(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
+   val.i = op1.s && op2.s ? strcmp/*i*/(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
    val.type = { type = integer };
    return true;
 }
