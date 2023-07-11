@@ -91,7 +91,7 @@ class TestApp : GuiApplication
             }
             else
             {
-               PrintLn($"Test preparation ", result ? $"succeeded" : $"failed", ".");
+               PrintLn($"Test preparation ", result ? $"succeeded" : $"failed", $" for ", ut._class.name, ".");
                if(!result)
                   exitCode = 1;
             }
@@ -101,6 +101,10 @@ class TestApp : GuiApplication
 
       if(exitCode)
          PrintLn($"\nSome tests or preparation FAILED.");
+      else if(action == prepare)
+         PrintLn($"\nAll tests prepared successfully.");
+      else if(action == clean)
+         PrintLn($"\nAll tests cleaned successfully.");
       else
          PrintLn($"\nAll tests PASSED successfully.");
    }
