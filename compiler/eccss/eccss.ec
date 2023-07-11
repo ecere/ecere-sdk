@@ -11,7 +11,8 @@ enum ECCSSFunctionIndex : int
    strlwr,
    subst,
    format,
-   pow
+   pow,
+   like
 };
 
 static int strncpymax(String output, const String input, int count, int max)
@@ -235,6 +236,71 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
    return CopyString(output);
 }
 
+#define MAX_WILDCARD 300
+
+/*static */bool like(const String string, const String pattern)
+{
+   bool result = true;
+   int wildcardPosition[MAX_WILDCARD], stringPosition[MAX_WILDCARD], currentWildcard = 0;
+   int i, j;
+   char chp;
+   bool lastWasWildcard = false;
+
+   for(i = 0, j = 0; (chp = pattern[i]); i++, j++)
+   {
+      char chs = string[j];
+
+      lastWasWildcard = false;
+      if(chs && chp == '_')
+      {
+         // Match any single char (but it might be multiple bytes for unicode chars)
+         int nb;
+         UTF8GetChar(string + j, &nb);
+         j += nb - 1;
+      }
+      else
+      {
+         if(chp == '%')
+         {
+            if(pattern[i+1] == '%')
+               i++;  // Escaped (%%) actual % to match
+            else
+            {
+               lastWasWildcard = true;
+               // Wildcard
+               if(chs && currentWildcard < MAX_WILDCARD)
+               {
+                  wildcardPosition[currentWildcard] = i;
+                  stringPosition[currentWildcard] = j;
+                  currentWildcard++;
+               }
+               j--; // Start trying at j
+               continue;
+            }
+         }
+         if(chs != chp)
+         {
+            // Mismatch, abort or continue trying to match wildcard
+            if(currentWildcard)
+            {
+               currentWildcard--;
+               i = wildcardPosition[currentWildcard]-1;
+               j = stringPosition[currentWildcard];
+            }
+            else
+            {
+               if(!lastWasWildcard || pattern[i + 1])
+                  result = false;
+               break;
+            }
+         }
+      }
+   }
+   // Mismatch if we have any character left in the string and are not still in a wildcard
+   if(!lastWasWildcard && string[j]) result = false;
+   return result;
+}
+
 // For extending ECCSS with custom identifiers and styling properties
 public struct ECCSSEvaluator
 {
@@ -307,6 +373,13 @@ public struct ECCSSEvaluator
                expType = class(double);
                break;
             }
+            case like:
+            {
+               if(args.list.count >= 1) args[0].destType = class(String);
+               if(args.list.count >= 2) args[1].destType = class(String);
+               expType = class(bool);
+               break;
+            }
          }
       }
       return expType;
@@ -377,6 +450,15 @@ public struct ECCSSEvaluator
                   value.r = pow(
                      args[0].type.type == integer ? (double)args[0].i : args[0].r,
                      args[1].type.type == integer ? (double)args[1].i : args[1].r);
+               }
+               break;
+            }
+            case like:
+            {
+               if(numArgs >= 2 && args[0].type.type == text && args[1].type.type == text)
+               {
+                  value.type = { type = integer/*, format = boolean*/ };
+                  value.i = like(args[0].s, args[1].s);
                }
                break;
             }

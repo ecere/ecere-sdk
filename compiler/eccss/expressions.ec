@@ -1261,7 +1261,8 @@ public:
             }
             if(nonResolved) flags.resolved = false;
          }
-         if(evaluator != null && computeType != preprocessing && flags.resolved)
+         // We need to evaluate the function if resolved is true (should not yet be set if e.g., featureID / geometry is needed)
+         if(evaluator != null && flags.resolved)
             expType = evaluator.evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
       }
       return flags;
