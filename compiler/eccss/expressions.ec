@@ -2851,7 +2851,7 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
 
-   result.i = SearchString(val1.s, 0, val2.s, false, false) != null;
+   result.i = SearchString(val1.s, 0, val2.s, true, false) != null;
    result.type = { type = integer };
    return true;
 }
@@ -2875,7 +2875,7 @@ static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValu
 static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
 
-   result.i = !SearchString(val1.s, 0, val2.s, false, false);
+   result.i = !SearchString(val1.s, 0, val2.s, true, false);
    result.type = { type = integer };
    return true;
 }
