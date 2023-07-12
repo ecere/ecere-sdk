@@ -238,7 +238,7 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
 
 #define MAX_WILDCARD 300
 
-/*static */bool like(const String string, const String pattern)
+/*static */public bool like(const String string, const String pattern)
 {
    bool result = true;
    int wildcardPosition[MAX_WILDCARD], stringPosition[MAX_WILDCARD], currentWildcard = 0;
