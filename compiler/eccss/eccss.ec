@@ -278,7 +278,10 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
                continue;
             }
          }
-         if(chs != chp)
+
+         if(chs != chp ||
+            // Avoid exiting loop if there is a left over on the string and the pattern is over
+            (!lastWasWildcard && currentWildcard && string[j+1] && !pattern[i+1]))
          {
             // Mismatch, abort or continue trying to match wildcard
             if(currentWildcard)
@@ -297,7 +300,8 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
       }
    }
    // Mismatch if we have any character left in the string and are not still in a wildcard
-   if(!lastWasWildcard && string[j]) result = false;
+   if(!lastWasWildcard && string[j])
+      result = false;
    return result;
 }
 
