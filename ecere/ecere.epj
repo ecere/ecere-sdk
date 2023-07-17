@@ -3593,7 +3593,8 @@
          "Files" : [
             "derivedGeneralCategoryStripped.txt",
             "derivedCombiningClassStripped.txt",
-            "decompositionMappings.txt"
+            "decompositionMappings.txt",
+            "caseFoldingStripped.txt"
          ],
          "Configurations" : [
             {
