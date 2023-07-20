@@ -355,6 +355,24 @@ static struct Range
    CharCategory category;
 };
 
+static struct RangeCC
+{
+   uint start, end;
+   uint cclass;
+};
+
+static struct CaseFoldingKey
+{
+   unichar codePoint;
+   unichar character[3];
+};
+
+static struct DecompKey
+{
+   unichar codePoint;
+   unichar character[2];
+};
+
 static int CompareRange(BinaryTree tree, Range a, Range b)
 {
    if(a.start > b.end)
@@ -365,9 +383,60 @@ static int CompareRange(BinaryTree tree, Range a, Range b)
       return 0;
 }
 
+static int CompareRangeCC(BinaryTree tree, RangeCC a, RangeCC b)
+{
+   if(a.start > b.end)
+      return 1;
+   else if(a.end < b.start)
+      return -1;
+   else
+      return 0;
+}
+
+static int CompareCFKey(BinaryTree tree, CaseFoldingKey a, CaseFoldingKey b)
+{
+   if(a.codePoint > b.codePoint)
+      return 1;
+   else if(a.codePoint < b.codePoint)
+      return -1;
+   else
+      return 0;
+}
+
+static int CompareDecompKey(BinaryTree tree, DecompKey a, DecompKey b)
+{
+   if(a.codePoint > b.codePoint)
+      return 1;
+   else if(a.codePoint < b.codePoint)
+      return -1;
+   else
+      return 0;
+}
+
 static void FreeRange(Range range)
 {
    delete range;
+}
+
+static void FreeRangeCC(RangeCC range)
+{
+   delete range;
+}
+
+static void FreeCaseFoldingKey(CaseFoldingKey key)
+{
+   //int i;
+   //for(i = 0; i < 3; i++)
+      //delete key.character[i];
+   delete key;
+}
+
+static void FreeDecompKey(DecompKey key)
+{
+   //int i;
+   //for(i = 0; i < 2; i++)
+      //delete key.character[i];
+   delete key;
 }
 
 static CharCategory asciiCategories[] =
@@ -398,9 +467,28 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeRange;
    };
 
+   BinaryTree combiningClasses
+   {
+      CompareKey = (void *)CompareRangeCC;
+      FreeKey = (void *)FreeRangeCC;
+   };
+
+   BinaryTree decompositionMappings
+   {
+      CompareKey = (void *)CompareDecompKey;
+      FreeKey = (void *)FreeDecompKey;
+   };
+
+   BinaryTree caseFoldings
+   {
+      CompareKey = (void *)CompareCFKey;
+      FreeKey = (void *)FreeCaseFoldingKey;
+   };
+
    UnicodeDatabase()
    {
       File f = FileOpen("<:ecere>unicode/derivedGeneralCategoryStripped.txt", read);
+      File combiningClassFile, caseFoldingFile, decompFile;
       if(f)
       {
          char line[1024];
@@ -536,6 +624,177 @@ static class UnicodeDatabase
          }
          */
       }
+
+      combiningClassFile = FileOpen("<:ecere>unicode/derivedCombiningClassStripped.txt", read);
+      if(combiningClassFile)
+      {
+         char line[1024];
+         while(combiningClassFile.GetLine(line, 1024))
+         {
+            if(line[0] && line[0] != '#')
+            {
+               char * endPtr;
+               uint start = (uint)strtoul(line, &endPtr, 16);
+               if(endPtr)
+               {
+                  uint end = (endPtr && *endPtr == '.') ? (uint)strtoul(endPtr + 2, &endPtr, 16) : start;
+                  if(endPtr)
+                  {
+                     endPtr = strchr(endPtr, ';');
+                     if(endPtr)
+                     {
+                        uint cclass = 0;
+                        endPtr += 2;
+                        cclass = strtol(endPtr, null, 0);
+                        if(cclass)
+                        {
+                           RangeCC range { start, end, cclass };
+                           BTNode node { key = (uintptr) &range };
+                           if(combiningClasses.Add(node))
+                           {
+                              RangeCC * rangePtr = new RangeCC[1];
+                              *rangePtr = range;
+                              node.key = (uintptr)rangePtr;
+                           }
+                           else
+                              delete node;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         delete combiningClassFile;
+      }
+
+      caseFoldingFile = FileOpen("<:ecere>unicode/caseFoldingStripped.txt", read);
+      if(caseFoldingFile)
+      {
+         char line[1024];
+         while(caseFoldingFile.GetLine(line, 1024))
+         {
+            if(line[0] && line[0] != '#')
+            {
+               char * endPtr;
+               unichar codePoint = (uint)strtoul(line, &endPtr, 16);
+               if(endPtr)
+               {
+                  if(endPtr)
+                  {
+                     endPtr = strchr(endPtr, ';');
+                     if(endPtr)
+                     {
+                        //CaseFolding caseFolding = none;
+                        bool isSingleChar = true;
+                        endPtr += 2;
+                        switch(*endPtr)
+                        {
+                           case 'C':
+                              break;
+                           case 'F':
+                              isSingleChar = false; // what do we do with this
+                              break;
+                        }
+                        endPtr = strchr(endPtr, ';');
+                        if(endPtr)
+                        {
+                           unichar caseFolding[3] = { 0, 0, 0 };
+                           int cnt = 1;
+                           endPtr += 2;
+                           caseFolding[0] = strtol(endPtr, null, 16);
+                           if(!isSingleChar)
+                           {
+                              while(true)
+                              {
+                                 endPtr = strchr(endPtr, ' ');
+                                 if(endPtr)
+                                 {
+                                    uint cf;
+                                    endPtr += 1;
+                                    cf = strtol(endPtr, null, 16);
+                                    if(cf)
+                                       caseFolding[cnt++] = cf;
+                                 }
+                                 else
+                                    break;
+                              }
+                           }
+                           {
+                              CaseFoldingKey k { codePoint };
+                              BTNode node;
+                              k.character[0] = caseFolding[0], k.character[1] = caseFolding[1], k.character[2] = caseFolding[2];
+                              node = { key = (uintptr)&k };
+                              if(caseFoldings.Add(node))
+                              {
+                                 CaseFoldingKey * cfPtr = new CaseFoldingKey[1];
+                                 *cfPtr = k;
+                                 node.key = (uintptr)cfPtr;
+                              }
+                              else
+                                 delete node;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         delete caseFoldingFile;
+      }
+
+      decompFile = FileOpen("<:ecere>unicode/decompositionMappings.txt", read);
+      if(decompFile)
+      {
+         char line[1024];
+         while(decompFile.GetLine(line, 1024))
+         {
+            if(line[0] && line[0] != '#')
+            {
+               char * endPtr;
+               unichar codePoint = (uint)strtoul(line, &endPtr, 16);
+               if(endPtr)
+               {
+                  if(endPtr)
+                  {
+                     endPtr = strchr(endPtr, ';');
+                     if(endPtr)
+                     {
+                        unichar dMapping[2];
+                        endPtr += 2;
+                        dMapping[0] = strtol(endPtr, null, 16);
+                        //while(true)
+                        {
+                           //endPtr += 2;
+                           endPtr = strchr(endPtr, ' ');
+                           if(endPtr)
+                           {
+                              uint dm = strtol(endPtr, null, 16);
+                              if(dm)
+                                 dMapping[1] = dm;
+                           }
+                        }
+                        if(dMapping[0] > 0)
+                        {
+                           DecompKey k { codePoint };
+                           BTNode node;
+                           k.character[0] = dMapping[0], k.character[1] = dMapping[1];
+                           node = { key = (uintptr) &k };
+                           if(decompositionMappings.Add(node))
+                           {
+                              DecompKey * cfPtr = new DecompKey[1];
+                              *cfPtr = k;
+                              node.key = (uintptr)cfPtr;
+                           }
+                           else
+                              delete node;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         delete decompFile;
+      }
    }
    ~UnicodeDatabase()
    {
@@ -559,7 +818,6 @@ public CharCategory GetCharCategory(unichar ch)
       return category;
    }
 }
-
 
 public bool CharMatchCategories(unichar ch, CharCategories categories)
 {
@@ -605,5 +863,164 @@ public bool CharMatchCategories(unichar ch, CharCategories categories)
       case symbolModifier:       result = categories.symbolModifier;       break;
       case symbolOther:          result = categories.symbolOther;          break;
    }
+   return result;
+}
+
+public uint GetCombiningClass(uint cc)
+{
+   uint cclass = 0;
+   RangeCC range { cc, cc };
+   BTNode node = dataBase.combiningClasses.Find((uintptr) &range);
+   if(node)
+      cclass = ((RangeCC *)node.key)->cclass;
+   return cclass;
+}
+
+public void GetCaseFolding(uint cf, unichar caseFolding[3])
+{
+   CaseFoldingKey key { cf };
+   BTNode node = dataBase.caseFoldings.Find((uintptr) &key);
+   if(node)
+   {
+      caseFolding[0] = ((CaseFoldingKey *)node.key)->character[0];
+      caseFolding[1] = ((CaseFoldingKey *)node.key)->character[1];
+      caseFolding[2] = ((CaseFoldingKey *)node.key)->character[2];
+   }
+}
+
+public void GetDecompositionMapping(uint dm, unichar decompMapping[2])
+{
+   DecompKey key { dm };
+   BTNode node = dataBase.decompositionMappings.Find((uintptr) &key);
+   if(node)
+   {
+      decompMapping[0] = ((DecompKey *)node.key)->character[0];
+      decompMapping[1] = ((DecompKey *)node.key)->character[1];
+   }
+}
+
+// Recursively replace by decompositionmapping then bubble-sort sequences of non-0 combining chars
+public String accenti(const String string)
+{
+   String result = null;
+   String normal = null;
+   normal = normalizeNFD(string);
+   result = stripCategory(normal, Mn);
+   return result;
+}
+
+String normalizeNFD(const String string)
+{
+   String result = null;
+   int len = strlen(string);
+   unichar ch, c;
+   int i = 0, outPosition = 0, nb, o;
+   result = new char[len * 2 +1]; // * 16
+
+   for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
+   {
+      String chars = decompose(ch);
+      if(!chars)
+         outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
+      else
+      {
+         int len = strlen(result);
+         result = renew result char[strlen(chars) + len + 1];
+         strcat(result, chars);
+         result[strlen(chars) + len + 1] = '\0';
+      }
+   }
+
+   return result;
+}
+
+String stripCategory(const String string, CharCategory c)
+{
+   String result = null;
+   int len = strlen(string);
+
+   unichar ch;
+   int nb, outPosition = 0, o;
+   result = new char[len+1];
+   for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
+   {
+      if(GetCharCategory(ch) != c) // markNonSpacing
+         outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
+   }
+   result = renew result char[outPosition + 1];
+   result[outPosition+1] = '\0';
+   return result;
+}
+
+static String decompose(uint dm)
+{
+   String chars = null;
+   unichar decompMapping[2] = { 0, 0 };
+   GetDecompositionMapping(dm, decompMapping);
+   if(decompMapping[0] > 0)
+   {
+      int i, j, firstLen = 0, outPosition = 0;
+      for(i = 0; i< 2; i++)
+      {
+         if(decompMapping[i] > 0)
+         {
+            String decomp = null;
+            decomp = decompose(decompMapping[i]);
+            if(decomp && strlen(decomp) > 0)
+            {
+               int len = strlen(decomp);
+               unichar c;
+               int o, nb;
+               chars = renew chars char[len + firstLen + 1];
+               for(o = 0; (c = UTF8GetChar(decomp + o, &nb)); o += nb)
+                  outPosition += UTF32toUTF8Len(&c, 1, chars + outPosition, 5);
+               firstLen = len;
+               chars[len+firstLen+1] = '\0';
+            }
+            else
+            {
+               char * tempString = new char[5];
+               UTF32toUTF8Len(&decompMapping[i], 1, tempString, 4);
+               if(!chars)
+                  chars = CopyString(tempString);
+               else
+               {
+                  int len = strlen(chars);
+                  chars = renew chars char[len + strlen(tempString) + 1];
+                  strcat(chars, tempString);
+                  chars[len + strlen(tempString) + 1] = '\0';
+               }
+            }
+         }
+      }
+   }
+   return chars;
+}
+
+public String casei(const String string)
+{
+   // case folding
+   String result = null;
+   int len = strlen(string);
+   unichar ch;
+   int nb = 1, o, outPosition = 0; //i = 0,
+   result = new char[len * 3 +1];
+
+   for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
+   {
+      unichar caseFolding[3] = { 0, 0, 0};
+      GetCaseFolding(ch, caseFolding);
+      if(caseFolding[0] > 0)
+         outPosition += UTF32toUTF8Len(&caseFolding[0], 1, result + outPosition, 5);
+      else
+         outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
+         //result[i++] = caseFolding[0];
+      if(caseFolding[1] > 0)
+         outPosition += UTF32toUTF8Len(&caseFolding[1], 1, result + outPosition, 5);
+      if(caseFolding[2] > 0)
+         outPosition += UTF32toUTF8Len(&caseFolding[2], 1, result + outPosition, 5);
+   }
+   result = renew result char[outPosition+1];
+   result[outPosition] = '\0';
    return result;
 }
