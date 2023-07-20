@@ -12,7 +12,9 @@ enum ECCSSFunctionIndex : int
    subst,
    format,
    pow,
-   like
+   like,
+   casei,
+   accenti
 };
 
 static int strncpymax(String output, const String input, int count, int max)
@@ -384,6 +386,13 @@ public struct ECCSSEvaluator
                expType = class(bool);
                break;
             }
+            case accenti:
+            case casei:
+            {
+               if(args.list.count == 1) args[0].destType = class(String);
+               expType = class(String);
+               break;
+            }
          }
       }
       return expType;
@@ -463,6 +472,24 @@ public struct ECCSSEvaluator
                {
                   value.type = { type = integer/*, format = boolean*/ };
                   value.i = like(args[0].s, args[1].s);
+               }
+               break;
+            }
+            case casei:
+            {
+               if(numArgs == 1 && args[0].type.type == text)
+               {
+                  value.type = { text, true };
+                  value.s = casei(args[0].s);
+               }
+               break;
+            }
+            case accenti:
+            {
+               if(numArgs == 1 && args[0].type.type == text)
+               {
+                  value.type = { text, true };
+                  value.s = accenti(args[0].s);
                }
                break;
             }
