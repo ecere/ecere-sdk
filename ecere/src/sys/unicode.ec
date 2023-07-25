@@ -997,7 +997,7 @@ public String casei(const String string)
    int len = strlen(string);
    unichar ch;
    int nb = 1, o, outPosition = 0; //i = 0,
-   result = new char[len * 3 +1];
+   result = new char[len * 3*4 + 1];
 
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
    {
