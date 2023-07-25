@@ -888,15 +888,20 @@ public void GetCaseFolding(uint cf, unichar caseFolding[3])
    }
 }
 
-public void GetDecompositionMapping(uint dm, unichar decompMapping[2])
+public bool GetDecompositionMapping(unichar ch, unichar mapping[2])
 {
-   DecompKey key { dm };
+   bool result = false;
+   DecompKey key { ch };
    BTNode node = dataBase.decompositionMappings.Find((uintptr) &key);
    if(node)
    {
-      decompMapping[0] = ((DecompKey *)node.key)->character[0];
-      decompMapping[1] = ((DecompKey *)node.key)->character[1];
+      mapping[0] = ((DecompKey *)node.key)->character[0];
+      mapping[1] = ((DecompKey *)node.key)->character[1];
+      result = true;
    }
+   else
+      mapping[0] = 0, mapping[1] = 0;
+   return result;
 }
 
 // Recursively replace by decompositionmapping then bubble-sort sequences of non-0 combining chars
@@ -911,26 +916,26 @@ public String accenti(const String string)
 
 String normalizeNFD(const String string)
 {
-   String result = null;
-   int len = strlen(string);
-   unichar ch, c;
-   int i = 0, outPosition = 0, nb, o;
-   result = new char[len * 2 +1]; // * 16
+   unichar ch;
+   int nb, o;
+   int outPosition = 0;
+   String result = new0 char[1];
 
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
    {
-      String chars = decompose(ch);
-      if(!chars)
-         outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
-      else
+      String decomposition = decompose(ch);
+      char tempString[5];
+      int len = decomposition ? strlen(decomposition) : 0;
+      if(!len)
       {
-         int len = strlen(result);
-         result = renew result char[strlen(chars) + len + 1];
-         strcat(result, chars);
-         result[strlen(chars) + len + 1] = '\0';
+         len = UTF32toUTF8Len(&ch, 1, tempString, 5);
+         delete decomposition;
       }
+      result = renew result char[outPosition + len + 1];
+      memcpy(result + outPosition, decomposition ? decomposition : tempString, len);
+      outPosition += len;
+      delete decomposition;
    }
-
    return result;
 }
 
@@ -952,49 +957,37 @@ String stripCategory(const String string, CharCategory c)
    return result;
 }
 
-static String decompose(uint dm)
+static String decompose(unichar input)
 {
-   String chars = null;
-   unichar decompMapping[2] = { 0, 0 };
-   GetDecompositionMapping(dm, decompMapping);
-   if(decompMapping[0] > 0)
+   String result = null;
+   unichar decompMapping[2];
+   int totalLength = 0, i;
+
+   GetDecompositionMapping(input, decompMapping);
+
+   for(i = 0; i < 2; i++)
    {
-      int i, j, firstLen = 0, outPosition = 0;
-      for(i = 0; i< 2; i++)
+      unichar ch = decompMapping[i];
+      if(ch)
       {
-         if(decompMapping[i] > 0)
+         String decomp = decompose(ch);
+         int len = decomp ? strlen(decomp) : 0;
+         char tempString[5];
+
+         if(!len)
          {
-            String decomp = null;
-            decomp = decompose(decompMapping[i]);
-            if(decomp && strlen(decomp) > 0)
-            {
-               int len = strlen(decomp);
-               unichar c;
-               int o, nb;
-               chars = renew chars char[len + firstLen + 1];
-               for(o = 0; (c = UTF8GetChar(decomp + o, &nb)); o += nb)
-                  outPosition += UTF32toUTF8Len(&c, 1, chars + outPosition, 5);
-               firstLen = len;
-               chars[len+firstLen+1] = '\0';
-            }
-            else
-            {
-               char * tempString = new char[5];
-               UTF32toUTF8Len(&decompMapping[i], 1, tempString, 4);
-               if(!chars)
-                  chars = CopyString(tempString);
-               else
-               {
-                  int len = strlen(chars);
-                  chars = renew chars char[len + strlen(tempString) + 1];
-                  strcat(chars, tempString);
-                  chars[len + strlen(tempString) + 1] = '\0';
-               }
-            }
+            len = UTF32toUTF8Len(&ch, 1, tempString, 4);
+            delete decomp;
          }
+         result = renew result char[totalLength + len + 1];
+         memcpy(result + totalLength, decomp ? decomp : tempString, totalLength + len + 1);
+         totalLength += len;
+         delete decomp;
       }
+      else
+         break;
    }
-   return chars;
+   return result;
 }
 
 public String casei(const String string)
