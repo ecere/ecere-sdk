@@ -914,7 +914,7 @@ public String accenti(const String string)
    return result;
 }
 
-String normalizeNFD(const String string)
+public String normalizeNFD(const String string)
 {
    unichar ch;
    int nb, o;
