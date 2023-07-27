@@ -917,14 +917,52 @@ public String accenti(const String string)
 public String normalizeNFD(const String string)
 {
    unichar ch;
-   int nb, o;
+
+   int nb, o, i;
    int outPosition = 0;
    String result = new0 char[1];
+   Array<unichar> canonicalOrdered { };
+   int start = -1;
+   int j, k;
+   int len = 0;
 
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
    {
-      String decomposition = decompose(ch);
-      char tempString[5];
+      if(!decompose(ch, canonicalOrdered))
+         canonicalOrdered.Add(ch);
+   }
+   len = canonicalOrdered.count;
+
+   for(i = 0; i < len; i++)
+   {
+      uint a = GetCombiningClass(canonicalOrdered[i]), b = i +1 < len ? canonicalOrdered[i + 1] : 0;
+      if(a == 0 && b > 0 && start == -1)
+         start = i;
+      else if(start != -1 && (a == 0 || i == len -1))//b = 0
+      {
+         for(j=start; j<i; j++)
+         {
+            for(k=i; k>j; k--) // i-1
+            {
+               uint x = GetCombiningClass(canonicalOrdered[j]), y = GetCombiningClass(canonicalOrdered[k]);
+               if(x>y)
+               {
+                  unichar temp = canonicalOrdered[j];
+                  canonicalOrdered[j] = canonicalOrdered[k];
+                  canonicalOrdered[k] = temp;
+               }
+            }
+         }
+         start = -1;
+      }
+   }
+   result = renew result char[canonicalOrdered.count + 1];
+   for(i = 0; i < canonicalOrdered.count; i++)
+   {
+      // todo: get a full map here, THEN create a sorted string
+      unichar ch = canonicalOrdered[i];
+      outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
+      /*char tempString[5];
       int len = decomposition ? strlen(decomposition) : 0;
       if(!len)
       {
@@ -934,8 +972,13 @@ public String normalizeNFD(const String string)
       result = renew result char[outPosition + len + 1];
       memcpy(result + outPosition, decomposition ? decomposition : tempString, len);
       outPosition += len;
-      delete decomposition;
+
+      delete decomposition;*/
    }
+   result[outPosition+1] = '\0';
+
+   //result[canonicalOrdered.count] = '\0';
+
    return result;
 }
 
@@ -957,9 +1000,10 @@ String stripCategory(const String string, CharCategory c)
    return result;
 }
 
-static String decompose(unichar input)
+static bool decompose(unichar input, Array<unichar> co)
 {
-   String result = null;
+   //String result = null;
+   bool result = false;
    unichar decompMapping[2];
    int totalLength = 0, i;
 
@@ -970,9 +1014,13 @@ static String decompose(unichar input)
       unichar ch = decompMapping[i];
       if(ch)
       {
-         String decomp = decompose(ch);
+         if(!decompose(ch, co))
+            co.Add(ch);
+         result = true;
+         /*String decomp = decompose(ch);
          int len = decomp ? strlen(decomp) : 0;
          char tempString[5];
+         result = true;
 
          if(!len)
          {
@@ -982,7 +1030,7 @@ static String decompose(unichar input)
          result = renew result char[totalLength + len + 1];
          memcpy(result + totalLength, decomp ? decomp : tempString, totalLength + len + 1);
          totalLength += len;
-         delete decomp;
+         delete decomp;*/
       }
       else
          break;
