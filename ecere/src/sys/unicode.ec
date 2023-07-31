@@ -990,35 +990,57 @@ static void decompose(unichar input, Array<unichar> co)
    unichar decompMapping[2];
    int /*totalLength = 0, */i;
 
-   GetDecompositionMapping(input, decompMapping);
-
-   for(i = 0; i < 2; i++)
+   if(input >= 0xAC00 && input <= 0xD7B0)// 44032
+   //if(input >= 44032 && input <= 55203)
+      hangulGetMappings(input, co);
+   else
    {
-      unichar ch = decompMapping[i];
-      if(ch)
+      GetDecompositionMapping(input, decompMapping);
+      for(i = 0; i < 2; i++)
       {
-         decompose(ch, co);
-         result = true;
-         /*String decomp = decompose(ch);
-         int len = decomp ? strlen(decomp) : 0;
-         char tempString[5];
-         result = true;
-
-         if(!len)
+         unichar ch = decompMapping[i];
+         if(ch)
          {
-            len = UTF32toUTF8Len(&ch, 1, tempString, 4);
-            delete decomp;
+            decompose(ch, co);
+            result = true;
+            /*String decomp = decompose(ch);
+            int len = decomp ? strlen(decomp) : 0;
+            char tempString[5];
+            result = true;
+
+            if(!len)
+            {
+               len = UTF32toUTF8Len(&ch, 1, tempString, 4);
+               delete decomp;
+            }
+            result = renew result char[totalLength + len + 1];
+            memcpy(result + totalLength, decomp ? decomp : tempString, totalLength + len + 1);
+            totalLength += len;
+            delete decomp;*/
          }
-         result = renew result char[totalLength + len + 1];
-         memcpy(result + totalLength, decomp ? decomp : tempString, totalLength + len + 1);
-         totalLength += len;
-         delete decomp;*/
+         else
+            break;
       }
-      else
-         break;
+      if(!result)
+         co.Add(input);
    }
-   if(!result)
-      co.Add(input);
+}
+
+//reference: http://www.unicode.org/versions/Unicode9.0.0/ch03.pdf
+// https://stackoverflow.com/questions/41309402/breaking-down-a-hangul-syllable-into-letters-jamo
+void hangulGetMappings(unichar ch, Array<unichar> co)
+{
+   unichar sIndex = 0xAC00 - ch;
+   int tCount = 28, vCount = 21;
+   uint syllable = ch - 0xAC00;
+   uint jamoT = syllable % 28, jamoV, jamoL;
+   syllable /= 28;
+   jamoV = syllable % 21;
+   jamoL = syllable / 21;
+
+   co.Add(0x1100 + jamoL);
+   co.Add(0x1161 + jamoV);
+   if(jamoT) co.Add(0x11A7 + jamoT);
 }
 
 public String casei(const String string)
