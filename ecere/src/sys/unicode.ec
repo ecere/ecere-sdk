@@ -914,71 +914,54 @@ public String accenti(const String string)
    return result;
 }
 
+static void bubbleSortCombiningClasses(unichar * array, int count)
+{
+   int i, j;
+   for(i = 0; i < count; i++)
+      for(j = count-1; j > i; j--)
+      {
+         unichar a = array[i], b = array[j];
+         uint ca = GetCombiningClass(array[i]), cb = GetCombiningClass(array[j]);
+         if(ca > cb)
+            array[i] = b, array[j] = a;
+      }
+}
+
+static void reorderCanonical(Array<unichar> canonicalOrdered)
+{
+   int i, start = -1;
+   int count = canonicalOrdered.count;
+
+   for(i = 0; i <= count; i++)
+   {
+      uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
+
+      if(!a)
+      {
+         if(start != -1 && i - start)
+            bubbleSortCombiningClasses(canonicalOrdered.array + start, i - start);
+         start = -1;
+      }
+      else if(start == -1)
+         start = i;
+   }
+}
+
 public String normalizeNFD(const String string)
 {
    unichar ch;
-
-   int nb, o, i;
-   int outPosition = 0;
-   String result = new0 char[1];
+   int nb, i;
    Array<unichar> canonicalOrdered { };
-   int start = -1;
-   int j, k;
-   int len = 0;
+   String result;
 
-   for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
-   {
-      if(!decompose(ch, canonicalOrdered))
-         canonicalOrdered.Add(ch);
-   }
-   len = canonicalOrdered.count;
+   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+      decompose(ch, canonicalOrdered);
 
-   for(i = 0; i < len; i++)
-   {
-      uint a = GetCombiningClass(canonicalOrdered[i]), b = i +1 < len ? canonicalOrdered[i + 1] : 0;
-      if(a == 0 && b > 0 && start == -1)
-         start = i;
-      else if(start != -1 && (a == 0 || i == len -1))//b = 0
-      {
-         for(j=start; j<i; j++)
-         {
-            for(k=i; k>j; k--) // i-1
-            {
-               uint x = GetCombiningClass(canonicalOrdered[j]), y = GetCombiningClass(canonicalOrdered[k]);
-               if(x>y)
-               {
-                  unichar temp = canonicalOrdered[j];
-                  canonicalOrdered[j] = canonicalOrdered[k];
-                  canonicalOrdered[k] = temp;
-               }
-            }
-         }
-         start = -1;
-      }
-   }
-   result = renew result char[canonicalOrdered.count + 1];
-   for(i = 0; i < canonicalOrdered.count; i++)
-   {
-      // todo: get a full map here, THEN create a sorted string
-      unichar ch = canonicalOrdered[i];
-      outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
-      /*char tempString[5];
-      int len = decomposition ? strlen(decomposition) : 0;
-      if(!len)
-      {
-         len = UTF32toUTF8Len(&ch, 1, tempString, 5);
-         delete decomposition;
-      }
-      result = renew result char[outPosition + len + 1];
-      memcpy(result + outPosition, decomposition ? decomposition : tempString, len);
-      outPosition += len;
+   reorderCanonical(canonicalOrdered);
 
-      delete decomposition;*/
-   }
-   result[outPosition+1] = '\0';
-
-   //result[canonicalOrdered.count] = '\0';
-
+   result = new char[canonicalOrdered.count * 4 + 1];
+   UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
+   delete canonicalOrdered;
    return result;
 }
 
@@ -1000,12 +983,12 @@ String stripCategory(const String string, CharCategory c)
    return result;
 }
 
-static bool decompose(unichar input, Array<unichar> co)
+static void decompose(unichar input, Array<unichar> co)
 {
    //String result = null;
    bool result = false;
    unichar decompMapping[2];
-   int totalLength = 0, i;
+   int /*totalLength = 0, */i;
 
    GetDecompositionMapping(input, decompMapping);
 
@@ -1014,8 +997,7 @@ static bool decompose(unichar input, Array<unichar> co)
       unichar ch = decompMapping[i];
       if(ch)
       {
-         if(!decompose(ch, co))
-            co.Add(ch);
+         decompose(ch, co);
          result = true;
          /*String decomp = decompose(ch);
          int len = decomp ? strlen(decomp) : 0;
@@ -1035,7 +1017,8 @@ static bool decompose(unichar input, Array<unichar> co)
       else
          break;
    }
-   return result;
+   if(!result)
+      co.Add(input);
 }
 
 public String casei(const String string)
