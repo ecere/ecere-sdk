@@ -349,6 +349,8 @@ public bool GetAlNum(const char ** input, char * string, int max)
    return result;
 }
 
+public class UnicodeDecomposition : uint32 { public: bool canonical:1, compat:1, fraction:1, font:1, noBreak:1, initial:1, final:1, medial:1, isolated:1, circle:1, square:1, sub:1, super:1, small:1, vertical:1, wide:1, narrow:1; };
+
 static struct Range
 {
    uint start, end;
@@ -371,6 +373,20 @@ static struct DecompKey
 {
    unichar codePoint;
    unichar character[2];
+};
+
+static struct CompatDecompKey
+{
+   unichar codePoint;
+   unichar character[18];
+   UnicodeDecomposition type;
+};
+
+static struct CompositionKey
+{
+   unichar codePoint1;
+   unichar codePoint2;
+   unichar composed;
 };
 
 static int CompareRange(BinaryTree tree, Range a, Range b)
@@ -413,6 +429,29 @@ static int CompareDecompKey(BinaryTree tree, DecompKey a, DecompKey b)
       return 0;
 }
 
+static int CompareCompatDecompKey(BinaryTree tree, CompatDecompKey a, CompatDecompKey b)
+{
+   if(a.codePoint > b.codePoint)
+      return 1;
+   else if(a.codePoint < b.codePoint)
+      return -1;
+   else
+      return 0;
+}
+
+static int CompareCompositionKey(BinaryTree tree, CompositionKey a, CompositionKey b)
+{
+   if(a.codePoint1 > b.codePoint1)
+      return 1;
+   else if(a.codePoint1 < b.codePoint1)
+      return -1;
+   else if(a.codePoint2 > b.codePoint2)
+      return 1;
+   else if(a.codePoint2 < b.codePoint2)
+      return -1;
+   else return 0;
+}
+
 static void FreeRange(Range range)
 {
    delete range;
@@ -436,6 +475,16 @@ static void FreeDecompKey(DecompKey key)
    //int i;
    //for(i = 0; i < 2; i++)
       //delete key.character[i];
+   delete key;
+}
+
+static void FreeCompatDecompKey(CompatDecompKey key)
+{
+   delete key;
+}
+
+static void FreeCompositionKey(CompositionKey key)
+{
    delete key;
 }
 
@@ -479,6 +528,18 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeDecompKey;
    };
 
+   BinaryTree compositionMappings
+   {
+      CompareKey = (void *)CompareCompositionKey;
+      FreeKey = (void *)FreeCompositionKey;
+   };
+
+   BinaryTree compatibilityDecompMappings
+   {
+      CompareKey = (void *)CompareCompatDecompKey;
+      FreeKey = (void *)FreeCompatDecompKey;
+   };
+
    BinaryTree caseFoldings
    {
       CompareKey = (void *)CompareCFKey;
@@ -488,7 +549,7 @@ static class UnicodeDatabase
    UnicodeDatabase()
    {
       File f = FileOpen("<:ecere>unicode/derivedGeneralCategoryStripped.txt", read);
-      File combiningClassFile, caseFoldingFile, decompFile;
+      File combiningClassFile, caseFoldingFile, decompFile, compatFile;
       if(f)
       {
          char line[1024];
@@ -772,13 +833,145 @@ static class UnicodeDatabase
                      }
                      if(dMapping[0] > 0)
                      {
-                        DecompKey k { codePoint };
-                        BTNode node;
-                        k.character[0] = dMapping[0], k.character[1] = dMapping[1];
-                        node = { key = (uintptr) &k };
-                        if(decompositionMappings.Add(node))
                         {
-                           DecompKey * cfPtr = new DecompKey[1];
+                           DecompKey k { codePoint };
+                           BTNode node;
+                           k.character[0] = dMapping[0], k.character[1] = dMapping[1];
+                           node = { key = (uintptr) &k };
+                           if(decompositionMappings.Add(node))
+                           {
+                              DecompKey * cfPtr = new DecompKey[1];
+                              *cfPtr = k;
+                              node.key = (uintptr)cfPtr;
+                           }
+                           else
+                              delete node;
+                        }
+                        {
+                           CompositionKey k { dMapping[0], dMapping[1], codePoint };
+                           BTNode node;
+                           node = { key = (uintptr) &k };
+                           if(compositionMappings.Add(node))
+                           {
+                              CompositionKey * cfPtr = new CompositionKey[1];
+                              *cfPtr = k;
+                              node.key = (uintptr)cfPtr;
+                           }
+                           else
+                              delete node;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         delete decompFile;
+      }
+      compatFile = FileOpen("<:ecere>unicode/compatibilityDecompositionMappings.txt", read);
+      if(compatFile)
+      {
+         char line[1024];
+         while(compatFile.GetLine(line, 1024))
+         {
+            if(line[0] && line[0] != '#')
+            {
+               char * endPtr;
+               unichar codePoint = (uint)strtoul(line, &endPtr, 16);
+               if(endPtr)
+               {
+                  endPtr = strchr(endPtr, ';');
+                  if(endPtr)
+                  {
+                     unichar dMapping[18] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                     UnicodeDecomposition type { true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+                     int i = 0;
+                     endPtr++;
+                     if(*endPtr == '<')
+                     {
+                        endPtr++;
+                        switch(*endPtr)
+                        {
+                           case 'c':
+                              switch(endPtr[1])
+                              {
+                                 case 'o': { type.compat = true; endPtr +=8; break; }
+                                 case 'i': { type.circle = true; endPtr +=8; break; }
+                              }
+                              break;
+                           case 'f':
+                              switch(endPtr[1])
+                              {
+                                 case 'r': { type.fraction = true; endPtr +=10; break; }
+                                 case 'o': { type.font = true; endPtr +=6; break; }
+                                 case 'i': { type.final = true; endPtr +=7; break; }
+                              }
+                              break;
+                           case 'i':
+                              switch(endPtr[1])
+                              {
+                                 case 'n': { type.initial = true; endPtr +=9; break; }
+                                 case 's': { type.isolated = true; endPtr +=10; break; }
+                              }
+                              break;
+                           case 'm': { type.medial = true; endPtr +=8; break; }
+                           case 'n':
+                              switch(endPtr[1])
+                              {
+                                 case 'a': { type.narrow = true; endPtr +=8; break; }
+                                 case 'o': { type.noBreak = true; endPtr +=9; break; }
+                              }
+                              break;
+                           case 's':
+                              switch(endPtr[1])
+                              {
+                                 case 'q': { type.square = true; endPtr +=8; break; }
+                                 case 'm': { type.small = true; endPtr +=7; break; }
+                                 case 'u':
+                                 {
+                                    if(endPtr[2] == 'b')
+                                    {
+                                       type.sub = true;
+                                       endPtr +=5;
+                                    }
+                                    else
+                                    {
+                                       type.super = true;
+                                       endPtr +=7;
+                                    }
+                                    break;
+                                 }
+                              }
+                              break;
+                           case 'v': { type.vertical = true; endPtr +=10; break; }
+                           case 'w': { type.wide = true; endPtr +=6; break; }
+                        }
+                     }
+                     dMapping[0] = strtol(endPtr, null, 16);
+                     while(true)
+                     {
+                        //endPtr += 2;
+                        endPtr = strchr(endPtr, ' ');
+                        if(endPtr)
+                        {
+                           uint dm;
+                           endPtr++;
+                           dm = strtol(endPtr, null, 16);
+                           dMapping[++i] = dm;
+                        }
+                        else
+                           break;
+                     }
+                     if(dMapping[0] > 0)
+                     {
+                        CompatDecompKey k { codePoint, type = type };
+                        BTNode node;
+                        int i = 0;
+                        for(i = 0; i < 18; i++)
+                           k.character[i] = dMapping[i];
+                        node = { key = (uintptr) &k };
+                        if(compatibilityDecompMappings.Add(node))
+                        {
+                           CompatDecompKey * cfPtr = new CompatDecompKey[1];
                            *cfPtr = k;
                            node.key = (uintptr)cfPtr;
                         }
@@ -789,7 +982,7 @@ static class UnicodeDatabase
                }
             }
          }
-         delete decompFile;
+         delete compatFile;
       }
    }
 
@@ -799,6 +992,7 @@ static class UnicodeDatabase
       combiningClasses.Free();
       decompositionMappings.Free();
       caseFoldings.Free();
+      compositionMappings.Free();
    }
 };
 
@@ -893,14 +1087,57 @@ public bool GetDecompositionMapping(unichar ch, unichar * mapping)
    bool result = false;
    DecompKey key { ch };
    BTNode node = dataBase.decompositionMappings.Find((uintptr) &key);
+   int i;
    if(node)
    {
       mapping[0] = ((DecompKey *)node.key)->character[0];
       mapping[1] = ((DecompKey *)node.key)->character[1];
+      for(i = 2; i < 7; i++)
+         mapping[i] = 0;
       result = true;
    }
    else
-      mapping[0] = 0, mapping[1] = 0;
+   {
+      for(i = 0; i < 7; i++)
+         mapping[i] = 0;
+   }
+   return result;
+}
+
+public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, UnicodeDecomposition type)
+{
+   bool result = false;
+   CompatDecompKey key { ch };
+   BTNode node = dataBase.compatibilityDecompMappings.Find((uintptr) &key);
+   int i;//, dTotal = !type.canonical ? 2 : 18;
+   //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
+   int maxCount = (type == { canonical = true }) ? 2 : 18;
+   if(node && (((CompatDecompKey *)node.key)->type == 0 || ((CompatDecompKey *)node.key)->type & type))
+   {
+      for(i = 0; i < maxCount; i++)
+         mapping[i] = ((CompatDecompKey *)node.key)->character[i];
+      result = true;
+   }
+   else
+   {
+      for(i = 0; i < maxCount; i++)
+         mapping[i] = 0;
+   }
+   return result;
+}
+
+public bool GetCompositionMapping(unichar ch1, unichar ch2, unichar * composed)
+{
+   bool result = false;
+   CompositionKey key { ch1, ch2 };
+   BTNode node = dataBase.compositionMappings.Find((uintptr) &key);
+   if(node)
+   {
+      *composed = ((CompositionKey *)node.key)->composed;
+      result = true;
+   }
+   else
+      *composed = 0;
    return result;
 }
 
@@ -937,9 +1174,41 @@ static void bubbleSortCombiningClasses(unichar * array, int count)
    }
 }
 
-static void reorderCanonical(Array<unichar> canonicalOrdered)
+static int composeCanonical(unichar * array, int count)
 {
-   int i, start = -1;
+   int n = count;
+   if(n > 1)
+   {
+      int i, j, k, nn = 0;
+      for(i = 0; i < n; i++)
+      {
+         unichar a = array[i];
+         for(j = i+1; j<n; j++)
+         {
+            unichar b = array[j];
+            unichar c = 0;
+            if(a && b && GetCompositionMapping(a, b, &c))
+            {
+               array[i] = c, array[j] = 0;
+               for(k = j; k<n-1; k++)
+               {
+                  unichar x = array[k], y = array[k+1];
+                  array[k] = y, array[k+1] = x;
+               }
+               n--;
+               //array->size--; // shrink?
+               break;
+            }
+         }
+      }
+      //n = nn;
+   }
+   return n;
+}
+
+static void reorderCanonical(Array<unichar> canonicalOrdered, bool compose)
+{
+   int i, start = -1, comp = -1;
    int count = canonicalOrdered.count;
 
    for(i = 0; i <= count; i++)
@@ -948,6 +1217,7 @@ static void reorderCanonical(Array<unichar> canonicalOrdered)
 
       if(!a)
       {
+         uint b = i < count -1 ? GetCombiningClass(canonicalOrdered[i+1]) : 0;
          if(start != -1 && i > start + 1)
          {
             #if 0
@@ -972,9 +1242,62 @@ static void reorderCanonical(Array<unichar> canonicalOrdered)
       else if(start == -1)
          start = i;
    }
+   // this was originally done in same loop above, but moved it when it appeared unichars weren't in the right place
+      // in composeCanonical
+   if(compose)
+   {
+      for(i = 0; i <= count; i++)
+      {
+         uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
+
+         if(!a)
+         {
+            uint b = i < count -1 ? GetCombiningClass(canonicalOrdered[i+1]) : 0;
+            if(comp == -1 && i < count-1 && b != 0)
+               comp = i;
+            else if(compose && comp != -1)
+            {
+               count = composeCanonical(canonicalOrdered.array + comp, i - comp);
+               canonicalOrdered.size = count;
+               comp = -1;
+            }
+         }
+
+         if(comp != -1 && i == count && compose)
+         {
+            count = composeCanonical(canonicalOrdered.array + comp, i - comp);
+            canonicalOrdered.size = count;
+            comp = -1;
+         }
+      }
+   }
 }
 
-public String normalizeNFD(const String string)
+public String normalizeNFD(const String string) // TODO: enum
+{
+   String result = normalize(string, { canonical = true }, false );
+   return result;
+}
+
+public String normalizeNFKD(const String string) // TODO: enum
+{
+   String result = normalize(string, { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true }, false );
+   return result;
+}
+
+public String normalizeNFC(const String string) // TODO: enum
+{
+   String result = normalize(string, { canonical = true }, true );
+   return result;
+}
+
+public String normalizeNFKC(const String string) // TODO: enum
+{
+   String result = normalize(string, { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true }, true );
+   return result;
+}
+
+public String normalize(const String string, UnicodeDecomposition type, bool compose) // TODO: enum
 {
    unichar ch;
    int nb, i;
@@ -982,9 +1305,20 @@ public String normalizeNFD(const String string)
    String result;
 
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      decompose(ch, canonicalOrdered);
+      decompose(ch, type, canonicalOrdered);
 
-   reorderCanonical(canonicalOrdered);
+   reorderCanonical(canonicalOrdered, compose);
+   //TODO NFC, NFCD
+   /*if(compose)
+   {
+      Array<unichar> temp = composeCanonical(canonicalOrdered);
+      if(temp)
+      {
+         canonicalOrdered.Free();
+         delete canonicalOrdered;
+         canonicalOrdered = temp;
+      }
+   }*/
 
    result = new char[canonicalOrdered.count * 4 + 1];
    nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
@@ -1011,23 +1345,25 @@ String stripCategory(const String string, CharCategory c)
    return result;
 }
 
-static void decompose(unichar input, Array<unichar> co)
+static void decompose(unichar input, UnicodeDecomposition type, Array<unichar> co)
 {
    bool result = false;
-   unichar decompMapping[2];
+   unichar decompMapping[18];
    int i;
+   //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
+   int maxCount = (type == { canonical = true }) ? 2 : 18;
 
    if(input >= 0xAC00 && input <= 0xD7B0)
       hangulGetMappings(input, co);
    else
    {
-      GetDecompositionMapping(input, decompMapping);
-      for(i = 0; i < 2; i++)
+      GetCompatDecompositionMapping(input, decompMapping, type);
+      for(i = 0; i < maxCount; i++)
       {
          unichar ch = decompMapping[i];
          if(ch)
          {
-            decompose(ch, co);
+            decompose(ch, type, co);
             result = true;
          }
          else
