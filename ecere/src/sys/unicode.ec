@@ -903,10 +903,12 @@ public bool GetDecompositionMapping(unichar ch, unichar * mapping)
 // Recursively replace by decompositionmapping then bubble-sort sequences of non-0 combining chars
 public String accenti(const String string)
 {
-   String result = null;
-   String normal = null;
-   normal = normalizeNFD(string);
-   result = stripCategory(normal, Mn);
+   // TODO: Compatibility (NKFD) normalization instead?
+   String normal = normalizeNFD(string);
+   String result = stripCategory(normal, Mn);
+   // TODO: diacritic folding
+   // TODO: kana folding (katakana -> hiragana)
+   delete normal;
    return result;
 }
 
@@ -942,7 +944,7 @@ static void reorderCanonical(Array<unichar> canonicalOrdered)
 
       if(!a)
       {
-         if(start != -1 && i - start)
+         if(start != -1 && i > start + 1)
          {
             #if 0
             int k;
