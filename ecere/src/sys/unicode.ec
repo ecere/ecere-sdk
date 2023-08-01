@@ -983,8 +983,9 @@ public String normalizeNFD(const String string)
    reorderCanonical(canonicalOrdered);
 
    result = new char[canonicalOrdered.count * 4 + 1];
-   UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
+   nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
    delete canonicalOrdered;
+   result = renew result char[nb+1];
    return result;
 }
 
