@@ -3594,7 +3594,8 @@
             "derivedGeneralCategoryStripped.txt",
             "derivedCombiningClassStripped.txt",
             "decompositionMappings.txt",
-            "caseFoldingStripped.txt"
+            "caseFoldingStripped.txt",
+            "compatibilityDecompositionMappings.txt"
          ],
          "Configurations" : [
             {
