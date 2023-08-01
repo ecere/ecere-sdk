@@ -754,40 +754,36 @@ static class UnicodeDatabase
                unichar codePoint = (uint)strtoul(line, &endPtr, 16);
                if(endPtr)
                {
+                  endPtr = strchr(endPtr, ';');
                   if(endPtr)
                   {
-                     endPtr = strchr(endPtr, ';');
-                     if(endPtr)
+                     unichar dMapping[2] = { 0 };
+                     endPtr++;
+                     dMapping[0] = strtol(endPtr, null, 16);
+                     //while(true)
                      {
-                        unichar dMapping[2];
-                        endPtr += 2;
-                        dMapping[0] = strtol(endPtr, null, 16);
-                        //while(true)
+                        //endPtr += 2;
+                        endPtr = strchr(endPtr, ' ');
+                        if(endPtr)
                         {
-                           //endPtr += 2;
-                           endPtr = strchr(endPtr, ' ');
-                           if(endPtr)
-                           {
-                              uint dm = strtol(endPtr, null, 16);
-                              if(dm)
-                                 dMapping[1] = dm;
-                           }
+                           uint dm = strtol(endPtr, null, 16);
+                           dMapping[1] = dm;
                         }
-                        if(dMapping[0] > 0)
+                     }
+                     if(dMapping[0] > 0)
+                     {
+                        DecompKey k { codePoint };
+                        BTNode node;
+                        k.character[0] = dMapping[0], k.character[1] = dMapping[1];
+                        node = { key = (uintptr) &k };
+                        if(decompositionMappings.Add(node))
                         {
-                           DecompKey k { codePoint };
-                           BTNode node;
-                           k.character[0] = dMapping[0], k.character[1] = dMapping[1];
-                           node = { key = (uintptr) &k };
-                           if(decompositionMappings.Add(node))
-                           {
-                              DecompKey * cfPtr = new DecompKey[1];
-                              *cfPtr = k;
-                              node.key = (uintptr)cfPtr;
-                           }
-                           else
-                              delete node;
+                           DecompKey * cfPtr = new DecompKey[1];
+                           *cfPtr = k;
+                           node.key = (uintptr)cfPtr;
                         }
+                        else
+                           delete node;
                      }
                   }
                }
@@ -888,7 +884,7 @@ public void GetCaseFolding(uint cf, unichar caseFolding[3])
    }
 }
 
-public bool GetDecompositionMapping(unichar ch, unichar mapping[2])
+public bool GetDecompositionMapping(unichar ch, unichar * mapping)
 {
    bool result = false;
    DecompKey key { ch };
@@ -985,13 +981,11 @@ String stripCategory(const String string, CharCategory c)
 
 static void decompose(unichar input, Array<unichar> co)
 {
-   //String result = null;
    bool result = false;
    unichar decompMapping[2];
-   int /*totalLength = 0, */i;
+   int i;
 
-   if(input >= 0xAC00 && input <= 0xD7B0)// 44032
-   //if(input >= 44032 && input <= 55203)
+   if(input >= 0xAC00 && input <= 0xD7B0)
       hangulGetMappings(input, co);
    else
    {
@@ -1003,20 +997,6 @@ static void decompose(unichar input, Array<unichar> co)
          {
             decompose(ch, co);
             result = true;
-            /*String decomp = decompose(ch);
-            int len = decomp ? strlen(decomp) : 0;
-            char tempString[5];
-            result = true;
-
-            if(!len)
-            {
-               len = UTF32toUTF8Len(&ch, 1, tempString, 4);
-               delete decomp;
-            }
-            result = renew result char[totalLength + len + 1];
-            memcpy(result + totalLength, decomp ? decomp : tempString, totalLength + len + 1);
-            totalLength += len;
-            delete decomp;*/
          }
          else
             break;
@@ -1028,10 +1008,8 @@ static void decompose(unichar input, Array<unichar> co)
 
 //reference: http://www.unicode.org/versions/Unicode9.0.0/ch03.pdf
 // https://stackoverflow.com/questions/41309402/breaking-down-a-hangul-syllable-into-letters-jamo
-void hangulGetMappings(unichar ch, Array<unichar> co)
+static void hangulGetMappings(unichar ch, Array<unichar> co)
 {
-   unichar sIndex = 0xAC00 - ch;
-   int tCount = 28, vCount = 21;
    uint syllable = ch - 0xAC00;
    uint jamoT = syllable % 28, jamoV, jamoL;
    syllable /= 28;
