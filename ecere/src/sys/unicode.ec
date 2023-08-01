@@ -912,15 +912,23 @@ public String accenti(const String string)
 
 static void bubbleSortCombiningClasses(unichar * array, int count)
 {
-   int i, j;
-   for(i = 0; i < count; i++)
-      for(j = count-1; j > i; j--)
+   int n = count;
+   while(n > 1)
+   {
+      int i, nn = 0;
+      for(i = 1; i < n; i++)
       {
-         unichar a = array[i], b = array[j];
-         uint ca = GetCombiningClass(array[i]), cb = GetCombiningClass(array[j]);
+         int j = i-1;
+         unichar a = array[j], b = array[i];
+         uint ca = GetCombiningClass(a), cb = GetCombiningClass(b);
          if(ca > cb)
-            array[i] = b, array[j] = a;
+         {
+            array[i] = a, array[j] = b;
+            nn = i;
+         }
       }
+      n = nn;
+   }
 }
 
 static void reorderCanonical(Array<unichar> canonicalOrdered)
@@ -935,7 +943,24 @@ static void reorderCanonical(Array<unichar> canonicalOrdered)
       if(!a)
       {
          if(start != -1 && i - start)
+         {
+            #if 0
+            int k;
+            Print("Before: ");
+            for(k = start; k < i; k++)
+               Print((uintptr)canonicalOrdered[k], '(', GetCombiningClass(canonicalOrdered[k]), ") ");
+            PrintLn("");
+            #endif
+
             bubbleSortCombiningClasses(canonicalOrdered.array + start, i - start);
+
+            #if 0
+            Print("After: ");
+            for(k = start; k < i; k++)
+               Print((uintptr)canonicalOrdered[k], '(', GetCombiningClass(canonicalOrdered[k]), ") ");
+            PrintLn("");
+            #endif
+         }
          start = -1;
       }
       else if(start == -1)
