@@ -737,7 +737,11 @@ public struct DateTime
       {
          const String quotes = (onType && (*onType == json || *onType == econ)) ? "\"" : "";
          sprintf(stringOutput, "%s%s %s %2d %2d:%02d:%02d %s %04d%s",
-            quotes, shortDaysNames[dayOfTheWeek], shortMonthsNames[month], day, hour, minute, second, ampm[pm], year, quotes);
+            quotes,
+            dayOfTheWeek >= 0 && dayOfTheWeek < 7 ? shortDaysNames[dayOfTheWeek] : "(invalid week day)",
+            month >= 0 && month < 12 ? shortMonthsNames[month] : "(invalid month)",
+            day, hour, minute, second, ampm[pm], year,
+            quotes);
       }
 
       return stringOutput;
