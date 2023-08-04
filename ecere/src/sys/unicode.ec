@@ -546,6 +546,12 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeCaseFoldingKey;
    };
 
+   BinaryTree compositionExclusions
+   {
+      CompareKey = (void *)CompareRange;
+      FreeKey = (void *)FreeRange;
+   };
+
    UnicodeDatabase()
    {
       File f = FileOpen("<:ecere>unicode/derivedGeneralCategoryStripped.txt", read);
@@ -986,6 +992,30 @@ static class UnicodeDatabase
          }
          delete compatFile;
       }
+
+      // FIXME: Set up a file from CompositionExclusions.txt
+      for(c : [
+         0x0958, 0x0959, 0x095A, 0x095B, 0x095C, 0x095D, 0x095E, 0x095F,
+         0x09DC, 0x09DD, 0x09DF, 0x0A33, 0x0A36, 0x0A59, 0x0A5A, 0x0A5B, 0x0A5E,
+         0x0B5C, 0x0B5D, 0x0F43, 0x0F4D, 0x0F52, 0x0F57, 0x0F5C, 0x0F69, 0x0F76,
+         0x0F78, 0x0F93, 0x0F9D, 0x0FA2, 0x0FA7, 0x0FAC, 0x0FB9, 0xFB1D, 0xFB1F,
+         0xFB2A, 0xFB2B, 0xFB2C, 0xFB2D, 0xFB2E, 0xFB2F, 0xFB30, 0xFB31, 0xFB32,
+         0xFB33, 0xFB34, 0xFB35, 0xFB36, 0xFB38, 0xFB39, 0xFB3A, 0xFB3B, 0xFB3C,
+         0xFB3E, 0xFB40, 0xFB41, 0xFB43, 0xFB44, 0xFB46, 0xFB47, 0xFB48, 0xFB49,
+         0xFB4A, 0xFB4B, 0xFB4C, 0xFB4D, 0xFB4E, 0x2ADC,
+         0x1D15E, 0x1D15F, 0x1D160, 0x1D161, 0x1D162, 0x1D163, 0x1D164,
+         0x1D1BB, 0x1D1BC, 0x1D1BD, 0x1D1BE, 0x1D1BF, 0x1D1C0, 0x0340, 0x0341, 0x0343, 0x0374, 0x037E,
+         0x0387, 0x1F71, 0x1F73, 0x1F75, 0x1F77, 0x1F79, 0x1F7B, 0x1F7D, 0x1FBB, 0x1FBE, 0x1FC9, 0x1FCB,
+         0x1FD3, 0x1FDB, 0x1FE3, 0x1FEB, 0x1FEE, 0x1FEF, 0x1FF9, 0x1FFB, 0x1FFD, 0x2000, 0x2001, 0x2126,
+         0x212A, 0x212B, 0x2329, 0x232A, 0xFA10, 0xFA12, 0xFA20, 0xFA22, 0xFA25, 0xFA26, 0x0344, 0x0F73,
+         0x0F75, 0x0F81
+      ])
+         addRange(compositionExclusions, { c, c });
+      addRange(compositionExclusions, { 0xF900, 0xFA0D });
+      addRange(compositionExclusions, { 0xFA15, 0xFA1E });
+      addRange(compositionExclusions, { 0xFA2A, 0xFA6D });
+      addRange(compositionExclusions, { 0xFA70, 0xFAD9 });
+      addRange(compositionExclusions, { 0x2D800, 0x2DA1D });
    }
 
    ~UnicodeDatabase()
@@ -995,8 +1025,22 @@ static class UnicodeDatabase
       decompositionMappings.Free();
       caseFoldings.Free();
       compositionMappings.Free();
+      compositionExclusions.Free();
    }
 };
+
+static void addRange(BinaryTree tree, Range r)
+{
+   BTNode node { key = (uintptr)(void *)r };
+   if(tree.Add(node))
+   {
+      node.key = (uintptr)new Range[1];
+      *(Range *)node.key = r;
+   }
+   else
+      delete node;
+}
+
 
 static UnicodeDatabase dataBase { };
 
@@ -1111,8 +1155,7 @@ public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, Unicode
    bool result = false;
    CompatDecompKey key { ch };
    BTNode node = dataBase.compatibilityDecompMappings.Find((uintptr) &key);
-   int i;//, dTotal = !type.canonical ? 2 : 18;
-   //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
+   int i;
    int maxCount = (type == { canonical = true }) ? 2 : 18;
    if(node && ((CompatDecompKey *)node.key)->type & type)
    {
@@ -1128,19 +1171,31 @@ public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, Unicode
    return result;
 }
 
-public bool GetCompositionMapping(unichar ch1, unichar ch2, unichar * composed)
+public unichar GetCompositionMapping(unichar ch1, unichar ch2)
 {
-   bool result = false;
-   CompositionKey key { ch1, ch2 };
-   BTNode node = dataBase.compositionMappings.Find((uintptr) &key);
-   if(node)
+   // Leading and Vowel jamos combination
+   if(ch1 >= 0x1100 && ch1 <= 0x1112 && ch2 >= 0x1161 && ch2 <= 0x1175)
    {
-      *composed = ((CompositionKey *)node.key)->composed;
-      result = true;
+      uint l = ch1 - 0x1100;
+      uint v = ch2 - 0x1161;
+      return 0xAC00 + 28 * (l * 21 + v);
    }
+   // Leading+Vowel jamo + Trailing jamo combination
+   else if(ch1 >= 0xAC00 && ch1 <= 0xAC00 + 28 * (18 * 21 + 20) && ch2 >= 0x11A8 && ch2 <= 0x11C3 && !((ch1 - 0xAC00) % 28))
+      return ch1 + (ch2 - 0x11A8) + 1;
    else
-      *composed = 0;
-   return result;
+   {
+      CompositionKey key { ch1, ch2 };
+      BTNode node = dataBase.compositionMappings.Find((uintptr) &key);
+      unichar ch = node ? ((CompositionKey *)node.key)->composed : 0;
+      if(ch)
+      {
+         Range range { ch, ch };
+         if(dataBase.compositionExclusions.Find((uintptr) &range))
+            ch = 0;
+      }
+      return ch;
+   }
 }
 
 // Recursively replace by decompositionmapping then bubble-sort sequences of non-0 combining chars
@@ -1176,41 +1231,63 @@ static void bubbleSortCombiningClasses(unichar * array, int count)
    }
 }
 
-static int composeCanonical(unichar * array, int count)
+static void composeCanonical(Array<unichar> array)
 {
-   int n = count;
-   if(n > 1)
+   if(array.count)
    {
-      int i, j, k, nn = 0;
-      for(i = 0; i < n; i++)
+      unichar curChar = array[0], starterCh = 0;
+      int i = 0, j = 0, starterJ = -1;
+      uint lastCombiningClass = GetCombiningClass(curChar);
+
+      if(lastCombiningClass == 0) // This first character is a starter character
+         starterCh = curChar, starterJ = j;
+
+      for(i = 1; i < array.count; i++)
       {
-         unichar a = array[i];
-         for(j = i+1; j<n; j++)
+         unichar nextChar = array[i], c = GetCompositionMapping(curChar, nextChar);
+
+         if(c)
          {
-            unichar b = array[j];
-            unichar c = 0;
-            if(a && b && GetCompositionMapping(a, b, &c))
+            // Combining two consecutive characters
+            int cc = GetCombiningClass(c);
+
+            array[j] = curChar = c;
+            if(cc == 0) // The newly composed character is our new starter character
+               starterCh = curChar, starterJ = j, lastCombiningClass = 0;
+         }
+         else
+         {
+            uint cc = GetCombiningClass(nextChar);
+
+            if(starterJ != -1 && starterJ != j && cc != lastCombiningClass)
             {
-               array[i] = c, array[j] = 0;
-               for(k = j; k<n-1; k++)
-               {
-                  unichar x = array[k], y = array[k+1];
-                  array[k] = y, array[k+1] = x;
-               }
-               n--;
-               //array->size--; // shrink?
-               break;
+               // If we have a starter character and we did not keep a combining character
+               // of the same class that did not compose to our left
+               c = GetCompositionMapping(starterCh, nextChar);
+               if(!c)
+                  lastCombiningClass = cc; // This character did not combine --
+                     // We will not attempt to combine any other character of the
+                     // same combining class with that same starter character
+            }
+            if(c)
+               // This character combines with our earlier starter character
+               array[starterJ] = starterCh = c, lastCombiningClass = 0;
+            else
+            {
+               // This character does not combine with any previous character
+               array[++j] = curChar = nextChar;
+               if(cc == 0) // We moved on to a new starter character
+                  starterCh = curChar, starterJ = j-1, lastCombiningClass = 0;
             }
          }
       }
-      //n = nn;
+      array.count = j+1;
    }
-   return n;
 }
 
 static void reorderCanonical(Array<unichar> canonicalOrdered)
 {
-   int i, start = -1, comp = -1;
+   int i, start = -1;
    int count = canonicalOrdered.count;
 
    for(i = 0; i <= count; i++)
@@ -1282,41 +1359,7 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
    reorderCanonical(canonicalOrdered);
 
    if(compose)
-   {
-      /*
-      for(i = 0; i <= count; i++)
-      {
-         uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
-
-         if(!a)
-         {
-            uint b = i < count -1 ? GetCombiningClass(canonicalOrdered[i+1]) : 0;
-            if(comp == -1 && i < count-1 && b != 0)
-               comp = i;
-            else if(compose && comp != -1)
-            {
-               count =  (canonicalOrdered.array + comp, i - comp);
-               canonicalOrdered.size = count;
-               comp = -1;
-            }
-         }
-
-         if(comp != -1 && i == count && compose)
-         {
-            count = composeCanonical(canonicalOrdered.array + comp, i - comp);
-            canonicalOrdered.size = count;
-            comp = -1;
-         }
-      }
-      */
-
-      Array<unichar> temp = composeCanonical(canonicalOrdered.array, canonicalOrdered.count);
-      if(temp)
-      {
-         delete canonicalOrdered;
-         canonicalOrdered = temp;
-      }
-   }
+      composeCanonical(canonicalOrdered);
 
    result = new char[canonicalOrdered.count * 4 + 1];
    nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
