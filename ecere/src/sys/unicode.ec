@@ -792,9 +792,13 @@ static class UnicodeDatabase
          delete decompFile;
       }
    }
+
    ~UnicodeDatabase()
    {
       categories.Free();
+      combiningClasses.Free();
+      decompositionMappings.Free();
+      caseFoldings.Free();
    }
 };
 
