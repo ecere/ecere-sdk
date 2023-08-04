@@ -524,6 +524,7 @@ class IDESettingsContainer : GlobalSettings
             int c;
             bool locked;
             for(c = 0; c < 10 && !(locked = f.Lock(shared, 0, 0, false)); c++) ecere::sys::Sleep(0.01);
+            if(!recentFiles) recentFiles = { };
             recentFiles.read(this);
             f.Unlock(0,0,true);
             delete f;
