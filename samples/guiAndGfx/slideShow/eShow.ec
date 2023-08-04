@@ -122,7 +122,7 @@ class SlideShow : Window
    {
       if(bitmap && bitmap.width)
       {
-#ifndef __linux__
+#if 1 //ndef __linux__
          float scale = Min((float)clientSize.w / (float)bitmap.width, (float)clientSize.h / (float)bitmap.height);
          int w = (int)(bitmap.width * scale);
          int h = (int)(bitmap.height * scale);
