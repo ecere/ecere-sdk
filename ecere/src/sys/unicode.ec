@@ -882,8 +882,8 @@ static class UnicodeDatabase
                   endPtr = strchr(endPtr, ';');
                   if(endPtr)
                   {
-                     unichar dMapping[18] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                     UnicodeDecomposition type { true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+                     unichar dMapping[18] = { 0 };
+                     UnicodeDecomposition type = 0;
                      int i = 0;
                      endPtr++;
                      if(*endPtr == '<')
@@ -946,6 +946,8 @@ static class UnicodeDatabase
                            case 'w': { type.wide = true; endPtr +=6; break; }
                         }
                      }
+                     else
+                        type.canonical = true;
                      dMapping[0] = strtol(endPtr, null, 16);
                      while(true)
                      {
@@ -1112,7 +1114,7 @@ public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, Unicode
    int i;//, dTotal = !type.canonical ? 2 : 18;
    //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
    int maxCount = (type == { canonical = true }) ? 2 : 18;
-   if(node && (((CompatDecompKey *)node.key)->type == 0 || ((CompatDecompKey *)node.key)->type & type))
+   if(node && ((CompatDecompKey *)node.key)->type & type)
    {
       for(i = 0; i < maxCount; i++)
          mapping[i] = ((CompatDecompKey *)node.key)->character[i];
@@ -1206,7 +1208,7 @@ static int composeCanonical(unichar * array, int count)
    return n;
 }
 
-static void reorderCanonical(Array<unichar> canonicalOrdered, bool compose)
+static void reorderCanonical(Array<unichar> canonicalOrdered)
 {
    int i, start = -1, comp = -1;
    int count = canonicalOrdered.count;
@@ -1217,7 +1219,6 @@ static void reorderCanonical(Array<unichar> canonicalOrdered, bool compose)
 
       if(!a)
       {
-         uint b = i < count -1 ? GetCombiningClass(canonicalOrdered[i+1]) : 0;
          if(start != -1 && i > start + 1)
          {
             #if 0
@@ -1241,35 +1242,6 @@ static void reorderCanonical(Array<unichar> canonicalOrdered, bool compose)
       }
       else if(start == -1)
          start = i;
-   }
-   // this was originally done in same loop above, but moved it when it appeared unichars weren't in the right place
-      // in composeCanonical
-   if(compose)
-   {
-      for(i = 0; i <= count; i++)
-      {
-         uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
-
-         if(!a)
-         {
-            uint b = i < count -1 ? GetCombiningClass(canonicalOrdered[i+1]) : 0;
-            if(comp == -1 && i < count-1 && b != 0)
-               comp = i;
-            else if(compose && comp != -1)
-            {
-               count = composeCanonical(canonicalOrdered.array + comp, i - comp);
-               canonicalOrdered.size = count;
-               comp = -1;
-            }
-         }
-
-         if(comp != -1 && i == count && compose)
-         {
-            count = composeCanonical(canonicalOrdered.array + comp, i - comp);
-            canonicalOrdered.size = count;
-            comp = -1;
-         }
-      }
    }
 }
 
@@ -1307,18 +1279,44 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       decompose(ch, type, canonicalOrdered);
 
-   reorderCanonical(canonicalOrdered, compose);
-   //TODO NFC, NFCD
-   /*if(compose)
+   reorderCanonical(canonicalOrdered);
+
+   if(compose)
    {
-      Array<unichar> temp = composeCanonical(canonicalOrdered);
+      /*
+      for(i = 0; i <= count; i++)
+      {
+         uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
+
+         if(!a)
+         {
+            uint b = i < count -1 ? GetCombiningClass(canonicalOrdered[i+1]) : 0;
+            if(comp == -1 && i < count-1 && b != 0)
+               comp = i;
+            else if(compose && comp != -1)
+            {
+               count =  (canonicalOrdered.array + comp, i - comp);
+               canonicalOrdered.size = count;
+               comp = -1;
+            }
+         }
+
+         if(comp != -1 && i == count && compose)
+         {
+            count = composeCanonical(canonicalOrdered.array + comp, i - comp);
+            canonicalOrdered.size = count;
+            comp = -1;
+         }
+      }
+      */
+
+      Array<unichar> temp = composeCanonical(canonicalOrdered.array, canonicalOrdered.count);
       if(temp)
       {
-         canonicalOrdered.Free();
          delete canonicalOrdered;
          canonicalOrdered = temp;
       }
-   }*/
+   }
 
    result = new char[canonicalOrdered.count * 4 + 1];
    nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
