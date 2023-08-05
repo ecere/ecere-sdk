@@ -7,7 +7,7 @@
   IgnorableNamespaces="uap mp">
 
   <Identity Name="cc88d84c-fd68-4b43-9a19-1ae6f5e4270e"
-            Publisher="CN=Jerome"
+            Publisher="CN=jerome"
             Version="1.0.3.0" />
 
   <mp:PhoneIdentity PhoneProductId="cc88d84c-fd68-4b43-9a19-1ae6f5e4270e" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

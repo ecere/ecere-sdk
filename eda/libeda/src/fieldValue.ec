@@ -4,6 +4,11 @@ public import static "ecere"
 public import "ecere"
 #endif
 
+#if defined(__UWP__)
+// FIXME:
+#define strcmpi strcmp
+#endif
+
 public enum FieldType
 {
    // Note: these match SQLiteType

@@ -110,7 +110,7 @@ public struct FreeSpots
 };
 
 default:
-#if defined(_GLES3) //&& !defined(__UWP__)  // TOCHECK: Whatversion for UWP, WebGL 2?
+#if defined(_GLES3) && !defined(__UWP__)  // TOCHECK: Whatversion for UWP, WebGL 2?
 int glVersion = 3;
 #elif defined(_GLES2)
 int glVersion = 2;
@@ -531,6 +531,8 @@ public struct GLMultiDraw
       commands = renew0 commands GLDrawCommand[size];
       commandsAlloced = size;
       idsAlloced = size;
+
+      // PrintLn("Resizing idsAB (", idsAB.buffer, ") to be ", size, " uint big");
       idsAB.allocate(size * sizeof(uint), null, streamDraw);
 #ifndef CLIENT_MEM_COMMANDS
       if(glCaps_gpuCommands)

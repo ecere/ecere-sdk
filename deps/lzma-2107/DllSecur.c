@@ -5,7 +5,7 @@
 
 #ifdef _WIN32
 
-#include <Windows.h>
+#include <windows.h>
 
 #include "DllSecur.h"
 
@@ -34,12 +34,12 @@ static const char * const g_Dlls =
 #endif
 
 // #define MY_CAST_FUNC  (void(*)())
-#define MY_CAST_FUNC  
+#define MY_CAST_FUNC
 
 void My_SetDefaultDllDirectories()
 {
   #ifndef UNDER_CE
-  
+
     OSVERSIONINFO vi;
     vi.dwOSVersionInfoSize = sizeof(vi);
     if (!GetVersionEx(&vi) || vi.dwMajorVersion != 6 || vi.dwMinorVersion != 0)
@@ -58,7 +58,7 @@ void My_SetDefaultDllDirectories()
 void LoadSecurityDlls()
 {
   #ifndef UNDER_CE
-  
+
   wchar_t buf[MAX_PATH + 100];
 
   {
@@ -86,7 +86,7 @@ void LoadSecurityDlls()
 
     if (buf[pos - 1] != '\\')
       buf[pos++] = '\\';
-    
+
     for (dll = g_Dlls; dll[0] != 0;)
     {
       unsigned k = 0;
@@ -103,7 +103,7 @@ void LoadSecurityDlls()
       LoadLibraryExW(buf, NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
     }
   }
-  
+
   #endif
 }
 
