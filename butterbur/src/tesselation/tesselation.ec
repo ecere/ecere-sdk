@@ -1,5 +1,7 @@
 #define property _property
+#define String String_
 #include <glutess.h>
+#undef String
 #undef property
 
 public import IMPORT_STATIC "ecere"

@@ -10,7 +10,7 @@ public import "EDA"
 
 #define __restrict
 
-#ifndef ECERE_STATIC
+#if !defined(ECERE_STATIC) && !defined(__UWP__)
 
 #define __STDC_NO_VLA__
 #include <regex.h>
@@ -21,7 +21,7 @@ static String lastRegex;
 
 static void sqlite_regexp(sqlite3_context * context, int argc, sqlite3_value ** values)
 {
-#ifndef ECERE_STATIC
+#if !defined(ECERE_STATIC) && !defined(__UWP__)
    String reg  = (String)sqlite3_value_text(values[0]);
    String text = (String)sqlite3_value_text(values[1]);
    if(lastRegex && !strcmp(reg, lastRegex));
@@ -133,7 +133,7 @@ public:
 
    ~SQLiteDB()
    {
-#ifndef ECERE_STATIC
+#if !defined(ECERE_STATIC) && !defined(__UWP__)
       // TOFIX: Doing this here now
       delete lastRegex;
       regfree(&regex);

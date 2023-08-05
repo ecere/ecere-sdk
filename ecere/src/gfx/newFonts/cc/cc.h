@@ -54,10 +54,18 @@ struct timeval
 #define Size Size_
 #define Alignment Alignment_
 #define String String_
+#define String2 String2_
+#define Arc Arc_
+#define Polygon Polygon_
+#define Ellipse Ellipse_
 #include <winsock.h>
+#undef Arc
+#undef Ellipse
+#undef Polygon
 #undef Size
 #undef Alignment
 #undef String
+#undef String2
 #endif
 
 #if !defined(ssize_t) && !defined(__MINGW32__)

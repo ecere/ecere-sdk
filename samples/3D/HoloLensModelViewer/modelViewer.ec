@@ -76,7 +76,7 @@ class ModelWindow : Window
 
          Log("OnLoadGraphics(): Successfully loaded 3D model!\n");
 
-         camera.zMin = 0.01; //1;
+         camera.zMin = 1;//0.01; //1;
          camera.zMax = 100;
 
          // Sponza
@@ -191,6 +191,7 @@ class HoloLensApp : GuiApplication
          return true;
 
       modelWindow.Update(null);
+      // renderedSinceLastCycle = false;
       return true;
    }
 
