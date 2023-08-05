@@ -429,6 +429,87 @@ class ProcessingStage
       mutex.Release();
    }
 
+   bool busyWithTasks(bool (*checkCallback)(ProcessingTask task, void * context), void * context)
+   {
+      bool busy = false;
+
+      mutex.Wait();
+      if(tasks.count || readyTasks.count)
+      {
+         if(!checkCallback)
+            busy = true;
+         else
+         {
+            ProcessingTask task;
+            for(task = (ProcessingTask)tasks.first; task; task = (ProcessingTask)task.next)
+            {
+               if(checkCallback(task, context))
+               {
+                  busy = true;
+                  break;
+               }
+            }
+            if(!busy)
+            {
+               for(task = (ProcessingTask)readyTasks.first; task; task = (ProcessingTask)task.next)
+               {
+                  if(checkCallback(task, context))
+                  {
+                     busy = true;
+                     break;
+                  }
+               }
+            }
+         }
+      }
+      if(!busy)
+      {
+         int i;
+
+         for(i = 0; i < threads.count; i++)
+         {
+            ProcessingThread thread = threads[i];
+            ProcessingTask activeTask = thread ? (ProcessingTask)thread.activeTask : null;
+            if(activeTask && (!checkCallback || checkCallback(activeTask, context)))
+            {
+               busy = true;
+               break;
+            }
+         }
+         if(!busy && (tasks.count || readyTasks.count))
+         {
+            if(!checkCallback)
+               busy = true;
+            else
+            {
+               ProcessingTask task;
+               for(task = (ProcessingTask)tasks.first; task; task = (ProcessingTask)task.next)
+               {
+                  if(checkCallback(task, context))
+                  {
+                     busy = true;
+                     break;
+                  }
+               }
+               if(!busy)
+               {
+                  for(task = (ProcessingTask)readyTasks.first; task; task = (ProcessingTask)task.next)
+                  {
+                     if(checkCallback(task, context))
+                     {
+                        busy = true;
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+      }
+      mutex.Release();
+
+      return busy;
+   }
+
    ~ProcessingStage()
    {
       terminate();
@@ -677,4 +758,21 @@ public:
    // onTaskCleared() is called after returning clear from onProcess() or onPerformTasks(),
    // as well as from cancelTask(), cancelAllTasks(), terminate()
    virtual void onTaskCleared(ProcessingTask task);
+
+   bool busyWithTasks(bool (*checkCallback)(ProcessingTask task, void * context), void * context)
+   {
+      bool busy = false;
+      if(stages && stages.count)
+      {
+         int s;
+
+         for(s = 0; !busy && s < stages.count; s++)
+         {
+            ProcessingStage stage = stages[s];
+            if(stage.busyWithTasks(checkCallback, context))
+               busy = true;
+         }
+      }
+      return busy;
+   }
 }
