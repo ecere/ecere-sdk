@@ -386,9 +386,12 @@ private:
             result = GetString(&normalStr);  // Checked: this removes the quotes
             if(!type) delete normalStr, normalStr = null, result = typeMismatch;
 
-            if(result)
+            if(result == success)
             {
-               result = ConvertStringToValue(type, normalStr, value);
+               if(type && (type == class(String) || !strcmp(type.name, "String") || !strcmp(type.dataTypeString, "char *")))
+                  value.p = normalStr, normalStr = null;
+               else
+                  result = ConvertStringToValue(type, normalStr, value);
             }
             delete normalStr;
          }
@@ -1049,7 +1052,7 @@ private:
    JSONResult ConvertStringToValue(Class type, const String string, DataValue value)
    {
       // Assign the proper value obtained from the special String to the
-      // DataValue object scording to type.
+      // DataValue object according to type.
       // The string should be disposed of appropriately in the caller.
 
       Property prop;
@@ -1114,6 +1117,7 @@ private:
          }
       }
       delete special;
+
       return result;
    }
 
