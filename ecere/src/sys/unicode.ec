@@ -1025,6 +1025,7 @@ static class UnicodeDatabase
       decompositionMappings.Free();
       caseFoldings.Free();
       compositionMappings.Free();
+      compatibilityDecompMappings.Free();
       compositionExclusions.Free();
    }
 };
