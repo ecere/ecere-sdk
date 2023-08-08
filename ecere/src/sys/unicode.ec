@@ -397,6 +397,14 @@ static struct DiacriticFoldingKey
    unichar folded;
 };
 
+static struct KatakanaFoldingKey
+{
+   unichar codePoint1;
+   unichar codePoint2;
+   unichar codePoint3;
+   unichar character[3];
+};
+
 static int CompareRange(BinaryTree tree, Range a, Range b)
 {
    if(a.start > b.end)
@@ -477,6 +485,23 @@ static int CompareDiacriticFoldingKey(BinaryTree tree, DiacriticFoldingKey a, Di
    else return 0;
 }
 
+static int CompareKatakanaFoldingKey(BinaryTree tree, KatakanaFoldingKey a, KatakanaFoldingKey b)
+{
+   if(a.codePoint1 > b.codePoint1)
+      return 1;
+   else if(a.codePoint1 < b.codePoint1)
+      return -1;
+   else if(a.codePoint2 > b.codePoint2)
+      return 1;
+   else if(a.codePoint2 < b.codePoint2)
+      return -1;
+   else if(a.codePoint3 > b.codePoint3)
+      return 1;
+   else if(a.codePoint3 < b.codePoint3)
+      return -1;
+   else return 0;
+}
+
 static void FreeRange(Range range)
 {
    delete range;
@@ -514,6 +539,11 @@ static void FreeCompositionKey(CompositionKey key)
 }
 
 static void FreeDFKey(DiacriticFoldingKey key)
+{
+   delete key;
+}
+
+static void FreeKFKey(KatakanaFoldingKey key)
 {
    delete key;
 }
@@ -588,10 +618,16 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeDFKey;
    };
 
+   BinaryTree katakanaFoldings
+   {
+      CompareKey = (void *)CompareKatakanaFoldingKey;
+      FreeKey = (void *)FreeKFKey;
+   };
+
    UnicodeDatabase()
    {
       File f = FileOpen("<:ecere>unicode/derivedGeneralCategoryStripped.txt", read);
-      File combiningClassFile, caseFoldingFile, decompFile, compatFile, diacriticFile;
+      File combiningClassFile, caseFoldingFile, decompFile, compatFile, diacriticFile, katakanaFile;
       if(f)
       {
          char line[1024];
@@ -993,7 +1029,6 @@ static class UnicodeDatabase
                      dMapping[0] = strtol(endPtr, null, 16);
                      while(true)
                      {
-                        //endPtr += 2;
                         endPtr = strchr(endPtr, ' ');
                         if(endPtr)
                         {
@@ -1039,7 +1074,6 @@ static class UnicodeDatabase
             {
                char * endPtr;
                unichar source[3] = { 0 };
-               //unichar codePoint = (uint)strtoul(line, &endPtr, 16);
                source[0] = (uint)strtoul(line, &endPtr, 16);
                if(endPtr)
                {
@@ -1048,7 +1082,6 @@ static class UnicodeDatabase
                   {
                      if(*endPtr == ' ')
                      {
-                     //endPtr = strchr(endPtr, ' ');
                         uint v;
                         endPtr++;
                         v = strtol(endPtr, null, 16);
@@ -1061,7 +1094,6 @@ static class UnicodeDatabase
                   endPtr = strchr(endPtr, ';');
                   if(endPtr)
                   {
-                     //endPtr++;
                      uint diacriticFolding;
                      endPtr += 2;
                      diacriticFolding = strtol(endPtr, null, 16);
@@ -1084,6 +1116,79 @@ static class UnicodeDatabase
             }
          }
          delete diacriticFile;
+      }
+
+      katakanaFile = FileOpen("<:ecere>unicode/katakanaFolding.txt", read);
+      if(katakanaFile)
+      {
+         char line[1024];
+         while(katakanaFile.GetLine(line, 1024))
+         {
+            if(line[0] && line[0] != '#')
+            {
+               char * endPtr;
+               unichar source[3] = { 0 };
+               source[0] = (uint)strtoul(line, &endPtr, 16);
+               if(endPtr)
+               {
+                  int i = 0;
+                  while(true)
+                  {
+                     if(*endPtr == ' ')
+                     {
+                        uint v;
+                        endPtr++;
+                        v = strtol(endPtr, null, 16);
+                        source[++i] = v;
+                        endPtr +=4;
+                     }
+                     else
+                        break;
+                  }
+                  endPtr = strchr(endPtr, ';');
+                  if(endPtr)
+                  {
+                     unichar katakanaFolding[2] = { 0 };
+                     endPtr += 2;
+                     katakanaFolding[0] = strtol(endPtr, null, 16);
+                     while(true)
+                     {
+                        endPtr = strchr(endPtr, ' ');
+                        if(endPtr)
+                        {
+                           uint v;
+                           endPtr++;
+                           if(*endPtr != '\t')
+                           {
+                              v = strtol(endPtr, null, 16);
+                              katakanaFolding[++i] = v;
+                           }
+                           else
+                              break;
+                        }
+                        else
+                           break;
+                     }
+                     if(katakanaFolding[0] > 0)
+                     {
+                        KatakanaFoldingKey k { codePoint1 = source[0], codePoint2 = source[1], codePoint3 = source[2] };
+                        BTNode node;
+                        k.character[0] = katakanaFolding[0], k.character[1] = katakanaFolding[1], k.character[2] = katakanaFolding[2];
+                        node = { key = (uintptr) &k };
+                        if(katakanaFoldings.Add(node))
+                        {
+                           KatakanaFoldingKey * cfPtr = new KatakanaFoldingKey[1];
+                           *cfPtr = k;
+                           node.key = (uintptr)cfPtr;
+                        }
+                        else
+                           delete node;
+                     }
+                  }
+               }
+            }
+         }
+         delete katakanaFile;
       }
 
       // FIXME: Set up a file from CompositionExclusions.txt
@@ -1120,6 +1225,8 @@ static class UnicodeDatabase
       compositionMappings.Free();
       compatibilityDecompMappings.Free();
       compositionExclusions.Free();
+      diacriticFoldings.Free();
+      katakanaFoldings.Free();
    }
 };
 
@@ -1219,6 +1326,31 @@ public void GetCaseFolding(uint cf, unichar caseFolding[3])
       caseFolding[0] = ((CaseFoldingKey *)node.key)->character[0];
       caseFolding[1] = ((CaseFoldingKey *)node.key)->character[1];
       caseFolding[2] = ((CaseFoldingKey *)node.key)->character[2];
+   }
+}
+
+public unichar GetDiacriticFolding(uint cf1, uint cf2, uint cf3)
+{
+   DiacriticFoldingKey key { cf1, cf2, cf3 };
+   BTNode node = dataBase.caseFoldings.Find((uintptr) &key);
+   if(node)
+   {
+      unichar diacriticFolding = ((DiacriticFoldingKey *)node.key)->folded;
+      return diacriticFolding;
+   }
+   else
+      return 0;
+}
+
+public void GetKatakanaFolding(uint cf1, uint cf2, uint cf3, unichar katakanaFolding[3])
+{
+   KatakanaFoldingKey key { cf1, cf2, cf3 };
+   BTNode node = dataBase.caseFoldings.Find((uintptr) &key);
+   if(node)
+   {
+      katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
+      katakanaFolding[1] = ((KatakanaFoldingKey *)node.key)->character[1];
+      katakanaFolding[2] = ((KatakanaFoldingKey *)node.key)->character[2];
    }
 }
 
