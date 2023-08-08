@@ -3595,7 +3595,8 @@
             "derivedCombiningClassStripped.txt",
             "decompositionMappings.txt",
             "caseFoldingStripped.txt",
-            "compatibilityDecompositionMappings.txt"
+            "compatibilityDecompositionMappings.txt",
+            "diacriticFolding.txt"
          ],
          "Configurations" : [
             {
