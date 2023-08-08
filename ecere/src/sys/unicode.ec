@@ -389,6 +389,14 @@ static struct CompositionKey
    unichar composed;
 };
 
+static struct DiacriticFoldingKey
+{
+   unichar codePoint1;
+   unichar codePoint2;
+   unichar codePoint3;
+   unichar folded;
+};
+
 static int CompareRange(BinaryTree tree, Range a, Range b)
 {
    if(a.start > b.end)
@@ -452,6 +460,23 @@ static int CompareCompositionKey(BinaryTree tree, CompositionKey a, CompositionK
    else return 0;
 }
 
+static int CompareDiacriticFoldingKey(BinaryTree tree, DiacriticFoldingKey a, DiacriticFoldingKey b)
+{
+   if(a.codePoint1 > b.codePoint1)
+      return 1;
+   else if(a.codePoint1 < b.codePoint1)
+      return -1;
+   else if(a.codePoint2 > b.codePoint2)
+      return 1;
+   else if(a.codePoint2 < b.codePoint2)
+      return -1;
+   else if(a.codePoint3 > b.codePoint3)
+      return 1;
+   else if(a.codePoint3 < b.codePoint3)
+      return -1;
+   else return 0;
+}
+
 static void FreeRange(Range range)
 {
    delete range;
@@ -484,6 +509,11 @@ static void FreeCompatDecompKey(CompatDecompKey key)
 }
 
 static void FreeCompositionKey(CompositionKey key)
+{
+   delete key;
+}
+
+static void FreeDFKey(DiacriticFoldingKey key)
 {
    delete key;
 }
@@ -552,10 +582,16 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeRange;
    };
 
+   BinaryTree diacriticFoldings
+   {
+      CompareKey = (void *)CompareDiacriticFoldingKey;
+      FreeKey = (void *)FreeDFKey;
+   };
+
    UnicodeDatabase()
    {
       File f = FileOpen("<:ecere>unicode/derivedGeneralCategoryStripped.txt", read);
-      File combiningClassFile, caseFoldingFile, decompFile, compatFile;
+      File combiningClassFile, caseFoldingFile, decompFile, compatFile, diacriticFile;
       if(f)
       {
          char line[1024];
@@ -991,6 +1027,63 @@ static class UnicodeDatabase
             }
          }
          delete compatFile;
+      }
+
+      diacriticFile = FileOpen("<:ecere>unicode/diacriticFolding.txt", read);
+      if(diacriticFile)
+      {
+         char line[1024];
+         while(diacriticFile.GetLine(line, 1024))
+         {
+            if(line[0] && line[0] != '#')
+            {
+               char * endPtr;
+               unichar source[3] = { 0 };
+               //unichar codePoint = (uint)strtoul(line, &endPtr, 16);
+               source[0] = (uint)strtoul(line, &endPtr, 16);
+               if(endPtr)
+               {
+                  int i = 0;
+                  while(true)
+                  {
+                     if(*endPtr == ' ')
+                     {
+                     //endPtr = strchr(endPtr, ' ');
+                        uint v;
+                        endPtr++;
+                        v = strtol(endPtr, null, 16);
+                        source[++i] = v;
+                        endPtr +=4;
+                     }
+                     else
+                        break;
+                  }
+                  endPtr = strchr(endPtr, ';');
+                  if(endPtr)
+                  {
+                     //endPtr++;
+                     uint diacriticFolding;
+                     endPtr += 2;
+                     diacriticFolding = strtol(endPtr, null, 16);
+                     if(diacriticFolding > 0)
+                     {
+                        DiacriticFoldingKey k { codePoint1 = source[0], codePoint2 = source[1], codePoint3 = source[2], folded = diacriticFolding };
+                        BTNode node;
+                        node = { key = (uintptr) &k };
+                        if(diacriticFoldings.Add(node))
+                        {
+                           DiacriticFoldingKey * cfPtr = new DiacriticFoldingKey[1];
+                           *cfPtr = k;
+                           node.key = (uintptr)cfPtr;
+                        }
+                        else
+                           delete node;
+                     }
+                  }
+               }
+            }
+         }
+         delete diacriticFile;
       }
 
       // FIXME: Set up a file from CompositionExclusions.txt
