@@ -2826,15 +2826,32 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
 static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = op1.s && op2.s ? !strcmp/*i*/(op1.s, op2.s) : !op1.s && !op2.s ? 1 : 0;
+   if(op1.s && op2.s)
+   {
+      String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+      val.i = !strcmp(s1, s2);
+      delete s1, delete s2;
+   }
+   else if(!op1.s && !op2.s)
+      val.i = 1;
+   else
+      val.i = 0;
    val.type = { type = integer };
    return true;
 }
 
 static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = op1.s && op2.s ? strcmp/*i*/(op1.s, op2.s) : !op1.s && !op2.s ? 0 : 1;
-   val.type = { type = integer };
+   if(op1.s && op2.s)
+   {
+      String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+      val.i = strcmp(s1, s2);
+      delete s1, delete s2;
+   }
+   else if(!op1.s && !op2.s)
+      val.i = 0;
+   else
+      val.i = 1;
    return true;
 }
 
@@ -2851,83 +2868,123 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 // text conditions
 static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-
-   result.i = SearchString(val1.s, 0, val2.s, true, false) != null;
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   result.i = SearchString(s1, 0, s2, true, false) != null;
    result.type = { type = integer };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : !strncmp(val1.s, val2.s, lenSub);
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   int lenStr = strlen(s1), lenSub = strlen(s2);
+   result.i = lenSub > lenStr ? 0 : !strncmp(s1, s2, lenSub);
    result.type = { type = integer };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : !strcmp(val1.s + (lenStr-lenSub), val2.s);
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   int lenStr = strlen(s1), lenSub = strlen(s2);
+   result.i = lenSub > lenStr ? 0 : !strcmp(s1 + (lenStr-lenSub), s2);
    result.type = { type = integer };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-
-   result.i = !SearchString(val1.s, 0, val2.s, true, false);
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   result.i = !SearchString(s1, 0, s2, true, false);
    result.type = { type = integer };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : strncmp(val1.s, val2.s, lenSub) != 0;
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   int lenStr = strlen(s1), lenSub = strlen(s2);
+   result.i = lenSub > lenStr ? 0 : strncmp(s1, s2, lenSub) != 0;
    result.type = { type = integer };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   int lenStr = strlen(val1.s), lenSub = strlen(val2.s);
-   result.i = lenSub > lenStr ? 0 : strcmp(val1.s + (lenStr-lenSub), val2.s) != 0;
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   int lenStr = strlen(s1), lenSub = strlen(s2);
+   result.i = lenSub > lenStr ? 0 : strcmp(s1 + (lenStr-lenSub), s2) != 0;
    result.type = { type = integer };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   result.s = PrintString(val1.s, val2.s);
+   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+   result.s = PrintString(s1, s2);
    result.type = { type = text };
+   delete s1, delete s2;
    return true;
 }
 
 static bool textGrt(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) > 0;
+   if(!(op1.s && op2.s))
+      val.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+      val.i = strcmp(s1, s2) > 0;
+      delete s1, delete s2;
+   }
    val.type = { type = integer };
    return true;
 }
 
 static bool textSma(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) < 0;
+   if(!(op1.s && op2.s))
+      val.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+      val.i = strcmp(s1, s2) < 0;
+      delete s1, delete s2;
+   }
    val.type = { type = integer };
    return true;
 }
 
 static bool textGrtEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) >= 0;
+   if(!(op1.s && op2.s))
+      val.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+      val.i = strcmp(s1, s2) >= 0;
+      delete s1, delete s2;
+   }
    val.type = { type = integer };
    return true;
 }
 
 static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
-   val.i = !(op1.s && op2.s) ? 0 : strcmp(op1.s, op2.s) <= 0;
+   if(!(op1.s && op2.s))
+      val.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+      val.i = strcmp(s1, s2) <= 0;
+      delete s1, delete s2;
+   }
    val.type = { type = integer };
    return true;
 }
