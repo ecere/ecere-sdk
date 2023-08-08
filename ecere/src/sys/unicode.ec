@@ -1203,7 +1203,7 @@ public unichar GetCompositionMapping(unichar ch1, unichar ch2)
 public String accenti(const String string)
 {
    // TODO: Compatibility (NKFD) normalization instead?
-   String normal = normalizeNFD(string);
+   String normal = normalizeNFKD(string);
    String result = stripCategory(normal, Mn);
    // TODO: diacritic folding
    // TODO: kana folding (katakana -> hiragana)
