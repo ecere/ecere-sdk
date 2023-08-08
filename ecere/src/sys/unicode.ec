@@ -1362,8 +1362,8 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
    if(compose)
       composeCanonical(canonicalOrdered);
 
-   result = new char[canonicalOrdered.count * 4 + 1];
-   nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 4);
+   result = new char[canonicalOrdered.count * 5 + 1];
+   nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 5);
    delete canonicalOrdered;
    result = renew result char[nb+1];
    return result;
@@ -1395,7 +1395,7 @@ static void decompose(unichar input, UnicodeDecomposition type, Array<unichar> c
    //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
    int maxCount = (type == { canonical = true }) ? 2 : 18;
 
-   if(input >= 0xAC00 && input <= 0xD7B0)
+   if(input >= 0xAC00 && input < 0xD7B0) //<=
       hangulGetMappings(input, co);
    else
    {
