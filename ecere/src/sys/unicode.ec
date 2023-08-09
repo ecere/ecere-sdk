@@ -1073,7 +1073,7 @@ static class UnicodeDatabase
             if(line[0] && line[0] != '#')
             {
                char * endPtr;
-               unichar source[3] = { 0 };
+               unichar source[3] = { 0, 0, 0 };
                source[0] = (uint)strtoul(line, &endPtr, 16);
                if(endPtr)
                {
@@ -1127,7 +1127,7 @@ static class UnicodeDatabase
             if(line[0] && line[0] != '#')
             {
                char * endPtr;
-               unichar source[3] = { 0 };
+               unichar source[3] = { 0, 0, 0 };
                source[0] = (uint)strtoul(line, &endPtr, 16);
                if(endPtr)
                {
@@ -1146,9 +1146,10 @@ static class UnicodeDatabase
                         break;
                   }
                   endPtr = strchr(endPtr, ';');
+                  i = 0;
                   if(endPtr)
                   {
-                     unichar katakanaFolding[2] = { 0 };
+                     unichar katakanaFolding[3] = { 0, 0, 0 };
                      endPtr += 2;
                      katakanaFolding[0] = strtol(endPtr, null, 16);
                      while(true)
@@ -1342,7 +1343,7 @@ public unichar GetDiacriticFolding(uint codePoint)
       return 0;
 }
 
-public void GetKatakanaFolding(uint cf1, uint cf2, uint cf3, unichar katakanaFolding[3])
+public void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar katakanaFolding[3])
 {
    KatakanaFoldingKey key { cf1, cf2, cf3 };
    BTNode node = dataBase.katakanaFoldings.Find((uintptr) &key);
@@ -1428,15 +1429,17 @@ public unichar GetCompositionMapping(unichar ch1, unichar ch2)
 public String accenti(const String string)
 {
    // TODO: Compatibility (NKFD) normalization instead?
-   String result = null, encoded = null;
+   String result = null, encoded = null, normal2 = null;
    Array<unichar> normal = normalizeNFKDNoEncode(string);
    foldDiacritic(normal);
-   //foldKana(normal);
+   foldKana(normal);
    encoded = encodeArrayToString(normal);
-   result = stripCategory(encoded, Mn);
+   normal2 = normalizeNFKD(encoded);
+   result = stripCategory(normal2, Mn);
    // TODO: kana folding (katakana -> hiragana)
    delete normal;
    delete encoded;
+   delete normal2;
    return result;
 }
 
@@ -1710,70 +1713,51 @@ static void foldKana(Array<unichar> array)
       int i;
       for(i = 0; i< array.count; i++)
       {
-         unichar folded[3] = { 0 };
+         unichar folded[3] = { 0, 0, 0 };
+         int replacingCount = 0;
          if(i + 2 < array.count)
          {
             GetKatakanaFolding(array[i], array[i+1], array[i+2], folded);
             if(folded[0])
-               katakanaFillAndShiftToEmptyElements(2, i, folded, array);
+               replacingCount = 3;
          }
          if(!folded[0] && i + 1 < array.count)
          {
             GetKatakanaFolding(array[i], array[i+1], 0, folded);
             if(folded[0])
-               katakanaFillAndShiftToEmptyElements(1, i, folded, array);
+               replacingCount = 2;
          }
          if(!folded[0])
          {
             GetKatakanaFolding(array[i], 0, 0, folded);
             if(folded[0])
-               katakanaFillAndShiftToEmptyElements(0, i, folded, array);
+               replacingCount = 1;
          }
-      }
-   }
-}
-
-static void katakanaFillAndShiftToEmptyElements(int numSource, int i, unichar folded[3], Array<unichar> array)
-{
-   int j, k, count = 0;
-   bool sizedUp = false;
-   for(k = 2; k >=0; k--)
-   {
-      if(folded[k])
-      {
-         if(numSource < k)
+         if(replacingCount)
          {
-            array.size += (k - numSource);
-            sizedUp = true;
-         }
+            int replacedByCount = folded[2] ? 3 : folded[1] ? 2 : 1;
+            int diffCount = replacingCount - replacedByCount;
 
-         if(i + k + 1 < array.count)
-         {
-            unichar temp = array[i+k];
-            if(sizedUp)
+            if(diffCount >= 0)
             {
-               for(j = array.count-1; j >= (i + k); j--)
+               memcpy(array.array + i, folded, replacedByCount * sizeof(unichar));
+               if(diffCount > 0)
                {
-                  int l = j-1;
-                  unichar a = array[l], b = array[j];
-                  array[j] = a, array[l] = b;
+                  memmove(array.array + i + replacedByCount, array.array + i + replacedByCount + diffCount, sizeof(unichar) * diffCount);
+                  array.count -= diffCount;
+                  i+=diffCount;
                }
-               sizedUp = false;
             }
-            array[i+k] = folded[k];
+            else if(diffCount < 0)
+            {
+               int posDiff = diffCount * -1;
+               array.count += posDiff;
+               memmove(array.array + i + replacedByCount + posDiff, array.array + i + replacedByCount, sizeof(unichar) * posDiff);
+               memcpy(array.array + i, folded, replacedByCount * sizeof(unichar));
+               i+= posDiff+1;
+            }
          }
-         else
-            array[i+k] = folded[k];
-         count = k;
       }
-      /*if(numSource > k)
-      {
-         for(j = i+1; j< array.count; j++)
-         {
-            if(j+1 < array.count)
-               array[j] = array[j+1];
-         }
-      }*/
    }
 }
 
