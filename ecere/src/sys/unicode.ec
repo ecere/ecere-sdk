@@ -1329,10 +1329,10 @@ public void GetCaseFolding(uint cf, unichar caseFolding[3])
    }
 }
 
-public unichar GetDiacriticFolding(uint cf1, uint cf2, uint cf3)
+public unichar GetDiacriticFolding(uint codePoint)
 {
-   DiacriticFoldingKey key { cf1, cf2, cf3 };
-   BTNode node = dataBase.caseFoldings.Find((uintptr) &key);
+   DiacriticFoldingKey key { codePoint };
+   BTNode node = dataBase.diacriticFoldings.Find((uintptr) &key);
    if(node)
    {
       unichar diacriticFolding = ((DiacriticFoldingKey *)node.key)->folded;
@@ -1345,7 +1345,7 @@ public unichar GetDiacriticFolding(uint cf1, uint cf2, uint cf3)
 public void GetKatakanaFolding(uint cf1, uint cf2, uint cf3, unichar katakanaFolding[3])
 {
    KatakanaFoldingKey key { cf1, cf2, cf3 };
-   BTNode node = dataBase.caseFoldings.Find((uintptr) &key);
+   BTNode node = dataBase.katakanaFoldings.Find((uintptr) &key);
    if(node)
    {
       katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
