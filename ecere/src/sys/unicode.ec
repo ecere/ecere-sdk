@@ -1428,11 +1428,15 @@ public unichar GetCompositionMapping(unichar ch1, unichar ch2)
 public String accenti(const String string)
 {
    // TODO: Compatibility (NKFD) normalization instead?
-   String normal = normalizeNFKD(string);
-   String result = stripCategory(normal, Mn);
-   // TODO: diacritic folding
+   String result = null, encoded = null;
+   Array<unichar> normal = normalizeNFKDNoEncode(string);
+   foldDiacritic(normal);
+   //foldKana(normal);
+   encoded = encodeArrayToString(normal);
+   result = stripCategory(encoded, Mn);
    // TODO: kana folding (katakana -> hiragana)
    delete normal;
+   delete encoded;
    return result;
 }
 
@@ -1594,6 +1598,34 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
    return result;
 }
 
+public Array<unichar> normalizeNFKDNoEncode(const String string) // TODO: enum
+{
+   unichar ch;
+   int nb, i;
+   UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
+   bool compose = false;
+   Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
+
+   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+      decompose(ch, type, canonicalOrdered);
+
+   reorderCanonical(canonicalOrdered);
+
+   if(compose)
+      composeCanonical(canonicalOrdered);
+
+   return canonicalOrdered;
+}
+
+public String encodeArrayToString(Array<unichar> array)
+{
+   String result = new char[array.count * 5 + 1];
+   int nb;
+   nb = UTF32toUTF8Len(array.array, array.count, result, array.count * 5);
+   result = renew result char[nb+1];
+   return result;
+}
+
 String stripCategory(const String string, CharCategory c)
 {
    String result = null;
@@ -1654,6 +1686,95 @@ static void hangulGetMappings(unichar ch, Array<unichar> co)
    co.Add(0x1100 + jamoL);
    co.Add(0x1161 + jamoV);
    if(jamoT) co.Add(0x11A7 + jamoT);
+}
+
+static void foldDiacritic(Array<unichar> array)
+{
+   if(array.count)
+   {
+      // NOTE: foldings are 1-1 in this case
+      int i;
+      for(i = 0; i< array.count; i++)
+      {
+         unichar folded = GetDiacriticFolding(array[i]);
+         if(folded)
+            array[i] = folded;
+      }
+   }
+}
+
+static void foldKana(Array<unichar> array)
+{
+   if(array.count)
+   {
+      int i;
+      for(i = 0; i< array.count; i++)
+      {
+         unichar folded[3] = { 0 };
+         if(i + 2 < array.count)
+         {
+            GetKatakanaFolding(array[i], array[i+1], array[i+2], folded);
+            if(folded[0])
+               katakanaFillAndShiftToEmptyElements(2, i, folded, array);
+         }
+         if(!folded[0] && i + 1 < array.count)
+         {
+            GetKatakanaFolding(array[i], array[i+1], 0, folded);
+            if(folded[0])
+               katakanaFillAndShiftToEmptyElements(1, i, folded, array);
+         }
+         if(!folded[0])
+         {
+            GetKatakanaFolding(array[i], 0, 0, folded);
+            if(folded[0])
+               katakanaFillAndShiftToEmptyElements(0, i, folded, array);
+         }
+      }
+   }
+}
+
+static void katakanaFillAndShiftToEmptyElements(int numSource, int i, unichar folded[3], Array<unichar> array)
+{
+   int j, k, count = 0;
+   bool sizedUp = false;
+   for(k = 2; k >=0; k--)
+   {
+      if(folded[k])
+      {
+         if(numSource < k)
+         {
+            array.size += (k - numSource);
+            sizedUp = true;
+         }
+
+         if(i + k + 1 < array.count)
+         {
+            unichar temp = array[i+k];
+            if(sizedUp)
+            {
+               for(j = array.count-1; j >= (i + k); j--)
+               {
+                  int l = j-1;
+                  unichar a = array[l], b = array[j];
+                  array[j] = a, array[l] = b;
+               }
+               sizedUp = false;
+            }
+            array[i+k] = folded[k];
+         }
+         else
+            array[i+k] = folded[k];
+         count = k;
+      }
+      /*if(numSource > k)
+      {
+         for(j = i+1; j< array.count; j++)
+         {
+            if(j+1 < array.count)
+               array[j] = array[j+1];
+         }
+      }*/
+   }
 }
 
 public String casei(const String string)
