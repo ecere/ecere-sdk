@@ -402,7 +402,8 @@ static struct KatakanaFoldingKey
    unichar codePoint1;
    unichar codePoint2;
    unichar codePoint3;
-   unichar character[3];
+   unichar codePoint4;
+   unichar character[4];
 };
 
 static int CompareRange(BinaryTree tree, Range a, Range b)
@@ -498,6 +499,10 @@ static int CompareKatakanaFoldingKey(BinaryTree tree, KatakanaFoldingKey a, Kata
    else if(a.codePoint3 > b.codePoint3)
       return 1;
    else if(a.codePoint3 < b.codePoint3)
+      return -1;
+   else if(a.codePoint4 > b.codePoint4)
+      return 1;
+   else if(a.codePoint4 < b.codePoint4)
       return -1;
    else return 0;
 }
@@ -1173,11 +1178,19 @@ static class UnicodeDatabase
                      }
                      normalizedCodepoints = normalizeNFKDOnLoad(source);
                      normalizedFoldings = normalizeNFKDOnLoad(katakanaFolding);
-                     if(katakanaFolding[0] > 0 && normalizedCodepoints && normalizedFoldings)
+                     if(normalizedCodepoints.count && normalizedFoldings.count)
                      {
-                        KatakanaFoldingKey k { codePoint1 = normalizedCodepoints[0], codePoint2 = normalizedCodepoints[1], codePoint3 = normalizedCodepoints[2] };
+                        KatakanaFoldingKey k { };
                         BTNode node;
-                        k.character[0] = normalizedFoldings[0], k.character[1] = normalizedFoldings[1], k.character[2] = normalizedFoldings[2];
+                        k.codePoint1 = normalizedCodepoints[0];
+                        k.codePoint2 = normalizedCodepoints.count > 1 ? normalizedCodepoints[1] : 0;
+                        k.codePoint3 = normalizedCodepoints.count > 2 ? normalizedCodepoints[2] : 0;
+                        k.codePoint4 = normalizedCodepoints.count > 3 ? normalizedCodepoints[3] : 0;
+                        for(i = 0; i< normalizedFoldings.count; i++)
+                        {
+                           //if(normalizedFoldings.count > i+1)
+                              k.character[i] = normalizedFoldings[i];
+                        }
                         node = { key = (uintptr) &k };
                         if(katakanaFoldings.Add(node))
                         {
@@ -1292,15 +1305,16 @@ static class UnicodeDatabase
          return 0;
    }
 
-   public void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar katakanaFolding[3])
+   public void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar cf4, unichar katakanaFolding[4])
    {
-      KatakanaFoldingKey key { cf1, cf2, cf3 };
+      KatakanaFoldingKey key { cf1, cf2, cf3, cf4 };
       BTNode node = katakanaFoldings.Find((uintptr) &key);
       if(node)
       {
          katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
          katakanaFolding[1] = ((KatakanaFoldingKey *)node.key)->character[1];
          katakanaFolding[2] = ((KatakanaFoldingKey *)node.key)->character[2];
+         katakanaFolding[3] = ((KatakanaFoldingKey *)node.key)->character[3];
       }
    }
 
@@ -1389,7 +1403,10 @@ static class UnicodeDatabase
       UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
       Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
       for(i = 0; i < 3; i++)
-         decompose(array[i], type, canonicalOrdered);
+      {
+         if(array[i])
+            decompose(array[i], type, canonicalOrdered);
+      }
       reorderCanonical(canonicalOrdered);
       return canonicalOrdered;
    }
@@ -1752,29 +1769,35 @@ static void foldKana(Array<unichar> array)
       int i;
       for(i = 0; i< array.count; i++)
       {
-         unichar folded[3] = { 0, 0, 0 };
+         unichar folded[4] = { 0, 0, 0, 0 };
          int replacingCount = 0;
+         if(i + 3 < array.count)
+         {
+            dataBase.GetKatakanaFolding(array[i], array[i+1], array[i+2], array[i+3], folded);
+            if(folded[0])
+               replacingCount = 4;
+         }
          if(i + 2 < array.count)
          {
-            dataBase.GetKatakanaFolding(array[i], array[i+1], array[i+2], folded);
+            dataBase.GetKatakanaFolding(array[i], array[i+1], array[i+2], 0, folded);
             if(folded[0])
                replacingCount = 3;
          }
          if(!folded[0] && i + 1 < array.count)
          {
-            dataBase.GetKatakanaFolding(array[i], array[i+1], 0, folded);
+            dataBase.GetKatakanaFolding(array[i], array[i+1], 0, 0, folded);
             if(folded[0])
                replacingCount = 2;
          }
          if(!folded[0])
          {
-            dataBase.GetKatakanaFolding(array[i], 0, 0, folded);
+            dataBase.GetKatakanaFolding(array[i], 0, 0, 0, folded);
             if(folded[0])
                replacingCount = 1;
          }
          if(replacingCount)
          {
-            int replacedByCount = folded[2] ? 3 : folded[1] ? 2 : 1;
+            int replacedByCount = folded[3] ? 4 : folded[2] ? 3 : folded[1] ? 2 : 1;
             int diffCount = replacingCount - replacedByCount;
 
             if(diffCount >= 0)
