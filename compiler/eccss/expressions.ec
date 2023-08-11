@@ -2868,68 +2868,103 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 // text conditions
 static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   result.i = SearchString(s1, 0, s2, true, false) != null;
+   if(!(val1.s && val2.s))
+      result.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      result.i = SearchString(s1, 0, s2, true, false) != null;
+      delete s1, delete s2;
+   }
    result.type = { type = integer };
-   delete s1, delete s2;
    return true;
 }
 
 static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   int lenStr = strlen(s1), lenSub = strlen(s2);
-   result.i = lenSub > lenStr ? 0 : !strncmp(s1, s2, lenSub);
+   if(!(val1.s && val2.s))
+      result.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      int lenStr = strlen(s1), lenSub = strlen(s2);
+      result.i = lenSub > lenStr ? 0 : !strncmp(s1, s2, lenSub);
+      delete s1, delete s2;
+   }
    result.type = { type = integer };
-   delete s1, delete s2;
    return true;
 }
 
 static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   int lenStr = strlen(s1), lenSub = strlen(s2);
-   result.i = lenSub > lenStr ? 0 : !strcmp(s1 + (lenStr-lenSub), s2);
+   if(!(val1.s && val2.s))
+      result.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      int lenStr = strlen(s1), lenSub = strlen(s2);
+      result.i = lenSub > lenStr ? 0 : !strcmp(s1 + (lenStr-lenSub), s2);
+      delete s1, delete s2;
+   }
    result.type = { type = integer };
-   delete s1, delete s2;
    return true;
 }
 
 static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   result.i = !SearchString(s1, 0, s2, true, false);
+   if(!(val1.s && val2.s))
+      result.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      result.i = !SearchString(s1, 0, s2, true, false);
+      delete s1, delete s2;
+   }
    result.type = { type = integer };
-   delete s1, delete s2;
    return true;
 }
 
 static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   int lenStr = strlen(s1), lenSub = strlen(s2);
-   result.i = lenSub > lenStr ? 0 : strncmp(s1, s2, lenSub) != 0;
+   if(!(val1.s && val2.s))
+      result.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      int lenStr = strlen(s1), lenSub = strlen(s2);
+      result.i = lenSub > lenStr ? 0 : strncmp(s1, s2, lenSub) != 0;
+      delete s1, delete s2;
+   }
    result.type = { type = integer };
-   delete s1, delete s2;
    return true;
 }
 
 static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   int lenStr = strlen(s1), lenSub = strlen(s2);
-   result.i = lenSub > lenStr ? 0 : strcmp(s1 + (lenStr-lenSub), s2) != 0;
+   if(!(val1.s && val2.s))
+      result.i = 0;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      int lenStr = strlen(s1), lenSub = strlen(s2);
+      result.i = lenSub > lenStr ? 0 : strcmp(s1 + (lenStr-lenSub), s2) != 0;
+      delete s1, delete s2;
+   }
    result.type = { type = integer };
-   delete s1, delete s2;
    return true;
 }
 
 static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-   result.s = PrintString(s1, s2);
    result.type = { type = text };
-   delete s1, delete s2;
+   if(!(val1.s && val2.s))
+      result.s = null;
+   else
+   {
+      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+      result.s = PrintString(s1, s2);
+      delete s1, delete s2;
+   }
    return true;
 }
 

@@ -1638,13 +1638,17 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
 {
    unichar ch;
    int nb, i, numCodepoints = 0;
-   Array<unichar> canonicalOrdered { /*minAllocSize = size*/ }; // number of codepoints * 4 ?
+   Array<unichar> canonicalOrdered;// { /*minAllocSize = size*/ }; // number of codepoints * 4 ?
    String result;
 
    /*for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       numCodepoints++;
    canonicalOrdered.minAllocSize = numCodepoints * 4;
    nb = 0;*/
+
+   if(!string)
+      return null;
+   canonicalOrdered = { };
 
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       dataBase.decompose(ch, type, canonicalOrdered);
@@ -1665,11 +1669,15 @@ public Array<unichar> normalizeNFKDNoEncode(const String string) // TODO: enum
    unichar ch;
    int nb, i, numCodepoints = 0;
    UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
-   Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
+   Array<unichar> canonicalOrdered;//{ }; // minAllocSize = strlen(string) * 4
    /*for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       numCodepoints++;
    nb = 0;
    canonicalOrdered.minAllocSize = numCodepoints * 4;*/
+   if(!string)
+      return null;
+   canonicalOrdered = { };
+
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       dataBase.decompose(ch, type, canonicalOrdered);
    dataBase.reorderCanonical(canonicalOrdered);
@@ -1796,9 +1804,12 @@ public String casei(const String string)
 {
    // case folding
    String result = null;
-   int len = strlen(string);
+   int len;
    unichar ch;
    int nb = 1, o, outPosition = 0; //i = 0,
+   if(!string)
+      return null;
+   len = strlen(string);
    result = new char[len * 3*4 + 1];
 
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
