@@ -1150,6 +1150,7 @@ static class UnicodeDatabase
                   if(endPtr)
                   {
                      unichar katakanaFolding[3] = { 0, 0, 0 };
+                     Array<unichar> normalizedCodepoints = null, normalizedFoldings = null;
                      endPtr += 2;
                      katakanaFolding[0] = strtol(endPtr, null, 16);
                      while(true)
@@ -1170,11 +1171,13 @@ static class UnicodeDatabase
                         else
                            break;
                      }
-                     if(katakanaFolding[0] > 0)
+                     normalizedCodepoints = normalizeNFKDOnLoad(source);
+                     normalizedFoldings = normalizeNFKDOnLoad(katakanaFolding);
+                     if(katakanaFolding[0] > 0 && normalizedCodepoints && normalizedFoldings)
                      {
-                        KatakanaFoldingKey k { codePoint1 = source[0], codePoint2 = source[1], codePoint3 = source[2] };
+                        KatakanaFoldingKey k { codePoint1 = normalizedCodepoints[0], codePoint2 = normalizedCodepoints[1], codePoint3 = normalizedCodepoints[2] };
                         BTNode node;
-                        k.character[0] = katakanaFolding[0], k.character[1] = katakanaFolding[1], k.character[2] = katakanaFolding[2];
+                        k.character[0] = normalizedFoldings[0], k.character[1] = normalizedFoldings[1], k.character[2] = normalizedFoldings[2];
                         node = { key = (uintptr) &k };
                         if(katakanaFoldings.Add(node))
                         {
@@ -1185,6 +1188,7 @@ static class UnicodeDatabase
                         else
                            delete node;
                      }
+                     delete normalizedCodepoints, delete normalizedFoldings;
                   }
                }
             }
@@ -1217,6 +1221,237 @@ static class UnicodeDatabase
       addRange(compositionExclusions, { 0x2D800, 0x2DA1D });
    }
 
+   public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, UnicodeDecomposition type)
+   {
+      bool result = false;
+      CompatDecompKey key { ch };
+      BTNode node = compatibilityDecompMappings.Find((uintptr) &key);
+      int i;
+      int maxCount = (type == { canonical = true }) ? 2 : 18;
+      if(node && ((CompatDecompKey *)node.key)->type & type)
+      {
+         for(i = 0; i < maxCount; i++)
+            mapping[i] = ((CompatDecompKey *)node.key)->character[i];
+         result = true;
+      }
+      else
+      {
+         for(i = 0; i < maxCount; i++)
+            mapping[i] = 0;
+      }
+      return result;
+   }
+
+   public CharCategory GetCharCategory(unichar ch)
+   {
+      if(ch < 128)
+         return asciiCategories[ch];
+      else
+      {
+         CharCategory category = none;
+         Range range { ch, ch };
+         BTNode node = categories.Find((uintptr) &range);
+         if(node)
+            category = ((Range *)node.key)->category;
+         return category;
+      }
+   }
+
+   public uint GetCombiningClass(uint cc)
+   {
+      uint cclass = 0;
+      RangeCC range { cc, cc };
+      BTNode node = combiningClasses.Find((uintptr) &range);
+      if(node)
+         cclass = ((RangeCC *)node.key)->cclass;
+      return cclass;
+   }
+
+   public void GetCaseFolding(uint cf, unichar caseFolding[3])
+   {
+      CaseFoldingKey key { cf };
+      BTNode node = caseFoldings.Find((uintptr) &key);
+      if(node)
+      {
+         caseFolding[0] = ((CaseFoldingKey *)node.key)->character[0];
+         caseFolding[1] = ((CaseFoldingKey *)node.key)->character[1];
+         caseFolding[2] = ((CaseFoldingKey *)node.key)->character[2];
+      }
+   }
+
+   public unichar GetDiacriticFolding(uint codePoint)
+   {
+      DiacriticFoldingKey key { codePoint };
+      BTNode node = diacriticFoldings.Find((uintptr) &key);
+      if(node)
+      {
+         unichar diacriticFolding = ((DiacriticFoldingKey *)node.key)->folded;
+         return diacriticFolding;
+      }
+      else
+         return 0;
+   }
+
+   public void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar katakanaFolding[3])
+   {
+      KatakanaFoldingKey key { cf1, cf2, cf3 };
+      BTNode node = katakanaFoldings.Find((uintptr) &key);
+      if(node)
+      {
+         katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
+         katakanaFolding[1] = ((KatakanaFoldingKey *)node.key)->character[1];
+         katakanaFolding[2] = ((KatakanaFoldingKey *)node.key)->character[2];
+      }
+   }
+
+   public bool GetDecompositionMapping(unichar ch, unichar * mapping)
+   {
+      bool result = false;
+      DecompKey key { ch };
+      BTNode node = decompositionMappings.Find((uintptr) &key);
+      int i;
+      if(node)
+      {
+         mapping[0] = ((DecompKey *)node.key)->character[0];
+         mapping[1] = ((DecompKey *)node.key)->character[1];
+         for(i = 2; i < 7; i++)
+            mapping[i] = 0;
+         result = true;
+      }
+      else
+      {
+         for(i = 0; i < 7; i++)
+            mapping[i] = 0;
+      }
+      return result;
+   }
+
+   public unichar GetCompositionMapping(unichar ch1, unichar ch2)
+   {
+      // Leading and Vowel jamos combination
+      if(ch1 >= 0x1100 && ch1 <= 0x1112 && ch2 >= 0x1161 && ch2 <= 0x1175)
+      {
+         uint l = ch1 - 0x1100;
+         uint v = ch2 - 0x1161;
+         return 0xAC00 + 28 * (l * 21 + v);
+      }
+      // Leading+Vowel jamo + Trailing jamo combination
+      else if(ch1 >= 0xAC00 && ch1 <= 0xAC00 + 28 * (18 * 21 + 20) && ch2 >= 0x11A8 && ch2 <= 0x11C3 && !((ch1 - 0xAC00) % 28))
+         return ch1 + (ch2 - 0x11A8) + 1;
+      else
+      {
+         CompositionKey key { ch1, ch2 };
+         BTNode node = dataBase.compositionMappings.Find((uintptr) &key);
+         unichar ch = node ? ((CompositionKey *)node.key)->composed : 0;
+         if(ch)
+         {
+            Range range { ch, ch };
+            if(dataBase.compositionExclusions.Find((uintptr) &range))
+               ch = 0;
+         }
+         return ch;
+      }
+   }
+
+   void decompose(unichar input, UnicodeDecomposition type, Array<unichar> co)
+   {
+      bool result = false;
+      unichar decompMapping[18];
+      int i;
+      //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
+      int maxCount = (type == { canonical = true }) ? 2 : 18;
+
+      if(input >= 0xAC00 && input < 0xD7B0) //<=
+         hangulGetMappings(input, co);
+      else
+      {
+         GetCompatDecompositionMapping(input, decompMapping, type);
+         for(i = 0; i < maxCount; i++)
+         {
+            unichar ch = decompMapping[i];
+            if(ch)
+            {
+               decompose(ch, type, co);
+               result = true;
+            }
+            else
+               break;
+         }
+         if(!result)
+            co.Add(input);
+      }
+   }
+
+   public Array<unichar> normalizeNFKDOnLoad(unichar array[3]) // TODO: enum
+   {
+      unichar ch;
+      int nb, i;
+      UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
+      Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
+      for(i = 0; i < 3; i++)
+         decompose(array[i], type, canonicalOrdered);
+      reorderCanonical(canonicalOrdered);
+      return canonicalOrdered;
+   }
+
+   void reorderCanonical(Array<unichar> canonicalOrdered)
+   {
+      int i, start = -1;
+      int count = canonicalOrdered.count;
+
+      for(i = 0; i <= count; i++)
+      {
+         uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
+
+         if(!a)
+         {
+            if(start != -1 && i > start + 1)
+            {
+               #if 0
+               int k;
+               Print("Before: ");
+               for(k = start; k < i; k++)
+                  Print((uintptr)canonicalOrdered[k], '(', GetCombiningClass(canonicalOrdered[k]), ") ");
+               PrintLn("");
+               #endif
+
+               bubbleSortCombiningClasses(canonicalOrdered.array + start, i - start);
+
+               #if 0
+               Print("After: ");
+               for(k = start; k < i; k++)
+                  Print((uintptr)canonicalOrdered[k], '(', GetCombiningClass(canonicalOrdered[k]), ") ");
+               PrintLn("");
+               #endif
+            }
+            start = -1;
+         }
+         else if(start == -1)
+            start = i;
+      }
+   }
+
+   void bubbleSortCombiningClasses(unichar * array, int count)
+   {
+      int n = count;
+      while(n > 1)
+      {
+         int i, nn = 0;
+         for(i = 1; i < n; i++)
+         {
+            int j = i-1;
+            unichar a = array[j], b = array[i];
+            uint ca = GetCombiningClass(a), cb = GetCombiningClass(b);
+            if(ca > cb)
+            {
+               array[i] = a, array[j] = b;
+               nn = i;
+            }
+         }
+         n = nn;
+      }
+   }
+
    ~UnicodeDatabase()
    {
       categories.Free();
@@ -1246,25 +1481,10 @@ static void addRange(BinaryTree tree, Range r)
 
 static UnicodeDatabase dataBase { };
 
-public CharCategory GetCharCategory(unichar ch)
-{
-   if(ch < 128)
-      return asciiCategories[ch];
-   else
-   {
-      CharCategory category = none;
-      Range range { ch, ch };
-      BTNode node = dataBase.categories.Find((uintptr) &range);
-      if(node)
-         category = ((Range *)node.key)->category;
-      return category;
-   }
-}
-
 public bool CharMatchCategories(unichar ch, CharCategories categories)
 {
    bool result = false;
-   CharCategory category = GetCharCategory(ch);
+   CharCategory category = dataBase.GetCharCategory(ch);
    switch(category)
    {
       case none:                 result = categories.none;                 break;
@@ -1308,160 +1528,17 @@ public bool CharMatchCategories(unichar ch, CharCategories categories)
    return result;
 }
 
-public uint GetCombiningClass(uint cc)
-{
-   uint cclass = 0;
-   RangeCC range { cc, cc };
-   BTNode node = dataBase.combiningClasses.Find((uintptr) &range);
-   if(node)
-      cclass = ((RangeCC *)node.key)->cclass;
-   return cclass;
-}
-
-public void GetCaseFolding(uint cf, unichar caseFolding[3])
-{
-   CaseFoldingKey key { cf };
-   BTNode node = dataBase.caseFoldings.Find((uintptr) &key);
-   if(node)
-   {
-      caseFolding[0] = ((CaseFoldingKey *)node.key)->character[0];
-      caseFolding[1] = ((CaseFoldingKey *)node.key)->character[1];
-      caseFolding[2] = ((CaseFoldingKey *)node.key)->character[2];
-   }
-}
-
-public unichar GetDiacriticFolding(uint codePoint)
-{
-   DiacriticFoldingKey key { codePoint };
-   BTNode node = dataBase.diacriticFoldings.Find((uintptr) &key);
-   if(node)
-   {
-      unichar diacriticFolding = ((DiacriticFoldingKey *)node.key)->folded;
-      return diacriticFolding;
-   }
-   else
-      return 0;
-}
-
-public void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar katakanaFolding[3])
-{
-   KatakanaFoldingKey key { cf1, cf2, cf3 };
-   BTNode node = dataBase.katakanaFoldings.Find((uintptr) &key);
-   if(node)
-   {
-      katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
-      katakanaFolding[1] = ((KatakanaFoldingKey *)node.key)->character[1];
-      katakanaFolding[2] = ((KatakanaFoldingKey *)node.key)->character[2];
-   }
-}
-
-public bool GetDecompositionMapping(unichar ch, unichar * mapping)
-{
-   bool result = false;
-   DecompKey key { ch };
-   BTNode node = dataBase.decompositionMappings.Find((uintptr) &key);
-   int i;
-   if(node)
-   {
-      mapping[0] = ((DecompKey *)node.key)->character[0];
-      mapping[1] = ((DecompKey *)node.key)->character[1];
-      for(i = 2; i < 7; i++)
-         mapping[i] = 0;
-      result = true;
-   }
-   else
-   {
-      for(i = 0; i < 7; i++)
-         mapping[i] = 0;
-   }
-   return result;
-}
-
-public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, UnicodeDecomposition type)
-{
-   bool result = false;
-   CompatDecompKey key { ch };
-   BTNode node = dataBase.compatibilityDecompMappings.Find((uintptr) &key);
-   int i;
-   int maxCount = (type == { canonical = true }) ? 2 : 18;
-   if(node && ((CompatDecompKey *)node.key)->type & type)
-   {
-      for(i = 0; i < maxCount; i++)
-         mapping[i] = ((CompatDecompKey *)node.key)->character[i];
-      result = true;
-   }
-   else
-   {
-      for(i = 0; i < maxCount; i++)
-         mapping[i] = 0;
-   }
-   return result;
-}
-
-public unichar GetCompositionMapping(unichar ch1, unichar ch2)
-{
-   // Leading and Vowel jamos combination
-   if(ch1 >= 0x1100 && ch1 <= 0x1112 && ch2 >= 0x1161 && ch2 <= 0x1175)
-   {
-      uint l = ch1 - 0x1100;
-      uint v = ch2 - 0x1161;
-      return 0xAC00 + 28 * (l * 21 + v);
-   }
-   // Leading+Vowel jamo + Trailing jamo combination
-   else if(ch1 >= 0xAC00 && ch1 <= 0xAC00 + 28 * (18 * 21 + 20) && ch2 >= 0x11A8 && ch2 <= 0x11C3 && !((ch1 - 0xAC00) % 28))
-      return ch1 + (ch2 - 0x11A8) + 1;
-   else
-   {
-      CompositionKey key { ch1, ch2 };
-      BTNode node = dataBase.compositionMappings.Find((uintptr) &key);
-      unichar ch = node ? ((CompositionKey *)node.key)->composed : 0;
-      if(ch)
-      {
-         Range range { ch, ch };
-         if(dataBase.compositionExclusions.Find((uintptr) &range))
-            ch = 0;
-      }
-      return ch;
-   }
-}
-
 // Recursively replace by decompositionmapping then bubble-sort sequences of non-0 combining chars
 public String accenti(const String string)
 {
-   // TODO: Compatibility (NKFD) normalization instead?
-   String result = null, encoded = null, normal2 = null;
+   String result = null;
    Array<unichar> normal = normalizeNFKDNoEncode(string);
+   stripCategory(normal, Mn); // no string
    foldDiacritic(normal);
    foldKana(normal);
-   encoded = encodeArrayToString(normal);
-   normal2 = normalizeNFKD(encoded);
-   result = stripCategory(normal2, Mn);
-   // TODO: kana folding (katakana -> hiragana)
+   result = encodeArrayToString(normal);
    delete normal;
-   delete encoded;
-   delete normal2;
    return result;
-}
-
-static void bubbleSortCombiningClasses(unichar * array, int count)
-{
-   int n = count;
-   while(n > 1)
-   {
-      int i, nn = 0;
-      for(i = 1; i < n; i++)
-      {
-         int j = i-1;
-         unichar a = array[j], b = array[i];
-         uint ca = GetCombiningClass(a), cb = GetCombiningClass(b);
-         if(ca > cb)
-         {
-            array[i] = a, array[j] = b;
-            nn = i;
-         }
-      }
-      n = nn;
-   }
 }
 
 static void composeCanonical(Array<unichar> array)
@@ -1470,19 +1547,19 @@ static void composeCanonical(Array<unichar> array)
    {
       unichar curChar = array[0], starterCh = 0;
       int i = 0, j = 0, starterJ = -1;
-      uint lastCombiningClass = GetCombiningClass(curChar);
+      uint lastCombiningClass = dataBase.GetCombiningClass(curChar);
 
       if(lastCombiningClass == 0) // This first character is a starter character
          starterCh = curChar, starterJ = j;
 
       for(i = 1; i < array.count; i++)
       {
-         unichar nextChar = array[i], c = GetCompositionMapping(curChar, nextChar);
+         unichar nextChar = array[i], c = dataBase.GetCompositionMapping(curChar, nextChar);
 
          if(c)
          {
             // Combining two consecutive characters
-            int cc = GetCombiningClass(c);
+            int cc = dataBase.GetCombiningClass(c);
 
             array[j] = curChar = c;
             if(cc == 0) // The newly composed character is our new starter character
@@ -1490,13 +1567,13 @@ static void composeCanonical(Array<unichar> array)
          }
          else
          {
-            uint cc = GetCombiningClass(nextChar);
+            uint cc = dataBase.GetCombiningClass(nextChar);
 
             if(starterJ != -1 && starterJ != j && cc != lastCombiningClass)
             {
                // If we have a starter character and we did not keep a combining character
                // of the same class that did not compose to our left
-               c = GetCompositionMapping(starterCh, nextChar);
+               c = dataBase.GetCompositionMapping(starterCh, nextChar);
                if(!c)
                   lastCombiningClass = cc; // This character did not combine --
                      // We will not attempt to combine any other character of the
@@ -1518,41 +1595,19 @@ static void composeCanonical(Array<unichar> array)
    }
 }
 
-static void reorderCanonical(Array<unichar> canonicalOrdered)
+//reference: http://www.unicode.org/versions/Unicode9.0.0/ch03.pdf
+// https://stackoverflow.com/questions/41309402/breaking-down-a-hangul-syllable-into-letters-jamo
+static void hangulGetMappings(unichar ch, Array<unichar> co)
 {
-   int i, start = -1;
-   int count = canonicalOrdered.count;
+   uint syllable = ch - 0xAC00;
+   uint jamoT = syllable % 28, jamoV, jamoL;
+   syllable /= 28;
+   jamoV = syllable % 21;
+   jamoL = syllable / 21;
 
-   for(i = 0; i <= count; i++)
-   {
-      uint a = i == count ? 0 : GetCombiningClass(canonicalOrdered[i]);
-
-      if(!a)
-      {
-         if(start != -1 && i > start + 1)
-         {
-            #if 0
-            int k;
-            Print("Before: ");
-            for(k = start; k < i; k++)
-               Print((uintptr)canonicalOrdered[k], '(', GetCombiningClass(canonicalOrdered[k]), ") ");
-            PrintLn("");
-            #endif
-
-            bubbleSortCombiningClasses(canonicalOrdered.array + start, i - start);
-
-            #if 0
-            Print("After: ");
-            for(k = start; k < i; k++)
-               Print((uintptr)canonicalOrdered[k], '(', GetCombiningClass(canonicalOrdered[k]), ") ");
-            PrintLn("");
-            #endif
-         }
-         start = -1;
-      }
-      else if(start == -1)
-         start = i;
-   }
+   co.Add(0x1100 + jamoL);
+   co.Add(0x1161 + jamoV);
+   if(jamoT) co.Add(0x11A7 + jamoT);
 }
 
 public String normalizeNFD(const String string) // TODO: enum
@@ -1582,15 +1637,19 @@ public String normalizeNFKC(const String string) // TODO: enum
 public String normalize(const String string, UnicodeDecomposition type, bool compose) // TODO: enum
 {
    unichar ch;
-   int nb, i;
-   Array<unichar> canonicalOrdered { };
+   int nb, i, numCodepoints = 0;
+   Array<unichar> canonicalOrdered { /*minAllocSize = size*/ }; // number of codepoints * 4 ?
    String result;
 
+   /*for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+      numCodepoints++;
+   canonicalOrdered.minAllocSize = numCodepoints * 4;
+   nb = 0;*/
+
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      decompose(ch, type, canonicalOrdered);
+      dataBase.decompose(ch, type, canonicalOrdered);
 
-   reorderCanonical(canonicalOrdered);
-
+   dataBase.reorderCanonical(canonicalOrdered);
    if(compose)
       composeCanonical(canonicalOrdered);
 
@@ -1604,19 +1663,16 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
 public Array<unichar> normalizeNFKDNoEncode(const String string) // TODO: enum
 {
    unichar ch;
-   int nb, i;
+   int nb, i, numCodepoints = 0;
    UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
-   bool compose = false;
    Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
-
+   /*for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+      numCodepoints++;
+   nb = 0;
+   canonicalOrdered.minAllocSize = numCodepoints * 4;*/
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      decompose(ch, type, canonicalOrdered);
-
-   reorderCanonical(canonicalOrdered);
-
-   if(compose)
-      composeCanonical(canonicalOrdered);
-
+      dataBase.decompose(ch, type, canonicalOrdered);
+   dataBase.reorderCanonical(canonicalOrdered);
    return canonicalOrdered;
 }
 
@@ -1629,7 +1685,8 @@ public String encodeArrayToString(Array<unichar> array)
    return result;
 }
 
-String stripCategory(const String string, CharCategory c)
+// would this ever be useful?
+public String stripCategoryString(const String string, CharCategory c)
 {
    String result = null;
    int len = strlen(string);
@@ -1639,7 +1696,7 @@ String stripCategory(const String string, CharCategory c)
    result = new char[len+1];
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
    {
-      if(GetCharCategory(ch) != c) // markNonSpacing
+      if(dataBase.GetCharCategory(ch) != c) // markNonSpacing
          outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
    }
    result = renew result char[outPosition + 1];
@@ -1647,48 +1704,22 @@ String stripCategory(const String string, CharCategory c)
    return result;
 }
 
-static void decompose(unichar input, UnicodeDecomposition type, Array<unichar> co)
+static void stripCategory(Array<unichar> array, CharCategory c)
 {
-   bool result = false;
-   unichar decompMapping[18];
    int i;
-   //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
-   int maxCount = (type == { canonical = true }) ? 2 : 18;
-
-   if(input >= 0xAC00 && input < 0xD7B0) //<=
-      hangulGetMappings(input, co);
-   else
+   unichar ch = 0;
+   for(i = 0; i < array.count; i++)
    {
-      GetCompatDecompositionMapping(input, decompMapping, type);
-      for(i = 0; i < maxCount; i++)
+      if(dataBase.GetCharCategory(ch) == c) // markNonSpacing
       {
-         unichar ch = decompMapping[i];
-         if(ch)
+         if(i < array.count-1)
          {
-            decompose(ch, type, co);
-            result = true;
+            int diff = array.count - 1 - i;
+            memmove(array.array + i, array.array + i + 1, sizeof(unichar) * diff);
          }
-         else
-            break;
+         array.size-=1;
       }
-      if(!result)
-         co.Add(input);
    }
-}
-
-//reference: http://www.unicode.org/versions/Unicode9.0.0/ch03.pdf
-// https://stackoverflow.com/questions/41309402/breaking-down-a-hangul-syllable-into-letters-jamo
-static void hangulGetMappings(unichar ch, Array<unichar> co)
-{
-   uint syllable = ch - 0xAC00;
-   uint jamoT = syllable % 28, jamoV, jamoL;
-   syllable /= 28;
-   jamoV = syllable % 21;
-   jamoL = syllable / 21;
-
-   co.Add(0x1100 + jamoL);
-   co.Add(0x1161 + jamoV);
-   if(jamoT) co.Add(0x11A7 + jamoT);
 }
 
 static void foldDiacritic(Array<unichar> array)
@@ -1699,7 +1730,7 @@ static void foldDiacritic(Array<unichar> array)
       int i;
       for(i = 0; i< array.count; i++)
       {
-         unichar folded = GetDiacriticFolding(array[i]);
+         unichar folded = dataBase.GetDiacriticFolding(array[i]);
          if(folded)
             array[i] = folded;
       }
@@ -1717,19 +1748,19 @@ static void foldKana(Array<unichar> array)
          int replacingCount = 0;
          if(i + 2 < array.count)
          {
-            GetKatakanaFolding(array[i], array[i+1], array[i+2], folded);
+            dataBase.GetKatakanaFolding(array[i], array[i+1], array[i+2], folded);
             if(folded[0])
                replacingCount = 3;
          }
          if(!folded[0] && i + 1 < array.count)
          {
-            GetKatakanaFolding(array[i], array[i+1], 0, folded);
+            dataBase.GetKatakanaFolding(array[i], array[i+1], 0, folded);
             if(folded[0])
                replacingCount = 2;
          }
          if(!folded[0])
          {
-            GetKatakanaFolding(array[i], 0, 0, folded);
+            dataBase.GetKatakanaFolding(array[i], 0, 0, folded);
             if(folded[0])
                replacingCount = 1;
          }
@@ -1773,7 +1804,7 @@ public String casei(const String string)
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
    {
       unichar caseFolding[3] = { 0, 0, 0};
-      GetCaseFolding(ch, caseFolding);
+      dataBase.GetCaseFolding(ch, caseFolding);
       if(caseFolding[0] > 0)
          outPosition += UTF32toUTF8Len(&caseFolding[0], 1, result + outPosition, 5);
       else
