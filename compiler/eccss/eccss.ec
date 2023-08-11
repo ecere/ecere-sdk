@@ -423,7 +423,7 @@ public struct ECCSSEvaluator
                      int replacedLen = strlen(args[1].s);
                      int replacingLen = strlen(args[2].s);
                      int remainingLen = len - startLen - replacedLen;
-                     value.s = new char[startLen + replacingLen + 1];
+                     value.s = new char[startLen + replacingLen + remainingLen + 1];
                      memcpy(value.s, args[0].s, startLen);
                      memcpy(value.s + startLen, args[2].s, replacingLen);
                      memcpy(value.s + startLen + replacingLen, args[0].s + startLen + replacedLen, remainingLen);
