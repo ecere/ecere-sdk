@@ -1398,10 +1398,9 @@ static class UnicodeDatabase
 
    public Array<unichar> normalizeNFKDOnLoad(unichar array[3]) // TODO: enum
    {
-      unichar ch;
-      int nb, i;
+      int i;
       UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
-      Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
+      Array<unichar> canonicalOrdered { minAllocSize = 4 * sizeof(unichar) }; // minAllocSize = strlen(string) * 4
       for(i = 0; i < 3; i++)
       {
          if(array[i])
@@ -1655,17 +1654,17 @@ public String normalize(const String string, UnicodeDecomposition type, bool com
 {
    unichar ch;
    int nb, i, numCodepoints = 0;
-   Array<unichar> canonicalOrdered;// { /*minAllocSize = size*/ }; // number of codepoints * 4 ?
+   Array<unichar> canonicalOrdered { /*minAllocSize = size*/ }; // number of codepoints * 4 ?
    String result;
 
-   /*for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       numCodepoints++;
    canonicalOrdered.minAllocSize = numCodepoints * 4;
-   nb = 0;*/
+   nb = 0;
 
    if(!string)
       return null;
-   canonicalOrdered = { };
+   //canonicalOrdered = { };
 
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       dataBase.decompose(ch, type, canonicalOrdered);
@@ -1686,17 +1685,17 @@ public Array<unichar> normalizeNFKDNoEncode(const String string) // TODO: enum
    unichar ch;
    int nb, i, numCodepoints = 0;
    UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
-   Array<unichar> canonicalOrdered;//{ }; // minAllocSize = strlen(string) * 4
-   /*for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+   Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
+   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       numCodepoints++;
    nb = 0;
-   canonicalOrdered.minAllocSize = numCodepoints * 4;*/
+   canonicalOrdered.minAllocSize = numCodepoints * 4;
    if(!string)
       return null;
-   canonicalOrdered = { };
 
    for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
       dataBase.decompose(ch, type, canonicalOrdered);
+
    dataBase.reorderCanonical(canonicalOrdered);
    return canonicalOrdered;
 }
