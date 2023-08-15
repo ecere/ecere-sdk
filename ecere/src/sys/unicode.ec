@@ -436,16 +436,6 @@ static int CompareCFKey(BinaryTree tree, CaseFoldingKey a, CaseFoldingKey b)
       return 0;
 }
 
-static int CompareDecompKey(BinaryTree tree, DecompKey a, DecompKey b)
-{
-   if(a.codePoint > b.codePoint)
-      return 1;
-   else if(a.codePoint < b.codePoint)
-      return -1;
-   else
-      return 0;
-}
-
 static int CompareCompatDecompKey(BinaryTree tree, CompatDecompKey a, CompatDecompKey b)
 {
    if(a.codePoint > b.codePoint)
@@ -519,17 +509,6 @@ static void FreeRangeCC(RangeCC range)
 
 static void FreeCaseFoldingKey(CaseFoldingKey key)
 {
-   //int i;
-   //for(i = 0; i < 3; i++)
-      //delete key.character[i];
-   delete key;
-}
-
-static void FreeDecompKey(DecompKey key)
-{
-   //int i;
-   //for(i = 0; i < 2; i++)
-      //delete key.character[i];
    delete key;
 }
 
@@ -587,11 +566,13 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeRangeCC;
    };
 
+#if 0
    BinaryTree decompositionMappings
    {
       CompareKey = (void *)CompareDecompKey;
       FreeKey = (void *)FreeDecompKey;
    };
+#endif
 
    BinaryTree compositionMappings
    {
@@ -632,7 +613,6 @@ static class UnicodeDatabase
    UnicodeDatabase()
    {
       File f = FileOpen("<:ecere>unicode/derivedGeneralCategoryStripped.txt", read);
-      File combiningClassFile, caseFoldingFile, decompFile, compatFile, diacriticFile, katakanaFile;
       if(f)
       {
          char line[1024];
@@ -769,11 +749,11 @@ static class UnicodeDatabase
          */
       }
 
-      combiningClassFile = FileOpen("<:ecere>unicode/derivedCombiningClassStripped.txt", read);
-      if(combiningClassFile)
+      f = FileOpen("<:ecere>unicode/derivedCombiningClassStripped.txt", read);
+      if(f)
       {
          char line[1024];
-         while(combiningClassFile.GetLine(line, 1024))
+         while(f.GetLine(line, 1024))
          {
             if(line[0] && line[0] != '#')
             {
@@ -808,14 +788,14 @@ static class UnicodeDatabase
                }
             }
          }
-         delete combiningClassFile;
+         delete f;
       }
 
-      caseFoldingFile = FileOpen("<:ecere>unicode/caseFoldingStripped.txt", read);
-      if(caseFoldingFile)
+      f = FileOpen("<:ecere>unicode/caseFoldingStripped.txt", read);
+      if(f)
       {
          char line[1024];
-         while(caseFoldingFile.GetLine(line, 1024))
+         while(f.GetLine(line, 1024))
          {
             if(line[0] && line[0] != '#')
             {
@@ -883,14 +863,15 @@ static class UnicodeDatabase
                }
             }
          }
-         delete caseFoldingFile;
+         delete f;
       }
 
-      decompFile = FileOpen("<:ecere>unicode/decompositionMappings.txt", read);
-      if(decompFile)
+#if 0
+      f = FileOpen("<:ecere>unicode/decompositionMappings.txt", read);
+      if(f)
       {
          char line[1024];
-         while(decompFile.GetLine(line, 1024))
+         while(f.GetLine(line, 1024))
          {
             if(line[0] && line[0] != '#')
             {
@@ -948,13 +929,15 @@ static class UnicodeDatabase
                }
             }
          }
-         delete decompFile;
+         delete f;
       }
-      compatFile = FileOpen("<:ecere>unicode/compatibilityDecompositionMappings.txt", read);
-      if(compatFile)
+#endif
+
+      f = FileOpen("<:ecere>unicode/compatibilityDecompositionMappings.txt", read);
+      if(f)
       {
          char line[1024];
-         while(compatFile.GetLine(line, 1024))
+         while(f.GetLine(line, 1024))
          {
             if(line[0] && line[0] != '#')
             {
@@ -1066,14 +1049,14 @@ static class UnicodeDatabase
                }
             }
          }
-         delete compatFile;
+         delete f;
       }
 
-      diacriticFile = FileOpen("<:ecere>unicode/diacriticFolding.txt", read);
-      if(diacriticFile)
+      f = FileOpen("<:ecere>unicode/diacriticFolding.txt", read);
+      if(f)
       {
          char line[1024];
-         while(diacriticFile.GetLine(line, 1024))
+         while(f.GetLine(line, 1024))
          {
             if(line[0] && line[0] != '#')
             {
@@ -1120,14 +1103,14 @@ static class UnicodeDatabase
                }
             }
          }
-         delete diacriticFile;
+         delete f;
       }
 
-      katakanaFile = FileOpen("<:ecere>unicode/katakanaFolding.txt", read);
-      if(katakanaFile)
+      f = FileOpen("<:ecere>unicode/katakanaFolding.txt", read);
+      if(f)
       {
          char line[1024];
-         while(katakanaFile.GetLine(line, 1024))
+         while(f.GetLine(line, 1024))
          {
             if(line[0] && line[0] != '#')
             {
@@ -1206,7 +1189,7 @@ static class UnicodeDatabase
                }
             }
          }
-         delete katakanaFile;
+         delete f;
       }
 
       // FIXME: Set up a file from CompositionExclusions.txt
@@ -1234,7 +1217,7 @@ static class UnicodeDatabase
       addRange(compositionExclusions, { 0x2D800, 0x2DA1D });
    }
 
-   public bool GetCompatDecompositionMapping(unichar ch, unichar * mapping, UnicodeDecomposition type)
+   bool GetDecompositionMapping(unichar ch, unichar * mapping, UnicodeDecomposition type)
    {
       bool result = false;
       CompatDecompKey key { ch };
@@ -1255,70 +1238,8 @@ static class UnicodeDatabase
       return result;
    }
 
-   public CharCategory GetCharCategory(unichar ch)
-   {
-      if(ch < 128)
-         return asciiCategories[ch];
-      else
-      {
-         CharCategory category = none;
-         Range range { ch, ch };
-         BTNode node = categories.Find((uintptr) &range);
-         if(node)
-            category = ((Range *)node.key)->category;
-         return category;
-      }
-   }
-
-   public uint GetCombiningClass(uint cc)
-   {
-      uint cclass = 0;
-      RangeCC range { cc, cc };
-      BTNode node = combiningClasses.Find((uintptr) &range);
-      if(node)
-         cclass = ((RangeCC *)node.key)->cclass;
-      return cclass;
-   }
-
-   public void GetCaseFolding(uint cf, unichar caseFolding[3])
-   {
-      CaseFoldingKey key { cf };
-      BTNode node = caseFoldings.Find((uintptr) &key);
-      if(node)
-      {
-         caseFolding[0] = ((CaseFoldingKey *)node.key)->character[0];
-         caseFolding[1] = ((CaseFoldingKey *)node.key)->character[1];
-         caseFolding[2] = ((CaseFoldingKey *)node.key)->character[2];
-      }
-   }
-
-   public unichar GetDiacriticFolding(uint codePoint)
-   {
-      DiacriticFoldingKey key { codePoint };
-      BTNode node = diacriticFoldings.Find((uintptr) &key);
-      if(node)
-      {
-         unichar diacriticFolding = ((DiacriticFoldingKey *)node.key)->folded;
-         return diacriticFolding;
-      }
-      else
-         return 0;
-   }
-
-   public void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar cf4, unichar katakanaFolding[4])
-   {
-      KatakanaFoldingKey key { cf1, cf2, cf3, cf4 };
-      BTNode node = katakanaFoldings.Find((uintptr) &key);
-      if(node)
-      {
-         katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
-         katakanaFolding[1] = ((KatakanaFoldingKey *)node.key)->character[1];
-         katakanaFolding[2] = ((KatakanaFoldingKey *)node.key)->character[2];
-         katakanaFolding[3] = ((KatakanaFoldingKey *)node.key)->character[3];
-      }
-   }
-
-   public bool GetDecompositionMapping(unichar ch, unichar * mapping)
+#if 0
+   bool GetDecompositionMapping(unichar ch, unichar * mapping)
    {
       bool result = false;
       DecompKey key { ch };
@@ -1339,8 +1260,72 @@ static class UnicodeDatabase
       }
       return result;
    }
+#endif
 
-   public unichar GetCompositionMapping(unichar ch1, unichar ch2)
+   CharCategory GetCharCategory(unichar ch)
+   {
+      if(ch < 128)
+         return asciiCategories[ch];
+      else
+      {
+         CharCategory category = none;
+         Range range { ch, ch };
+         BTNode node = categories.Find((uintptr) &range);
+         if(node)
+            category = ((Range *)node.key)->category;
+         return category;
+      }
+   }
+
+   uint GetCombiningClass(unichar ch)
+   {
+      uint cclass = 0;
+      RangeCC range { ch, ch };
+      BTNode node = combiningClasses.Find((uintptr) &range);
+      if(node)
+         cclass = ((RangeCC *)node.key)->cclass;
+      return cclass;
+   }
+
+   void GetCaseFolding(unichar ch, unichar caseFolding[3])
+   {
+      CaseFoldingKey key { ch };
+      BTNode node = caseFoldings.Find((uintptr) &key);
+      if(node)
+      {
+         caseFolding[0] = ((CaseFoldingKey *)node.key)->character[0];
+         caseFolding[1] = ((CaseFoldingKey *)node.key)->character[1];
+         caseFolding[2] = ((CaseFoldingKey *)node.key)->character[2];
+      }
+   }
+
+   unichar GetDiacriticFolding(unichar codePoint)
+   {
+      DiacriticFoldingKey key { codePoint };
+      BTNode node = diacriticFoldings.Find((uintptr) &key);
+      if(node)
+      {
+         unichar diacriticFolding = ((DiacriticFoldingKey *)node.key)->folded;
+         return diacriticFolding;
+      }
+      else
+         return 0;
+   }
+
+   void GetKatakanaFolding(unichar cf1, unichar cf2, unichar cf3, unichar cf4, unichar katakanaFolding[4])
+   {
+      KatakanaFoldingKey key { cf1, cf2, cf3, cf4 };
+      BTNode node = katakanaFoldings.Find((uintptr) &key);
+      if(node)
+      {
+         katakanaFolding[0] = ((KatakanaFoldingKey *)node.key)->character[0];
+         katakanaFolding[1] = ((KatakanaFoldingKey *)node.key)->character[1];
+         katakanaFolding[2] = ((KatakanaFoldingKey *)node.key)->character[2];
+         katakanaFolding[3] = ((KatakanaFoldingKey *)node.key)->character[3];
+      }
+   }
+
+   unichar GetCompositionMapping(unichar ch1, unichar ch2)
    {
       // Leading and Vowel jamos combination
       if(ch1 >= 0x1100 && ch1 <= 0x1112 && ch2 >= 0x1161 && ch2 <= 0x1175)
@@ -1379,7 +1364,7 @@ static class UnicodeDatabase
          hangulGetMappings(input, co);
       else
       {
-         GetCompatDecompositionMapping(input, decompMapping, type);
+         GetDecompositionMapping(input, decompMapping, type);
          for(i = 0; i < maxCount; i++)
          {
             unichar ch = decompMapping[i];
@@ -1396,7 +1381,7 @@ static class UnicodeDatabase
       }
    }
 
-   public Array<unichar> normalizeNFKDOnLoad(unichar array[3]) // TODO: enum
+   Array<unichar> normalizeNFKDOnLoad(unichar array[3]) // TODO: enum
    {
       int i;
       UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
@@ -1472,7 +1457,7 @@ static class UnicodeDatabase
    {
       categories.Free();
       combiningClasses.Free();
-      decompositionMappings.Free();
+      // decompositionMappings.Free();
       caseFoldings.Free();
       compositionMappings.Free();
       compatibilityDecompMappings.Free();
@@ -1494,6 +1479,9 @@ static void addRange(BinaryTree tree, Range r)
       delete node;
 }
 
+public CharCategory GetCharCategory(unichar ch) { return dataBase.GetCharCategory(ch); }
+
+public uint GetCombiningClass(unichar ch) { return dataBase.GetCombiningClass(ch); }
 
 static UnicodeDatabase dataBase { };
 
