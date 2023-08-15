@@ -1718,20 +1718,19 @@ public String stripCategoryString(const String string, CharCategory c)
 
 static void stripCategory(Array<unichar> array, CharCategory c)
 {
-   int i;
-   unichar ch = 0;
+   int i, j = 0;
+
    for(i = 0; i < array.count; i++)
    {
-      if(dataBase.GetCharCategory(ch) == c) // markNonSpacing
+      unichar ch = array[i];
+      if(GetCharCategory(ch) != c)
       {
-         if(i < array.count-1)
-         {
-            int diff = array.count - 1 - i;
-            memmove(array.array + i, array.array + i + 1, sizeof(unichar) * diff);
-         }
-         array.size-=1;
+         if(i != j)
+            array[j] = ch;
+         j++;
       }
    }
+   array.size = j;
 }
 
 static void foldDiacritic(Array<unichar> array)
