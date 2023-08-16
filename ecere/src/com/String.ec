@@ -1607,3 +1607,72 @@ public char * strchrmax(const char * s, int c, int max)
          return (char *)s + i;
    return null;
 }
+
+#define MAX_WILDCARD 300
+
+public bool StringLikePattern(const String string, const String pattern)
+{
+   bool result = true;
+   int wildcardPosition[MAX_WILDCARD], stringPosition[MAX_WILDCARD], currentWildcard = 0;
+   int i, j;
+   char chp;
+   bool lastWasWildcard = false;
+
+   for(i = 0, j = 0; (chp = pattern[i]); i++, j++)
+   {
+      char chs = string[j];
+
+      lastWasWildcard = false;
+      if(chs && chp == '_')
+      {
+         // Match any single char (but it might be multiple bytes for unicode chars)
+         int nb;
+         UTF8GetChar(string + j, &nb);
+         j += nb - 1;
+      }
+      else
+      {
+         if(chp == '%')
+         {
+            if(pattern[i+1] == '%')
+               i++;  // Escaped (%%) actual % to match
+            else
+            {
+               lastWasWildcard = true;
+               // Wildcard
+               if(chs && currentWildcard < MAX_WILDCARD)
+               {
+                  wildcardPosition[currentWildcard] = i;
+                  stringPosition[currentWildcard] = j;
+                  currentWildcard++;
+               }
+               j--; // Start trying at j
+               continue;
+            }
+         }
+
+         if(chs != chp ||
+            // Avoid exiting loop if there is a left over on the string and the pattern is over
+            (!lastWasWildcard && currentWildcard && string[j+1] && !pattern[i+1]))
+         {
+            // Mismatch, abort or continue trying to match wildcard
+            if(currentWildcard)
+            {
+               currentWildcard--;
+               i = wildcardPosition[currentWildcard]-1;
+               j = stringPosition[currentWildcard];
+            }
+            else
+            {
+               if(!lastWasWildcard || pattern[i + 1])
+                  result = false;
+               break;
+            }
+         }
+      }
+   }
+   // Mismatch if we have any character left in the string and are not still in a wildcard
+   if(!lastWasWildcard && string[j])
+      result = false;
+   return result;
+}
