@@ -1723,7 +1723,8 @@ static void stripCategory(Array<unichar> array, CharCategory c)
    for(i = 0; i < array.count; i++)
    {
       unichar ch = array[i];
-      if(GetCharCategory(ch) != c)
+      // Avoid stripping the dakuten and handakuten even though they are Mn
+      if(ch == 0x03099 || ch == 0x309A || GetCharCategory(ch) != c)
       {
          if(i != j)
             array[j] = ch;
