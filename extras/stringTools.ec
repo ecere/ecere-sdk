@@ -9,6 +9,7 @@ public import IMPORT_STATIC "ecere"
 
 public enum Trim { no, left = 1, right = 2, ends = 3, middle = 4, all = 7 };
 
+// FIXME: This function does not work as expected.
 void TrimChars(const char * string, char * output, const char * chars, Trim trim, bool squash, char alt)
 {
    const char * s = string;

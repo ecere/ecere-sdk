@@ -1212,6 +1212,24 @@ public char * TrimRSpaces(const char * string, char * output)
    return output;
 }
 
+public char * StripChars(String string, const String chars)
+{
+   int i, j;
+   char ch;
+
+   for(i = 0, j = 0; (ch = string[i]); i++)
+   {
+      if(!strchr(chars, ch))
+      {
+         if(i != j)
+            string[j] = ch;
+         j++;
+      }
+   }
+   string[j] = 0;
+   return string;
+}
+
 public void ChangeCh(char * string, char ch1, char ch2)
 {
    int c;
