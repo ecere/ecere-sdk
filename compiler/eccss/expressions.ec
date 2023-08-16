@@ -2852,6 +2852,7 @@ static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
       val.i = 0;
    else
       val.i = 1;
+   val.type = { type = integer };
    return true;
 }
 
