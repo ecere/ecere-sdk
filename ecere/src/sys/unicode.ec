@@ -349,7 +349,29 @@ public bool GetAlNum(const char ** input, char * string, int max)
    return result;
 }
 
-public class UnicodeDecomposition : uint32 { public: bool canonical:1, compat:1, fraction:1, font:1, noBreak:1, initial:1, final:1, medial:1, isolated:1, circle:1, square:1, sub:1, super:1, small:1, vertical:1, wide:1, narrow:1; };
+public class UnicodeDecomposition : uint32
+{
+public:
+   bool canonical:1;
+   bool compat:1;
+   bool fraction:1;
+   bool font:1;
+   bool noBreak:1;
+   bool initial:1;
+   bool final:1;
+   bool medial:1;
+   bool isolated:1;
+   bool circle:1;
+   bool square:1;
+   bool sub:1;
+   bool super:1;
+   bool small:1;
+   bool vertical:1;
+   bool wide:1;
+   bool narrow:1;
+};
+
+public define unicodeCompatibilityMappings = MAXDWORD;
 
 static struct Range
 {
@@ -370,12 +392,6 @@ static struct CaseFoldingKey
 };
 
 static struct DecompKey
-{
-   unichar codePoint;
-   unichar character[2];
-};
-
-static struct CompatDecompKey
 {
    unichar codePoint;
    unichar character[18];
@@ -436,7 +452,7 @@ static int CompareCFKey(BinaryTree tree, CaseFoldingKey a, CaseFoldingKey b)
       return 0;
 }
 
-static int CompareCompatDecompKey(BinaryTree tree, CompatDecompKey a, CompatDecompKey b)
+static int CompareDecompKey(BinaryTree tree, DecompKey a, DecompKey b)
 {
    if(a.codePoint > b.codePoint)
       return 1;
@@ -512,7 +528,7 @@ static void FreeCaseFoldingKey(CaseFoldingKey key)
    delete key;
 }
 
-static void FreeCompatDecompKey(CompatDecompKey key)
+static void FreeDecompKey(DecompKey key)
 {
    delete key;
 }
@@ -566,24 +582,16 @@ static class UnicodeDatabase
       FreeKey = (void *)FreeRangeCC;
    };
 
-#if 0
-   BinaryTree decompositionMappings
-   {
-      CompareKey = (void *)CompareDecompKey;
-      FreeKey = (void *)FreeDecompKey;
-   };
-#endif
-
    BinaryTree compositionMappings
    {
       CompareKey = (void *)CompareCompositionKey;
       FreeKey = (void *)FreeCompositionKey;
    };
 
-   BinaryTree compatibilityDecompMappings
+   BinaryTree decompositionMappings
    {
-      CompareKey = (void *)CompareCompatDecompKey;
-      FreeKey = (void *)FreeCompatDecompKey;
+      CompareKey = (void *)CompareDecompKey;
+      FreeKey = (void *)FreeDecompKey;
    };
 
    BinaryTree caseFoldings
@@ -866,74 +874,7 @@ static class UnicodeDatabase
          delete f;
       }
 
-#if 0
       f = FileOpen("<:ecere>unicode/decompositionMappings.txt", read);
-      if(f)
-      {
-         char line[1024];
-         while(f.GetLine(line, 1024))
-         {
-            if(line[0] && line[0] != '#')
-            {
-               char * endPtr;
-               unichar codePoint = (uint)strtoul(line, &endPtr, 16);
-               if(endPtr)
-               {
-                  endPtr = strchr(endPtr, ';');
-                  if(endPtr)
-                  {
-                     unichar dMapping[2] = { 0 };
-                     endPtr++;
-                     dMapping[0] = strtol(endPtr, null, 16);
-                     //while(true)
-                     {
-                        //endPtr += 2;
-                        endPtr = strchr(endPtr, ' ');
-                        if(endPtr)
-                        {
-                           uint dm = strtol(endPtr, null, 16);
-                           dMapping[1] = dm;
-                        }
-                     }
-                     if(dMapping[0] > 0)
-                     {
-                        {
-                           DecompKey k { codePoint };
-                           BTNode node;
-                           k.character[0] = dMapping[0], k.character[1] = dMapping[1];
-                           node = { key = (uintptr) &k };
-                           if(decompositionMappings.Add(node))
-                           {
-                              DecompKey * cfPtr = new DecompKey[1];
-                              *cfPtr = k;
-                              node.key = (uintptr)cfPtr;
-                           }
-                           else
-                              delete node;
-                        }
-                        {
-                           CompositionKey k { dMapping[0], dMapping[1], codePoint };
-                           BTNode node;
-                           node = { key = (uintptr) &k };
-                           if(compositionMappings.Add(node))
-                           {
-                              CompositionKey * cfPtr = new CompositionKey[1];
-                              *cfPtr = k;
-                              node.key = (uintptr)cfPtr;
-                           }
-                           else
-                              delete node;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-         delete f;
-      }
-#endif
-
-      f = FileOpen("<:ecere>unicode/compatibilityDecompositionMappings.txt", read);
       if(f)
       {
          char line[1024];
@@ -1014,6 +955,7 @@ static class UnicodeDatabase
                      }
                      else
                         type.canonical = true;
+
                      dMapping[0] = strtol(endPtr, null, 16);
                      while(true)
                      {
@@ -1030,20 +972,35 @@ static class UnicodeDatabase
                      }
                      if(dMapping[0] > 0)
                      {
-                        CompatDecompKey k { codePoint, type = type };
+                        DecompKey k { codePoint, type = type };
                         BTNode node;
                         int i = 0;
                         for(i = 0; i < 18; i++)
                            k.character[i] = dMapping[i];
                         node = { key = (uintptr) &k };
-                        if(compatibilityDecompMappings.Add(node))
+                        if(decompositionMappings.Add(node))
                         {
-                           CompatDecompKey * cfPtr = new CompatDecompKey[1];
+                           DecompKey * cfPtr = new DecompKey[1];
                            *cfPtr = k;
                            node.key = (uintptr)cfPtr;
                         }
                         else
                            delete node;
+
+                        if(type.canonical)
+                        {
+                           CompositionKey k { dMapping[0], dMapping[1], codePoint };
+                           BTNode node;
+                           node = { key = (uintptr) &k };
+                           if(compositionMappings.Add(node))
+                           {
+                              CompositionKey * cfPtr = new CompositionKey[1];
+                              *cfPtr = k;
+                              node.key = (uintptr)cfPtr;
+                           }
+                           else
+                              delete node;
+                        }
                      }
                   }
                }
@@ -1169,11 +1126,8 @@ static class UnicodeDatabase
                         k.codePoint2 = normalizedCodepoints.count > 1 ? normalizedCodepoints[1] : 0;
                         k.codePoint3 = normalizedCodepoints.count > 2 ? normalizedCodepoints[2] : 0;
                         k.codePoint4 = normalizedCodepoints.count > 3 ? normalizedCodepoints[3] : 0;
-                        for(i = 0; i< normalizedFoldings.count; i++)
-                        {
-                           //if(normalizedFoldings.count > i+1)
-                              k.character[i] = normalizedFoldings[i];
-                        }
+                        for(i = 0; i < normalizedFoldings.count; i++)
+                           k.character[i] = normalizedFoldings[i];
                         node = { key = (uintptr) &k };
                         if(katakanaFoldings.Add(node))
                         {
@@ -1220,47 +1174,23 @@ static class UnicodeDatabase
    bool GetDecompositionMapping(unichar ch, unichar * mapping, UnicodeDecomposition type)
    {
       bool result = false;
-      CompatDecompKey key { ch };
-      BTNode node = compatibilityDecompMappings.Find((uintptr) &key);
-      int i;
-      int maxCount = (type == { canonical = true }) ? 2 : 18;
-      if(node && ((CompatDecompKey *)node.key)->type & type)
-      {
-         for(i = 0; i < maxCount; i++)
-            mapping[i] = ((CompatDecompKey *)node.key)->character[i];
-         result = true;
-      }
-      else
-      {
-         for(i = 0; i < maxCount; i++)
-            mapping[i] = 0;
-      }
-      return result;
-   }
-
-#if 0
-   bool GetDecompositionMapping(unichar ch, unichar * mapping)
-   {
-      bool result = false;
       DecompKey key { ch };
       BTNode node = decompositionMappings.Find((uintptr) &key);
       int i;
-      if(node)
+      int maxCount = (type == { canonical = true }) ? 2 : 18;
+      if(node && ((DecompKey *)node.key)->type & type)
       {
-         mapping[0] = ((DecompKey *)node.key)->character[0];
-         mapping[1] = ((DecompKey *)node.key)->character[1];
-         for(i = 2; i < 7; i++)
-            mapping[i] = 0;
+         for(i = 0; i < maxCount; i++)
+            mapping[i] = ((DecompKey *)node.key)->character[i];
          result = true;
       }
       else
       {
-         for(i = 0; i < 7; i++)
+         for(i = 0; i < maxCount; i++)
             mapping[i] = 0;
       }
       return result;
    }
-#endif
 
    CharCategory GetCharCategory(unichar ch)
    {
@@ -1357,7 +1287,6 @@ static class UnicodeDatabase
       bool result = false;
       unichar decompMapping[18];
       int i;
-      //int maxCount = (type & ~{ canonical = true }) ? 18 : 2;
       int maxCount = (type == { canonical = true }) ? 2 : 18;
 
       if(input >= 0xAC00 && input < 0xD7B0) //<=
@@ -1381,15 +1310,14 @@ static class UnicodeDatabase
       }
    }
 
-   Array<unichar> normalizeNFKDOnLoad(unichar array[3]) // TODO: enum
+   Array<unichar> normalizeNFKDOnLoad(unichar array[3])
    {
       int i;
-      UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
       Array<unichar> canonicalOrdered { minAllocSize = 4 * sizeof(unichar) }; // minAllocSize = strlen(string) * 4
       for(i = 0; i < 3; i++)
       {
          if(array[i])
-            decompose(array[i], type, canonicalOrdered);
+            decompose(array[i], unicodeCompatibilityMappings, canonicalOrdered);
       }
       reorderCanonical(canonicalOrdered);
       return canonicalOrdered;
@@ -1457,10 +1385,9 @@ static class UnicodeDatabase
    {
       categories.Free();
       combiningClasses.Free();
-      // decompositionMappings.Free();
+      decompositionMappings.Free();
       caseFoldings.Free();
       compositionMappings.Free();
-      compatibilityDecompMappings.Free();
       compositionExclusions.Free();
       diacriticFoldings.Free();
       katakanaFoldings.Free();
@@ -1536,12 +1463,15 @@ public bool CharMatchCategories(unichar ch, CharCategories categories)
 public String accenti(const String string)
 {
    String result = null;
-   Array<unichar> normal = normalizeNFKDNoEncode(string);
-   stripCategory(normal, Mn); // no string
-   foldDiacritic(normal);
-   foldKana(normal);
-   result = encodeArrayToString(normal);
-   delete normal;
+   if(string)
+   {
+      Array<unichar> normal = normalizeNFKDArray(string);
+      stripCategoryArray(normal, Mn); // no string
+      foldDiacritic(normal);
+      foldKana(normal);
+      result = encodeArrayToString(normal);
+      delete normal;
+   }
    return result;
 }
 
@@ -1614,91 +1544,72 @@ static void hangulGetMappings(unichar ch, Array<unichar> co)
    if(jamoT) co.Add(0x11A7 + jamoT);
 }
 
-public String normalizeNFD(const String string) // TODO: enum
+public String normalizeNFD(const String string)
 {
-   String result = normalize(string, { canonical = true }, false );
+   return normalizeUnicode(string, { canonical = true }, false);
+}
+
+public String normalizeNFKD(const String string)
+{
+   return normalizeUnicode(string, unicodeCompatibilityMappings, false);
+}
+
+public String normalizeNFC(const String string)
+{
+   return normalizeUnicode(string, { canonical = true }, true);
+}
+
+public String normalizeNFKC(const String string)
+{
+   return normalizeUnicode(string, unicodeCompatibilityMappings, true);
+}
+
+public Array<unichar> normalizeUnicodeArray(const String string, UnicodeDecomposition type, bool compose)
+{
+   Array<unichar> result = null;
+   if(string)
+   {
+      unichar ch;
+      int nb = 0, i;
+      Array<unichar> canonicalOrdered { minAllocSize = strlen(string) * 4 };
+
+      for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
+         dataBase.decompose(ch, type, canonicalOrdered);
+
+      dataBase.reorderCanonical(canonicalOrdered);
+      if(compose)
+         composeCanonical(canonicalOrdered);
+      result = canonicalOrdered;
+   }
    return result;
 }
 
-public String normalizeNFKD(const String string) // TODO: enum
+public String normalizeUnicode(const String string, UnicodeDecomposition type, bool compose)
 {
-   String result = normalize(string, { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true }, false );
+   String result = null;
+   if(string)
+   {
+      Array<unichar> canonicalOrdered = normalizeUnicodeArray(string, type, compose);
+      result = encodeArrayToString(canonicalOrdered);
+      delete canonicalOrdered;
+   }
    return result;
 }
 
-public String normalizeNFC(const String string) // TODO: enum
+public Array<unichar> normalizeNFKDArray(const String string)
 {
-   String result = normalize(string, { canonical = true }, true );
-   return result;
-}
-
-public String normalizeNFKC(const String string) // TODO: enum
-{
-   String result = normalize(string, { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true }, true );
-   return result;
-}
-
-public String normalize(const String string, UnicodeDecomposition type, bool compose) // TODO: enum
-{
-   unichar ch;
-   int nb, i, numCodepoints = 0;
-   Array<unichar> canonicalOrdered { /*minAllocSize = size*/ }; // number of codepoints * 4 ?
-   String result;
-
-   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      numCodepoints++;
-   canonicalOrdered.minAllocSize = numCodepoints * 4;
-   nb = 0;
-
-   if(!string)
-      return null;
-   //canonicalOrdered = { };
-
-   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      dataBase.decompose(ch, type, canonicalOrdered);
-
-   dataBase.reorderCanonical(canonicalOrdered);
-   if(compose)
-      composeCanonical(canonicalOrdered);
-
-   result = new char[canonicalOrdered.count * 5 + 1];
-   nb = UTF32toUTF8Len(canonicalOrdered.array, canonicalOrdered.count, result, canonicalOrdered.count * 5);
-   delete canonicalOrdered;
-   result = renew result char[nb+1];
-   return result;
-}
-
-public Array<unichar> normalizeNFKDNoEncode(const String string) // TODO: enum
-{
-   unichar ch;
-   int nb, i, numCodepoints = 0;
-   UnicodeDecomposition type { true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true };
-   Array<unichar> canonicalOrdered { }; // minAllocSize = strlen(string) * 4
-   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      numCodepoints++;
-   nb = 0;
-   canonicalOrdered.minAllocSize = numCodepoints * 4;
-   if(!string)
-      return null;
-
-   for(i = 0; (ch = UTF8GetChar(string + i, &nb)); i += nb)
-      dataBase.decompose(ch, type, canonicalOrdered);
-
-   dataBase.reorderCanonical(canonicalOrdered);
-   return canonicalOrdered;
+   return normalizeUnicodeArray(string, unicodeCompatibilityMappings, false);
 }
 
 public String encodeArrayToString(Array<unichar> array)
 {
-   String result = new char[array.count * 5 + 1];
-   int nb;
-   nb = UTF32toUTF8Len(array.array, array.count, result, array.count * 5);
-   result = renew result char[nb+1];
-   return result;
+   String result = new char[array.count * 4 + 1];
+   int nb = UTF32toUTF8Len(array.array, array.count, result, array.count * 4 + 1);
+   return renew result char[nb+1];
 }
 
 // would this ever be useful?
-public String stripCategoryString(const String string, CharCategory c)
+public String stripUnicodeCategory(const String string, CharCategory c)
 {
    String result = null;
    int len = strlen(string);
@@ -1708,7 +1619,8 @@ public String stripCategoryString(const String string, CharCategory c)
    result = new char[len+1];
    for(o = 0; (ch = UTF8GetChar(string + o, &nb)); o += nb)
    {
-      if(dataBase.GetCharCategory(ch) != c) // markNonSpacing
+      // Avoid stripping the dakuten and handakuten even though they are Mn
+      if(ch == 0x03099 || ch == 0x309A || dataBase.GetCharCategory(ch) != c) // markNonSpacing
          outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
    }
    result = renew result char[outPosition + 1];
@@ -1716,7 +1628,7 @@ public String stripCategoryString(const String string, CharCategory c)
    return result;
 }
 
-static void stripCategory(Array<unichar> array, CharCategory c)
+static void stripCategoryArray(Array<unichar> array, CharCategory c)
 {
    int i, j = 0;
 
@@ -1754,7 +1666,7 @@ static void foldKana(Array<unichar> array)
    if(array.count)
    {
       int i;
-      for(i = 0; i< array.count; i++)
+      for(i = 0; i < array.count; i++)
       {
          unichar folded[4] = { 0, 0, 0, 0 };
          int replacingCount = 0;
@@ -1816,7 +1728,7 @@ public String casei(const String string)
    String result = null;
    int len;
    unichar ch;
-   int nb = 1, o, outPosition = 0; //i = 0,
+   int nb = 1, o, outPosition = 0;
    if(!string)
       return null;
    len = strlen(string);
@@ -1830,7 +1742,6 @@ public String casei(const String string)
          outPosition += UTF32toUTF8Len(&caseFolding[0], 1, result + outPosition, 5);
       else
          outPosition += UTF32toUTF8Len(&ch, 1, result + outPosition, 5);
-         //result[i++] = caseFolding[0];
       if(caseFolding[1] > 0)
          outPosition += UTF32toUTF8Len(&caseFolding[1], 1, result + outPosition, 5);
       if(caseFolding[2] > 0)
