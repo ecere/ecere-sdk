@@ -221,6 +221,8 @@ extern char *  PrintUInt64(uint64 result);
 
 extern size_t strlen(const char * );
 
+extern char *  __ecereNameSpace__ecere__sys__StripChars(char * string, const char * chars);
+
 struct __ecereNameSpace__ecere__com__IteratorPointer;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
@@ -3254,10 +3256,11 @@ ListAdd(args, MkExpString(string));
 }
 {
 char * string;
-char type[1024] = "";
+char expString[1024] = "";
 
-PrintExpression(declaration->__anon1.__anon2.exp, type);
-string = QMkString(type);
+PrintExpression(declaration->__anon1.__anon2.exp, expString);
+__ecereNameSpace__ecere__sys__StripChars(expString, "\t\n");
+string = QMkString(expString);
 ListAdd(args, MkExpString(string));
 (__ecereNameSpace__ecere__com__eSystem_Delete(string), string = 0);
 }

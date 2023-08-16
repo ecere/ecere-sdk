@@ -912,6 +912,24 @@ tokens[count++] = start;
 return count;
 }
 
+char * __ecereNameSpace__ecere__sys__StripChars(char * string, const char * chars)
+{
+int i, j;
+char ch;
+
+for(i = 0, j = 0; (ch = string[i]); i++)
+{
+if(!strchr(chars, ch))
+{
+if(i != j)
+string[j] = ch;
+j++;
+}
+}
+string[j] = 0;
+return string;
+}
+
 void __ecereNameSpace__ecere__sys__ChangeChars(char * string, const char * chars, char alt)
 {
 int c;
@@ -1139,9 +1157,17 @@ else
 fileName[strLen + 1] = '\0';
 if(strLen < 0)
 {
+if(string[0] == '/')
+{
 fileName[0] = '/';
 fileName[1] = '\0';
-strLen = 2;
+}
+else
+{
+fileName[0] = '.';
+fileName[1] = '/';
+fileName[2] = '\0';
+}
 }
 }
 }
@@ -1351,9 +1377,17 @@ else
 fileName[strLen + 1] = '\0';
 if(strLen < 0)
 {
+if(string[0] == '/')
+{
 fileName[0] = '/';
 fileName[1] = '\0';
-strLen = 2;
+}
+else
+{
+fileName[0] = '.';
+fileName[1] = '/';
+fileName[2] = '\0';
+}
 }
 }
 }
@@ -2036,6 +2070,7 @@ __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::Tokenize", "
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::TokenizeWith", "int ecere::sys::TokenizeWith(char * string, int maxTokens, char * tokens[], const char * tokenizers, bool escapeBackSlashes)", __ecereNameSpace__ecere__sys__TokenizeWith, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::TrimLSpaces", "char * ecere::sys::TrimLSpaces(const char * string, char * output)", __ecereNameSpace__ecere__sys__TrimLSpaces, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::TrimRSpaces", "char * ecere::sys::TrimRSpaces(const char * string, char * output)", __ecereNameSpace__ecere__sys__TrimRSpaces, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StripChars", "char * ecere::sys::StripChars(String string, const String chars)", __ecereNameSpace__ecere__sys__StripChars, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeCh", "void ecere::sys::ChangeCh(char * string, char ch1, char ch2)", __ecereNameSpace__ecere__sys__ChangeCh, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::ChangeChars", "void ecere::sys::ChangeChars(char * string, const char * chars, char alt)", __ecereNameSpace__ecere__sys__ChangeChars, module, 4);
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::RepeatCh", "void ecere::sys::RepeatCh(char * string, int count, char ch)", __ecereNameSpace__ecere__sys__RepeatCh, module, 4);

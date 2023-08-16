@@ -1978,9 +1978,10 @@ public void ProcessClassDefinitions()
                   // Expression
                   {
                      char * string;
-                     char type[1024] = "";
-                     PrintExpression(declaration.exp, type);
-                     string = QMkString(type);
+                     char expString[1024] = "";
+                     PrintExpression(declaration.exp, expString);
+                     StripChars(expString, "\t\n");
+                     string = QMkString(expString);
                      ListAdd(args, MkExpString(string));
                      delete string;
                   }
