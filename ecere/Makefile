@@ -421,6 +421,11 @@ RESOURCES3 = \
 	$(RES)status/audioVolumeHigh.png \
 	$(RES)status/folderOpen.png \
 	$(RES)unicode/derivedGeneralCategoryStripped.txt \
+	$(RES)unicode/derivedCombiningClassStripped.txt \
+	$(RES)unicode/caseFoldingStripped.txt \
+	$(RES)unicode/decompositionMappings.txt \
+	$(RES)unicode/diacriticFolding.txt \
+	$(RES)unicode/katakanaFolding.txt \
 	locale/es.mo \
 	locale/hu.mo \
 	locale/mr.mo \
@@ -674,7 +679,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)mimeTypes/textEcereHeader.png $(RES)mimeTypes/textEcereProject.png $(RES)mimeTypes/textEcereSource.png $(RES)mimeTypes/textEcereWorkspace.png $(RES)mimeTypes/textHyperTextMarkup.png $(RES)mimeTypes/brokenFile.png "mimeTypes"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)places/driveRemote.png $(RES)places/folder.png $(RES)places/folderRemote.png $(RES)places/networkServer.png $(RES)places/networkWorkgroup.png $(RES)places/brokenFolder.png "places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)status/audioVolumeHigh.png $(RES)status/folderOpen.png "status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt "unicode"
+	$(EAR) aw$(EARFLAGS) $(TARGET) $(RES)unicode/derivedGeneralCategoryStripped.txt $(RES)unicode/derivedCombiningClassStripped.txt $(RES)unicode/caseFoldingStripped.txt $(RES)unicode/decompositionMappings.txt $(RES)unicode/diacriticFolding.txt $(RES)unicode/katakanaFolding.txt "unicode"
 	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/hu.mo locale/mr.mo locale/nl.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
 	$(EAR) aw$(EARFLAGS) $(TARGET) src/gfx/drivers/gl3/default.frag src/gfx/drivers/gl3/default.vert "shaders"
 else

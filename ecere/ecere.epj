@@ -3594,7 +3594,7 @@
             "derivedGeneralCategoryStripped.txt",
             "derivedCombiningClassStripped.txt",
             "caseFoldingStripped.txt",
-            "compatibilityDecompositionMappings.txt",
+            "decompositionMappings.txt",
             "diacriticFolding.txt",
             "katakanaFolding.txt"
          ],
