@@ -941,6 +941,9 @@ public:
             else if(!flags1.resolved && flags2.resolved)
                exp2 = simplifyResolved(val2, exp2);
          }
+
+         val1.OnFree();
+         val2.OnFree();
       }
       else if(exp2)
       {
@@ -967,6 +970,7 @@ public:
             else
                flags.resolved = false;
          }
+         val2.OnFree();
       }
       return flags;
    }
@@ -2957,7 +2961,7 @@ static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldV
 
 static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   result.type = { type = text };
+   result.type = { type = text, mustFree = true };
    if(!(val1.s && val2.s))
       result.s = null;
    else
