@@ -404,13 +404,14 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                   int attempt;
                   bool isHTTP;
                   bool successfulLoad;
+                  const String texturePath = ctx.texturesPath ? ctx.texturesPath : ctx.path;
 
                   StripExtension(nameNoExt);
                   GetExtension(name, ext);
 
                   // this becomes the call to getTextureCallback
-                  isHTTP = strstr(ctx.path, "http://") == path || strstr(ctx.path, "https://") == path;
-                  strcpy(path, ctx.path);
+                  isHTTP = strstr(texturePath, "http://") == texturePath || strstr(texturePath, "https://") == texturePath;
+                  strcpy(path, texturePath);
                   PathCat(path, name);
                   StripExtension(path);
 
