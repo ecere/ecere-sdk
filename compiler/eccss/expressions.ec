@@ -580,7 +580,9 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      String buf = copyEscapeString(string);
+      int len = strlen(string) * 2 + 1;
+      String buf = new char[len];
+      EscapeCString(buf, len, string, { escapeSingleQuote = true });
       out.Print('\'', buf, '\'');
       delete buf;
    }
