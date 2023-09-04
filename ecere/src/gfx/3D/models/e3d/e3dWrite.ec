@@ -408,11 +408,17 @@ static void prepareTexture(E3DWriteContext ctx, Bitmap tex, bool usePNG)
       int texID = ctx.texturesToID[(uintptr)tex];
       if(!texID)
       {
-         texID = ctx.textures.count+1;
-         ctx.textures.size++;
-         ctx.texUsePNG.size++;
-         ctx.texUsePNG[ctx.textures.count-1] = usePNG;
-         ctx.textures[ctx.textures.count-1] = tex;
+         MapIterator<uint, Bitmap> it { map = ctx.texturesByID };
+
+         texID = ((MapIterator<uint, Bitmap>)ctx.texturesByID.lastIterator).key;
+         // texID = ctx.textures.count+1;
+         if(texID >= ctx.textures.count)
+         {
+            ctx.textures.size++;
+            ctx.texUsePNG.size++;
+         }
+         ctx.texUsePNG[texID-1] = usePNG;
+         ctx.textures[texID-1] = tex;
          ctx.texturesToID[(uintptr)tex] = texID;
       }
       else
@@ -1105,17 +1111,12 @@ static void writeTexture(E3DWriteContext ctx, File f, TextureInfo info)
 
 static void writeTextures(E3DWriteContext ctx, File f, Object object)
 {
-   int id = 1;
-   int i;
-   for(i = 0; i < ctx.textures.count; i++)
+   for(i : ctx.texUsed)
    {
-      if(ctx.texUsed.Find(id))
-      {
-         bool usePNG = ctx.texUsePNG[id-1];
-         TextureInfo info { ctx.textures[i], id, usePNG };
-         writeE3DBlock(ctx, f, texture, info, writeTexture);
-      }
-      id++;
+      uint id = i;
+      bool usePNG = ctx.texUsePNG[id-1];
+      TextureInfo info { ctx.textures[id - 1], id, usePNG };
+      writeE3DBlock(ctx, f, texture, info, writeTexture);
    }
 }
 

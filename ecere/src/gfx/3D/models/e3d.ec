@@ -31,8 +31,9 @@ public class E3DFormat : ObjectFormat
          {
             // here we pre-fill textures containers to use the previously found IDs
             MapIterator<uint, Bitmap> it { map=ctx.texturesByID };
-            ctx.textures.size = ctx.texturesByID.count;
-            ctx.texUsePNG.size = ctx.texturesByID.count;
+
+            ctx.textures.size = ((MapIterator<uint, Bitmap>)ctx.texturesByID.lastIterator).key; //count;
+            ctx.texUsePNG.size = ctx.textures.count; //count;
             while(it.Next())
             {
                uint idn = it.key;
