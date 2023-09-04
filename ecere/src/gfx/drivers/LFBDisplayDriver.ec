@@ -280,11 +280,11 @@ public class LFBDisplayDriver : DisplayDriver
                   src.sizeBytes = bitmap.sizeBytes;
                   src.pixelFormat = bitmap.pixelFormat;
 
+                  bitmap.picture = null;
+
                   result = true;
                }
-
                bitmap.palette = null;
-               bitmap.picture = null;
             }
             delete bitmap;
          }
