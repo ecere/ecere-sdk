@@ -983,15 +983,19 @@ static void writeJPG(E3DWriteContext ctx, File f, Bitmap srcTexture)
       texture = { };
       texture.Copy(srcTexture.bitmaps[0]);
       texture.pixelFormat = pixelFormatRGBA;
+
+      texture.driver = class(LFBDisplayDriver);
+      texture.driverData = null;
    }
    if(texture.pixelFormat != pixelFormat888)
    {
-      void * back = texture.driver;
       if(texture == srcTexture)
+      {
          texture = { }, texture.Copy(srcTexture);
+         texture.driverData = null;
+      }
       texture.driver = class(LFBDisplayDriver);
       texture.Convert(null, pixelFormat888, null);
-      texture.driver = back;
    }
    texture.Save(fn, "jpg", &quality);
    tmp.Seek(0, start);
@@ -1012,15 +1016,19 @@ static void writePNG(E3DWriteContext ctx, File f, Bitmap srcTexture)
       texture = { };
       texture.Copy(srcTexture.bitmaps[0]);
       texture.pixelFormat = pixelFormatRGBA;
+
+      texture.driver = class(LFBDisplayDriver);
+      texture.driverData = null;
    }
    if(texture.pixelFormat != pixelFormatRGBA)
    {
-      void * back = texture.driver;
       if(texture == srcTexture)
+      {
          texture = { }, texture.Copy(srcTexture);
+         texture.driverData = null;
+      }
       texture.driver = class(LFBDisplayDriver);
       texture.Convert(null, pixelFormatRGBA, null);
-      texture.driver = back;
    }
    texture.Save(fn, "png", null);
    tmp.Seek(0, start);
