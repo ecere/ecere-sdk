@@ -75,9 +75,15 @@ public:
 
    bool OpenURL(const char * name, const char * referer, char * relocation)
    {
+      return OpenURLEx(name, referer, relocation, null);
+   }
+
+   bool OpenURLEx(const char * name, const char * referer, char * relocation, const char * acceptHeader)
+   {
       bool result = false;
       static bool curlInited;
       CURLcode res;
+      struct curl_slist *hs = null;
 
       if(!curlInited)
       {
@@ -85,6 +91,14 @@ public:
          curlInited = true;
       }
       curl_handle = curl_easy_init();
+      if(acceptHeader)
+      {
+         String ct = PrintString("Accept: ", acceptHeader);
+         hs = curl_slist_append(hs, ct);
+         delete ct;
+         if(hs)
+            curl_easy_setopt(curl_handle, CURLOPT_HTTPHEADER, hs);
+      }
       curl_easy_setopt(curl_handle, CURLOPT_ACCEPT_ENCODING, /*"br, */ "gzip, deflate");
       curl_easy_setopt(curl_handle, CURLOPT_URL, name);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
