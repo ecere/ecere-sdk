@@ -207,6 +207,11 @@ static class NetworkThread : Thread
 {
    uint Main()
    {
+#if !defined(__WIN32__)
+      struct pollfd * pollFDs = null;
+      int nAllocatedFDs = 0;
+#endif
+
       network.mutex.Wait();
       while(!network.networkTerminated)
       {
@@ -220,8 +225,13 @@ static class NetworkThread : Thread
 
             fd_set selectRS = network.readSet, selectWS = network.writeSet, selectES = network.exceptSet;
 #else
-            struct pollfd * pollFDs = network.pollFDs;
             int nPollFDs = network.numPollFDs;
+            if(nPollFDs > nAllocatedFDs)
+            {
+               nAllocatedFDs = nPollFDs;
+               pollFDs = renew pollFDs struct pollfd[nAllocatedFDs];
+            }
+            memcpy(pollFDs, network.pollFDs, sizeof(struct pollfd) * nPollFDs);
 #endif
 
             network.mutex.Release();
@@ -265,6 +275,9 @@ static class NetworkThread : Thread
 
       }
       network.mutex.Release();
+#if !defined(__WIN32__)
+      delete pollFDs;
+#endif
       return 0;
    }
 }
