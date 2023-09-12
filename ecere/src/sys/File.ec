@@ -255,12 +255,20 @@ public class File : IOChannel
    {
       if(output && output != input)
       {
+#ifdef _DEBUG
+         openCountMutex.Wait();
          openCount--;
+         openCountMutex.Release();
+#endif
          fclose(output);
       }
       if(input)
       {
+#ifdef _DEBUG
+         openCountMutex.Wait();
          openCount--;
+         openCountMutex.Release();
+#endif
          fclose(input);
       }
       input = null;
@@ -843,7 +851,11 @@ public:
          if(!input && !output);
          else
          {
+#ifdef _DEBUG
+            openCountMutex.Wait();
             openCount++;
+            openCountMutex.Release();
+#endif
             result = true;
             // TESTING ENABLING FILE BUFFERING BY DEFAULT... DOCUMENT ANY ISSUE
             /*
@@ -1002,7 +1014,10 @@ public FileAttribs FileExists(const char * fileName)
       return FILE_FileExists(fileName);
 }
 
+#ifdef _DEBUG
 static int openCount;
+static Mutex openCountMutex { };
+#endif
 
 public File FileOpen(const char * fileName, FileOpenMode mode)
 {
@@ -1054,7 +1069,11 @@ public File FileOpen(const char * fileName, FileOpenMode mode)
             if(!file.input && !file.output);
             else
             {
+#ifdef _DEBUG
+               openCountMutex.Wait();
                openCount++;
+               openCountMutex.Release();
+#endif
                result = file;
                // TESTING ENABLING FILE BUFFERING BY DEFAULT... DOCUMENT ANY ISSUE
                /*
