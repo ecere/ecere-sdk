@@ -1023,10 +1023,11 @@ static uint XTimerThread(Thread thread)
 
 #else
       struct pollfd pollFDs[1] = { { s, POLLIN } };
-      int timeOut = (timerDelay == MAXINT) ? 54 /* 18.2 / seconds */ : (int)(timerDelay / 1000);
+      int timeOut;
 #endif
 
       xMutex.Wait();
+      timeOut = (timerDelay == MAXINT) ? 54 /* 18.2 / seconds */ : (int)(timerDelay / 1000);
 #if 0
       pollingResult = select(s + 1, &readSet, null, null, &tv);
 #else
