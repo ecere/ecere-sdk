@@ -56,6 +56,7 @@ class ProcessingStage
       bool result = false;
       ProcessingTask task;
 
+      mutex.Wait();
       if(!thread)
       {
          thread = threads[0];
@@ -68,7 +69,6 @@ class ProcessingStage
 
       // PrintLn("Thread ", thread.number, " working!");
 
-      mutex.Wait();
       task = tasks.first;
       if(task)
       {
@@ -285,7 +285,10 @@ class ProcessingStage
          {
             semaphore.Release();
             t.Wait();
-            delete threads[i];
+            mutex.Wait();
+            delete t;
+            threads[i] = null;
+            mutex.Release();
          }
       }
       threads.size = 1;
