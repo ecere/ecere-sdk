@@ -231,7 +231,9 @@ public CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
          convertFieldValue(val, {integer}, val);
    }
 
-   if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
+   if(e._class == class(CMSSExpBrackets) && ((CMSSExpBrackets)e).list && ((CMSSExpBrackets)e).list.list.count > 1)
+      return e; // Do not simplify lists with more than one element
+   else if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
    {
       CMSSExpression ne = (val.type.type == text) ? CMSSExpString { string = CopyString(val.s) } : CMSSExpConstant { constant = val };
       ne.destType = e.destType;
@@ -845,13 +847,15 @@ public:
                }
                v1.OnFree();
                value = v;
-               flags.resolved = v.type.type != nil;
+
+               flags.resolved = flags1.resolved && flags2.resolved;
             }
             else
                flags.resolved = false;
          }
          else
          {
+            // REVIEW: condition for overall flags to be resolved
             if(op >= stringStartsWith && op <= stringNotContains)
                type.type = text;
             else
@@ -2418,7 +2422,8 @@ public:
                            eSystem_FindClass(mInit.dataMember._class.module, mInit.dataMember.dataTypeString);
                      mInit.destType = mInit.dataMember.dataTypeClass;
                   }
-                  expression.destType = mInit.destType;
+                  if(expression)
+                     expression.destType = mInit.destType;
                }
                mInit.identifiers.Add({ string = CopyString(idsString) });
             }
