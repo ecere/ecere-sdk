@@ -174,6 +174,7 @@ public class WindowsSkin_Window : Window
 {
    void GetDecorationsSize(MinMaxValue * w, MinMaxValue * h)
    {
+      BorderBits borderStyle = *&this.style.borderBits;
       *w = *h = 0;
 
       if(hasMenuBar && state != minimized)
@@ -262,6 +263,8 @@ public class WindowsSkin_Window : Window
 
    void SetWindowArea(int * x, int * y, MinMaxValue * w, MinMaxValue * h, MinMaxValue * cw, MinMaxValue * ch)
    {
+      BorderBits borderStyle = *&this.style.borderBits;
+      WindowState state = *&this.state;
       bool isNormal = (state == normal);
       MinMaxValue aw = 0, ah = 0;
 
