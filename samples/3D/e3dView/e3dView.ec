@@ -11,6 +11,7 @@ class App : GuiApplication
    bool Init()
    {
       *&modelView.modelFile = argc > 1 ? argv[1] : "sponza.e3d";
+      modelView.fileName = *&modelView.modelFile;
       return true;
    }
 }

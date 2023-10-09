@@ -15,6 +15,7 @@ class ModelViewer : Window
    anchor = { left = 0, top = 0, right = 0, bottom = 0 };
    state = maximized;
    glCapabilities.samples = ms16;
+   isDocument = true;
 
    Camera camera
    {
@@ -68,7 +69,13 @@ class ModelViewer : Window
 
    property const String modelFile
    {
-      set { modelFile = value; OnUnloadGraphics(); OnLoadGraphics(); }
+      set
+      {
+         modelFile = value;
+         OnUnloadGraphics();
+         OnLoadGraphics();
+         fileName = value;
+      }
    }
 
    ModelViewer()
