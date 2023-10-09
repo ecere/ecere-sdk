@@ -408,10 +408,13 @@ static void prepareTexture(E3DWriteContext ctx, Bitmap tex, bool usePNG)
       int texID = ctx.texturesToID[(uintptr)tex];
       if(!texID)
       {
-         MapIterator<uint, Bitmap> it { map = ctx.texturesByID };
-
-         texID = ((MapIterator<uint, Bitmap>)ctx.texturesByID.lastIterator).key;
-         // texID = ctx.textures.count+1;
+         if(ctx.texturesByID && ctx.texturesByID.count)
+         {
+            MapIterator<uint, Bitmap> it { map = ctx.texturesByID, pointer = ctx.texturesByID.GetLast() };
+            texID = it.key;
+         }
+         else
+            texID = ctx.textures.count + 1;
          if(texID >= ctx.textures.count)
          {
             ctx.textures.size++;
