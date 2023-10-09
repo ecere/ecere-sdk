@@ -1064,6 +1064,16 @@ public:
          {
             lexer.readToken();
             ((CMSSExpConditional)exp).elseExp = CMSSExpConditional::parse(lexer);
+            if(!((CMSSExpConditional)exp).elseExp)
+               delete exp;
+         }
+         else
+         {
+#ifdef _DEBUG
+            PrintLn("ECCSS Syntax Error: Conditional expression missing else condition ",
+               " at line ", lexer.pos.line, ", column ", lexer.pos.col);
+#endif
+            delete exp; // Syntax error
          }
       }
       return exp;
