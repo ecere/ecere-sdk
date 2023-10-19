@@ -1213,6 +1213,7 @@ private:
       SkipEmpty();
       if(ch == '\"' || eCON)
       {
+         bool newLineInside = false;
          while(ReadChar(&ch))
          {
             if(ch == '\\' && !escaped)
@@ -1286,8 +1287,13 @@ private:
                      break;
                   }
                }
-               else if((!eCON && ch == '\"'))
+               else if(!eCON && ch == '\"')
                {
+                  break;
+               }
+               else if(!eCON && ch == '\n')
+               {
+                  newLineInside = true;
                   break;
                }
                if(ch)
@@ -1300,7 +1306,8 @@ private:
          }
          buffer.Add(0);
          *string = CopyString(buffer.array);
-         result = success;
+         if(!newLineInside)
+            result = success;
       }
       delete buffer;
       if(ch != ',' && ch != '}' && (!eCON || (ch != ';' && ch != '/')))
