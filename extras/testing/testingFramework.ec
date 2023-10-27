@@ -3,8 +3,9 @@ import "ecere"
 public class eTest
 {
 public:
-   const String inputPath;  inputPath = "/test_data";
+   const String inputPath;
    const String outputPath;
+   Map<String, const String> arguments;
 
    void pass(const String testID, const String testCase)
    {
@@ -35,39 +36,62 @@ class TestApp : GuiApplication
    {
       OldLink d;
       TestAction action = test;
+      Map<String, const String> options = null;
+      char outputDir[MAX_LOCATION];
+      const String inputPath = "/test_data", outputPath = null;
+      int a;
+      const String currentOption = null;
+      bool inOptions = false, syntaxError = false;
 
-      if(argc > 1)
+      for(a = 1; !syntaxError && a < argc; a++)
       {
-         const String sAction = argv[1];
-              if(!strcmpi(sAction, "test"));
-         else if(!strcmpi(sAction, "prepare")) action = prepare;
-         else if(!strcmpi(sAction, "clean"))   action = clean;
-         else if(!strcmpi(sAction, "keep"))    action = keep;
-         else
+         const char * arg = argv[a];
+         if(arg[0] == '-')
          {
-            PrintLn($"Syntax: ", argv[0], $" [[[test | prepare | clean] <inputs dir> [<outputs dir>]]]");
-            exitCode = 1;
-            return;
+            if(!options) options = {};
+            currentOption = arg + 1;
+            inOptions = true;
          }
+         else if(currentOption)
+         {
+            options[currentOption] = arg;
+            currentOption = null;
+         }
+         else if(!inOptions)
+         {
+            if(a == 1 && argc > 2 && argv[2][0] != '-')
+               syntaxError = !action.OnGetDataFromString(arg);
+            else if(a == 1 || a == 2)
+               inputPath = arg;
+            else if(a == 3)
+               outputPath = arg;
+         }
+         else
+            syntaxError = true;
+      }
+      if(syntaxError)
+      {
+         PrintLn($"Syntax: ", argv[0], $" [[[test | prepare | clean] <inputs dir> [<outputs dir>]]]");
+         exitCode = 1;
+         delete options;
+         return;
       }
 
       for(d = class(eTest).derivatives.first; d; d = d.next)
       {
          subclass(eTest) c = d.data;
          eTest ut = eInstance_New(c);
-         char outputDir[MAX_LOCATION];
 
-         if(ut)
+         ut.inputPath = inputPath;
+
+         if(outputPath)
+            ut.outputPath = outputPath;
+         else
          {
-            if(argc > 2) ut.inputPath = argv[2];
-            if(argc > 3)
-               ut.outputPath = argv[3];
-            else
-            {
-               sprintf(outputDir, "output_%s", ut._class.name);
-               ut.outputPath = outputDir;
-            }
+            sprintf(outputDir, "output_%s", ut._class.name);
+            ut.outputPath = outputDir;
          }
+         ut.arguments = options;
 
          if(action == clean)
             ut.cleanTests();
@@ -98,6 +122,8 @@ class TestApp : GuiApplication
          }
          delete ut;
       }
+
+      delete options;
 
       if(exitCode)
          PrintLn($"\nSome tests or preparation FAILED.");
