@@ -5,6 +5,7 @@ public class eTest
 public:
    const String inputPath;  inputPath = "/test_data";
    const String outputPath;
+   Map<String, String> parameters;
 
    void pass(const String testID, const String testCase)
    {
@@ -20,6 +21,11 @@ public:
    {
       PrintLn("!FAILED!  [", _class.name, ":", testID, testCase ? ":" : "", testCase ? testCase : "", "]", $" because ", reason, ".");
       app.exitCode = 1;
+   }
+
+   ~eTest()
+   {
+      if(parameters) parameters.Free(), delete parameters;
    }
 
    virtual bool prepareTests();
@@ -59,9 +65,40 @@ class TestApp : GuiApplication
 
          if(ut)
          {
-            if(argc > 2) ut.inputPath = argv[2];
-            if(argc > 3)
-               ut.outputPath = argv[3];
+            int c, numOptions = 0;
+            const String currentOption = null;
+            if(argc > 2)
+            {
+               for(c = 2; c<argc; c++)
+               {
+                  const char * arg = argv[c];
+                  if(arg[0] == '-')
+                  {
+                     if(!ut.parameters) ut.parameters = {};
+                     currentOption = arg+1;//CopyString(arg+1);
+                     if(currentOption != null)
+                        numOptions++;
+                  }
+                  else if(currentOption != null)
+                  {
+                     ut.parameters[currentOption] = CopyString(arg);
+                     currentOption = null;
+                  }
+                  else
+                  {
+                     int index = 2 + (numOptions *2);
+                     if(c == index)
+                        ut.inputPath = CopyString(arg);
+                     else if(c > index)
+                        ut.outputPath = CopyString(arg);
+                  }
+               }
+               if(argc <= 3)
+               {
+                  sprintf(outputDir, "output_%s", ut._class.name);
+                  ut.outputPath = outputDir;
+               }
+            }
             else
             {
                sprintf(outputDir, "output_%s", ut._class.name);
