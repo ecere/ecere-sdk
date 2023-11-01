@@ -222,15 +222,15 @@ endif
 
 deps:
 ifdef CROSS_TARGET
-ifndef LINUX_HOST
+# ifndef LINUX_HOST
 	@$(call echo,Building dependencies (host)...)
 	+cd deps && $(_MAKE) $(XBOOT)
+# endif
 endif
-endif
-ifndef LINUX_TARGET
+# ifndef LINUX_TARGET
 	@$(call echo,Building dependencies...)
 	+cd deps && $(_MAKE)
-endif
+# endif
 
 ecere: bootstrap deps
 ifdef CROSS_TARGET
@@ -506,9 +506,9 @@ installer:
 endif
 
 clean: emptyoutput bindings_clean
-ifndef LINUX_TARGET
+# ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) clean
-endif
+# endif
 	+cd ecere && $(_MAKE) clean
 	+cd compiler && $(_MAKE) clean
 	+cd ear && $(_MAKE) clean
@@ -527,9 +527,9 @@ endif
 	@$(call echo,Done.)
 
 realclean: bindings_realclean
-ifndef LINUX_TARGET
+# ifndef LINUX_TARGET
 	+cd deps && $(_MAKE) realclean
-endif
+# endif
 	+cd ecere && $(_MAKE) realclean
 	+cd compiler && $(_MAKE) realclean
 	+cd ear && $(_MAKE) realclean

@@ -464,6 +464,7 @@ PRJ_CFLAGS += \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2,) \
+			 -I../deps/jpeg-9a \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/include/freetype2 \
 			 -I$(SYSROOT)/usr/X11/include/freetype2 \
@@ -555,7 +556,8 @@ OFLAGS += \
 	 -Wl,--wrap=fcntl64
 endif
 OFLAGS += \
-	 -L/usr/X11R6/lib
+	 -L/usr/X11R6/lib \
+	 -L../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
 	$(call _L,ncurses) \
 	$(call _L,pthread) \
