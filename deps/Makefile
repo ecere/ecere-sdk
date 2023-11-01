@@ -17,7 +17,7 @@ else
 ifdef OSX_TARGET
 all: jpeg gif
 else
-all: gif
+all: jpeg gif
 endif
 endif
 

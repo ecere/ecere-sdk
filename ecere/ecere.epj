@@ -33,7 +33,8 @@
          "Name" : "Linux",
          "Options" : {
             "IncludeDirs" : [
-               "/usr/include/freetype2"
+               "/usr/include/freetype2",
+               "../deps/jpeg-9a"
             ],
             "Libraries" : [
                "ncurses",
@@ -50,7 +51,8 @@
                "crypto"
             ],
             "LibraryDirs" : [
-               "/usr/X11R6/lib"
+               "/usr/X11R6/lib",
+               "../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)"
             ]
          }
       },
