@@ -874,7 +874,14 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_RemoveAll]);
 __internal_VirtualMethod ? __internal_VirtualMethod(this) : (void)1;
 }));
+if(source)
 {
+unsigned int isBuiltInContainer = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class == __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer;
+unsigned int srcIsMap = __ecereNameSpace__ecere__com__eClass_IsDerived(((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class, __ecereClass___ecereNameSpace__ecere__com__Map);
+struct __ecereNameSpace__ecere__com__Class * cV = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass;
+void (* onCopy)(void *, void *, void *) = ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->_vTbl[__ecereVMethodID_class_OnCopy];
+unsigned int addRef = (cV->type == 1000 && !cV->byValueSystemClass) || cV->type == 2 || cV->type == 4 || cV->type == 3;
+
 for(i = (__extension__ ({
 struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
 
@@ -895,7 +902,7 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 __internal_VirtualMethod ? __internal_VirtualMethod(source, i) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
 })))
 {
-struct __ecereNameSpace__ecere__com__MapNode * srcNode = (struct __ecereNameSpace__ecere__com__MapNode *)((uintptr_t)((uint64)((__extension__ ({
+struct __ecereNameSpace__ecere__com__MapNode * srcNode = srcIsMap ? (struct __ecereNameSpace__ecere__com__MapNode *)i : (struct __ecereNameSpace__ecere__com__MapNode *)((uintptr_t)((uint64)((__extension__ ({
 uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
 
 __internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
@@ -905,7 +912,9 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
 __internal_VirtualMethod ? __internal_VirtualMethod(source, i) : (uint64)1;
 })))));
-struct __ecereNameSpace__ecere__com__MapNode * destNode = (struct __ecereNameSpace__ecere__com__MapNode *)(__extension__ ({
+struct __ecereNameSpace__ecere__com__MapNode * destNode;
+
+destNode = (struct __ecereNameSpace__ecere__com__MapNode *)(__extension__ ({
 struct __ecereNameSpace__ecere__com__IteratorPointer * (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded);
 
 __internal_VirtualMethod = ((struct __ecereNameSpace__ecere__com__IteratorPointer * (*)(struct __ecereNameSpace__ecere__com__Instance *, const uint64 pos, unsigned int create, unsigned int *  justAdded))__extension__ ({
@@ -915,7 +924,42 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetAtPosition]);
 __internal_VirtualMethod ? __internal_VirtualMethod(this, __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_key(srcNode), 1, (((void *)0))) : (struct __ecereNameSpace__ecere__com__IteratorPointer *)1;
 }));
+if(cV->type == 1)
+{
+uint64 v = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
 
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(srcNode)) : (uint64)1;
+}));
+
+if(isBuiltInContainer)
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(destNode), v) : (unsigned int)1;
+}));
+else
+{
+struct __ecereNameSpace__ecere__com__MapNode * adjDestNode = destNode;
+
+if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->type == 1)
+adjDestNode = (struct __ecereNameSpace__ecere__com__MapNode *)(((unsigned char *)destNode) + ((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[5].__anon1.__anon1.dataTypeClass->structSize - sizeof destNode->key);
+onCopy(cV, (void *)&adjDestNode->value, (void *)(uintptr_t)v);
+}
+}
+else
+{
+if(isBuiltInContainer)
 (__extension__ ({
 unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
 
@@ -926,8 +970,34 @@ __internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpa
 })[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
 __internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(destNode), __ecereProp___ecereNameSpace__ecere__com__MapNode_Get_value(srcNode)) : (unsigned int)1;
 }));
+else
+{
+uint64 v = (__extension__ ({
+uint64 (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer);
+
+__internal_VirtualMethod = ((uint64 (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_GetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(srcNode)) : (uint64)1;
+})), value;
+
+onCopy(cV, ((char *)&value + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize)), (void *)(uintptr_t)(addRef ? (uint64)(uintptr_t)((char *)&v + __ENDIAN_PAD(((struct __ecereNameSpace__ecere__com__Instance *)(char *)this)->_class->templateArgs[6].__anon1.__anon1.dataTypeClass->typeSize)) : (uint64)v));
+(__extension__ ({
+unsigned int (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data);
+
+__internal_VirtualMethod = ((unsigned int (*)(struct __ecereNameSpace__ecere__com__Instance *, struct __ecereNameSpace__ecere__com__IteratorPointer * pointer, uint64 data))__extension__ ({
+struct __ecereNameSpace__ecere__com__Instance * __internal_ClassInst = this;
+
+__internal_ClassInst ? __internal_ClassInst->_vTbl : __ecereClass___ecereNameSpace__ecere__com__Map->_vTbl;
+})[__ecereVMethodID___ecereNameSpace__ecere__com__Container_SetData]);
+__internal_VirtualMethod ? __internal_VirtualMethod(this, (void *)(destNode), value) : (unsigned int)1;
+}));
 }
-if(((struct __ecereNameSpace__ecere__com__Instance *)(char *)source)->_class == __ecereClass___ecereNameSpace__ecere__com__BuiltInContainer)
+}
+}
+if(isBuiltInContainer)
 (__extension__ ({
 void (*  __internal_VirtualMethod)(struct __ecereNameSpace__ecere__com__Instance *);
 
