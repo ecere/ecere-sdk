@@ -106,11 +106,10 @@ private:
    {
       if(this)
       {
-         GuiConfigData configData
-         {
-            windows = windows ? { mapSrc = windows } : null;
-            paneSplitters = paneSplitters ? { mapSrc = paneSplitters } : null;
-         };
+         GuiConfigData configData = eInstance_New(_class);
+
+         configData.windows = windows ? { mapSrc = windows } : null;
+         configData.paneSplitters = paneSplitters ? { mapSrc = paneSplitters } : null;
          return configData;
       }
       return null;
