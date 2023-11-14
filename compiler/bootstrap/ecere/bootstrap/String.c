@@ -336,6 +336,8 @@ extern unsigned long strtoul(const char *  nptr, char * *  endptr, int base);
 
 extern int vsnprintf(char * , size_t, const char * , __builtin_va_list);
 
+extern unsigned int __ecereNameSpace__ecere__sys__UTF8GetChar(const char *  string, int *  numBytes);
+
 struct __ecereNameSpace__ecere__com__DefinedExpression;
 
 struct __ecereNameSpace__ecere__com__GlobalFunction;
@@ -953,6 +955,67 @@ char string[20];
 
 __ecereNameSpace__ecere__sys__GetString(buffer, string, 20);
 return (unsigned int)strtoul(string, (((void *)0)), 16);
+}
+
+unsigned int __ecereNameSpace__ecere__sys__StringLikePattern(const char * string, const char * pattern)
+{
+unsigned int result = 1;
+int wildcardPosition[300], stringPosition[300], currentWildcard = 0;
+int i, j;
+char chp;
+unsigned int lastWasWildcard = 0;
+
+for(i = 0, j = 0; (chp = pattern[i]); i++, j++)
+{
+char chs = string[j];
+
+lastWasWildcard = 0;
+if(chs && chp == '_')
+{
+int nb;
+
+__ecereNameSpace__ecere__sys__UTF8GetChar(string + j, &nb);
+j += nb - 1;
+}
+else
+{
+if(chp == '%')
+{
+if(pattern[i + 1] == '%')
+i++;
+else
+{
+lastWasWildcard = 1;
+if(chs && currentWildcard < 300)
+{
+wildcardPosition[currentWildcard] = i;
+stringPosition[currentWildcard] = j;
+currentWildcard++;
+}
+j--;
+continue;
+}
+}
+if(chs != chp || (!lastWasWildcard && currentWildcard && string[j + 1] && !pattern[i + 1]))
+{
+if(currentWildcard)
+{
+currentWildcard--;
+i = wildcardPosition[currentWildcard] - 1;
+j = stringPosition[currentWildcard];
+}
+else
+{
+if(!lastWasWildcard || pattern[i + 1])
+result = 0;
+break;
+}
+}
+}
+}
+if(!lastWasWildcard && string[j])
+result = 0;
+return result;
 }
 
 char * __ecereNameSpace__ecere__sys__ChangeExtension(const char * string, const char * ext, char * output)
@@ -2109,5 +2172,6 @@ __ecerePropM___ecereNameSpace__ecere__sys__ZString_string = __ecereNameSpace__ec
 if(((struct __ecereNameSpace__ecere__com__Module *)(((char *)module + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application == ((struct __ecereNameSpace__ecere__com__Module *)(((char *)__thisModule + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->application)
 __ecereProp___ecereNameSpace__ecere__sys__ZString_string = __ecerePropM___ecereNameSpace__ecere__sys__ZString_string, __ecerePropM___ecereNameSpace__ecere__sys__ZString_string = (void *)0;
 __ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::strchrmax", "char * ecere::sys::strchrmax(const char * s, int c, int max)", __ecereNameSpace__ecere__sys__strchrmax, module, 4);
+__ecereNameSpace__ecere__com__eSystem_RegisterFunction("ecere::sys::StringLikePattern", "bool ecere::sys::StringLikePattern(const String string, const String pattern)", __ecereNameSpace__ecere__sys__StringLikePattern, module, 4);
 }
 

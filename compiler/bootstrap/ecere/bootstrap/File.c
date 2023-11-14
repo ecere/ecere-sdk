@@ -154,8 +154,6 @@ int64 modified;
 int64 created;
 } ecere_gcc_struct;
 
-static int __ecereNameSpace__ecere__sys__openCount;
-
 struct __ecereNameSpace__ecere__com__Instance * __ecereNameSpace__ecere__sys__CreateTemporaryFile(char * tempFileName, const char * template)
 {
 return (((void *)0));
@@ -794,12 +792,10 @@ __attribute__((unused)) struct __ecereNameSpace__ecere__sys__File * __ecerePoint
 {
 if(__ecerePointer___ecereNameSpace__ecere__sys__File->output && __ecerePointer___ecereNameSpace__ecere__sys__File->output != __ecerePointer___ecereNameSpace__ecere__sys__File->input)
 {
-__ecereNameSpace__ecere__sys__openCount--;
 fclose(__ecerePointer___ecereNameSpace__ecere__sys__File->output);
 }
 if(__ecerePointer___ecereNameSpace__ecere__sys__File->input)
 {
-__ecereNameSpace__ecere__sys__openCount--;
 fclose(__ecerePointer___ecereNameSpace__ecere__sys__File->input);
 }
 __ecerePointer___ecereNameSpace__ecere__sys__File->input = (((void *)0));
@@ -1461,7 +1457,6 @@ if(!__ecereProp___ecereNameSpace__ecere__sys__File_Get_input(file) && !__ecerePr
 ;
 else
 {
-__ecereNameSpace__ecere__sys__openCount++;
 result = file;
 }
 if(!result)

@@ -278,17 +278,52 @@ public class Map<class MT, class V> : CustomAVLTree<MapNode<MT, V>, I = MT, D = 
    void Copy(Container<T> source)
    {
       IteratorPointer i;
+
       RemoveAll();
-      // Don't we want to allow Copying from a map as well? if(!eClass_IsDerived(source._class, class(Map)))
+
+      if(source)
       {
+         bool isBuiltInContainer = source._class == class(BuiltInContainer);
+         bool srcIsMap = eClass_IsDerived(source._class, class(Map));
+         Class cV = class(V);
+         void (* onCopy)(void *, void *, void *) = class(V)._vTbl[__ecereVMethodID_class_OnCopy];
+         bool addRef = (cV.type == systemClass && !cV.byValueSystemClass) || cV.type == bitClass || cV.type == enumClass || cV.type == unitClass;
+
          for(i = source.GetFirst(); i; i = source.GetNext(i))
          {
-            MapNode<MT, V> srcNode = (MapNode<MT, V>)source.GetData(i);
-            MapNode<MT, V> destNode = (MapNode<MT, V>)GetAtPosition(srcNode.key, true, null);
-            SetData(destNode, srcNode.value);
+            MapNode<MT, V> srcNode = srcIsMap ? (MapNode<MT, V>)i : (MapNode<MT, V>)source.GetData(i);
+            MapNode<MT, V> destNode;
+
+            destNode = (MapNode<MT, V>)GetAtPosition(srcNode.key, true, null);
+
+            // REVIEW: Should this invoke OnCopy()?
+            if(cV.type == structClass)
+            {
+               V v = GetData(srcNode);
+               if(isBuiltInContainer) // Don't auto-copy for BuiltInContainer
+                  SetData(destNode, v);
+               else
+               {
+                  MapNode<MT, V> adjDestNode = destNode;
+                  if(class(MT).type == structClass)   // Adjust node pointer for non-standard AVLNode with struct key
+                     adjDestNode = (MapNode<MT, V>)(((byte *) destNode) + class(MT).structSize - sizeof(destNode.AVLNode::key));
+                  onCopy(cV, (void *)&adjDestNode.value, (void *)v);
+               }
+            }
+            else
+            {
+               if(isBuiltInContainer) // Don't auto-copy for BuiltInContainer
+                  SetData(destNode, srcNode.value);
+               else
+               {
+                  V v = GetData(srcNode), value;
+                  onCopy(cV, &value, (void *)(addRef ? (V)&v : (V)v));
+                  SetData(destNode, value);
+               }
+            }
          }
          // ADDED THIS HERE TO FREE BUILTIN CONTAINERS ASSIGNED TO A MAP
-         if(source._class == class(BuiltInContainer))
+         if(isBuiltInContainer)
             source.Free();
       }
    }
