@@ -503,9 +503,8 @@ public:
          TemporalOptions to {year=true, month=true, day=true};
          String dateString;
 
-         if(dt.hour) to.hour = true;
-         if(dt.minute) to.minute = true;
-         if(dt.second) to.second = true;
+         if(dt.hour || dt.minute || dt.second)
+            to |= { hour = true, minute = true, second = true };
          dateString = printTime(to, dt);
          out.Print("DateTime { '", dateString, "' }");
          delete dateString;

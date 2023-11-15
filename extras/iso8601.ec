@@ -27,7 +27,7 @@ public String printTimeBuf(char * string, int maxSize, TemporalOptions options, 
    if(time.year)
    {
       strcatf(string, "%04d", time.year);
-      if(options.month || options.week)
+      if(options.month || options.week || options.day)
       {
          strcatf(string, "-%02d", time.month + 1);
          if(time.day)
@@ -37,7 +37,7 @@ public String printTimeBuf(char * string, int maxSize, TemporalOptions options, 
    if(options.hour || options.minute || options.second)
    {
       strcat(string, "T");
-      if(options.hour)
+      if(options.hour || options.minute || options.second)
          strcatf(string, "%02d:", time.hour);
       if(options.hour || options.minute)
          strcatf(string, "%02d:", time.minute);
