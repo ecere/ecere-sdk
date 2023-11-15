@@ -1253,7 +1253,7 @@ int dmInit( dmContext *dm, int flags )
 
 void dmEnd( dmContext *dm )
 {
-  int drawbufferindex;
+  int drawbufferindex, programindex;
   dmDrawBuffer *drawbuffer;
 
   for( drawbufferindex = 0 ; drawbufferindex < DM_CONTEXT_DRAW_BUFFER_COUNT ; drawbufferindex++ )
@@ -1261,9 +1261,22 @@ void dmEnd( dmContext *dm )
     drawbuffer = &dm->drawbuffer[drawbufferindex];
     if(drawbuffer->vbo)
       glDeleteBuffers( 1, &drawbuffer->vbo );
+    free(drawbuffer->vertexbuffer);
   }
+  free(dm->imagebuffer);
+  free(dm->imagebuffertmp);
 
-  /* TODO: Destroy the shaders! */
+  for( programindex = 0 ; programindex < DM_PROGRAM_COUNT ; programindex++ )
+  {
+     dmProgram *program = &dm->shaderprograms[ programindex ];
+
+     if( program->fragmentshader )
+       glDeleteShader( program->fragmentshader );
+     if( program->vertexshader )
+       glDeleteShader( program->vertexshader );
+     if( program->glprogram )
+       glDeleteProgram( program->glprogram );
+  }
 }
 
 void dmReady( dmContext *dm, int viewportWidth, int viewportHeight, int verticalFlip )
