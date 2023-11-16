@@ -71,7 +71,7 @@ class TestApp : GuiApplication
       }
       if(syntaxError)
       {
-         PrintLn($"Syntax: ", argv[0], $" [[[test | prepare | clean] <inputs dir> [<outputs dir>]]]");
+         PrintLn($"Syntax: ", argv[0], $" [[[test | keep | prepare | clean] <inputs dir> [<outputs dir>]]]");
          exitCode = 1;
          delete options;
          return;
