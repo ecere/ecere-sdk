@@ -751,7 +751,7 @@ public struct DateTime
    {
       char * s = CopyString(string);
       char * tokens[20];
-      int count = TokenizeWith(s, 20, tokens, " ", false);
+      int count = s ? TokenizeWith(s, 20, tokens, " ", false) : 0;
       int c;
       bool foundDayOfTheWeek = false;
       bool foundDate = false;
@@ -856,6 +856,12 @@ public struct DateTime
          weWant = (SecSince1970)this + (int)(dayOfTheWeek - this.dayOfTheWeek) * 24 * 60 * 60;
          this = (DateTime)weWant;
       }
+      else if(!s || !s[0])
+      {
+         this = { };
+         delete s;
+         return true;
+      }
       else if(!strcmpi(s, "today") || !strcmpi(s, $"today") ||
               !strcmpi(s, "now") || !strcmpi(s, $"now"))
          GetLocalTime();
@@ -872,12 +878,6 @@ public struct DateTime
          GetLocalTime();
          weWant = (SecSince1970)this - 24 * 60 * 60;
          this = (DateTime)weWant;
-      }
-      else if(!s[0])
-      {
-         this = { };
-         delete s;
-         return true;
       }
       else
          this.year = year;
