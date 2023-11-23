@@ -102,7 +102,8 @@ private:
                           type##Equ, type##Nqu, \
                           type##And, type##Or, \
                           type##Grt, type##Sma, type##GrtEqu, type##SmaEqu,  \
-                          type##StrCnt, type##StrSrt, type##StrEnd, type##StrNotCnt, type##StrNotSrt, type##StrNotEnd,     \
+                          type##Contains, type##StartsWith, type##EndsWith, \
+                          type##DoesntContain, type##DoesntStartWith, type##DoesntEndWith, \
                           null, null, null, null, null, null \
                         }
 
@@ -855,7 +856,7 @@ public:
          else
          {
             // REVIEW: condition for overall flags to be resolved
-            if(op >= stringStartsWith && op <= stringNotContains)
+            if(op >= stringContains && op <= stringNotEndsW)
                type.type = text;
             else
             {
@@ -2887,7 +2888,7 @@ OPERATOR_NUMERIC(BINARY_LOGICAL, >=, GrtEqu)
 OPERATOR_NUMERIC(BINARY_LOGICAL, <=, SmaEqu)
 
 // text conditions
-static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textContains(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    if(!(val1.s && val2.s))
       result.i = 0;
@@ -2901,7 +2902,7 @@ static bool textStrCnt(FieldValue result, const FieldValue val1, const FieldValu
    return true;
 }
 
-static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textStartsWith(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    if(!(val1.s && val2.s))
       result.i = 0;
@@ -2916,7 +2917,7 @@ static bool textStrSrt(FieldValue result, const FieldValue val1, const FieldValu
    return true;
 }
 
-static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textEndsWith(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
    if(!(val1.s && val2.s))
       result.i = 0;
@@ -2931,47 +2932,24 @@ static bool textStrEnd(FieldValue result, const FieldValue val1, const FieldValu
    return true;
 }
 
-static bool textStrNotCnt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textDoesntContain(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   if(!(val1.s && val2.s))
-      result.i = 0;
-   else
-   {
-      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-      result.i = !SearchString(s1, 0, s2, true, false);
-      delete s1, delete s2;
-   }
-   result.type = { type = integer };
+   textContains(result, val1, val2);
+   result.i = !result.i;
    return true;
 }
 
-static bool textStrNotSrt(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textDoesntStartWith(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   if(!(val1.s && val2.s))
-      result.i = 0;
-   else
-   {
-      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-      int lenStr = strlen(s1), lenSub = strlen(s2);
-      result.i = lenSub > lenStr ? 0 : strncmp(s1, s2, lenSub) != 0;
-      delete s1, delete s2;
-   }
-   result.type = { type = integer };
+   textStartsWith(result, val1, val2);
+   result.i = !result.i;
    return true;
 }
 
-static bool textStrNotEnd(FieldValue result, const FieldValue val1, const FieldValue val2)
+static bool textDoesntEndWith(FieldValue result, const FieldValue val1, const FieldValue val2)
 {
-   if(!(val1.s && val2.s))
-      result.i = 0;
-   else
-   {
-      String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
-      int lenStr = strlen(s1), lenSub = strlen(s2);
-      result.i = lenSub > lenStr ? 0 : strcmp(s1 + (lenStr-lenSub), s2) != 0;
-      delete s1, delete s2;
-   }
-   result.type = { type = integer };
+   textEndsWith(result, val1, val2);
+   result.i = !result.i;
    return true;
 }
 
