@@ -913,30 +913,8 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
                         CMSSExpArray arrayExp = (CMSSExpArray) exp;
-                        Array<Instance> array { size = (arrayExp.elements ? arrayExp.elements.GetCount() : 0) };
-                        Iterator<CMSSExpression> it { arrayExp.elements };
-                        int j = 0;
-
-                        // NOTE: Currently only supporting array of instances...
-                        while(it.Next())
-                        {
-                           CMSSExpression e = it.data;
-                           if(e._class == class(CMSSExpInstance))
-                           {
-                              CMSSExpInstance instExp = (CMSSExpInstance)e;
-                              /*Instance a = instExp.instData;
-                              Class c = instExp.expType;
-                              if(c && c.type == normalClass)
-                                 a._refCount++;
-                              */
-                              array[j] = instExp.instData;
-                           }
-                           j++;
-                        }
-
-                        setInstance(object, (Instance)(uintptr)array);
-
-                        // delete array;
+                        if(arrayExp.array)
+                           setInstance(object, arrayExp.array);
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
