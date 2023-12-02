@@ -342,10 +342,13 @@ public:
    {
       uint oldSize = totalSize;
       uint newSize = (uint)Min((uint64)MAXDWORD, (uint64)totalSize + Max((uint64)extraNeeded, (uint64)totalSize / 2));
-#ifdef _DEBUG
       if((uint64)totalSize + Max((uint64)extraNeeded, (uint64)totalSize / 2) > (uint64)MAXDWORD)
+      {
+//#ifdef _DEBUG
          PrintLn("WARNING: Expanding AB beyond MAXDWORD");
-#endif
+//#endif
+         return 0;
+      }
       if(newSize >= (uint64)oldSize + extraNeeded && ab.resize(type, totalSize, newSize, staticDraw, keepSameBufferID))
       {
          uint spaceAdded = newSize - totalSize;
