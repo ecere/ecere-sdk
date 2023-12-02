@@ -1405,6 +1405,9 @@ __ecereMethod___ecereNameSpace__ecere__com__BlockPool_Expand(&__ecereNameSpace__
 
 static void __ecereNameSpace__ecere__com___myfree(void * pointer)
 {
+#ifdef _DEBUG
+	free(pointer); return;
+#else
 if(pointer)
 {
 struct __ecereNameSpace__ecere__com__MemBlock * block = (struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)pointer - sizeof(struct __ecereNameSpace__ecere__com__MemBlock));
@@ -1422,10 +1425,14 @@ __ecereNameSpace__ecere__com__OUTSIDE_MEM -= sizeof(struct __ecereNameSpace__ece
 free(block);
 }
 }
+#endif
 }
 
 static void * __ecereNameSpace__ecere__com___mymalloc(unsigned int size)
 {
+#ifdef _DEBUG
+	return malloc(size);
+#else
 struct __ecereNameSpace__ecere__com__MemBlock * block = (((void *)0));
 
 if(size)
@@ -1456,6 +1463,7 @@ block->size = size;
 }
 }
 return block ? ((struct __ecereNameSpace__ecere__com__MemBlock *)block + 1) : (((void *)0));
+#endif
 }
 
 static void __ecereNameSpace__ecere__com___free(void * pointer)
@@ -1468,15 +1476,22 @@ __ecereNameSpace__ecere__com___myfree(pointer);
 
 static void * __ecereNameSpace__ecere__com___mycalloc(int n, unsigned int size)
 {
+#ifdef _DEBUG
+	return calloc(n, size);
+#else
 void * pointer = __ecereNameSpace__ecere__com___mymalloc(n * size);
 
 if(pointer)
 memset(pointer, 0, n * size);
 return pointer;
+#endif
 }
 
 static void * __ecereNameSpace__ecere__com___myrealloc(void * pointer, unsigned int size)
 {
+#ifdef _DEBUG
+	return realloc(pointer, size);
+#else
 struct __ecereNameSpace__ecere__com__MemBlock * block = pointer ? ((struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)pointer - sizeof(struct __ecereNameSpace__ecere__com__MemBlock))) : (((void *)0));
 void * newPointer = (((void *)0));
 struct __ecereNameSpace__ecere__com__MemPart * part = block ? block->part : (((void *)0));
@@ -1523,10 +1538,21 @@ __ecereNameSpace__ecere__com___myfree(pointer);
 }
 }
 return newPointer;
+#endif
 }
 
 static void * __ecereNameSpace__ecere__com___mycrealloc(void * pointer, unsigned int size)
 {
+#ifdef _DEBUG
+   unsigned int s = pointer ? malloc_usable_size(pointer) : 0;
+   void * p;
+   if(!size) { free(pointer); return 0; }
+
+   p = realloc(pointer, size);
+   if(size > s)
+      memset((unsigned char *)p + s, 0, size - s);
+   return p;
+#else
 struct __ecereNameSpace__ecere__com__MemBlock * block = pointer ? ((struct __ecereNameSpace__ecere__com__MemBlock *)((unsigned char *)pointer - sizeof(struct __ecereNameSpace__ecere__com__MemBlock))) : (((void *)0));
 void * newPointer = (((void *)0));
 struct __ecereNameSpace__ecere__com__MemPart * part = block ? block->part : (((void *)0));
@@ -1588,6 +1614,7 @@ memset((unsigned char *)newPointer, 0, size);
 }
 }
 return newPointer;
+#endif
 }
 
 static void * __ecereNameSpace__ecere__com___malloc(unsigned int size)

@@ -102,8 +102,13 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -w \
 			 -DECERE_STATIC
-ECFLAGS += \
-	 -nolinenumbers
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
+
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 
 

@@ -112,9 +112,14 @@ endif
 PRJ_CFLAGS += \
 	 $(if $(DEBUG),-g) $(FPIC) -w \
 	 -DBUILDING_ECERE_COM -DECERE_STATIC -DECERE_BOOTSTRAP
-ECFLAGS += \
-	 -nolinenumbers -defaultns ecere
+ECFLAGS += -defaultns ecere
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
 
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 
 

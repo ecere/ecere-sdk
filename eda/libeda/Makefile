@@ -102,8 +102,14 @@ PRJ_CFLAGS += \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall
 
 ECFLAGS += -module $(MODULE)
-ECFLAGS += \
-	 -nolinenumbers -defaultns eda
+ECFLAGS +=  -defaultns eda
+ifndef DEBUG
+ECFLAGS += -nolinenumbers
+endif
+
+ifdef DISABLE_MEMMGR
+ECFLAGS += -DDISABLE_MEMMGR
+endif
 
 # PLATFORM-SPECIFIC OPTIONS
 
