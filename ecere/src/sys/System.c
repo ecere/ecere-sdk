@@ -120,7 +120,7 @@ bool System_DeleteFile(const char * fileName)
 
 bool System_MakeDir(const char * path)
 {
-   bool result = false;
+   bool result = true;
    char location[MAX_LOCATION] = "";
    int locationLen = 0;
    int c = 0;
@@ -138,7 +138,7 @@ bool System_MakeDir(const char * path)
    location[c] = '\0';
    locationLen = c;
 
-   for(; path[c]; )
+   for(; result && path[c]; )
    {
       char directory[MAX_FILENAME];
       int len = 0;
