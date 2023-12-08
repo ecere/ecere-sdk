@@ -2,7 +2,7 @@ ifneq ($(V),1)
 .SILENT:
 endif
 
-.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ear compiler prepbinaries epj2make libec2 bgen ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
+.PHONY: all clean realclean wipeclean distclean emptyoutput prepinstall actualinstall install copyonlyinstall uninstall troubleshoot outputdirs bootstrap deps ecere ecerecom ecerevanilla ecerestatic ear compiler prepbinaries epj2make libec2 bgen ide documentor eda prepcodeguard codeguard fixprecompile cleantarget pots installer regenbootstrap updatebootstrap update_ecere update_libec update_ecp update_ecc update_ecs ecereaudio
 
 ROOT_ABSPATH := $(dir $(realpath $(firstword $(MAKEFILE_LIST))))
 _CF_DIR = $(ROOT_ABSPATH)
@@ -44,6 +44,15 @@ endif
 ifndef DISABLE_EDA_dBASE
   EDAdBASE := defined
 endif
+
+ifndef DISABLE_EDA_STATIC
+  EDA_STATIC := defined
+endif
+
+ifndef DISABLE_ECERE_STATIC
+  ECERE_STATIC := defined
+endif
+
 
 ifdef WINDOWS_HOST
 HOST_SOV := $(HOST_SO)
@@ -259,6 +268,10 @@ ecerevanilla: bootstrap
 	@$(call echo,Building Vanilla Ecere...)
 	+cd ecere && $(_MAKE) -f Makefile.vanilla
 
+ecerestatic: bootstrap
+	@$(call echo,Building Static Ecere...)
+	+cd ecere && $(_MAKE) -f Makefile.static
+
 ear: ecere ecerevanilla
 	@$(call echo,Building ear...)
 	+cd ear && cd cmd && $(_MAKE) cleantarget
@@ -275,7 +288,7 @@ endif
 	@$(call echo,Building 2nd stage compiler)
 	+cd compiler && $(_MAKE)
 
-prepbinaries: compiler libec2 ecerecom
+prepbinaries: compiler libec2 ecerecom ecerestatic
 	@$(call echo,Enabling 2nd stage binaries...)
 ifdef WINDOWS_TARGET
 	$(call cp,ecere/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ecere$(SOV),$(OBJBINDIR))
@@ -412,15 +425,24 @@ endif
 
 emptyoutput: outputdirs
 	$(call rm,$(OBJLIBDIR)libecereVanilla$(A))
+ifdef ECERE_STATIC
+	$(call rm,$(OBJLIBDIR)libecereStatic$(A))
+endif
 	$(call rm,$(SODESTDIR)$(LP)ecere$(SO))
 	$(call rm,$(SODESTDIR)$(LP)ecereCOM$(SO))
 	$(call rm,$(SODESTDIR)$(LP)ec$(SO))
 	$(call rm,$(SODESTDIR)$(LP)EDA$(SO))
+ifdef EDA_STATIC
+	$(call rm,$(OBJLIBDIR)libEDAStatic$(A))
+endif
 ifdef EDAdBASE
 	$(call rm,$(SODESTDIR)$(LP)EDAdBASE$(SO))
 endif
 ifdef EDASQLite
 	$(call rm,$(SODESTDIR)$(LP)EDASQLite$(SO))
+ifdef EDA_STATIC
+	$(call rm,$(OBJLIBDIR)libEDASQLiteStatic$(A))
+endif
 endif
 ifdef EDASQLiteCipher
 	$(call rm,$(SODESTDIR)$(LP)EDASQLiteCipher$(SO))
@@ -586,12 +608,25 @@ BINARIES = \
 	bgen/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/bgen$(B32_SFX)$(E) \
 	eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV)
 
+ifdef ECERE_STATIC
+BINARIES += \
+	ecere/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereStatic$(A)
+endif
+
+ifdef EDA_STATIC
+BINARIES += \
+	eda/libeda/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libEDAStatic$(A)
+endif
 ifdef EDAdBASE
 BINARIES += eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SOV)
 endif
 ifdef EDASQLite
 BINARIES += \
 	eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV)
+ifdef EDA_STATIC
+BINARIES += \
+	eda/drivers/sqlite/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libEDASQLiteStatic$(A)
+endif
 endif
 
 ifndef ECERE_PYTHON_PACKAGE
@@ -713,11 +748,17 @@ ifndef LINUX_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SO),$(OBJLIBDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SO),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SO),$(OBJLIBDIR))
+ifdef EDA_STATIC
+	$(call cp,eda/libeda/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libEDAStatic$(A),$(OBJLIBDIR))
+endif
 ifdef EDAdBASE
 	$(call cp,eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SO),$(OBJLIBDIR))
 endif
 ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SO),$(OBJLIBDIR))
+ifdef EDA_STATIC
+	$(call cp,eda/drivers/sqlite/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libEDASQLiteStatic$(A),$(OBJLIBDIR))
+endif
 endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SO),$(OBJLIBDIR))
@@ -742,6 +783,9 @@ ifdef CodeGuard
 	$(call cp,codeGuard/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/CodeGuard$(E),$(OBJBINDIR))
 endif
 	$(call cp,ecere/obj/vanilla.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereVanilla$(A),$(OBJLIBDIR))
+ifdef ECERE_STATIC
+	$(call cp,ecere/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libecereStatic$(A),$(OBJLIBDIR))
+endif
 
 .PHONY: prepinstall32
 prepinstall32:
@@ -776,11 +820,17 @@ ifdef WINDOWS_TARGET
 	$(call cp,$(OBJBINDIR)$(LP)ec$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)ec2$(SO),"$(DESTLIBDIR)/")
 	$(call cp,$(OBJBINDIR)$(LP)EDA$(SO),"$(DESTLIBDIR)/")
+ifdef EDA_STATIC
+	$(call cp,$(OBJLIBDIR)libEDAStatic$(A),"$(DESTSLIBDIR)/")
+endif
 ifdef EDAdBASE
 	$(call cp,$(OBJBINDIR)$(LP)EDAdBASE$(SO),"$(DESTLIBDIR)/")
 endif
 ifdef EDASQLite
 	$(call cp,$(OBJBINDIR)$(LP)EDASQLite$(SO),"$(DESTLIBDIR)/")
+ifdef EDA_STATIC
+	$(call cp,$(OBJLIBDIR)libEDASQLiteStatic$(A),"$(DESTSLIBDIR)/")
+endif
 endif
 ifdef EDASQLiteCipher
 	$(call cp,$(OBJBINDIR)$(LP)EDASQLiteCipher$(SO),"$(DESTLIBDIR)/")
@@ -801,6 +851,9 @@ ifdef CodeGuard
 	$(call cp,$(OBJBINDIR)CodeGuard$(E),"$(BINDIR)/")
 endif
 	$(call cp,$(OBJLIBDIR)libecereVanilla$(A),"$(DESTSLIBDIR)/")
+ifdef ECERE_STATIC
+	$(call cp,$(OBJLIBDIR)libecereStatic$(A),"$(DESTSLIBDIR)/")
+endif
 	$(call cp,doc/tao.pdf,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf") || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
 	$(call cpr,$(DOC)/ecere,"$(DOCDIR)/ecere")
@@ -813,11 +866,17 @@ ifdef OSX_TARGET
 	install $(OBJLIBDIR)$(LP)ec$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)ec2$(SO) $(DESTLIBDIR)/
 	install $(OBJLIBDIR)$(LP)EDA$(SO) $(DESTLIBDIR)/
+ifdef EDA_STATIC
+	install $(OBJLIBDIR)libEDAStatic$(A) $(DESTSLIBDIR)/
+endif
 ifdef EDAdBASE
 	install $(OBJLIBDIR)$(LP)EDAdBASE$(SO) $(DESTLIBDIR)/
 endif
 ifdef EDASQLite
 	install $(OBJLIBDIR)$(LP)EDASQLite$(SO) $(DESTLIBDIR)/
+ifdef EDA_STATIC
+	install $(OBJLIBDIR)libEDASQLiteStatic$(A) $(DESTSLIBDIR)/
+endif
 endif
 ifdef EDASQLiteCipher
 	install $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SO) $(DESTLIBDIR)/
@@ -837,6 +896,9 @@ ifdef CodeGuard
 	install $(OBJBINDIR)CodeGuard$(E) $(BINDIR)/
 endif
 	install $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/
+ifdef ECERE_STATIC
+	install $(OBJLIBDIR)libecereStatic$(A) $(DESTSLIBDIR)/
+endif
 	install -d $(DOCDIR)/
 	install doc/tao.pdf $(DOCDIR)/"Ecere Tao of Programming [work in progress].pdf" >/dev/null 2>&1 || echo "The Ecere Tao of Programming is available at http://ecere.com/tao.pdf"
 	$(call cpr,$(DOC)/ecereCOM,"$(DOCDIR)/ecereCOM")
@@ -862,11 +924,17 @@ ifdef LINUX_TARGET
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec$(SOV) $(DESTLIBDIR)/ec/$(LP)ec$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)ec2$(SOV) $(DESTLIBDIR)/ec/$(LP)ec2$(SOV)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDA$(SOV) $(DESTLIBDIR)/ec/$(LP)EDA$(SOV)
+ifdef EDA_STATIC
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)libEDAStatic$(A) $(DESTSLIBDIR)/ec/libEDAStatic$(A)
+endif
 ifdef EDAdBASE
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDAdBASE$(SOV) $(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SOV)
 endif
 ifdef EDASQLite
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLite$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLite$(SOV)
+ifdef EDA_STATIC
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)libEDASQLiteStatic$(A) $(DESTSLIBDIR)/ec/libEDASQLiteStatic$(A)
+endif
 endif
 ifdef EDASQLiteCipher
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)$(LP)EDASQLiteCipher$(SOV) $(DESTLIBDIR)/ec/$(LP)EDASQLiteCipher$(SOV)
@@ -933,13 +1001,15 @@ endif
 	install $(INSTALL_FLAGS) $(OBJBINDIR)bgen$(B32_SFX)$(E) $(BINDIR)/bgen$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJBINDIR)documentor$(B32_SFX)$(E) $(BINDIR)/documentor$(B32_SFX)$(E)
 	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
+ifdef ECERE_STATIC
+	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereStatic$(A) $(DESTSLIBDIR)/libecereStatic$(A)
+endif
 ifndef SKIP_ADDITIONAL_FILES
 ifndef BSD_HOST
 	install $(INSTALL_FLAGS) -m 644 share/pixmaps/ecere.png $(DESTDIR)$(prefix)/share/pixmaps/ecere.png
 	install $(INSTALL_FLAGS) -m 644 share/applications/ecere.desktop $(DESTDIR)$(prefix)/share/applications/ecere.desktop
 endif
 endif
-	install $(INSTALL_FLAGS) $(OBJLIBDIR)libecereVanilla$(A) $(DESTSLIBDIR)/libecereVanilla$(A)
 ifdef BSD_HOST
 	install $(INSTALL_FLAGS) -d $(DOCDIR)
 endif
@@ -991,6 +1061,9 @@ uninstall:
 	$(call rm,"$(DESTLIBDIR)/$(LP)ec$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)ec2$(SO)")
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDA$(SO)")
+ifdef EDA_STATIC
+	$(call rm,"$(DESTSLIBDIR)/libEDAStatic$(A)")
+endif
 ifdef LINUX_TARGET
 ifdef EDAdBASE
 	$(call rm,"$(DESTLIBDIR)/ec/$(LP)EDAdBASE$(SO)")
@@ -1010,6 +1083,9 @@ ifdef EDAdBASE
 endif
 ifdef EDASQLite
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDASQLite$(SO)")
+ifdef EDA_STATIC
+	$(call rm,"$(DESTSLIBDIR)/libEDASQLiteStatic$(A)")
+endif
 endif
 ifdef EDASQLiteCipher
 	$(call rm,"$(DESTLIBDIR)/$(LP)EDASQLiteCipher$(SO)")
@@ -1028,6 +1104,9 @@ endif
 	$(call rm,"$(BINDIR)/documentor$(B32_SFX)$(E)")
 ifdef CodeGuard
 	$(call rm,"$(BINDIR)/CodeGuard$(E)")
+endif
+ifdef ECERE_STATIC
+	$(call rm,"$(DESTSLIBDIR)/libecereStatic$(A)")
 endif
 	$(call rm,"$(DESTSLIBDIR)/libecereVanilla$(A)")
 	$(call rm,"$(DOCDIR)/Ecere Tao of Programming [work in progress].pdf")

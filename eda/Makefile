@@ -10,6 +10,10 @@ ifndef DISABLE_EDA_SQLITE
   EDAdBASE := defined
 endif
 
+ifndef DISABLE_STATIC
+  EDA_STATIC := defined
+endif
+
 .PHONY: all cleantarget clean realclean wipeclean distclean
 
 _CF_DIR = ../
@@ -34,6 +38,13 @@ ifdef EDASQLiteCipher
 	@$(call echo,Building EDASQLiteCipher driver...)
 	+cd drivers && cd sqliteCipher && $(_MAKE)
 endif
+ifdef EDA_STATIC
+	@$(call echo,Building Static EDA libraries...)
+	+cd libeda && $(_MAKE) -f Makefile.static
+ifdef EDASQLite
+	+cd drivers && cd sqlite && $(_MAKE) -f Makefile.static
+endif
+endif
 
 cleantarget:
 	+cd libeda && $(_MAKE) cleantarget
@@ -45,6 +56,10 @@ ifdef EDASQLite
 endif
 ifdef EDASQLiteCipher
 	+cd drivers && cd sqliteCipher && $(_MAKE) cleantarget
+endif
+ifdef EDA_STATIC
+	+cd libeda && $(_MAKE) -f Makefile.static cleantarget
+	+cd drivers && cd sqlite && $(_MAKE) -f Makefile.static cleantarget
 endif
 
 clean:
@@ -58,6 +73,10 @@ endif
 ifdef EDASQLiteCipher
 	+cd drivers && cd sqliteCipher && $(_MAKE) clean
 endif
+ifdef EDA_STATIC
+	+cd libeda && $(_MAKE) -f Makefile.static clean
+	+cd drivers && cd sqlite && $(_MAKE) -f Makefile.static clean
+endif
 
 realclean:
 	+cd libeda && $(_MAKE) realclean
@@ -70,12 +89,18 @@ endif
 ifdef EDASQLiteCipher
 	+cd drivers && cd sqliteCipher && $(_MAKE) realclean
 endif
+ifdef EDA_STATIC
+	+cd libeda && $(_MAKE) -f Makefile.static realclean
+	+cd drivers && cd sqlite && $(_MAKE) -f Makefile.static realclean
+endif
 
 wipeclean:
 	+cd libeda && $(_MAKE) wipeclean
 	+cd drivers && cd dbase && $(_MAKE) wipeclean
 	+cd drivers && cd sqlite && $(_MAKE) wipeclean
 	+cd drivers && cd sqliteCipher && $(_MAKE) wipeclean
+	+cd libeda && $(_MAKE) -f Makefile.static wipeclean
+	+cd drivers && cd sqlite && $(_MAKE) -f Makefile.static wipeclean
 
 distclean:
 	$(_MAKE) -f $(_CF_DIR)Cleanfile distclean distclean_all_subdirs

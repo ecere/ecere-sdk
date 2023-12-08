@@ -1,4 +1,11 @@
-import "ecere"
+#ifndef IMPORT_STATIC
+#ifdef ECERE_STATIC
+#define IMPORT_STATIC static
+#else
+#define IMPORT_STATIC
+#endif
+#endif
+public import IMPORT_STATIC "ecere"
 
 public class eTest
 {

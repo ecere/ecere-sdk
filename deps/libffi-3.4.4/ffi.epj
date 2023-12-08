@@ -18,6 +18,15 @@
                "i686-w64-mingw32"
             ]
          }
+      },
+      {
+         "Name" : "linux",
+         "Options" : {
+            "IncludeDirs" : [
+               "x86_64-pc-linux-gnu",
+               "x86_64-pc-linux-gnu/include"
+            ]
+         }
       }
    ],
    "Configurations" : [

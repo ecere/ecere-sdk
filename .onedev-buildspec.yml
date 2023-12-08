@@ -61,36 +61,42 @@ jobs:
       - apt -y install git
       - apt -y install python3-pip
       - pip3 install cffi
-      - make -j2 && mkdir output && make install DESTDIR=output && rm /usr/bin/gcc
-        && rm /usr/bin/g++ && ln -s /usr/bin/gcc-8 /usr/bin/gcc && ln -s /usr/bin/g++-8
-        /usr/bin/g++ && make bindings && rm /usr/bin/gcc && rm /usr/bin/g++ && ln
-        -s /usr/bin/gcc-7 /usr/bin/gcc && ln -s /usr/bin/g++-7 /usr/bin/g++ && apt
-        -y install libgif-dev:i386 && make ARCH=x32 -j2 && make ARCH=x32 install DESTDIR=output
-        && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz
-        extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec
-        ide/src/designer/SyntaxColorScheme.ec ide/res/actions default.cf crossplatform.mk
-        && cd output && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux.tar.gz
-        * && cd .. && cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz
+      - make -j2 && mkdir output && make install DESTDIR=output &&
+        rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-8 /usr/bin/gcc && ln -s /usr/bin/g++-8 /usr/bin/g++ &&
+        make bindings &&
+        rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-7 /usr/bin/gcc && ln -s /usr/bin/g++-7 /usr/bin/g++ &&
+        apt -y install libgif-dev:i386 &&
+        make ARCH=x32 -j2 && make ARCH=x32 install DESTDIR=output &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz
+        extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec
+        ide/res/actions default.cf crossplatform.mk &&
+        cd output && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux.tar.gz * &&
+        cd .. && cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz
         linux && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz
-        linux.x32 && cd .. && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings-linux-x86_64.tar.gz
-        bindings && wget https://ecere.com/tmp/win32-patches.tar.gz && tar xf win32-patches.tar.gz
-        && ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ && ln
-        -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ && ln -s $(pwd)/win32/regex/regex.h
-        /usr/i686-w64-mingw32/include/ && ln -s $(pwd)/win32/regex-x32/libgnurx-0.dll
-        /usr/i686-w64-mingw32/lib/ && apt -y install libgif-dev && make PLATFORM=win32
-        OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg && mkdir output-win32 &&
-        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg DESTDIR=output-win32
-        install && cd output-win32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz
-        * && cd .. && apt -y install libgif-dev:i386 && make PLATFORM=win32 ARCH=x32
-        OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg && mkdir output-win32-x32
-        && make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg
-        DESTDIR=output-win32-x32 install && cd output-win32-x32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-i686.tar.gz
-        * && cd .. && make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg
-        installer && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps.tar.gz
-        deps && cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz
-        win32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-i686.tar.gz
-        win32.x32 && cd .. && cp installer/obj/release.win32.x32/setup-ecere-0.44.16pre-win32.exe
-        @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-setup-ecere-0.44.16pre-win32.exe
+        linux.x32 && cd .. && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings-linux-x86_64.tar.gz bindings &&
+        wget https://ecere.com/tmp/win32-patches.tar.gz && tar xf win32-patches.tar.gz &&
+        ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
+        ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
+        ln -s $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
+        ln -s $(pwd)/win32/regex-x32/libgnurx-0.dll /usr/i686-w64-mingw32/lib/ &&
+        tar xf OpenSSL-win32/OpenSSL-win32*.tar.gz -C $(pwd)/win32 &&
+        tar xf curl-win32/curl*windows-x86_64.tar.gz -C $(pwd)/deps &&
+        tar xf curl-win32/curl*windows-i686.tar.gz -C $(pwd)/deps &&
+        apt -y install libgif-dev &&
+        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg &&
+        mkdir output-win32 &&
+        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg DESTDIR=output-win32 install &&
+        cd output-win32 &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz * &&
+        cd .. && apt -y install libgif-dev:i386 && make PLATFORM=win32 ARCH=x32
+        OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg && mkdir output-win32-x32 &&
+        make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg DESTDIR=output-win32-x32 install &&
+        cd output-win32-x32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-i686.tar.gz * &&
+        cd .. && make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg installer &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps.tar.gz deps &&
+        cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-x86_64.tar.gz win32 &&
+        tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-windows-i686.tar.gz win32.x32 &&
+        cd .. && cp installer/obj/release.win32.x32/setup-ecere-0.44.16pre-win32.exe @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-setup-ecere-0.44.16pre-win32.exe
     useTTY: true
     condition: ALL_PREVIOUS_STEPS_WERE_SUCCESSFUL
   - !PublishArtifactStep
@@ -153,6 +159,21 @@ jobs:
     projects: ecere-sdk
   - !BranchUpdateTrigger
     projects: ecere-sdk
+  projectDependencies:
+  - projectPath: OpenSSL-win32
+    buildProvider: !LastFinishedBuild
+      jobName: Build
+      refName: refs/heads/master
+    artifacts: '**'
+    accessTokenSecret: ssl-access
+    destinationPath: OpenSSL-win32
+  - projectPath: curl
+    buildProvider: !LastFinishedBuild
+      jobName: Build
+      refName: refs/heads/7.51
+    artifacts: '**'
+    accessTokenSecret: ssl-access
+    destinationPath: curl-win32
   retryCondition: never
   maxRetries: 3
   retryDelay: 30

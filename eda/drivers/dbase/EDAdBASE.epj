@@ -38,6 +38,7 @@
                "ECERE_STATIC"
             ],
             "TargetType" : "StaticLibrary",
+            "TargetFileName" : "EDAdBASEStatic",
             "FastMath" : true
          }
       },

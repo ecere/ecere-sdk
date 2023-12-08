@@ -234,6 +234,13 @@
                "z",
                "freetype"
             ],
+            "CompilerOptions" : [
+               "-mmmx",
+               "-msse",
+               "-msse2",
+               "-msse3",
+               "-msse4"
+            ],
             "Compress" : true,
             "FastMath" : true
          }
