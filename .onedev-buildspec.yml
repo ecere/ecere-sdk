@@ -68,7 +68,7 @@ jobs:
         apt -y install libgif-dev:i386 &&
         make ARCH=x32 -j2 && make ARCH=x32 install DESTDIR=output &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-extras-butterbur-src.tar.gz
-        extras butterbur/src compiler/eccss ecere/src ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec
+        extras butterbur/src compiler/eccss ecere/src ecere/res ide/src/designer/SyntaxHighlighting.ec ide/src/designer/SyntaxColorScheme.ec
         ide/res/actions default.cf crossplatform.mk &&
         cd output && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-linux.tar.gz * &&
         cd .. && cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz
