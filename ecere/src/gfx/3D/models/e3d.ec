@@ -1,3 +1,9 @@
+#ifdef ECERE_STATIC
+public import static "ecere"
+#else
+public import "ecere"
+#endif
+
 import "e3dRead"
 import "e3dWrite"
 
