@@ -5226,7 +5226,7 @@ static etcpak_force_inline uint64_t ProcessAlpha_SSE( __m128i px0, __m128i px1, 
     __m128i m5 = _mm_or_si128( m2, m3 );
     __m128i a = _mm_or_si128( m4, m5 );
 
-    __m128i solidCmp = _mm_broadcastb_epi8( a );
+    __m128i solidCmp = _mm_shuffle_epi8( a, _mm_setzero_si128() );
     __m128i cmpRes = _mm_cmpeq_epi8( a, solidCmp );
     if( _mm_testc_si128( cmpRes, _mm_set1_epi32( -1 ) ) )
     {
