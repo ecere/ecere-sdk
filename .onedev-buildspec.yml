@@ -1,6 +1,7 @@
 version: 20
 jobs:
 - name: Build
+  jobExecutor: DockerExecutor
   steps:
   - !CheckoutStep
     name: Checkout
@@ -25,7 +26,6 @@ jobs:
       - apt -y install gcc-multilib
       - apt -y install mingw-w64
       - apt -y install make
-      - apt -y install upx-ucl
       - apt -y install zlib1g-dev
       - apt -y install libpng-dev
       - apt -y install libjpeg62-dev
@@ -40,8 +40,12 @@ jobs:
       - apt -y install libssl-dev
       - apt -y install libffi-dev
       - apt -y install libasound2-dev
-      - apt -y install libcurl4-openssl-dev
       - apt -y install libfontconfig1-dev
+      - apt -y install libnghttp2-dev
+      - apt -y install libbrotli-dev
+      - apt -y install libzstd-dev
+      - apt -y install libpsl-dev
+      - apt -y install libidn2-dev
       - apt -y install zlib1g-dev:i386
       - apt -y install libpng-dev:i386
       - apt -y install libjpeg62-dev:i386
@@ -52,16 +56,30 @@ jobs:
       - apt -y install libgl1-mesa-dev:i386
       - apt -y install libxext-dev:i386
       - apt -y install libsqlite3-dev:i386
-      - apt -y install libssl-dev:i386
+      - apt -y install libssl-dev:i386 libnghttp2-dev:i386 libbrotli-dev:i386 libzstd-dev:i386 libpsl-dev:i386 libidn2-0-dev:i386
       - apt -y install libffi-dev:i386
       - apt -y install libasound2-dev:i386
-      - apt -y install libcurl4-openssl-dev:i386
       - apt -y install libfontconfig1-dev:i386
       - apt -y install wget
       - apt -y install git
       - apt -y install python3-pip
       - pip3 install cffi
-      - make -j2 && mkdir output && make install DESTDIR=output &&
+      - tar xf upx/*linux-x86_64.tar.gz -C /usr/bin &&
+        tar xf curl/curl*windows-x86_64.tar.gz -C $(pwd)/deps &&
+        tar xf curl/curl*windows-i686.tar.gz -C $(pwd)/deps &&
+        tar xf curl/curl*linux-x86_64.tar.gz -C $(pwd)/deps &&
+        tar xf curl/curl*linux-i686.tar.gz -C $(pwd)/deps &&
+        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux/libcurl.so.4 /usr/lib/x86_64-linux-gnu/ &&
+        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux/libcurl.so /usr/lib/x86_64-linux-gnu/ &&
+        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so.4 /usr/lib/i386-linux-gnu/ &&
+        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so /usr/lib/i386-linux-gnu/ &&
+        make -j2 && mkdir output && make install DESTDIR=output &&
+        wget https://ecere.com/tmp/win32-patches.tar.gz && tar xf win32-patches.tar.gz &&
+        ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
+        ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
+        ln -s $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
+        ln -s $(pwd)/win32/regex-x32/libgnurx-0.dll /usr/i686-w64-mingw32/lib/ &&
+        tar xf OpenSSL-win32/OpenSSL-win32*.tar.gz -C $(pwd)/win32 &&
         rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-8 /usr/bin/gcc && ln -s /usr/bin/g++-8 /usr/bin/g++ &&
         make bindings &&
         rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-7 /usr/bin/gcc && ln -s /usr/bin/g++-7 /usr/bin/g++ &&
@@ -74,14 +92,6 @@ jobs:
         cd .. && cd obj && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-x86_64.tar.gz
         linux && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz
         linux.x32 && cd .. && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings-linux-x86_64.tar.gz bindings &&
-        wget https://ecere.com/tmp/win32-patches.tar.gz && tar xf win32-patches.tar.gz &&
-        ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
-        ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
-        ln -s $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
-        ln -s $(pwd)/win32/regex-x32/libgnurx-0.dll /usr/i686-w64-mingw32/lib/ &&
-        tar xf OpenSSL-win32/OpenSSL-win32*.tar.gz -C $(pwd)/win32 &&
-        tar xf curl-win32/curl*windows-x86_64.tar.gz -C $(pwd)/deps &&
-        tar xf curl-win32/curl*windows-i686.tar.gz -C $(pwd)/deps &&
         apt -y install libgif-dev &&
         make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg &&
         mkdir output-win32 &&
@@ -170,10 +180,17 @@ jobs:
   - projectPath: curl
     buildProvider: !LastFinishedBuild
       jobName: Build
-      refName: refs/heads/7.51
+      refName: refs/heads/master
     artifacts: '**'
     accessTokenSecret: ssl-access
-    destinationPath: curl-win32
+    destinationPath: curl
+  - projectPath: upx
+    buildProvider: !LastFinishedBuild
+      jobName: Build
+      refName: refs/heads/master
+    artifacts: '**'
+    accessTokenSecret: ssl-access
+    destinationPath: upx
   retryCondition: never
   maxRetries: 3
   retryDelay: 30
