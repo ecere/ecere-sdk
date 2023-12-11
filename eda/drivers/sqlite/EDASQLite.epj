@@ -186,14 +186,6 @@
          "Options" : {
             "FastMath" : false
          },
-         "Platforms" : [
-            {
-               "Name" : "linux",
-               "Options" : {
-                  "ExcludeFromBuild" : true
-               }
-            }
-         ],
          "Configurations" : [
             {
                "Name" : "Android",

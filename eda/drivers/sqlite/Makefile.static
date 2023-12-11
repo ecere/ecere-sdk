@@ -77,12 +77,12 @@ ECOBJECTS = $(call shwspace,$(_ECOBJECTS))
 BOWLS = $(call shwspace,$(_BOWLS))
 
 _OBJECTS = \
-	$(if $(LINUX_TARGET),,$(OBJ)sqlite3$(O))
+	$(OBJ)sqlite3$(O)
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
 
 SOURCES = $(ECSOURCES) \
-	$(if $(LINUX_TARGET),,../../../deps/sqlite-3.41.0/sqlite3.c)
+	../../../deps/sqlite-3.41.0/sqlite3.c
 
 RESOURCES = \
 	locale/es.mo \
@@ -219,10 +219,8 @@ $(OBJ)sqliteDB.c: sqliteDB.ec $(OBJ)sqliteDB.sym | $(SYMBOLS)
 
 # OBJECT RULES
 
-ifneq ($(or $(WINDOWS_TARGET),$(OSX_TARGET)),)
 $(OBJ)sqlite3$(O): ../../../deps/sqlite-3.41.0/sqlite3.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,../../../deps/sqlite-3.41.0/sqlite3.c) -o $(call quote_path,$@)
-endif
 
 $(OBJ)EDASQLite$(O): $(OBJ)EDASQLite.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(call quote_path,$(OBJ)EDASQLite.c) -o $(call quote_path,$@)
