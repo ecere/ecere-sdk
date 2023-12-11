@@ -11,15 +11,7 @@ include $(_CF_DIR)default.cf
 
 .NOTPARALLEL: $(NOT_PARALLEL_TARGETS)
 
-ifdef WINDOWS_TARGET
 all: freetype jpeg png gif ffi z
-else
-ifdef OSX_TARGET
-all: jpeg gif
-else
-all: jpeg gif
-endif
-endif
 
 freetype:
 	@$(call echo,Building FreeType...)

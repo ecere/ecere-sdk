@@ -84,6 +84,9 @@ PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -Ii686-w64-mingw32/include \
 			 -Ii686-w64-mingw32,) \
+	 $(if $(LINUX_TARGET), \
+			 -Ix86_64-pc-linux-gnu \
+			 -Ix86_64-pc-linux-gnu/include,) \
 	 $(if $(DEBUG), -g, -O2 -ffast-math) $(FPIC) -Wall -DREPOSITORY_VERSION="\"$(REPOSITORY_VER)\"" \
 			 -Iinclude
 
