@@ -63,6 +63,8 @@ UPX := upx
 endif
 
 ifndef ARCH
+# Review all this; TARGET_ARCH is used in crossplatform.mk before .cf is included,
+# does not use triple, and may conflict with predefined TARGET_ARCH?
 TARGET_ARCH :=$(shell $(CC) -dumpmachine)
  ifdef WINDOWS_TARGET
   ifneq ($(filter x86_64%,$(TARGET_ARCH)),)

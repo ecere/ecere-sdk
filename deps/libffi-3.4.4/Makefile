@@ -47,28 +47,32 @@ TARGET_NAME := ffi
 TARGET = obj/$(CONFIG).$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)$(TARGET_NAME)$(OUT)
 
 _OBJECTS = \
-	$(OBJ)win64$(O) \
 	$(OBJ)prep_cif$(O) \
 	$(OBJ)raw_api$(O) \
 	$(OBJ)types$(O) \
 	$(OBJ)closures$(O) \
 	$(OBJ)ffi$(O) \
+	$(OBJ)sysv$(O) \
+	$(OBJ)tramp$(O) \
+	$(OBJ)win64$(O) \
+	$(if $(WINDOWS_TARGET),,$(OBJ)unix64$(O)) \
 	$(if $(WINDOWS_TARGET),,$(OBJ)ffi64$(O)) \
-	$(if $(LINUX_TARGET),,$(OBJ)ffiw64$(O)) \
-	$(OBJ)sysv$(O)
+	$(OBJ)ffiw64$(O)
 
 OBJECTS = $(_OBJECTS)
 
 SOURCES = \
-	src/x86/win64.S \
 	src/prep_cif.c \
 	src/raw_api.c \
 	src/types.c \
 	src/closures.c \
 	src/x86/ffi.c \
+	src/x86/sysv.S \
+	src/tramp.c \
+	src/x86/win64.S \
+	$(if $(WINDOWS_TARGET),,src/x86/unix64.S) \
 	$(if $(WINDOWS_TARGET),,src/x86/ffi64.c) \
-	$(if $(LINUX_TARGET),,src/x86/ffiw64.c) \
-	src/x86/sysv.S
+	src/x86/ffiw64.c
 
 RESOURCES =
 
@@ -142,6 +146,11 @@ endif
 $(OBJ)win64$(O): src/x86/win64.S
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/win64.S) -o $(call quote_path,$@)
 
+ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
+$(OBJ)unix64$(O): src/x86/unix64.S
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/unix64.S) -o $(call quote_path,$@)
+endif
+
 $(OBJ)prep_cif$(O): src/prep_cif.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/prep_cif.c) -o $(call quote_path,$@)
 
@@ -157,18 +166,17 @@ $(OBJ)closures$(O): src/closures.c
 $(OBJ)ffi$(O): src/x86/ffi.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/ffi.c) -o $(call quote_path,$@)
 
-ifneq ($(or $(LINUX_TARGET),$(OSX_TARGET)),)
 $(OBJ)ffi64$(O): src/x86/ffi64.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/ffi64.c) -o $(call quote_path,$@)
-endif
 
-ifneq ($(or $(WINDOWS_TARGET),$(OSX_TARGET)),)
 $(OBJ)ffiw64$(O): src/x86/ffiw64.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/ffiw64.c) -o $(call quote_path,$@)
-endif
 
 $(OBJ)sysv$(O): src/x86/sysv.S
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/x86/sysv.S) -o $(call quote_path,$@)
+
+$(OBJ)tramp$(O): src/tramp.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) -c $(call quote_path,src/tramp.c) -o $(call quote_path,$@)
 
 cleantarget:
 	$(call rm,$(OBJ)objects.lst)

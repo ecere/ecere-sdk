@@ -96,6 +96,8 @@ ifneq ($(TARGET_PLATFORM),$(HOST_PLATFORM))
    CROSS_TARGET := defined
 endif
 
+# FIXME: TARGET_ARCH is never defined but inherits a triple value?
+# CROSS_BITDEPTH is defined when it shoudl not be
 ifneq ($(TARGET_ARCH),$(HOST_ARCH))
    CROSS_BITDEPTH := defined
 endif
@@ -642,6 +644,7 @@ troubleshoot-core:
 	@$(call info_check_var_defined,BSD_TARGET,var_full)
 	@$(call info_check_var_defined,HOST_ARCH,var_full)
 	@$(call info_check_var_defined,TARGET_ARCH,var_full)
+	@$(call info_check_var_defined,CROSS_BITDEPTH,var_full)
 	@$(info -- arch variables --)
 	@$(call info_check_var_defined,ARCH,var_full)
 	@$(call info_check_var_defined,ARCH_FLAGS,var_full)

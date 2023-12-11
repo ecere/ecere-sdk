@@ -34,6 +34,13 @@
 #error "Please do not include ffitarget.h directly into your source.  Use ffi.h instead."
 #endif
 
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LLP64__)
+#define X86_64
+#else
+#define X86_32
+#endif
+
+
 /* ---- System specific configurations ----------------------------------- */
 
 /* For code common to all platforms on x86 and x86_64. */
