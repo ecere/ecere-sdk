@@ -472,7 +472,7 @@ PRJ_CFLAGS += \
 			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
 			 -I../deps/glext \
-			 -I../deps/curl-7.51.0/include \
+			 -I../deps/curl-7.86.0/include \
 			 -I$(OPENSSL_INCLUDE_DIR),) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2 \
@@ -533,7 +533,7 @@ OFLAGS += \
 	 -L$(call quote_path,../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 -L$(call quote_path,../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/curl-7.51.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
+	 -L$(call quote_path,../deps/curl-7.86.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
 	 $(if $(OPENSSL_BIN_DIR),-L$(call quote_path,$(OPENSSL_BIN_DIR)),) \
 	 $(if $(OPENSSL_LIB_DIR),-L$(call quote_path,$(OPENSSL_LIB_DIR)),)
 LIBS += \
