@@ -438,6 +438,12 @@ public struct ECCSSEvaluator
       }
       return expType;
    }
+
+   virtual void * computeInstance(CMSSInstantiation inst, Class destType, ExpFlags * flags)
+   {
+      return createGenericInstance(inst, destType, this, flags);
+   }
+
    virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
@@ -766,10 +772,10 @@ public:
    }
 }
 
-private Instance createGenericInstance(CMSSExpInstance inst, ECCSSEvaluator evaluator, ExpFlags * flg)
+private Instance createGenericInstance(CMSSInstantiation inst, Class destType, ECCSSEvaluator evaluator, ExpFlags * flg)
 {
-   CMSSSpecName specName = inst.instance ? (CMSSSpecName)inst.instance._class : null;
-   Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : inst.destType;
+   CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
+   Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
    Instance instance = c && c.structSize ? eInstance_New(c) : null;
    if(instance)
       setGenericInstanceMembers(instance, inst, evaluator, flg, c);
@@ -810,11 +816,11 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
    }
 }
 
-private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst, ECCSSEvaluator evaluator, ExpFlags * flg, Class stylesClass)
+private void setGenericInstanceMembers(Instance object, CMSSInstantiation instance, ECCSSEvaluator evaluator, ExpFlags * flg, Class stylesClass)
 {
-   if(expInst && expInst.instance)
+   if(instance)
    {
-      for(i : expInst.instance.members)
+      for(i : instance.members)
       {
          CMSSMemberInitList members = i;
          for(m : members)
@@ -1508,7 +1514,7 @@ public:
             Array<Instance> array = object ? evaluator.evaluatorClass.accessSubArray(object, mSet) : null;
             if(array)
                for(e : arr.elements; e._class == class(CMSSExpInstance))
-                  array.Add(createGenericInstance((CMSSExpInstance)e, evaluator, flg));
+                  array.Add(createGenericInstance(((CMSSExpInstance)e).instance, e.destType, evaluator, flg));
             else
             {
                // New more generic approach for colormaps etc. with blob, which could eventually work for GEs as well?
