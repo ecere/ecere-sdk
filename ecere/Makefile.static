@@ -456,14 +456,6 @@ endif
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
-ifndef STATIC_LIBRARY_TARGET
-LIBS += \
-	$(call _L,jpeg) \
-	$(call _L,png) \
-	$(call _L,z) \
-	$(call _L,freetype)
-endif
-
 PRJ_CFLAGS += \
 	 $(if $(WINDOWS_TARGET), \
 			 -I../deps/jpeg-9a \
@@ -472,7 +464,7 @@ PRJ_CFLAGS += \
 			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
 			 -I../deps/glext \
-			 -I../deps/curl-7.86.0/include \
+			 -I../deps/curl-8.5.0/include \
 			 -I$(OPENSSL_INCLUDE_DIR),) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2 \
@@ -526,81 +518,14 @@ ECFLAGS += \
 
 ifdef WINDOWS_TARGET
 
-ifndef STATIC_LIBRARY_TARGET
-OFLAGS += \
-	 -L$(call quote_path,../deps/zlib-1.2.8/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/curl-7.86.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 $(if $(OPENSSL_BIN_DIR),-L$(call quote_path,$(OPENSSL_BIN_DIR)),) \
-	 $(if $(OPENSSL_LIB_DIR),-L$(call quote_path,$(OPENSSL_LIB_DIR)),)
-LIBS += \
-	$(call _L,dxguid) \
-	$(call _L,ddraw) \
-	$(call _L,dinput) \
-	$(call _L,winmm) \
-	$(call _L,opengl32) \
-	$(call _L,ws2_32) \
-	$(call _L,kernel32) \
-	$(call _L,user32) \
-	$(call _L,gdi32) \
-	$(call _L,mpr) \
-	$(call _L,advapi32) \
-	$(call _L,shell32) \
-	$(call _L,winspool) \
-	$(call _L,imm32) \
-	$(call _L,ungif) \
-	$(call _L,ssl) \
-	$(call _L,crypto)
-endif
 
 else
 ifdef LINUX_TARGET
 
-ifndef STATIC_LIBRARY_TARGET
-OFLAGS += \
-	 -L$(call quote_path,/usr/X11R6/lib) \
-	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
-LIBS += \
-	$(call _L,ncurses) \
-	$(call _L,pthread) \
-	$(call _L,m) \
-	$(call _L,dl) \
-	$(call _L,fontconfig) \
-	$(call _L,gif) \
-	$(call _L,X11) \
-	$(call _L,Xext) \
-	$(call _L,Xrender) \
-	$(call _L,GL) \
-	$(call _L,ssl) \
-	$(call _L,crypto)
-endif
 
 else
 ifdef OSX_TARGET
 
-ifndef STATIC_LIBRARY_TARGET
-OFLAGS += \
-	 -L$(call quote_path,$(SYSROOT)/usr/X11/lib) \
-	 -L$(call quote_path,/usr/X11R6/lib) \
-	 -L$(call quote_path,../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)) \
-	 -L$(call quote_path,../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX))
-LIBS += \
-	$(call _L,curses) \
-	$(call _L,pthread) \
-	$(call _L,m) \
-	$(call _L,dl) \
-	$(call _L,fontconfig) \
-	$(call _L,ungif) \
-	$(call _L,X11) \
-	$(call _L,Xext) \
-	$(call _L,Xrender) \
-	$(call _L,GL) \
-	$(call _L,ssl) \
-	$(call _L,crypto)
-endif
 
 endif
 endif

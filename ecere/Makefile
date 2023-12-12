@@ -443,8 +443,8 @@ LIBS += \
 	$(call _L,jpeg) \
 	$(call _L,png) \
 	$(call _L,z) \
-	$(call _L,freetype) \
-	$(call _L,curl)
+	$(call _L,freetype)
+
 OFLAGS += $(if $(ENABLE_PYTHON_RPATHS),-Wl$(comma)-rpath='$$ORIGIN',)
 OFLAGS += $(RPATHS_FOR_PORTABLE_BINARIES)
 endif
@@ -460,7 +460,7 @@ PRJ_CFLAGS += \
 			 -I../deps/libungif-4.1.1/lib \
 			 -I../deps/zlib-1.2.8 \
 			 -I../deps/freetype-2.3.12/include \
-			 -I../deps/curl-7.86.0/include \
+			 -I../deps/curl-8.5.0/include \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2 \
@@ -517,9 +517,11 @@ OFLAGS += \
 	 -L../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
-	 -L../deps/curl-7.86.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
+	 -L../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 $(if $(ENABLE_SSL),-L$(OPENSSL_LIB_DIR) -L$(OPENSSL_BIN_DIR))
 LIBS += \
+	$(if $(and $(ENABLE_SSL),$(wildcard ../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/libcurl-x64.dll)),$(call _L,curl-x64)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard ../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/libcurl.dll)),$(call _L,curl)) \
 	$(call _L,dxguid) \
 	$(call _L,ddraw) \
 	$(call _L,dinput) \
@@ -560,6 +562,7 @@ OFLAGS += \
 	 -L/usr/X11R6/lib \
 	 -L../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
+	$(call _L,curl) \
 	$(call _L,ncurses) \
 	$(call _L,pthread) \
 	$(call _L,m) \
@@ -585,6 +588,7 @@ OFLAGS += \
 	 -L../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
 LIBS += \
+	$(call _L,curl) \
 	$(call _L,curses) \
 	$(call _L,pthread) \
 	$(call _L,m) \
