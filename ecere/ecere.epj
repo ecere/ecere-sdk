@@ -224,7 +224,8 @@
             "Optimization" : "Speed",
             "PreprocessorDefinitions" : [
                "ETC2_COMPRESS",
-               "ECERE_STATIC"
+               "ECERE_STATIC",
+               "ECERE_NOSSL"
             ],
             "TargetType" : "StaticLibrary",
             "TargetFileName" : "ecereStatic",

@@ -24,7 +24,6 @@ public import "ecere"
 
 namespace net;
 
-#ifndef ECERE_NOSSL
 /*
 static char * pass = "password";
 
@@ -38,10 +37,13 @@ static int password_cb(char *buf) //,int num, int rwflag,void *userdata)
 
 public class SSLSocket : Socket
 {
+#ifndef ECERE_NOSSL
    SSL_CTX *ctx;
    SSL *ssl;
    BIO *sbio;
    SSL_METHOD *meth;
+#endif
+
    int s;
    bool autoEstablish;
    autoEstablish = true;
@@ -51,13 +53,16 @@ public class SSLSocket : Socket
       static bool initialized = false;
       if(!initialized)
       {
+#ifndef ECERE_NOSSL
          SSL_library_init();
+#endif
          initialized = true;
       }
    }
 
    void OnDisconnect(int code)
    {
+#ifndef ECERE_NOSSL
       if(sbio)
       {
          //BIO_free(sbio);
@@ -73,17 +78,26 @@ public class SSLSocket : Socket
          SSL_CTX_free(ctx);
          ctx = null;
       }
+#endif
    }
 
    int ReceiveData(unsigned char * buffer, int count, unsigned int flags)
    {
-      int n = ssl ? SSL_read(ssl, buffer, count) : Socket::ReceiveData(buffer, count, flags);
+      int n =
+#ifndef ECERE_NOSSL
+      ssl ? SSL_read(ssl, buffer, count) :
+#endif
+      Socket::ReceiveData(buffer, count, flags);
       return n;
    }
 
    int SendData(const unsigned char * buffer, int count, unsigned int flags)
    {
-      int n = ssl ? SSL_write(ssl, buffer, count) : Socket::SendData(buffer, count, flags);
+      int n =
+#ifndef ECERE_NOSSL
+      ssl ? SSL_write(ssl, buffer, count) :
+#endif
+      Socket::SendData(buffer, count, flags);
       return n;
    }
 
@@ -96,13 +110,13 @@ public:
 
    bool EstablishConnection()
    {
-      bool result;
+      bool result = false;
       /*
       X509 *peer;
       char peer_CN[256];
       int cipherResult;
       */
-
+#ifndef ECERE_NOSSL
       meth = (SSL_METHOD *)SSLv23_method();
       //meth = TLSv1_method();
       ctx = SSL_CTX_new(meth);
@@ -113,7 +127,7 @@ public:
       SSL_set_bio(ssl,sbio,sbio);
 
       result = SSL_connect(ssl) > 0;
-
+#endif
       /*
       if(result)
       {
@@ -153,12 +167,13 @@ public:
 
    ~SSLSocket()
    {
+#ifndef ECERE_NOSSL
       /*if(sbio)
          BIO_free(sbio);
       if(ssl)
          SSL_free(ssl);*/
       if(ctx)
          SSL_CTX_free(ctx);
+#endif
    }
 }
-#endif

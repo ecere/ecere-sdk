@@ -93,14 +93,14 @@ jobs:
         linux && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-binaries-linux-i686.tar.gz
         linux.x32 && cd .. && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-bindings-linux-x86_64.tar.gz bindings &&
         apt -y install libgif-dev &&
-        make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg &&
+        make PLATFORM=win32 NOT_OPENSSL_CURL=y OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg &&
         mkdir output-win32 &&
         make PLATFORM=win32 OPENSSL_CONF=$(pwd)/win32/openssl/bin/openssl.cfg DESTDIR=output-win32 install &&
         cd output-win32 &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-x86_64.tar.gz * &&
         cd .. && apt -y install libgif-dev:i386 && make PLATFORM=win32 ARCH=x32
         OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg && mkdir output-win32-x32 &&
-        make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg DESTDIR=output-win32-x32 install &&
+        make PLATFORM=win32 ARCH=x32 NOT_OPENSSL_CURL=y OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg DESTDIR=output-win32-x32 install &&
         cd output-win32-x32 && tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-output-windows-i686.tar.gz * &&
         cd .. && make PLATFORM=win32 ARCH=x32 OPENSSL_CONF=$(pwd)/win32/openssl-x32/bin/openssl.cfg installer &&
         tar czf @project_name@-@tag@-@branch@-@commit_hash@-@build_number@-deps.tar.gz deps &&

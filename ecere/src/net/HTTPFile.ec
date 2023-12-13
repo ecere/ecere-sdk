@@ -104,7 +104,8 @@ public:
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, writeMemoryCallback);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, this);
       curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-#ifndef ECERE_NOSSL
+      curl_easy_setopt(curl_handle, CURLOPT_SSL_OPTIONS, CURLSSLOPT_NATIVE_CA);
+#if !defined(ECERE_NOSSL) && !defined(NOT_OPENSSL_CURL)
       SetCurlEmbeddedCA(curl_handle);
 #endif
       res = curl_easy_perform(curl_handle);
@@ -219,11 +220,9 @@ public HTTPFile FileOpenURL(const char * name)
    }
 }
 
+#if defined(__WIN32__) && !defined(ECERE_NOSSL) && !defined(NOT_OPENSSL_CURL)
+
 #define _Noreturn
-
-#ifndef ECERE_NOSSL
-
-#if defined(__WIN32__)
 
 #define byte _byte
 #define int64 _int64
@@ -276,8 +275,9 @@ static char * sslCACert;
 public bool SetCurlEmbeddedCA(void * curlHandle)
 {
    bool result = false;
+
    // Things work out of the box on Linux...
-#if defined(__WIN32__)
+#if defined(__WIN32__) && !defined(ECERE_NOSSL) && !defined(NOT_OPENSSL_CURL)
    if(!sslCACert)
    {
       const String fn = "<:ecere>mozilla-cacert.pem";
@@ -309,7 +309,6 @@ public bool SetCurlEmbeddedCA(void * curlHandle)
 #endif
    return result;
 }
-#endif
 
 #else
 

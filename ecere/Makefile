@@ -519,9 +519,14 @@ OFLAGS += \
 	 -L../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 $(if $(ENABLE_SSL),-L$(OPENSSL_LIB_DIR) -L$(OPENSSL_BIN_DIR))
+
+ifndef DISABLE_CURL
 LIBS += \
 	$(if $(and $(ENABLE_SSL),$(wildcard ../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/libcurl-x64.dll)),$(call _L,curl-x64)) \
-	$(if $(and $(ENABLE_SSL),$(wildcard ../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/libcurl.dll)),$(call _L,curl)) \
+	$(if $(and $(ENABLE_SSL),$(wildcard ../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)/libcurl.dll)),$(call _L,curl))
+endif
+
+LIBS += \
 	$(call _L,dxguid) \
 	$(call _L,ddraw) \
 	$(call _L,dinput) \
@@ -536,7 +541,10 @@ LIBS += \
 	$(call _L,shell32) \
 	$(call _L,winspool) \
 	$(call _L,imm32) \
-	$(call _L,ungif) \
+	$(call _L,ungif)
+
+ifndef DISABLE_SSL
+LIBS += \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-1_1-x64.dll)),$(call _L,crypto-1_1-x64)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-1_1.dll)),$(call _L,crypto-1_1)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libcrypto-3-x64.dll)),$(call _L,crypto-3-x64)) \
@@ -547,6 +555,8 @@ LIBS += \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libssl-3.dll)),$(call _L,ssl-3)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/libeay32.dll)),$(call _L,eay32)) \
 	$(if $(and $(ENABLE_SSL),$(wildcard $(OPENSSL_BIN_DIR)/ssleay32.dll)),$(call _L,ssleay32))
+endif
+
 endif
 
 else
@@ -572,10 +582,19 @@ LIBS += \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
-	$(if $(DISABLE_GL),,$(call _L,GL)) \
+	$(if $(DISABLE_GL),,$(call _L,GL))
+
+ifndef DISABLE_SSL
+LIBS += \
 	$(if $(ENABLE_SSL),$(call _L,ssl)) \
-	$(if $(ENABLE_SSL),$(call _L,crypto)) \
+	$(if $(ENABLE_SSL),$(call _L,crypto))
+endif
+
+ifndef DISABLE_CURL
+LIBS += \
 	$(call _L,curl)
+endif
+
 endif
 
 else
@@ -587,8 +606,13 @@ OFLAGS += \
 	 -L/usr/X11R6/lib \
 	 -L../deps/jpeg-9a/obj/release.$(PLATFORM)$(COMPILER_SUFFIX) \
 	 -L../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)
+
+ifndef DISABLE_CURL
 LIBS += \
-	$(call _L,curl) \
+	$(call _L,curl)
+endif
+
+LIBS += \
 	$(call _L,curses) \
 	$(call _L,pthread) \
 	$(call _L,m) \
@@ -598,9 +622,14 @@ LIBS += \
 	$(call _L,X11) \
 	$(call _L,Xext) \
 	$(call _L,Xrender) \
-	$(call _L,GL) \
-	$(if $(ENABLE_SSL),$(call _L,ssl)) \
+	$(call _L,GL)
+
+ifndef DISABLE_SSL
+LIBS += \
+	$(if $(ENABLE_SSL),$(call _L,ssl))
 	$(if $(ENABLE_SSL),$(call _L,crypto))
+endif
+
 endif
 
 endif
