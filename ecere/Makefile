@@ -464,8 +464,7 @@ PRJ_CFLAGS += \
 			 $(if $(ENABLE_SSL),-I$(OPENSSL_INCLUDE_DIR),)) \
 	 $(if $(LINUX_TARGET), \
 			 -I/usr/include/freetype2 \
-			 -I../deps/jpeg-9a \
-			 -I../deps/curl-7.86.0/include,) \
+			 -I../deps/jpeg-9a) \
 	 $(if $(OSX_TARGET), \
 			 -I/usr/include/freetype2 \
 			 -I$(SYSROOT)/usr/X11/include/freetype2 \

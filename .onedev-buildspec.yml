@@ -69,16 +69,17 @@ jobs:
         tar xf curl/curl*windows-i686.tar.gz -C $(pwd)/deps &&
         tar xf curl/curl*linux-x86_64.tar.gz -C $(pwd)/deps &&
         tar xf curl/curl*linux-i686.tar.gz -C $(pwd)/deps &&
-        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux/libcurl.so.4 /usr/lib/x86_64-linux-gnu/ &&
-        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux/libcurl.so /usr/lib/x86_64-linux-gnu/ &&
-        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so.4 /usr/lib/i386-linux-gnu/ &&
-        ln -s $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so /usr/lib/i386-linux-gnu/ &&
+        ln -sf $(pwd)/deps/curl-7.86.0/include/curl /usr/include/curl &&
+        ln -sf $(pwd)/deps/curl-7.86.0/obj/release.linux/libcurl.so.4 /usr/lib/x86_64-linux-gnu/ &&
+        ln -sf $(pwd)/deps/curl-7.86.0/obj/release.linux/libcurl.so /usr/lib/x86_64-linux-gnu/ &&
+        ln -sf $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so.4 /usr/lib/i386-linux-gnu/ &&
+        ln -sf $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so /usr/lib/i386-linux-gnu/ &&
         make -j2 && mkdir output && make install DESTDIR=output &&
         wget https://ecere.com/tmp/win32-patches.tar.gz && tar xf win32-patches.tar.gz &&
-        ln -s $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
-        ln -s $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
-        ln -s $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
-        ln -s $(pwd)/win32/regex-x32/libgnurx-0.dll /usr/i686-w64-mingw32/lib/ &&
+        ln -sf $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
+        ln -sf $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
+        ln -sf $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
+        ln -sf $(pwd)/win32/regex-x32/libgnurx-0.dll /usr/i686-w64-mingw32/lib/ &&
         tar xf OpenSSL-win32/OpenSSL-win32*.tar.gz -C $(pwd)/win32 &&
         rm /usr/bin/gcc && rm /usr/bin/g++ && ln -s /usr/bin/gcc-8 /usr/bin/gcc && ln -s /usr/bin/g++-8 /usr/bin/g++ &&
         make bindings &&
