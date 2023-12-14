@@ -106,8 +106,24 @@ public:
       {
          if(item.link.prev)
             item.link.prev.link.next = item.link.next;
+         else if(item != first)
+         {
+#ifdef _DEBUG
+            PrintLn("WARNING: Removing item not in list");
+#endif
+            return;
+         }
+
          if(item.link.next)
             item.link.next.link.prev = item.link.prev;
+         else if(item != last)
+         {
+#ifdef _DEBUG
+            PrintLn("WARNING: Removing item not in list");
+#endif
+            return;
+         }
+
          if(circ && last == first)
             last = first = null;
          else
