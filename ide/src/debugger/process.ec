@@ -190,6 +190,13 @@ void Process_ShowWindows(int processId)
 #endif
 }
 
+void Process_UngrabPointer(int processId)
+{
+#ifndef __WIN32__
+   Execute("xdotool key XF86Ungrab");
+#endif
+}
+
 bool Process_Break(int processId)
 {
    bool result = false;

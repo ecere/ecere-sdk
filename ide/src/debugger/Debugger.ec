@@ -603,6 +603,9 @@ class Debugger
             GdbCommand(0, false, "-thread-list-ids");
             InternalSelectFrame(activeFrameLevel);
             GoToStackFrameLine(activeFrameLevel, true, false);
+
+            Process_UngrabPointer(targetProcessId);
+
             EvaluateWatches();
             ide.ShowCodeEditor();
             ide.AdjustDebugMenus();
@@ -984,6 +987,11 @@ class Debugger
    {
       DebuggerState result = none;
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::StartSession(restart(", restart, "), ignoreBreakpoints(", ignoreBreakpoints, ")");
+
+#if !defined(__WIN32__) // To ungrab X pointer in Process_UngrabPointer()
+      Execute("setxkbmap -option grab:break_actions");
+#endif
+
       if(restart && state == running && targetProcessId)
       {
          breakType = DebuggerAction::restart;
