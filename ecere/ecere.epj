@@ -66,7 +66,7 @@
                "../deps/zlib-1.2.8",
                "../deps/freetype-2.3.12/include",
                "../deps/glext",
-               "../deps/curl-7.51.0/include",
+               "../deps/curl-8.5.0/include",
                "$(OPENSSL_INCLUDE_DIR)"
             ],
             "Libraries" : [
@@ -94,7 +94,7 @@
                "../deps/libpng-1.6.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/libungif-4.1.1/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "../deps/freetype-2.3.12/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
-               "../deps/curl-7.51.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
+               "../deps/curl-8.5.0/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)",
                "$(OPENSSL_BIN_DIR)",
                "$(OPENSSL_LIB_DIR)"
             ]
