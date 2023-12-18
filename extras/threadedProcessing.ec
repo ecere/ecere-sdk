@@ -74,6 +74,8 @@ class ProcessingStage
       {
          ProcessingAction action;
 
+         task.status.active = true;
+
          if(thread.terminate || task.status.cancel)
          {
             action = clear;
@@ -82,7 +84,6 @@ class ProcessingStage
          else
          {
             thread.activeTask = task;
-            task.status.active = true;
             tasks.Remove(task);
             task.status.threadID = thread.number;
 
@@ -91,7 +92,6 @@ class ProcessingStage
             mutex.Wait();
 
             task.status.threadID = 0;
-            task.status.active = false;
             thread.activeTask = null;
             if(thread.terminate || task.status.cancel)
                action = clear;
@@ -104,18 +104,23 @@ class ProcessingStage
                case awaitProcessing:
                   task.status.ready = true;
                   readyTasks.Add(task);
+                  task.status.active = false;
                   break;
                case clear:
-                  mutex.Release();
                   if(!(task.status.cancel && task.status.waitedOn))
                   {
+                     mutex.Release();
                      processing.onTaskCleared(task);
                      delete task;
+                     mutex.Wait();
                   }
-                  mutex.Wait();
+                  else
+                     task.status.active = false;
+
                   // TO REVIEW: This was leaking?
                   break;
                default:
+                  // NOTE: The mutex is necessary here as this is adding the task to another stage
                   mutex.Release();
                   processing.addTask(task, action, task.priority);
                   /*
@@ -144,14 +149,13 @@ class ProcessingStage
       {
          ProcessingAction action;
 
+         task.status.active = true;
+         tasks.Remove(task);
+
          if(task.status.cancel)
-         {
             action = clear;
-            tasks.Remove(task);
-         }
          else
          {
-            tasks.Remove(task);
             if(thread)
             {
                thread.activeTask = task;
@@ -164,7 +168,6 @@ class ProcessingStage
             if(thread)
                thread.activeTask = null;
             task.status.threadID = 0;
-            task.status.active = false;
             if(task.status.cancel)
                action = clear;
          }
@@ -174,16 +177,18 @@ class ProcessingStage
             case awaitProcessing:
                task.status.ready = true;
                readyTasks.Add(task);
+               task.status.active = false;
                break;
             case clear:
-               mutex.Release();
-               // TO REVIEW: // if(task.status.waitedOn) This was leaking? -- turned this around completely?
                if(!(task.status.cancel && task.status.waitedOn))
                {
+                  mutex.Release();
                   processing.onTaskCleared(task);
                   delete task;
+                  mutex.Wait();
                }
-               mutex.Wait();
+               else
+                  task.status.active = false;
                break;
             default:
                mutex.Release();
@@ -213,16 +218,16 @@ class ProcessingStage
          {
             ProcessingAction action;
 
+            task.status.active = true;
             hadTask = true;
             readyTasks.Remove(task);
-            task.status.active = true;
 
             mutex.Release();
             action = processing.onProcess(task);
             mutex.Wait();
 
-            task.status.active = false;
-            if(task.status.cancel) action = clear;
+            if(task.status.cancel)
+               action = clear;
 
             switch(action)
             {
@@ -230,9 +235,13 @@ class ProcessingStage
                case clear:
                   if(!(task.status.cancel && task.status.waitedOn))
                   {
+                     // NOTE: Should mutex be released here as in performTask() and performSpecificTask() ?
                      processing.onTaskCleared(task);
                      delete task;
                   }
+                  else
+                     task.status.active = false;
+
                   break;
                default:
                   mutex.Release();
@@ -298,22 +307,32 @@ class ProcessingStage
 
    void addTask(ProcessingTask task, int priority)
    {
-      //ProcessingTask t;
+      bool clear = false;
 
       mutex.Wait();
-      task.priority = priority;
-      if(priority == MAXINT)
-         tasks.Insert(tasks.last, task);
+      if(!task.status.cancel) // Avoid adding a canceled task
+      {
+         task.status = { thisStage };
+         task.priority = priority;
+         if(priority == MAXINT)
+            tasks.Insert(tasks.last, task);
+         else
+            tasks.Insert(null, task);
+         semaphore.Release();
+      }
       else
-         tasks.Insert(null, task);
-      semaphore.Release();
+      {
+         task.status.active = false;
+         clear = true;
+      }
       mutex.Release();
+      if(clear)
+         processing.onTaskCleared(task);
    }
 
    void cancelTask(ProcessingTask task, bool wait)
    {
       // Mutex is locked when coming in from ThreadedProcessing::cancelTask()
-      //mutex.Wait();
       task.status.cancel = true;
       if(wait)
       {
@@ -328,25 +347,19 @@ class ProcessingStage
             for(i = 0; i < lc; i++) mutex.Wait();
          }
 
-         if(!task.status.active)
+         if(!task.status.active && !wasActive)
          {
-            if(task.status.ready)
-               readyTasks.Remove(task);
-            else
+            if(task.status.stage == thisStage)
             {
-               ProcessingTask t = task;
-               if(wasActive)
-               {
-                  for(t = tasks.first; t; t = t.next)
-                  {
-                     if(t == task)
-                        break;
-                  }
-               }
-               if(t)
-                  tasks.Remove(task);
+               if(task.status.ready)
+                  readyTasks.Remove(task);
                else
-                  ; //PrintLn("NOTE: cancelTask() -- task not found");
+               {
+                  ProcessingTask t;
+                  for(t = tasks.first; t && t != task; t = t.next);
+                  if(t)
+                     tasks.Remove(task);
+               }
             }
             for(i = 0; i < lc; i++) mutex.Release();
             processing.onTaskCleared(task);
@@ -354,8 +367,6 @@ class ProcessingStage
             delete task;
          }
       }
-
-      //mutex.Release();
    }
 
    void cancelAllTasks()
@@ -412,7 +423,7 @@ class ProcessingStage
          {
             if(priority < MAXINT)
             {
-               if(task.prev || task == readyTasks.first)
+               if(task.prev)
                   readyTasks.Move(task, null);
             }
             else if(task.next)
@@ -422,7 +433,7 @@ class ProcessingStage
          {
             if(priority < MAXINT)
             {
-               if(task.prev || task == tasks.first)   // What's with that extra == first check?
+               if(task.prev)
                   tasks.Move(task, null);
             }
             else if(task.next)
@@ -577,7 +588,7 @@ public:
             setup(stage, 0);
          if(stages[stage-1])
          {
-            task.status = { stage };
+            // Stage status is now set inside Stage::addTask() inside the mutex lock
             stages[stage-1].addTask(task, priority);
             result = true;
          }
