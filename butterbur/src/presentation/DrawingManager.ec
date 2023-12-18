@@ -177,6 +177,7 @@ class ShapesManager : MDManager
       butterburShader.activate();
       butterburShader.texturing(true);
       butterburShader.textureArray(true);
+      butterburShader.multiDraw(true);
 
       MDManager::draw();
    }
