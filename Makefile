@@ -694,11 +694,17 @@ ifdef LINUX_TARGET
 	$(call cp,compiler/libec/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec$(SOV),$(OBJLIBDIR))
 	$(call cp,compiler/libec2/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)ec2$(SOV),$(OBJLIBDIR))
 	$(call cp,eda/libeda/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDA$(SOV),$(OBJLIBDIR))
+ifdef EDA_STATIC
+	$(call cp,eda/libeda/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libEDAStatic$(A),$(OBJLIBDIR))
+endif
 ifdef EDAdBASE
 	$(call cp,eda/drivers/dbase/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDAdBASE$(SOV),$(OBJLIBDIR))
 endif
 ifdef EDASQLite
 	$(call cp,eda/drivers/sqlite/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EDASQLite$(SOV),$(OBJLIBDIR))
+ifdef EDA_STATIC
+	$(call cp,eda/drivers/sqlite/obj/static.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/libEDASQLiteStatic$(A),$(OBJLIBDIR))
+endif
 endif
 ifneq ($(ECERE_AUDIO),n)
 	$(call cp,audio/obj/release.$(PLATFORM)$(COMPILER_SUFFIX)$(DEBUG_SUFFIX)/$(LP)EcereAudio$(SOV),$(OBJLIBDIR))
