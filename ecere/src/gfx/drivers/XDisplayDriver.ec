@@ -430,7 +430,7 @@ class XDisplayDriver : DisplayDriver
       if(xDisplay.picture)
          XRenderFreePicture(xGlobalDisplay, xDisplay.picture);
       if(xDisplay.shapePicture)
-         XRenderFreePicture(xGlobalDisplay, xDisplay.picture);
+         XRenderFreePicture(xGlobalDisplay, xDisplay.shapePicture);
       if(xDisplay.windowGC)
          XFreeGC(xGlobalDisplay, xDisplay.windowGC);
       if(xDisplay.gc)
@@ -470,7 +470,12 @@ class XDisplayDriver : DisplayDriver
          display.height = height;
 
          if(xDisplay.picture)
+         {
             XRenderFreePicture(xGlobalDisplay, xDisplay.picture);
+            xDisplay.picture = None;
+         }
+         if(display.alphaBlend && xDisplay.shapePicture)
+            XRenderFreePicture(xGlobalDisplay, xDisplay.shapePicture);
 
          {
             XRenderPictureAttributes attributes = { 0 };
