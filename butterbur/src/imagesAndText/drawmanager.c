@@ -127,10 +127,12 @@ static int dmCreateProgram( dmProgram *program, const char *vertexsource, const 
   glAttachShader( program->glprogram, program->vertexshader );
   glAttachShader( program->glprogram, program->fragmentshader );
 
+  /*  // This is not necessary and mismatched with the glGetAttribLocation() below
   glBindAttribLocation(program->glprogram, 0, "vertex");
   glBindAttribLocation(program->glprogram, 1, "normal");
   glBindAttribLocation(program->glprogram, 2, "texCoord");
   glBindAttribLocation(program->glprogram, 3, "color");
+  */
 
   glLinkProgram( program->glprogram );
   glGetProgramiv( program->glprogram, GL_LINK_STATUS, &status );
@@ -145,14 +147,17 @@ static int dmCreateProgram( dmProgram *program, const char *vertexsource, const 
   // glUseProgram( program->glprogram );
 
   program->matrixloc = glGetUniformLocation( program->glprogram, "uniMatrix" );
-  program->vertexloc = glGetAttribLocation( program->glprogram, "inVertex" );
+  program->texbaseloc = glGetUniformLocation( program->glprogram, "texBase" );
+
+  program->vertexloc    = glGetAttribLocation( program->glprogram, "inVertex" );
   program->texcoord0loc = glGetAttribLocation( program->glprogram, "inTexcoord0" );
-  program->texcoord1loc = glGetAttribLocation( program->glprogram, "inTexcoord1" );
-  program->colorloc = glGetAttribLocation( program->glprogram, "inColor" );
+  program->colorloc     = glGetAttribLocation( program->glprogram, "inColor" );
 #if DM_ENABLE_EXT_COLOR
   program->extcolorloc = glGetAttribLocation( program->glprogram, "inExtColor" );
 #endif
-  program->texbaseloc = glGetUniformLocation( program->glprogram, "texBase" );
+
+  // program->texcoord1loc = glGetAttribLocation( program->glprogram, "inTexcoord1" );
+
   program->flags |= DM_PROGRAM_FLAGS_VALID;
 
   return 1;
