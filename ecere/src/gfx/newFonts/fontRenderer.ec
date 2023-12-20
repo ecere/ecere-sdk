@@ -91,26 +91,33 @@ public:
    {
      if(texture)
      {
-#if defined(_GLES) || defined(_GLES2)
-        int glformat = GL_ALPHA;
-#else
-        int glformat =
-   #if ENABLE_GL_LEGACY
-         glCaps_legacyFormats ? GL_ALPHA :
-   #endif
-            GL_RED;
-#endif
         int w = rect[2] - rect[0];
         int h = rect[3] - rect[1];
+        // FIXME: use same selectGLTextureFormat(int bytesPerPixel, SwizzleMode * rSwizzle) as for TextureManager's Texture::setData()
+        int glformat = 0;
 
-
-        if( channelcount == 1 );
+        if( channelcount == 1 )
+        {
+#if defined(_GLES) || defined(_GLES2)
+           glformat = GL_ALPHA;
+#else
+           glformat =
+   #if ENABLE_GL_LEGACY
+              glCaps_legacyFormats ? GL_ALPHA :
+   #endif
+              GL_RED;
+#endif
+        }
         else if( channelcount == 2 )
         {
-#if !ENABLE_GL_LEGACY && !defined(_GLES) && !defined(_GLES2)
-          glformat = glCaps_legacyFormats ? GL_LUMINANCE_ALPHA : GL_RG;
-#else
+#if defined(_GLES) || defined(_GLES2)
           glformat = GL_LUMINANCE_ALPHA;
+#else
+          glformat =
+   #if ENABLE_GL_LEGACY
+            glCaps_legacyFormats ? GL_LUMINANCE_ALPHA :
+   #endif
+            GL_RG;
 #endif
         }
         else if( channelcount == 3 )

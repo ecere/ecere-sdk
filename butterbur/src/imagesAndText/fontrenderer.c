@@ -139,36 +139,19 @@ static int frFontResizeTexture( void *rendererhandle, int width, int height )
   return retval;
 }
 
+int selectGLTextureFormat(int bytesPerPixel);
+
 static void frFontUpdateTexture( void *rendererhandle, int *rect, const unsigned char *data )
 {
-  int sizex, sizey, glformat = GL_RGBA;
-  frFontState *state;
+  frFontState * state = (frFontState *)rendererhandle;
+  int sizex = rect[2] - rect[0];
+  int sizey = rect[3] - rect[1];
+  int glformat;
 
-  sizex = rect[2] - rect[0];
-  sizey = rect[3] - rect[1];
-  state = (frFontState *)rendererhandle;
   if( !( state->texture ) )
     return;
 
-#if defined(_GLES) || defined(_GLES2)
-  glformat = GL_ALPHA;
-#else
-  if( state->channelcount == 1 )
-    glformat = GL_RED;
-  else if( state->channelcount == 2 )
-    glformat = GL_RG;
-  else if( state->channelcount == 3 )
-    glformat = GL_RGB;
-  else if( state->channelcount == 4 )
-    glformat = GL_RGBA;
-/*
-        int glformat =
-   #if ENABLE_GL_LEGACY
-         glCaps_legacyFormats ? GL_ALPHA :
-   #endif
-            GL_RED;
-*/
-#endif
+  glformat = selectGLTextureFormat(state->channelcount);
 
   glBindTexture( GL_TEXTURE_2D, (state->texture)->gltex );
   glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
@@ -379,5 +362,3 @@ void frFontSetLayer( void *rendererhandle, uint32_t layerindex )
   state->statelayer = layerindex;
   return;
 }
-
-

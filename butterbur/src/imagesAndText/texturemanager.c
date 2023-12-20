@@ -37,48 +37,52 @@ typedef unsigned int bool;
 ////
 
 
-static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalformat, int mipmapmode, float anisotropy, int maxresolution )
+int selectGLTextureFormat(int bytesPerPixel)
 {
-  int width, height;
-  int glformat;
+  int glformat = 0;
 
-  if( image->format.bytesperpixel == 1 )
+  if( bytesPerPixel == 1 )
   {
 #if defined(_GLES) || defined(_GLES2)
     glformat = GL_ALPHA;
 #else
-    glformat = GL_RED;
-#endif
-#if defined(_GLES3)
-    if(internalformat == -1)
-       internalformat = GL_R8; // TODO: GL_LUMINANCE and swizzle for ES2
+   #if ENABLE_GL_LEGACY
+      if(glCaps_legacyFormats)
+         glformat = GL_ALPHA;
+      else
+   #endif
+        glformat = GL_RED;
 #endif
   }
-  else if( image->format.bytesperpixel == 2 )
+  else if( bytesPerPixel == 2 )
   {
-#if !defined(_GLES) && !defined(_GLES2)
-    glformat =
-#if ENABLE_GL_LEGACY
-      glCaps_legacyFormats ? GL_LUMINANCE_ALPHA :
-#endif
-         GL_RG;
+#if defined(_GLES) || defined(_GLES2)
+       glformat = GL_LUMINANCE_ALPHA;
 #else
-    glformat = GL_LUMINANCE_ALPHA;
-#endif
-#if defined(_GLES3)
-    if(internalformat == -1)
-       internalformat = GL_RG8; // TODO: GL_LUMINANCE_ALPHA and swizzle for ES2;
+   #if ENABLE_GL_LEGACY
+      if(glCaps_legacyFormats)
+         glformat = GL_LUMINANCE_ALPHA;
+      else
+   #endif
+         glformat = GL_RG;
 #endif
   }
-  else if( image->format.bytesperpixel == 3 )
+  else if( bytesPerPixel == 3 )
     glformat = GL_RGB;
-  else if( image->format.bytesperpixel == 4 )
+  else if( bytesPerPixel == 4 )
     glformat = GL_RGBA;
   else
   {
     fprintf( stderr, "ERROR: Bad image format.\n" );
-    return 0;
   }
+  return glformat;
+}
+
+static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalformat, int mipmapmode, float anisotropy, int maxresolution )
+{
+  int width, height;
+  int glformat = selectGLTextureFormat(image->format.bytesperpixel);
+
   if( internalformat == -1 )
     internalformat = glformat;
 

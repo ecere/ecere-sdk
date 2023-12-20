@@ -411,8 +411,8 @@ const char *dmVertexShaderAlphaIntensityExtColor =
 "}\n"
 ;
 
-
-const char *dmFragmentShaderAlphaIntensityExtColor =
+// For --compatible-context and OpenGL ES 1, 2
+const char *dmFragmentShaderAlphaIntensityExtColorLA =
 #if defined(_GLES3)
    "#version 300 es\n"
 #elif defined(_GLES2)
@@ -439,8 +439,42 @@ const char *dmFragmentShaderAlphaIntensityExtColor =
 //"varying vec4 fragColor;\n"
 "void main()\n"
 "{\n"
-"  vec2 tex;\n"
-"  tex = texture2D( texBase, varTexcoord0 ).rg;\n"
+"  vec2 tex = texture2D( texBase, varTexcoord0 ).ra;\n"
+"  gl_FragColor = vec4( mix( varExtColor.rgb, varColor.rgb, tex.g ), mix( varExtColor.a, varColor.a, tex.g ) * tex.r );\n"
+//"  return;\n"
+"}\n"
+;
+
+// For without --compatible-context
+const char *dmFragmentShaderAlphaIntensityExtColorRG =
+#if defined(_GLES3)
+   "#version 300 es\n"
+#elif defined(_GLES2)
+   "#version 100\n"
+#else
+   "#version 110\n"
+#endif
+#if defined(_GLES2) || defined(_GLES3)
+   "#define GLSL_FLOAT_PRECISION   1\n"
+   "precision highp float;\n"
+#else
+   "#define GLSL_FLOAT_PRECISION   0\n"
+#endif
+   "#if __VERSION__ >= 300\n"
+   "#define varying in\n"
+   "#define texture2D texture\n"
+   "#define gl_FragColor fragColor\n"
+   "out vec4 fragColor;\n"
+   "#endif\n"
+"uniform sampler2D texBase;\n"
+"varying vec2 varTexcoord0;\n"
+"varying vec4 varColor;\n"
+"varying vec4 varExtColor;\n"
+
+//"varying vec4 fragColor;\n"
+"void main()\n"
+"{\n"
+"  vec2 tex = texture2D( texBase, varTexcoord0 ).rg;\n"
 "  gl_FragColor = vec4( mix( varExtColor.rgb, varColor.rgb, tex.g ), mix( varExtColor.a, varColor.a, tex.g ) * tex.r );\n"
 //"  return;\n"
 "}\n"
@@ -1208,6 +1242,13 @@ int dmInit( dmContext *dm, int flags )
     vertexsize = sizeof(dmDrawVertexFlat);
   else
   {
+     int useRG = 1;
+#if defined(_GLES) || defined(_GLES2)
+     useRG = 0;
+#elif ENABLE_GL_LEGACY
+     if(glCaps_legacyFormats) useRG = 0;
+#endif
+
     for( programindex = 0 ; programindex < DM_PROGRAM_COUNT ; programindex++ )
     {
       program = &dm->shaderprograms[ programindex ];
@@ -1224,7 +1265,8 @@ int dmInit( dmContext *dm, int flags )
     if( !( dmCreateProgram( program, dmVertexShaderAlphaIntensity, dmFragmentShaderAlphaIntensity, 0 ) ) )
       return 0;
     program = &dm->shaderprograms[ DM_PROGRAM_ALPHABLEND_INTENSITY_EXTCOLOR ];
-    if( !( dmCreateProgram( program, dmVertexShaderAlphaIntensityExtColor, dmFragmentShaderAlphaIntensityExtColor, 0 ) ) )
+    if( !( dmCreateProgram( program, dmVertexShaderAlphaIntensityExtColor,
+         useRG ? dmFragmentShaderAlphaIntensityExtColorRG : dmFragmentShaderAlphaIntensityExtColorLA, 0 ) ) )
       return 0;
     program = &dm->shaderprograms[ DM_PROGRAM_BICHROME ];
     if( !( dmCreateProgram( program, dmVertexShaderBichrome, dmFragmentShaderBichrome, 0 ) ) )
