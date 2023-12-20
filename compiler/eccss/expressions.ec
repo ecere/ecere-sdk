@@ -2845,13 +2845,21 @@ OPERATOR_ALL(UNARY_LOGICAL, !, Not) //OPERATOR_ALL
 OPERATOR_NUMERIC(BINARY_LOGICAL, ==, Equ)
 OPERATOR_NUMERIC(BINARY_LOGICAL, !=, Nqu)
 
+// #define UNICODE_NORMALIZATION_ENABLED
+
 static bool textEqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    if(op1.s && op2.s)
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+#else
+      const String s1 = op1.s, s2 = op2.s;
+#endif
       val.i = !strcmp(s1, s2);
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    else if(!op1.s && !op2.s)
       val.i = 1;
@@ -2865,9 +2873,15 @@ static bool textNqu(FieldValue val, const FieldValue op1, const FieldValue op2)
 {
    if(op1.s && op2.s)
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+#else
+      const String s1 = op1.s, s2 = op2.s;
+#endif
       val.i = strcmp(s1, s2);
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    else if(!op1.s && !op2.s)
       val.i = 0;
@@ -2894,9 +2908,15 @@ static bool textContains(FieldValue result, const FieldValue val1, const FieldVa
       result.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+#else
+      const String s1 = val1.s, s2 = val2.s;
+#endif
       result.i = SearchString(s1, 0, s2, true, false) != null;
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    result.type = { type = integer };
    return true;
@@ -2908,10 +2928,16 @@ static bool textStartsWith(FieldValue result, const FieldValue val1, const Field
       result.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+#else
+      const String s1 = val1.s, s2 = val2.s;
+#endif
       int lenStr = strlen(s1), lenSub = strlen(s2);
       result.i = lenSub > lenStr ? 0 : !strncmp(s1, s2, lenSub);
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    result.type = { type = integer };
    return true;
@@ -2923,10 +2949,16 @@ static bool textEndsWith(FieldValue result, const FieldValue val1, const FieldVa
       result.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+#else
+      const String s1 = val1.s, s2 = val2.s;
+#endif
       int lenStr = strlen(s1), lenSub = strlen(s2);
       result.i = lenSub > lenStr ? 0 : !strcmp(s1 + (lenStr-lenSub), s2);
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    result.type = { type = integer };
    return true;
@@ -2960,9 +2992,15 @@ static bool textAdd(FieldValue result, const FieldValue val1, const FieldValue v
       result.s = null;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(val1.s), s2 = normalizeNFD(val2.s);
+#else
+      const String s1 = val1.s, s2 = val2.s;
+#endif
       result.s = PrintString(s1, s2);
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    return true;
 }
@@ -2973,9 +3011,15 @@ static bool textGrt(FieldValue val, const FieldValue op1, const FieldValue op2)
       val.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+#else
+      const String s1 = op1.s, s2 = op2.s;
+#endif
       val.i = strcmp(s1, s2) > 0;
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    val.type = { type = integer };
    return true;
@@ -2987,9 +3031,15 @@ static bool textSma(FieldValue val, const FieldValue op1, const FieldValue op2)
       val.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+#else
+      const String s1 = op1.s, s2 = op2.s;
+#endif
       val.i = strcmp(s1, s2) < 0;
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    val.type = { type = integer };
    return true;
@@ -3001,9 +3051,15 @@ static bool textGrtEqu(FieldValue val, const FieldValue op1, const FieldValue op
       val.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+#else
+      const String s1 = op1.s, s2 = op2.s;
+#endif
       val.i = strcmp(s1, s2) >= 0;
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    val.type = { type = integer };
    return true;
@@ -3015,9 +3071,15 @@ static bool textSmaEqu(FieldValue val, const FieldValue op1, const FieldValue op
       val.i = 0;
    else
    {
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       String s1 = normalizeNFD(op1.s), s2 = normalizeNFD(op2.s);
+#else
+      const String s1 = op1.s, s2 = op2.s;
+#endif
       val.i = strcmp(s1, s2) <= 0;
+#if defined(UNICODE_NORMALIZATION_ENABLED)
       delete s1, delete s2;
+#endif
    }
    val.type = { type = integer };
    return true;
