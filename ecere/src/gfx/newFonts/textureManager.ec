@@ -106,8 +106,6 @@ public:
 
      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
      glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-     if(image.data)
-       memset(image.data, 0, image.format.width * image.format.height);
      glTexImage2D( GL_TEXTURE_2D, 0, internalformat, image.format.width, image.format.height, 0, glformat, GL_UNSIGNED_BYTE, image.data );
 
 #if GL_TEXTURE_MAX_ANISOTROPY_EXT
