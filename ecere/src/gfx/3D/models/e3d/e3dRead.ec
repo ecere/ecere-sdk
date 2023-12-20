@@ -189,8 +189,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
    Object object = data; // data is most often the Mesh...
    Mesh mesh = data;
    uint64 pos = pbStart;
+#if 0 //def _DEBUG
    static int indent = 0;
    indent++;
+#endif
    while(end - pos >= sizeof(E3DBlockHeader))
    {
       E3DBlockHeader header;
@@ -1137,14 +1139,18 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
          pos = bEnd;
       }
    }
+#if 0 //def _DEBUG
    indent--;
+#endif
 }
 
 void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, uint64 pbStart, uint64 end, void * data, Array<String> textureList)
 {
    uint64 pos = pbStart;
+#if 0 //def _DEBUG
    static int indent = 0;
    indent++;
+#endif
    while(end - pos >= sizeof(E3DBlockHeader))
    {
       E3DBlockHeader header;
@@ -1293,7 +1299,9 @@ void listTexturesReadBlocks(E3DContext ctx, File f, E3DBlockType containerType, 
          pos = bEnd;
       }
    }
+#if 0 //def _DEBUG
    indent--;
+#endif
 }
 
 static void resolveBones(E3DContext ctx, Object skeleton, Object object)
