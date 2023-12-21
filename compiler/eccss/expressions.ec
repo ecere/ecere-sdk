@@ -605,7 +605,8 @@ public:
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
       value.s = string;
-      value.type.type = text;
+      value.type = { type = text };
+      expType = class(String);
       return ExpFlags { resolved = true };
    }
 
@@ -665,11 +666,13 @@ public:
          {
             value = { { type = integer, format = boolean }, i = 1 };
             flags.resolved = true;
+            expType = class(bool);
          }
          else if(!strcmpi(identifier.string, "false"))
          {
             value = { { type = integer, format = boolean }, i = 0 };
             flags.resolved = true;
+            expType = class(bool);
          }
          else if(destType && (destType.type == enumClass || destType == class(Color)))
          {
@@ -1361,11 +1364,34 @@ public:
 
       if(!type && elements)
       {
+         CMSSExpression e0 = elements[0];
+         if(e0)
+         {
+            Class c;
+            if(computeType == preprocessing && !e0.expType)
+            {
+               FieldValue v { };
+               e0.compute(v, evaluator, computeType, null);
+               v.OnFree();
+            }
+            c = e0.expType;
+            if(!c || c == class(int64))
+               c = class(double);
+            if(c)
+            {
+               char name[1024];
+               sprintf(name, "Array<%s>", c.name);
+               type = eSystem_FindClass(__thisModule.application, name);
+            }
+         }
+
          // Default type?
+         /*
          if(elements[0].expType == class(String))
             type = class(Array<String>);
          else
             type = class(Array<double>);
+         */
       }
 
       if(type && computeType == runtime && elements)
@@ -1389,6 +1415,7 @@ public:
          CMSSExpression exp = e;
          FieldValue v { };
          ExpFlags flg;
+
          if(type)
          {
             ClassTemplateArgument a = type.templateArgs[0];
@@ -1396,7 +1423,7 @@ public:
 
             exp.destType = c;
 
-            flg = e.compute(v, evaluator, computeType, null);
+            flg = exp.compute(v, evaluator, computeType, null);
 
             if(computeType == runtime && flg.resolved && array)
             {
