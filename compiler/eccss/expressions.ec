@@ -1392,8 +1392,9 @@ public:
          if(type)
          {
             ClassTemplateArgument a = type.templateArgs[0];
+            Class c = a.dataTypeClass;
 
-            exp.destType = a.dataTypeClass;
+            exp.destType = c;
 
             flg = e.compute(v, evaluator, computeType, null);
 
@@ -1401,32 +1402,57 @@ public:
             {
                if(v.type.type == real)
                {
-                  Iterator<double> it { (Array<double>)array };
-                  if(it.Index(i, true))
-                     it.SetData(v.r);
+                  if(c && (c.type == enumClass || c.type == bitClass || c.type == systemClass || c.type == unitClass))
+                  {
+                     Iterator<double> it { (Array<double>)array };
+                     if(it.Index(i, true))
+                        it.SetData(v.r);
+                  }
+                  else
+                     flg.resolved = false;
                }
                else if(v.type.type == integer)
                {
-                  Iterator<int64> it { (Array<int64>)array };
-                  if(it.Index(i, true))
-                     it.SetData(v.i);
+                  if(c && (c.type == enumClass || c.type == bitClass || c.type == systemClass || c.type == unitClass))
+                  {
+                     Iterator<int64> it { (Array<int64>)array };
+                     if(it.Index(i, true))
+                        it.SetData(v.i);
+                  }
+                  else
+                     flg.resolved = false;
                }
                else if(v.type.type == text)
                {
-                  Iterator<String> it { (Array<String>)array };
-                  if(it.Index(i, true))
-                     it.SetData(v.s);
+                  if(c && c.type == normalClass && !strcmpi(c.dataTypeString, "char *"))
+                  {
+                     Iterator<String> it { (Array<String>)array };
+                     if(it.Index(i, true))
+                        it.SetData(v.s);
+                  }
+                  else
+                     flg.resolved = false;
                }
                else if(v.type.type == blob)
                {
-                  Iterator<uintptr> it { (Array<uintptr>)array };
-                  if(it.Index(i, true))
-                     it.SetData((uintptr)v.b);
+                  if(c && (c.type == structClass || c.type == noHeadClass || c.type == normalClass))
+                  {
+                     Iterator<uintptr> it { (Array<uintptr>)array };
+                     if(it.Index(i, true))
+                        it.SetData((uintptr)v.b);
+                  }
+                  else
+                     flg.resolved = false;
                }
             }
 
             flags |= flg;
-            if(!flg.resolved) resolved = false;
+            if(!flg.resolved)
+            {
+               resolved = false;
+               if(array)
+                  array.Free(), delete array;
+            }
          }
          else
             PrintLn("ERROR: null destination type!");
@@ -1563,8 +1589,8 @@ public:
          }
          if(!expType || expType != class(DateTime))
             value = { { blob }, b = instData };
-         if(!flags)
-            flags.resolved = true;
+         if(!instData)
+            value = { { nil } };
       }
       return flags;
    }

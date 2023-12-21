@@ -772,13 +772,37 @@ public:
    }
 }
 
+static void deleteInstance(Class type, void * instData)
+{
+   if(type && type.type != structClass)
+   {
+      if(type.type != noHeadClass) // TOCHECK: No ref count, likely deleted elsewhere
+         eInstance_DecRef(instData);
+      else
+      {
+         if(type.Destructor)
+            type.Destructor(instData);
+         eSystem_Delete(instData);
+      }
+   }
+   else
+      delete instData;
+}
+
 private Instance createGenericInstance(CMSSInstantiation inst, Class destType, ECCSSEvaluator evaluator, ExpFlags * flg)
 {
    CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
    Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
    Instance instance = c && c.structSize ? eInstance_New(c) : null;
    if(instance)
+   {
       setGenericInstanceMembers(instance, inst, evaluator, flg, c);
+      if(!flg->resolved)
+      {
+         deleteInstance(c, instance);
+         instance = null;
+      }
+   }
    return instance;
 }
 
@@ -818,6 +842,7 @@ private void setGenericBitMembers(CMSSExpInstance expInst, uint64 * bits, ECCSSE
 
 private void setGenericInstanceMembers(Instance object, CMSSInstantiation instance, ECCSSEvaluator evaluator, ExpFlags * flg, Class stylesClass)
 {
+   bool unresolved = false;
    if(instance)
    {
       for(i : instance.members)
@@ -977,6 +1002,8 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
    #endif
                      }
                   }
+                  if(!flag.resolved)
+                     unresolved = true;
                   *flg |= flag;
                }
                else
@@ -987,6 +1014,7 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
          }
       }
    }
+   flg->resolved = !unresolved;
 }
 
 public class StylingRuleBlock : CMSSNode
