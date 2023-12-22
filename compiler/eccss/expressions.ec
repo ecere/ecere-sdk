@@ -793,7 +793,9 @@ public:
          exp1.destType = destType;
 
          flags1 = exp1.compute(val1, evaluator, computeType, stylesClass);
-         flags2 = exp2.compute(val2, evaluator, computeType, stylesClass);
+         if(!(flags1.resolved && op == and && val1.type.type == integer && !val1.i)) // Lazy AND evaluation
+            flags2 = exp2.compute(val2, evaluator,
+               computeType == runtime && !flags1.resolved && op == and ? preprocessing : computeType, stylesClass);
          flags = flags1 | flags2;
 
          if(op == in)
@@ -1203,7 +1205,7 @@ public:
       ExpFlags flags { };
       FieldValue val { };
       ExpFlags expFlg = exp.compute(val, evaluator, computeType, stylesClass);
-      if(expFlg.resolved && evaluator != null && exp.expType)
+      if(expFlg.resolved && evaluator != null && exp.expType && computeType == runtime)   // REVIEW: Can we check for runtime here?
       {
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
          if(!prop)
