@@ -869,7 +869,8 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                   ExpFlags flag = exp.compute(val, evaluator, runtime, stylesClass);
                   if(stylesClass && stylesClass == class(DateTime) && val.type.type == text)
                   {
-                     ((DateTime *)object)->OnGetDataFromString(val.s);
+                     if(((DateTime *)object)->OnGetDataFromString(val.s))
+                        flg->resolved = true;
                      return;
                   }
 
