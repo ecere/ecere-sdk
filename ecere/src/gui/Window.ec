@@ -5010,7 +5010,7 @@ private:
                   prevActiveWindow.ActivateEx(true, false, false, false, null, null);
                status = false;
             }
-            else if(hotKeyWindow.style.inactive)
+            else if(hotKeyWindow.style.inactive && !hotKeyWindow.isRemote)
                status = hotKeyWindow.KeyMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnKeyUp, Key::hotKey, character);
 
             delete prevActiveWindow;
