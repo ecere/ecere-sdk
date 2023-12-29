@@ -1456,7 +1456,7 @@ class XDisplayDriver : DisplayDriver
       if(!xDisplay || !src.picture || !ClipBlitCoords(surface, src, &dx, &dy, &sx, &sy, &w, &h, &flip))
          return;
 
-      if(src.pixelFormat == display.pixelFormat)
+      if(src.pixelFormat == display.pixelFormat && !flip && !src.transparent)
       {
          image.width = src.width;
          image.height = src.height;

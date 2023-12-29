@@ -1609,7 +1609,7 @@ public class LFBDisplayDriver : DisplayDriver
                }
             }
          }
-         else if(src.paletteShades)
+         else if(src.paletteShades && src.pixelFormat == pixelFormat8)
             shades_blit_table[lfbSurface.bitmap.pixelFormat][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h);
          else if(src.pixelFormat == lfbSurface.bitmap.pixelFormat)
             blits_table[lfbSurface.bitmap.pixelFormat][src.transparent][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h);
@@ -1779,7 +1779,7 @@ public class LFBDisplayDriver : DisplayDriver
                source += addsource;
             }
          }
-         else if(src.paletteShades)
+         else if(src.paletteShades && src.pixelFormat == pixelFormat8)
             shades_stretch_table[lfbSurface.bitmap.pixelFormat][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h,sw,sh);
          else if(src.pixelFormat == lfbSurface.bitmap.pixelFormat)
             stretches_table[lfbSurface.bitmap.pixelFormat][src.transparent][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h,sw,sh);
@@ -1994,7 +1994,7 @@ public class LFBDisplayDriver : DisplayDriver
          else if(!src.paletteShades && src.pixelFormat == lfbSurface.bitmap.pixelFormat)
             filters_table[lfbSurface.bitmap.pixelFormat][src.transparent][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h,sw,sh);
          // Fail back on Stretch
-         else if(src.paletteShades)
+         else if(src.paletteShades && src.pixelFormat == pixelFormat8)
             shades_stretch_table[lfbSurface.bitmap.pixelFormat][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h,sw,sh);
          else if(src.pixelFormat == lfbSurface.bitmap.pixelFormat)
             stretches_table[lfbSurface.bitmap.pixelFormat][src.transparent][flip](src,lfbSurface.bitmap,dx,dy,sx,sy,w,h,sw,sh);

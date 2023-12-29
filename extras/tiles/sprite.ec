@@ -42,10 +42,9 @@ class Sprite
       File f = sizefile ? FileOpen(sizefile, read) : null;
       if(f || !sizefile)
       {
-         Bitmap bmpFrames {};
+         Bitmap bmpFrames { };
          if(bmpFrames.Load(bmpname, null, null))
          {
-            bmpFrames.Convert(null, pixelFormat888, null);
             if(f)
             {
                f.Getc((char *)&numFrames);
@@ -92,6 +91,8 @@ class Sprite
                      {
                         if(displaySystem)
                            frames[c].bitmap.MakeDD(displaySystem);
+                        else
+                           frames[c].bitmap.Convert(null, pixelFormat888, null);
                         if(!frames[c].bitmap)
                            Logf("Couldn't adapt bitmap %s.\n", bmpname);
                      }
