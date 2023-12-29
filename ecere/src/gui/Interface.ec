@@ -1,5 +1,9 @@
 namespace gui;
 
+#if defined(ECERE_VANILLA)
+   #define ECERE_NOTRUETYPE
+#endif
+
 #if defined(__EMSCRIPTEN__)
 define target = "#canvas";
 #endif
@@ -175,6 +179,10 @@ public:
                surface.SetForeground(guiApp.currentSkin.disabledFrontColor);
                surface.TextOpacity(false);
             }
+#if !defined(ECERE_NOTRUETYPE)
+            if(surface.font && surface.font.outlineSize && surface.foreground.color == white)
+               surface.outlineColor = black;
+#endif
             surface.WriteText(x,y, text, strlen(text));
             surface.TextOpacity(opacity);
          }
