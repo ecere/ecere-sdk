@@ -191,6 +191,7 @@ public:
    virtual void ::Clear(Display, Surface, ClearType);
    virtual void ::Blit(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h);
    virtual void ::Stretch(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
+   virtual void ::Stretchf(Display, Surface, Bitmap, float dx, float dy, float sx, float sy, float w, float h, float sw, float sh);
    virtual void ::Filter(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);
    virtual void ::BlitDI(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h);
    virtual void ::StretchDI(Display, Surface, Bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh);

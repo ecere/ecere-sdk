@@ -232,6 +232,14 @@ public:
          driver.StretchDI(display, this, src, dx,dy, sx,sy, w,h, sw, sh);
    }
 
+   void Stretchf(Bitmap src, float dx, float dy, float sx, float sy, float w, float h, float sw, float sh)
+   {
+      if(src.driver == driver)
+         driver.Stretchf(display, this, src, dx,dy, sx,sy, w,h, sw, sh);
+      else if(!src.driver || src.driver == class(LFBDisplayDriver))
+         ; //driver.StretchDI(display, this, src, dx,dy, sx,sy, w,h, sw, sh);
+   }
+
    void Filter(Bitmap src, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
       if(src.driver == driver)

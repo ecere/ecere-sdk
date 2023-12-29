@@ -2797,6 +2797,122 @@ class OpenGLDisplayDriver : DisplayDriver
       //glTranslate(0.375, 0.375, 0.0);
    }
 
+   void Stretchf(Display display, Surface surface, Bitmap bitmap, float dx, float dy, float sx, float sy, float w, float h, float sw, float sh)
+   {
+      OGLSurface oglSurface = surface.driverData;
+      bool flipX = w < 0, flipY = h < 0;
+      int bw = bitmap.width, bh = bitmap.height;
+      float invW = 1.0f / bw, invH = 1.0f / bh;
+      float s2dw,s2dh,d2sw,d2sh;
+
+      if(surface.box.right < surface.box.left || surface.box.bottom < surface.box.top) return;
+
+      if(flipX) w = -w;
+      if(flipY) h = -h;
+
+      s2dw=(float)w / sw;
+      s2dh=(float)h / sh;
+      d2sw=(float)sw / w;
+      d2sh=(float)sh / h;
+
+      //Clip against the edges of the source
+      if(sx<0)
+      {
+         dx+=((0-sx) * s2dw);
+         w-=((0-sx) * s2dw);
+         sw-=0-sx;
+         sx=0;
+      }
+      if(sy<0)
+      {
+         dy+=((0-sy) * s2dh);
+         h-=((0-sy) * s2dh);
+
+         sh-=0-sy;
+         sy=0;
+      }
+      if(sx+sw>bw-1)
+      {
+         w-=((sx+sw-(bw-1)-1)*s2dw);
+         sw-=sx+sw-(bw-1)-1;
+      }
+      if(sy+sh>(bh-1))
+      {
+         h-=((sy+sh-(bh-1)-1)*s2dh);
+         sh-=sy+sh-(bh-1)-1;
+      }
+      //Clip against the edges of the destination
+      if(dx<surface.box.left)
+      {
+         if(!flipX) sx+=((surface.box.left-dx)*d2sw);
+         sw-=((surface.box.left-dx)*d2sw);
+         w-=surface.box.left-dx;
+         dx=surface.box.left;
+      }
+      if(dy<surface.box.top)
+      {
+         if(!flipY) sy+=((surface.box.top-dy)*d2sh);
+         sh-=((surface.box.top-dy)*d2sh);
+         h-=surface.box.top-dy;
+         dy=surface.box.top;
+      }
+      if((dx+w)>surface.box.right)
+      {
+         if(flipX) sx+=(((dx+w)-surface.box.right-1)*d2sw);
+         sw-=(((dx+w)-surface.box.right-1)*d2sw);
+         w-=((dx+w)-surface.box.right-1);
+      }
+      if((dy+h)>surface.box.bottom)
+      {
+         if(flipY) sy+=(((dy+h)-surface.box.bottom-1)*d2sh);
+         sh-=(((dy+h)-surface.box.bottom-1)*d2sh);
+         h-=((dy+h)-surface.box.bottom-1);
+      }
+      if((w<=0)||(h<=0)||(sw<=0)||(sh<=0)) return;
+
+      float sx0 = (sx + (flipX ? sw :  0)) * invW;
+      float sx1 = (sx + (flipX ?  0 : sw)) * invW;
+      float sy0 = (sy + (flipY ? sh :  0)) * invH;
+      float sy1 = (sy + (flipY ?  0 : sh)) * invH;
+
+      dx += surface.offset.x;
+      dy += surface.offset.y;
+
+      //glTranslate(-0.375, -0.375, 0.0);
+
+      GLSetupTexturing(true);
+      glBindTexture(GL_TEXTURE_2D, (GLuint)(uintptr)bitmap.driverData);
+
+      // REVIEW: How to set this
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+      GLColor4fv(oglSurface.bitmapMult);
+      if(glCaps_shaders)
+         defaultShader.blackTint = *&surface.blackTint;
+
+      GLBegin(GLIMTKMode::quads);
+
+      GLTexCoord2f(sx0, sy0);
+      GLVertex2f(dx, dy);
+
+      GLTexCoord2f(sx1, sy0);
+      GLVertex2f(dx + w, dy);
+
+      GLTexCoord2f(sx1, sy1);
+      GLVertex2f(dx + w, dy + h);
+
+      GLTexCoord2f(sx0, sy1);
+      GLVertex2f(dx, dy + h);
+
+      GLEnd();
+
+      GLSetupTexturing(false);
+
+      //glTranslate(0.375, 0.375, 0.0);
+   }
+
+
    void Filter(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h, int sw, int sh)
    {
       Stretch(display, surface, bitmap, dx, dy, sx, sy, w, h, sw, sh);
