@@ -1898,6 +1898,8 @@ public:
       double depthDistance[] = { 0.01, 0.1, 0.3, 0.5, 0.6, 0.8, 1 };
       int pass;
 
+      if(!skin) return;
+
       for(pass = 0; pass < 7; pass++)
       {
          double d2 = MAXDOUBLE;
