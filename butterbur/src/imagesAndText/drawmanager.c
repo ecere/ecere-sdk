@@ -1309,20 +1309,21 @@ void dmEnd( dmContext *dm )
     if(drawbuffer->vbo)
       glDeleteBuffers( 1, &drawbuffer->vbo );
     free(drawbuffer->vertexbuffer);
+    drawbuffer->vertexbuffer = NULL;
   }
-  free(dm->imagebuffer);
-  free(dm->imagebuffertmp);
+  if(dm->imagebuffer) free(dm->imagebuffer), dm->imagebuffer = NULL;
+  if(dm->imagebuffertmp) free(dm->imagebuffertmp), dm->imagebuffertmp = NULL;
 
   for( programindex = 0 ; programindex < DM_PROGRAM_COUNT ; programindex++ )
   {
      dmProgram *program = &dm->shaderprograms[ programindex ];
 
      if( program->fragmentshader )
-       glDeleteShader( program->fragmentshader );
+       glDeleteShader( program->fragmentshader ), program->fragmentshader = 0;
      if( program->vertexshader )
-       glDeleteShader( program->vertexshader );
+       glDeleteShader( program->vertexshader ), program->vertexshader = 0;
      if( program->glprogram )
-       glDeleteProgram( program->glprogram );
+       glDeleteProgram( program->glprogram ), program->glprogram = 0;
   }
 }
 
