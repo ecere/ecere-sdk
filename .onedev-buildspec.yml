@@ -60,7 +60,6 @@ jobs:
       - apt -y install libffi-dev:i386
       - apt -y install libasound2-dev:i386
       - apt -y install libfontconfig1-dev:i386
-      - apt -y install wget
       - apt -y install git
       - apt -y install python3-pip
       - pip3 install cffi
@@ -75,7 +74,7 @@ jobs:
         ln -sf $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so.4 /usr/lib/i386-linux-gnu/ &&
         ln -sf $(pwd)/deps/curl-7.86.0/obj/release.linux.x32/libcurl.so /usr/lib/i386-linux-gnu/ &&
         make -j2 && mkdir output && make install DESTDIR=output &&
-        wget https://ecere.com/tmp/win32-patches.tar.gz && tar xf win32-patches.tar.gz &&
+        tar xf win32-patches/*.tar.gz &&
         ln -sf $(pwd)/win32/regex/regex.h /usr/x86_64-w64-mingw32/include/ &&
         ln -sf $(pwd)/win32/regex/gnurx-0.dll /usr/x86_64-w64-mingw32/lib/ &&
         ln -sf $(pwd)/win32/regex/regex.h /usr/i686-w64-mingw32/include/ &&
@@ -171,6 +170,13 @@ jobs:
   - !BranchUpdateTrigger
     projects: ecere-sdk
   projectDependencies:
+  - projectPath: win32-patches
+    buildProvider: !LastFinishedBuild
+      jobName: Build
+      refName: refs/heads/master
+    artifacts: '**'
+    accessTokenSecret: ssl-access
+    destinationPath: win32-patches
   - projectPath: OpenSSL-win32
     buildProvider: !LastFinishedBuild
       jobName: Build
