@@ -120,9 +120,11 @@ class ProcessingStage
                   // TO REVIEW: This was leaking?
                   break;
                default:
+               {
                   // NOTE: The mutex is necessary here as this is adding the task to another stage
+                  int priority = task.priority;
                   mutex.Release();
-                  processing.addTask(task, action, task.priority);
+                  processing.addTask(task, action, priority);
                   /*
                   if(action > processing.stages.count)
                      processing.setup(action, 0);
@@ -131,6 +133,7 @@ class ProcessingStage
                   */
                   mutex.Wait();
                   break;
+               }
             }
          }
          thread.canceled = false;
@@ -191,10 +194,13 @@ class ProcessingStage
                   task.status.active = false;
                break;
             default:
+            {
+               int priority = task.priority;
                mutex.Release();
-               processing.addTask(task, action, task.priority);
+               processing.addTask(task, action, priority);
                mutex.Wait();
                break;
+            }
          }
          result = true;
       }
@@ -244,9 +250,12 @@ class ProcessingStage
 
                   break;
                default:
+               {
+                  int priority = task.priority;
                   mutex.Release();
-                  processing.addTask(task, action, task.priority);
+                  processing.addTask(task, action, priority);
                   mutex.Wait();
+               }
             }
 
             result = true;
