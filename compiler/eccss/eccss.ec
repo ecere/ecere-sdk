@@ -452,6 +452,19 @@ public struct ECCSSEvaluator
       return createGenericInstance(inst, destType, this, flags);
    }
 
+   virtual Class getClassFromInst(CMSSInstantiation inst, Class destType)
+   {
+      // TODO: refactor createGenericInstance
+      CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
+      Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
+      return c;
+   }
+
+   void * computeInstanceSpecialGeom(CMSSInstantiation inst, Class c, ExpFlags * flags)
+   {
+      return createGenericInstanceSpecialGeom(inst, c, this, flags);
+   }
+
    virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
@@ -801,6 +814,21 @@ private Instance createGenericInstance(CMSSInstantiation inst, Class destType, E
 {
    CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
    Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
+   Instance instance = c && c.structSize ? eInstance_New(c) : null;
+   if(instance)
+   {
+      setGenericInstanceMembers(instance, inst, evaluator, flg, c);
+      if(!flg->resolved)
+      {
+         deleteInstance(c, instance);
+         instance = null;
+      }
+   }
+   return instance;
+}
+
+private Instance createGenericInstanceSpecialGeom(CMSSInstantiation inst, Class c, ECCSSEvaluator evaluator, ExpFlags * flg)
+{
    Instance instance = c && c.structSize ? eInstance_New(c) : null;
    if(instance)
    {

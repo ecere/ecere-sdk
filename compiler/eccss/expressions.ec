@@ -1562,8 +1562,7 @@ public:
 
       if(computeType == preprocessing)
       {
-         CMSSSpecName specName = instance ? (CMSSSpecName)instance._class : null;
-         Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
+         Class c = evaluator.evaluatorClass.getClassFromInst(evaluator, instance, destType);
          int memberID = 0;
 
          if(!stylesClass) stylesClass = c;
