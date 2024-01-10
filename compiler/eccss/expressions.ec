@@ -1562,7 +1562,7 @@ public:
 
       if(computeType == preprocessing)
       {
-         Class c = evaluator.evaluatorClass.getClassFromInst(evaluator, instance, destType);
+         Class c = evaluator.evaluatorClass.getClassFromInst(instance, destType);
          int memberID = 0;
 
          if(!stylesClass) stylesClass = c;
@@ -1604,12 +1604,8 @@ public:
          }
 
          // TODO: Avoid constantly re-creating if constant?
-         instData = evaluator.evaluatorClass.computeInstance(evaluator, instance, destType, &flags);
+         instData = evaluator.evaluatorClass.computeInstance(evaluator, instance, destType, &flags, &expType);
 
-         if(expType && instData && expType.type == normalClass)
-         {
-            ((Instance)instData)._refCount++;
-         }
          if((expType && expType == class(DateTime)) && instData && expType.type == structClass)
          {
             //FieldTypeEx fType { integer, isDateTime = true };
