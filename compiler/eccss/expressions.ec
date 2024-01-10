@@ -2157,11 +2157,66 @@ public:
                else
                   destType = dataMember.dataTypeClass;
                (*memberID)++;
+
+               if(destType && destType.templateClass)
+               {
+                  bool replace = false;
+                  int i=0;
+                  char templateName[2048];
+                  strcpy(templateName, destType.templateClass.name);
+                  strcat(templateName, "<");
+                  for(i=0; i < destType.numParams; i++)
+                  {
+                     ClassTemplateArgument arg = destType.templateArgs[i];
+                     if(i != 0)
+                        strcat(templateName, ", ");
+                     if(!arg.dataTypeClass)
+                     {
+                        Class bc; // Geom
+                        bool found = false;
+                        int j = 0;
+                        for(bc = type; bc; bc = bc.inheritanceAccess == publicAccess ? bc.base : null)
+                        {
+                           ClassTemplateParameter param;
+                           j = 0;
+                           for(param = bc.templateParams.first; param; param = param.next)
+                           {
+                              if(param.type == TemplateParameterType::type && !strcmp(param.name, arg.dataTypeString))
+                                 break;
+                              j++;
+                           }
+                           if(param)
+                           {
+                              Class bc2;
+                              for(bc2 = bc.base; bc2; bc2 = bc2.base)
+                                 j += bc2.templateParams.count;
+                              found = true;
+                              break;
+                           }
+                        }
+                        if(found)
+                        {
+                           strcat(templateName, type.templateArgs[j].dataTypeString);
+                           replace = true;
+                        }
+                        else
+                           strcat(templateName, arg.dataTypeString);
+                     }
+                     else //NOTE: should also use param for this loop... if(param.)
+                        strcat(templateName, arg.dataTypeString);
+                  }
+                  if(replace)
+                  {
+                     strcat(templateName, ">");
+                     destType = eSystem_FindClass(type.module, templateName);
+                  }
+               }
                break; //?
             }
          }
          delete bases;
       }
+
       if(dataMember)
       {
          if(!dataMember.isProperty)
