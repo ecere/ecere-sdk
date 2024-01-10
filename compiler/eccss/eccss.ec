@@ -338,6 +338,7 @@ public struct ECCSSEvaluator
       }
       return expType;
    }
+
    virtual Class computeFunction(FieldValue value, const FieldValue e, const FieldValue * args, int numArgs, ExpFlags * flags)
    {
       Class expType = null;
@@ -447,22 +448,17 @@ public struct ECCSSEvaluator
       return expType;
    }
 
-   virtual void * computeInstance(CMSSInstantiation inst, Class destType, ExpFlags * flags)
+   virtual void * computeInstance(CMSSInstantiation inst, Class destType, ExpFlags * flags, Class * expTypePtr)
    {
-      return createGenericInstance(inst, destType, this, flags);
+      return createGenericInstance(inst, evaluatorClass.getClassFromInst(inst, destType), this, flags);
    }
 
-   virtual Class getClassFromInst(CMSSInstantiation inst, Class destType)
+   virtual Class ::getClassFromInst(CMSSInstantiation inst, Class destType)
    {
       // TODO: refactor createGenericInstance
       CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
-      Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
+      Class c = specName ? eSystem_FindClass(__thisModule, specName.name) : destType;
       return c;
-   }
-
-   void * computeInstanceSpecialGeom(CMSSInstantiation inst, Class c, ExpFlags * flags)
-   {
-      return createGenericInstanceSpecialGeom(inst, c, this, flags);
    }
 
    virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
@@ -810,28 +806,14 @@ static void deleteInstance(Class type, void * instData)
       delete instData;
 }
 
-private Instance createGenericInstance(CMSSInstantiation inst, Class destType, ECCSSEvaluator evaluator, ExpFlags * flg)
+private Instance createGenericInstance(CMSSInstantiation inst, Class c, ECCSSEvaluator evaluator, ExpFlags * flg)
 {
-   CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
-   Class c = specName ? eSystem_FindClass(specName._class.module, specName.name) : destType;
    Instance instance = c && c.structSize ? eInstance_New(c) : null;
    if(instance)
    {
-      setGenericInstanceMembers(instance, inst, evaluator, flg, c);
-      if(!flg->resolved)
-      {
-         deleteInstance(c, instance);
-         instance = null;
-      }
-   }
-   return instance;
-}
+      if(c.type == normalClass)
+         instance._refCount++;
 
-private Instance createGenericInstanceSpecialGeom(CMSSInstantiation inst, Class c, ECCSSEvaluator evaluator, ExpFlags * flg)
-{
-   Instance instance = c && c.structSize ? eInstance_New(c) : null;
-   if(instance)
-   {
       setGenericInstanceMembers(instance, inst, evaluator, flg, c);
       if(!flg->resolved)
       {
