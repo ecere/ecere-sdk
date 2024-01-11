@@ -785,7 +785,7 @@ public:
       {
          FieldValue val1 { };
          FieldValue val2 { };
-         ExpFlags flags1, flags2;
+         ExpFlags flags1, flags2 = 0;
          FieldTypeEx type {};
          OpTable * tbl;
 
