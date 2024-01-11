@@ -1562,10 +1562,9 @@ public:
 
       if(computeType == preprocessing)
       {
-         Class c = evaluator.evaluatorClass.getClassFromInst(instance, destType);
+         Class c = evaluator.evaluatorClass.getClassFromInst(instance, destType, &stylesClass);
          int memberID = 0;
 
-         if(!stylesClass) stylesClass = c;
          if(instance)
          {
             for(inst : instance.members)
