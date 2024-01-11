@@ -450,14 +450,16 @@ public struct ECCSSEvaluator
 
    virtual void * computeInstance(CMSSInstantiation inst, Class destType, ExpFlags * flags, Class * expTypePtr)
    {
-      return createGenericInstance(inst, evaluatorClass.getClassFromInst(inst, destType), this, flags);
+      return createGenericInstance(inst, evaluatorClass.getClassFromInst(inst, destType, null), this, flags);
    }
 
-   virtual Class ::getClassFromInst(CMSSInstantiation inst, Class destType)
+   virtual Class ::getClassFromInst(CMSSInstantiation inst, Class destType, Class * stylesClassPtr)
    {
       // TODO: refactor createGenericInstance
       CMSSSpecName specName = inst ? (CMSSSpecName)inst._class : null;
       Class c = specName ? eSystem_FindClass(__thisModule, specName.name) : destType;
+      // REVIEW: This causes warning for non-styles related stuff
+      if(stylesClassPtr && !*stylesClassPtr) *stylesClassPtr = c;
       return c;
    }
 
