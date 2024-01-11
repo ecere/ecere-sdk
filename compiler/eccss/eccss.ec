@@ -1563,7 +1563,11 @@ public:
             Array<Instance> array = object ? evaluator.evaluatorClass.accessSubArray(object, mSet) : null;
             if(array)
                for(e : arr.elements; e._class == class(CMSSExpInstance))
-                  array.Add(createGenericInstance(((CMSSExpInstance)e).instance, e.destType, evaluator, flg));
+               {
+                  CMSSExpInstance expInstance = (CMSSExpInstance)e;
+                  array.Add(createGenericInstance(expInstance.instance,
+                     evaluator.evaluatorClass.getClassFromInst(expInstance.instance, expInstance.destType, null), evaluator, flg));
+               }
             else
             {
                // New more generic approach for colormaps etc. with blob, which could eventually work for GEs as well?
