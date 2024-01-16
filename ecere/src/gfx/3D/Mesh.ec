@@ -194,6 +194,8 @@ public struct SkinBone
    Matrix bsInvBindMatrix;
    Object object;
    Vector3Df min, max; // Bounding Box
+
+   Transform origTransform;
 };
 
 public define MAX_BONES = 10;
@@ -563,6 +565,165 @@ public:
          }
          else
             Unlock({ vertices = true });
+      }
+   }
+
+   void fixMorphSkin()
+   {
+      if(skin && skin.skinVerts.count + (dupVerts ? dupVerts.count : 0) == nVertices)
+      {
+         // Adjust bones position and inverse bind matrix for applied morphs
+         SkinBone * skeletonBone = null;
+         int i;
+         for(i = 0; i < skin.bones.count; i++)
+         {
+            SkinBone * bone = &skin.bones[i];
+            Object obj = bone->object;
+            if(obj) // && obj.flags.skeleton)
+            {
+               skeletonBone = bone;
+               break;
+            }
+         }
+
+         if(skeletonBone)
+            fixSkeletonBones(skeletonBone, i);
+
+         flags.bones = false;
+      }
+   }
+
+   void fixSkeletonBones(SkinBone * bone, int boneIx)
+   {
+      Object obj = bone->object, c;
+      int nVertices = this.nVertices;
+      Vector3Df * vertices = this.vertices;
+      Vector3Df * unmVertices = unmorphedMesh.vertices;
+
+      if(!bone->origTransform.scaling.x)
+         bone->origTransform = obj.transform;
+
+      obj.transform.position = bone->origTransform.position;
+
+      bone->bsInvBindMatrix.Multiply(skin.bindShapeMatrix, bone->invBindMatrix);
+
+      if(vertices)
+      {
+         float * v = (float *)vertices;
+         int j;
+         int increment = flags.interleaved ? 8 : 3;
+         double tx = 0, ty = 0, tz = 0;
+         int count = 0;
+         double tw = 0;
+         for(j = 0; j < nVertices; j++, v += increment)
+         {
+            int ix = (j < skin.skinVerts.count) ? j : dupVerts[j - skin.skinVerts.count];
+            SkinVert * sv = &skin.skinVerts[ix];
+            float w = 0;
+            int b;
+            for(b = 0; b < MAX_BONES; b++)
+            {
+               int bone = sv->bones[b];
+               if(bone == boneIx)
+               {
+                  w = sv->weights[b] / 255.0f;
+                  break;
+               }
+               else if(bone == NO_BONE)
+                  break;
+            }
+            if(w)
+            {
+               float x = v[0], y = v[1], z = v[2];
+
+               if(x.isNan || y.isNan || z.isNan);
+               else if(x > 1E20 || x < -1E20 || y > 1E20 || y < -1E20 || z > 1E20 || z < -1E20);
+               else
+               {
+                  Vector3Df m = *(Vector3Df *)v;
+                  Vector3Df u = unmVertices[ix];
+
+                  tx += (m.x - u.x) * w;
+                  ty += (m.y - u.y) * w;
+                  tz += (m.z - u.z) * w;
+                  tw += w;
+                  count++;
+               }
+            }
+         }
+
+         if(count)
+         {
+            int k;
+            SkinBone * parentBone = null;
+            Vector3D position = obj.transform.position;
+            Vector3Df p, tp;
+            Matrix pm;
+            Object po;
+
+            for(k = 0; k < skin.bones.count; k++)
+            {
+               SkinBone * b = &skin.bones[k];
+               if(b->object == bone->object.parent)
+               {
+                  parentBone = b;
+                  break;
+               }
+            }
+
+            tx /= tw, ty /= tw, tz /= tw;
+
+            bone->bsInvBindMatrix.m[3][0] -= tx;
+            bone->bsInvBindMatrix.m[3][1] -= ty;
+            bone->bsInvBindMatrix.m[3][2] -= tz;
+
+            po = parentBone->object;
+            pm.Identity();
+            while(po)
+            {
+               Vector3D pos = po.transform.position;
+               Vector3D oPos { };
+               int i;
+
+               for(i = 0; i < skin.bones.count; i++)
+               {
+                  SkinBone * bone = &skin.bones[i];
+                  if(bone->object == po)
+                  {
+                     oPos = bone->origTransform.position;
+                     break;
+                  }
+               }
+               pm.Translate(oPos.x - pos.x, oPos.y - pos.y, oPos.z - pos.z);
+               if(po.flags.skeleton)
+                  break;
+               po = po.parent;
+            }
+
+            p = { (float)tx, (float)ty, (float)tz };
+            tp.MultMatrix(p, pm);
+            position.x += tp.x, position.y += tp.y, position.z += tp.z;
+            obj.transform.position = position;
+            obj.UpdateTransform();
+         }
+      }
+
+      for(c = obj.firstChild; c; c = c.next)
+      {
+         int i;
+         SkinBone * bone = null;
+         for(i = 0; i < skin.bones.count; i++)
+         {
+            SkinBone * b = &skin.bones[i];
+            if(b->object == c)
+            {
+               bone = b;
+               break;
+            }
+         }
+
+         if(bone)
+            fixSkeletonBones(bone, i);
       }
    }
 
