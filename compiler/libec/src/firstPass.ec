@@ -42,7 +42,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                               ProcessExpressionType(sizeExp);
                               ComputeExpression(sizeExp);
 
-                              if(sizeExp.isConstant)
+                              if(sizeExp.type == constantExp)
                                  bitSize = strtol(sizeExp.constant, null, 0);
                               FreeExpression(sizeExp);
                            }
@@ -53,7 +53,7 @@ static void AddDefinitions(Class regClass, DataMember member, OldList definition
                               ProcessExpressionType(posExp);
                               ComputeExpression(posExp);
 
-                              if(posExp.isConstant)
+                              if(posExp.type == constantExp)
                                  bitPos = strtol(posExp.constant, null, 0);
                               FreeExpression(posExp);
                            }
