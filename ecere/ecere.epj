@@ -59,6 +59,9 @@
       {
          "Name" : "Win32",
          "Options" : {
+            "PreprocessorDefinitions" : [
+               "NOT_OPENSSL_CURL"
+            ],
             "IncludeDirs" : [
                "../deps/jpeg-9a",
                "../deps/libpng-1.6.12",
