@@ -2934,6 +2934,7 @@ private:
             f.Puts("\n");
             f.Puts("ifdef ARCH_FLAGS\n");
             f.Puts("CFLAGS += $(ARCH_FLAGS)\n");
+            f.Puts("CXXFLAGS += $(ARCH_FLAGS)\n");
             f.Puts("OFLAGS += $(ARCH_FLAGS)\n");
             f.Puts("endif\n");
 
