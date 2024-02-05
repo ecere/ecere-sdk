@@ -118,12 +118,7 @@
                "ecereStatic"
             ],
             "CompilerOptions" : [
-               "-mmmx",
-               "-msse",
-               "-msse2",
-               "-msse3",
-               "-msse4",
-               "-msimd128"
+
             ],
             "FastMath" : true
          }
