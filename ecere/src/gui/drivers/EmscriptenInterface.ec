@@ -26,7 +26,7 @@ public import "ecere"
 #define uint _uint
 
 #include <emscripten.h>
-#include <html5.h>
+#include <emscripten/html5.h>
 
 #undef property
 #undef uint
