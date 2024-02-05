@@ -1809,6 +1809,9 @@ public class LFBDisplayDriver : DisplayDriver
       d2sw=(float)sw / w;
       d2sh=(float)sh / h;
 
+      if(dy == MAXINT || dx == MAXINT)
+         return;
+
       //Clip against the edges of the source
       if(sx<0)
       {
