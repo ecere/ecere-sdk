@@ -84,7 +84,13 @@ static int tmSetTextureData( tmTexture *texture, imgImage *image, int internalfo
   int glformat = selectGLTextureFormat(image->format.bytesperpixel);
 
   if( internalformat == -1 )
+  {
     internalformat = glformat;
+#if defined(__EMSCRIPTEN__)    // REVIEW: Is this needed for other GL ES 3.0 platforms?
+    if(glformat == GL_RG)
+       internalformat = GL_RG8;
+#endif
+  }
 
   width = image->format.width;
   height = image->format.height;
