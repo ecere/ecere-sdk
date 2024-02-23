@@ -863,6 +863,7 @@ public class Model : GraphicalElement
    type = model;
 public:
    ImageResource model;
+   Map<Color, Array<uint64>> colorMap;
 
    ~Model()
    {

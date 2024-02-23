@@ -826,7 +826,6 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                int nFaces = 0;
                f.Read(&nFaces, sizeof(nFaces), 1);
 
-
                if(ctx.shareIndices)
                {
                   // Assuming triangles for now

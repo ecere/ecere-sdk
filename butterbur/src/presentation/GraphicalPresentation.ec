@@ -391,20 +391,6 @@ public:
       get { return ge && ge.internal ? ((GEModelData)ge.internal).model : null; }
    }
 
-   property Map<Color, Array<uint64>> modelColorMap
-   {
-      set
-      {
-         // if(value != modelColorMap)
-         if(ge && ge.internal)
-         {
-            GEModelData modelData = ge.internal;
-            modelData.modelColorMap = value;
-            modelData.updateModelColorMap = true;
-         }
-      }
-   }
-
    property GraphicalElement graphic
    {
       set

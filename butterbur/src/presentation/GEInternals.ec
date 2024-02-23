@@ -5,6 +5,7 @@ public import IMPORT_STATIC "ecere"
 
 import "DrawingManager"
 import "shapesTesselation"
+import "e3dRead"  // For E3DOptions
 
 public struct StartAndCount { uint start, count; };
 
@@ -45,7 +46,7 @@ class GEModelData : struct
    Object model;
    bool freeModel;
    bool updateModelColorMap;
-   Map<Color, Array<uint64>> modelColorMap;
+   Map<Color, Array<uint64>> colorMap;
 }
 
 class GETextData : struct
@@ -263,7 +264,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          Object m;
          // MDManager dm = mgr.perspective3DDM;
          if(!modelData)
-            ge.internal = modelData = {};
+            ge.internal = modelData = GEModelData { updateModelColorMap = true };
          m = modelData.model;//this.model;
          rdrFlags = { perspective = true };
          if(m)
@@ -274,7 +275,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                if(g)
                {
                   Material m = g.material;
-                  if(ge && m.opacity != ge.opacity)
+                  if(ge && m && m.opacity != ge.opacity)
                      m.opacity = ge.opacity;
                }
             }
@@ -282,8 +283,9 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          else if(mdl)
          {
             Object object { };
+            E3DOptions options { positiveYUp = false, shareIndices = true };
 
-            if(object.LoadEx(mdl.model.path, null, displaySystem, null))
+            if(object.LoadEx(mdl.model.path, null, displaySystem, options))
             {
                 // Why were we applying a default material? E3D CityGML import demos?
                /*Material mat
@@ -307,15 +309,16 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                delete object;
          }
 
-         if(modelData.updateModelColorMap && modelData.model && modelData.model.mesh && modelData.model.mesh.parts && modelData.modelColorMap)
+         if(modelData.model && modelData.model.mesh && modelData.model.mesh.parts && ge.internal &&
+            (modelData.updateModelColorMap || mdl.colorMap != modelData.colorMap))
          {
             Mesh mesh = modelData.model.mesh;
-            uint32 * indices = mesh.indices;
-            if(indices)
+            uint32 * indices = mesh.indices; // This relies on loading with shareIndices = true in E3DOptions
+            Array<MeshPart> parts = mesh.parts;
+            if(parts && indices)
             {
-               Array<MeshPart> parts = mesh.parts;
                PrimitiveGroup group;
-               Map<Color, Array<uint64>> colorMap = modelData.modelColorMap;
+               Map<Color, Array<uint64>> colorMap = mdl.colorMap;
                int i;
                Map<uint64, StartAndCount> partsMap { };
 
@@ -366,6 +369,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                }
                delete partsMap;
             }
+            modelData.colorMap = mdl.colorMap;
             modelData.updateModelColorMap = false;
          }
          break;
