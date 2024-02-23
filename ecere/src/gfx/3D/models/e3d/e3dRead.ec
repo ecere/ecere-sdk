@@ -798,7 +798,7 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      block = mesh.meab.allocate(elements, size);
                      mesh.baseIndex = block ? block.start / indexSize : -1;
                      if(mesh.baseIndex != -1)
-                        mesh.meab.ab.upload(block.start, size, mesh.indices);
+                        mesh.meab.ab._upload(elements, block.start, size, mesh.indices);
                   }
 
                   {
@@ -846,10 +846,10 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      }
                      block = mesh.meab.allocate(elements, size);
                      mesh.baseIndex = block ? block.start / indexSize : -1;
-                     if(mesh.baseIndex != -1)
-                        mesh.meab.ab.upload(block.start, size, mesh.indices);
-                  }
 
+                     if(mesh.baseIndex != -1)
+                        mesh.meab.ab._upload(elements, block.start, size, mesh.indices);
+                  }
                   mesh.AddPrimitiveGroup({ triangles, indices32bit = true, sharedIndices = true }, nFaces * 3);
                }
                else
