@@ -310,7 +310,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          }
 
          if(modelData.model && modelData.model.mesh && modelData.model.mesh.parts && ge.internal &&
-            (modelData.updateModelColorMap || mdl.colorMap != modelData.colorMap))
+            (modelData.updateModelColorMap || ge.colorMap != modelData.colorMap)) //mdl.colorMap
          {
             Mesh mesh = modelData.model.mesh;
             uint32 * indices = mesh.indices; // This relies on loading with shareIndices = true in E3DOptions
@@ -318,7 +318,8 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
             if(parts && indices)
             {
                PrimitiveGroup group;
-               Map<Color, Array<uint64>> colorMap = mdl.colorMap;
+               //Map<Color, Array<uint64>> colorMap = mdl.colorMap;
+               Map<Color, Array<uint64>> colorMap = ge.colorMap;
                int i;
                Map<uint64, StartAndCount> partsMap { };
 
@@ -369,7 +370,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                }
                delete partsMap;
             }
-            modelData.colorMap = mdl.colorMap;
+            modelData.colorMap = ge.colorMap;//mdl.colorMap;
             modelData.updateModelColorMap = false;
          }
          break;

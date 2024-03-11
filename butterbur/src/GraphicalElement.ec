@@ -169,6 +169,7 @@ public class GraphicalElement
    float opacity;
    GEType type;
    GraphicalUnit unit;
+   Map<Color, Array<uint64>> colorMap; // NOTE: temp workaround for alignment issue 32/64 bit / WASM, Transform union with double types
 
    transform.scaling = { 1, 1, 1 };
    opacity = 1.0f;
@@ -218,6 +219,12 @@ public:
       }
       get { return parent; }
    }
+
+   property Map<Color, Array<uint64>> colorMap
+   {
+      set { colorMap = value; }
+      get { return colorMap; }
+   };
 
    property Transform transform3D
    {
@@ -863,7 +870,7 @@ public class Model : GraphicalElement
    type = model;
 public:
    ImageResource model;
-   Map<Color, Array<uint64>> colorMap;
+   //Map<Color, Array<uint64>> colorMap;
 
    ~Model()
    {
