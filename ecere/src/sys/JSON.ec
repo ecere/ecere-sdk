@@ -677,7 +677,7 @@ private:
       JSONResult result = syntaxError;
       SkipEmpty();
       *array = null;
-      if(ch == '[')
+      if(ch == '[' && type)
       {
          bool isAVLTree = eClass_IsDerived(type, class(AVLTree));
 
@@ -1770,7 +1770,28 @@ private:
                                     else if(type.typeSize == sizeof(int) || !strcmp(type.dataTypeString, "int") ||
                                        !strcmp(type.dataTypeString, "unsigned int") || !strcmp(type.dataTypeString, "uint"))
                                     {
-                                       ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
+                                       //NOTE: Review / Apply this to cases for other data types
+                                       if(isTemplateArg)
+                                       {
+                                          if(forMap && objectType.templateClass == class(MapNode))
+                                          {
+                                             if(isKey)
+                                             {
+                                                Class keyClass = objectType.templateArgs[0].dataTypeClass;
+                                                void (* onCopy)(void *, void *, void *) = keyClass._vTbl[__ecereVMethodID_class_OnCopy];
+                                                onCopy(keyClass, (byte *)&((MapNode)*object).key + __ENDIAN_PAD(sizeof(void *)), &value.i);
+                                             }
+                                             else
+                                             {
+                                                // TOFIX: Silly cast here to work around eC compiler generics warning
+                                                ((Map<int, uint64>)forMap).SetData(*object, (uint64)value.i);
+                                             }
+                                          }
+                                          else
+                                             ((void (*)(void *, uint64))(void *)prop.Set)(*object, (uint64)value.i);
+                                       }
+                                       else
+                                          ((void (*)(void *, int))(void *)prop.Set)(*object, value.i);
                                     }
                                     else if(type.typeSize == sizeof(short int) || !strcmp(type.dataTypeString, "short") ||
                                        !strcmp(type.dataTypeString, "unsigned short") || !strcmp(type.dataTypeString, "uint16") ||
