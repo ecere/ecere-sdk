@@ -326,6 +326,10 @@ class Perspective3DManager : MDManager
       glmsGetDoublev(modelViewMatrix, viewMatrix.array);
 
       m.Multiply3x4(v, viewMatrix);
+
+      butterburShader.transform3D = false;
+      butterburShader.posOffset = { };
+
       addModel(model, m);
 
       // Reset Perspective3DManager view matrix!!
