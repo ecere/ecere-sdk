@@ -15917,6 +15917,7 @@ if(prop)
 {
 char getName[1024], setName[1024];
 struct __ecereNameSpace__ecere__sys__OldList * args = MkList();
+struct Expression * propExp;
 
 DeclareProperty(curExternal, prop, setName, getName);
 strcpy(propName, "__ecereProp_");
@@ -15924,7 +15925,9 @@ FullClassNameCat(propName, prop->_class->fullName, 0);
 strcat(propName, "_");
 FullClassNameCat(propName, prop->name, 1);
 ListAdd(args, CopyExpression(object));
-ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
+ListAdd(args, (propExp = MkExpIdentifier(MkIdentifier(propName))));
+propExp->expType = ProcessTypeString("Property", 0);
+propExp->byReference = 1;
 ListAdd(args, watcher ? CopyExpression(watcher) : MkExpIdentifier(MkIdentifier("this")));
 ListAdd(stmt->__anon1.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_StopWatching")), args));
 }

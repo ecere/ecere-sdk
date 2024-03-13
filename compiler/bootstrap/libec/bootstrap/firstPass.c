@@ -1277,7 +1277,7 @@ if(sizeExp)
 {
 ProcessExpressionType(sizeExp);
 ComputeExpression(sizeExp);
-if(sizeExp->isConstant)
+if(sizeExp->type == 2)
 bitSize = strtol(sizeExp->__anon1.__anon1.constant, (((void *)0)), 0);
 FreeExpression(sizeExp);
 }
@@ -1285,7 +1285,7 @@ if(posExp)
 {
 ProcessExpressionType(posExp);
 ComputeExpression(posExp);
-if(posExp->isConstant)
+if(posExp->type == 2)
 bitPos = strtol(posExp->__anon1.__anon1.constant, (((void *)0)), 0);
 FreeExpression(posExp);
 }

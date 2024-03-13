@@ -13242,6 +13242,7 @@ static void ProcessStatement(Statement stmt)
                         {
                            char getName[1024], setName[1024];
                            OldList * args = MkList();
+                           Expression propExp;
 
                            DeclareProperty(curExternal, prop, setName, getName);
 
@@ -13252,7 +13253,9 @@ static void ProcessStatement(Statement stmt)
                            FullClassNameCat(propName, prop.name, true);
 
                            ListAdd(args, CopyExpression(object));
-                           ListAdd(args, MkExpIdentifier(MkIdentifier(propName)));
+                           ListAdd(args, (propExp = MkExpIdentifier(MkIdentifier(propName))));
+                           propExp.expType = ProcessTypeString("Property", false);
+                           propExp.byReference = true;
                            ListAdd(args, watcher ? CopyExpression(watcher) : MkExpIdentifier(MkIdentifier("this")));
                            ListAdd(stmt.expressions, MkExpCall(MkExpIdentifier(MkIdentifier("ecere::com::eInstance_StopWatching")), args));
                         }
