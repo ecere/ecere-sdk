@@ -394,7 +394,7 @@ public struct FieldValue
    String formatMap(char * tempString, void * fieldData, ObjectNotationType * onType)
    {
       // Depending on the object notation and number of elements:
-      String temp = PrintObjectNotationString( m._class, m, *onType, 0, false, keepCase);
+      String temp = PrintObjectNotationString( m._class, m, onType ? *onType : none, 0, false, keepCase);
       if(temp && strlen(temp) > 16000)
       {
 #ifdef _DEBUG
