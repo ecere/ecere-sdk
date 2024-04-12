@@ -2,6 +2,7 @@ public import IMPORT_STATIC "ecere"
 public import IMPORT_STATIC "EDA"   // For FieldValue
 
 import "expressions"
+#include <math.h> // NOTE: remove this once interpolate function moved
 
 default:
 __attribute__((unused)) static void UnusedFunction()
@@ -24,7 +25,8 @@ enum ECCSSFunctionIndex : int
    pow,
    like,
    casei,
-   accenti
+   accenti,
+   interpolate
 };
 
 static int strncpymax(String output, const String input, int count, int max)
@@ -431,6 +433,39 @@ public struct ECCSSEvaluator
                {
                   value.type = { text, true };
                   value.s = accenti(args[0].s);
+               }
+               break;
+            }
+            case interpolate:
+            {
+               if(numArgs >= 5 && args[0].type.type == text)
+               {
+                  // NOTE: may move this to a function somewhere, TODO: handle exponential variant
+                  // basedon : https://stackoverflow.com/questions/13488957/interpolate-from-one-color-to-another
+                  double firstVal = 0, secondVal = 0, fraction = 0, start = 0, end = 0, step = 0, exponential = 1;
+                  step = args[1].type.type == integer ? (double)args[1].i : args[1].r;
+                  start = args[2].type.type == integer ? (double)args[2].i : args[2].r;
+                  firstVal = args[3].type.type == integer ? (double)args[3].i : args[3].r;
+                  end = args[4].type.type == integer ? (double)args[4].i : args[4].r;
+                  secondVal = args[5].type.type == integer ? (double)args[5].i : args[5].r;
+                  if(!strcmp(args[0].s, "exponential"))
+                     exponential = args[6].type.type == integer ? (double)args[6].i : args[6].r;
+                  fraction = step - start / (end - start);
+
+                  //TOFIX: exponential
+                  //firstVal * (secondVal / firstVal) ^ fraction
+
+                  if(args[3].type.type == integer)
+                  {
+                     value.type = { integer };
+                     if(args[3].type.format == hex) value.type.format = hex;
+                     value.i = (int)round((secondVal - firstVal) * fraction + firstVal) * exponential;
+                  }
+                  else
+                  {
+                     value.type = { real };
+                     value.r = ((secondVal - firstVal) * fraction + firstVal) * exponential;
+                  }
                }
                break;
             }
