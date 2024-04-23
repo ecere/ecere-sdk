@@ -3,6 +3,16 @@ public import IMPORT_STATIC "EDA"   // For FieldValue
 
 import "expressions"
 
+default:
+__attribute__((unused)) static void UnusedFunction()
+{
+   int a = 0;
+   a.OnCopy(0);
+}
+extern int __ecereVMethodID_class_OnCopy;
+
+private:
+
 enum ECCSSFunctionIndex : int
 {
    unresolved = -1,
@@ -864,7 +874,20 @@ private void setGenericInstanceMembers(Instance object, CMSSExpInstance expInst,
                      else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpInstance))
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
-                        setInstance(object,  (Instance)(uintptr)val.i);
+                        Instance instance;
+
+                        if(destType.type == normalClass)
+                        {
+                           instance = (Instance)(uintptr)val.b;
+                        }
+                        else if(destType.type == noHeadClass)
+                        {
+                           // Make a copy for noHeadClass since both instData and the aggregating object own a copy
+                           void (* onCopy)(void *, void *, void *) = destType._vTbl[__ecereVMethodID_class_OnCopy];
+                           onCopy(destType, &instance, (void *)(uintptr)val.b);
+                        }
+
+                        setInstance(object, instance);
 
                         if(destType.type == normalClass)
                            ; //eInstance_DecRef((Instance)(uintptr)val.i);
