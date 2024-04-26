@@ -1660,7 +1660,12 @@ void MM_FUNC(BlockFree)( mmBlockHead *head, void *v MM_PARAMS )
   chunk = v;
   mtSpinLock( &head->spinlock );
   block = mmBlockResolveChunk( chunk, head->treeroot );
-  if(!block) return;
+  if(!block)
+  {
+     // REVIEW: How is it possible that chunks are not resolved?
+     mtSpinUnlock( &head->spinlock );
+     return;
+  }
   block->freecount++;
   head->chunkfreecount++;
   mmListAdd( &head->freelist, chunk, 0 );
