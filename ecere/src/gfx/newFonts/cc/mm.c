@@ -1654,36 +1654,34 @@ void *MM_FUNC(BlockAlloc)( mmBlockHead *head MM_PARAMS )
  */
 void MM_FUNC(BlockFree)( mmBlockHead *head, void *v MM_PARAMS )
 {
-  int a;
-  mmBlock *block;
-  void *chunk;
-  chunk = v;
-  mtSpinLock( &head->spinlock );
-  block = mmBlockResolveChunk( chunk, head->treeroot );
-  if(!block)
+  if(v)
   {
-     // REVIEW: How is it possible that chunks are not resolved?
+     mmBlock *block;
+     void *chunk = v;
+     mtSpinLock( &head->spinlock );
+     block = mmBlockResolveChunk( chunk, head->treeroot );
+     if(block)
+     {
+        block->freecount++;
+        head->chunkfreecount++;
+        mmListAdd( &head->freelist, chunk, 0 );
+        if( ( block->freecount == head->chunkperblock ) && ( head->chunkfreecount >= head->keepfreecount ) )
+        {
+          int a;
+          mmListRemove( block, offsetof(mmBlock,listnode) );
+          chunk = ADDRESS( block, sizeof(mmBlock) );
+          for( a = 0 ; a < head->chunkperblock ; a++, chunk = ADDRESS( chunk, head->chunksize ) )
+            mmListRemove( chunk, 0 );
+          mmBTreeRemove( block, offsetof(mmBlock,node), &head->treeroot );
+          if( head->alignment )
+            MM_FUNC(AlignRelayFree)( head->relayfree, head->relayvalue, block, head->allocsize MM_PASSPARAMS );
+          else
+            head->relayfree( head->relayvalue, block, head->allocsize MM_PASSPARAMS );
+          head->chunkfreecount -= head->chunkperblock;
+        }
+     }
      mtSpinUnlock( &head->spinlock );
-     return;
   }
-  block->freecount++;
-  head->chunkfreecount++;
-  mmListAdd( &head->freelist, chunk, 0 );
-  if( ( block->freecount == head->chunkperblock ) && ( head->chunkfreecount >= head->keepfreecount ) )
-  {
-    mmListRemove( block, offsetof(mmBlock,listnode) );
-    chunk = ADDRESS( block, sizeof(mmBlock) );
-    for( a = 0 ; a < head->chunkperblock ; a++, chunk = ADDRESS( chunk, head->chunksize ) )
-      mmListRemove( chunk, 0 );
-    mmBTreeRemove( block, offsetof(mmBlock,node), &head->treeroot );
-    if( head->alignment )
-      MM_FUNC(AlignRelayFree)( head->relayfree, head->relayvalue, block, head->allocsize MM_PASSPARAMS );
-    else
-      head->relayfree( head->relayvalue, block, head->allocsize MM_PASSPARAMS );
-    head->chunkfreecount -= head->chunkperblock;
-  }
-  mtSpinUnlock( &head->spinlock );
-  return;
 }
 
 
