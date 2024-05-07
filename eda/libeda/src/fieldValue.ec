@@ -35,9 +35,10 @@ public enum FieldValueFormat
    binary,        // for integer
    exponential,   // for real
    boolean,       // for integer
-   textObj        // for text (JSON/ECON object)
+   textObj,        // for text (JSON/ECON object)
+   color          // for rgb
 
-   // NOTE: Currently limited to 8 values (3 bits) in FieldTypeEx
+   // NOTE: previously limited to 8 values (3 bits) in FieldTypeEx, now 4 bits
 };
 
 public class FieldTypeEx : FieldType
@@ -45,7 +46,7 @@ public class FieldTypeEx : FieldType
 public:
    FieldType type:3;
    bool mustFree:1;
-   FieldValueFormat format:3;
+   FieldValueFormat format:4;
    bool isUnsigned:1;
    bool isDateTime:1;
 };
@@ -367,6 +368,7 @@ public struct FieldValue
       {
          // case binary: sprintf(stringOutput, "%b", i); break;  // TODO: proper binary support
          case octal:   sprintf(stringOutput, "%o", (uint)i); break;
+         case color:
          case hex:     sprintf(stringOutput, FORMAT64HEX, i); break;
          case boolean: sprintf(stringOutput, "%s", (i)?"true":"false"); break;
          default:      sprintf(stringOutput, type.isUnsigned ? FORMAT64U : FORMAT64D, i); break;
