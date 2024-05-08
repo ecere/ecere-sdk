@@ -23,6 +23,7 @@ enum ECCSSFunctionIndex : int
    subst,
    format,
    pow,
+   log,
    like,
    casei,
    accenti,
@@ -322,6 +323,13 @@ public struct ECCSSEvaluator
                expType = class(double);
                break;
             }
+            case log:
+            {
+               if(args.list.count >= 1) args[0].destType = class(double);
+               if(args.list.count >= 2) args[1].destType = class(double);
+               expType = class(double);
+               break;
+            }
             case like:
             {
                if(args.list.count >= 1) args[0].destType = class(String);
@@ -412,6 +420,16 @@ public struct ECCSSEvaluator
                      args[0].type.type == integer ? (double)args[0].i : args[0].r,
                      args[1].type.type == integer ? (double)args[1].i : args[1].r);
                   expType = class(double);
+               }
+               break;
+            }
+            case log:
+            {
+               if(numArgs == 1 &&
+                  (args[0].type.type == integer || args[0].type.type == real))
+               {
+                  value.type = { real };
+                  value.r = log(args[0].type.type == integer ? (double)args[0].i : args[0].r);
                }
                break;
             }
