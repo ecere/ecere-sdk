@@ -452,13 +452,14 @@ public struct ECCSSEvaluator
                   // NOTE: may move this to a function somewhere
                   // basedon : https://stackoverflow.com/questions/13488957/interpolate-from-one-color-to-another
                   int i;
-                  double firstVal = 0, secondVal = 0, fraction = 0, start = 0, end = 0, step = 0, exponential = 1;
+                  double firstVal = 0, secondVal = 0, fraction = 0, start = 0, end = 0, step = 0, base = 0;
                   step = args[1].type.type == integer ? (double)args[1].i : args[1].r;
                   if(!strcmp(args[0].s, "exponential"))
-                     exponential = args[numArgs-1].type.type == integer ? (double)args[numArgs-1].i : args[numArgs-1].r;
-                  //TOFIX: exponential //firstVal * (secondVal / firstVal) ^ fraction
+                     base = args[numArgs-1].type.type == integer ? (double)args[numArgs-1].i : args[numArgs-1].r;
+                  //TOFIX: exponential
                   //NOTE: the value is only interpolated *between* the stops, not before and after
-                  for(i = 2; i < exponential ? numArgs-4 : numArgs-3; i+=2)
+
+                  for(i = 2; i < base ? numArgs-4 : numArgs-3; i+=2)
                   {
                      start = args[i].type.type == integer ? (double)args[i].i : args[i].r;
                      end = args[i+2].type.type == integer ? (double)args[i+2].i : args[i+2].r;
@@ -492,9 +493,18 @@ public struct ECCSSEvaluator
                         value.type.format = color;
                         if(start && end)
                         {
-                           final.r = (byte)(round((secondCol.r - firstCol.r) * fraction + firstCol.r) * exponential);
-                           final.g = (byte)(round((secondCol.g - firstCol.g) * fraction + firstCol.g) * exponential);
-                           final.b = (byte)(round((secondCol.b - firstCol.b) * fraction + firstCol.b) * exponential);
+                           if(base)
+                           {
+                              final.r = (byte)round(firstCol.r + (secondCol.r - firstCol.r) * (pow(base, fraction - 1) / (base - 1)));//(byte)(round(pow(firstCol.r * (firstCol.r / secondCol.r), fraction * exponential));
+                              final.g = (byte)round(firstCol.g + (secondCol.g - firstCol.g) * (pow(base, fraction - 1) / (base - 1)));
+                              final.b = (byte)round(firstCol.b + (secondCol.b - firstCol.b) * (pow(base, fraction - 1) / (base - 1)));
+                           }
+                           else
+                           {
+                              final.r = (byte)round((secondCol.r - firstCol.r) * fraction + firstCol.r);
+                              final.g = (byte)round((secondCol.g - firstCol.g) * fraction + firstCol.g);
+                              final.b = (byte)round((secondCol.b - firstCol.b) * fraction + firstCol.b);
+                           }
                            value.i = final;
                         }
                         else
@@ -503,7 +513,10 @@ public struct ECCSSEvaluator
                      else
                      {
                         if(start && end)
-                           value.i = (int)(round((secondVal - firstVal) * fraction + firstVal) * exponential);
+                        {
+                           if(base) value.i = (int)round(firstVal + (secondVal - firstVal) * (pow(base, fraction - 1) / (base - 1)));//(int)(round(pow(firstVal * (firstVal / secondVal), fraction * exponential));
+                           else value.i = (int)round((secondVal - firstVal) * fraction + firstVal);
+                        }
                         else
                            value.i = start ? (int)firstVal : (int)secondVal;
                      }
@@ -512,7 +525,10 @@ public struct ECCSSEvaluator
                   {
                      value.type = { real };
                      if(start && end)
-                        value.r = ((secondVal - firstVal) * fraction + firstVal) * exponential;
+                     {
+                        if(base) value.r = firstVal + (secondVal - firstVal) * (pow(base, fraction - 1) / (base - 1));//old version value.r = pow(firstVal * (firstVal / secondVal), fraction * base);
+                        else value.r = ((secondVal - firstVal) * fraction + firstVal);
+                     }
                      else
                         value.r = start ? firstVal : secondVal;
                   }
