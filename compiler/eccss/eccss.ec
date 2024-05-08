@@ -449,31 +449,72 @@ public struct ECCSSEvaluator
             {
                if(numArgs >= 5 && args[0].type.type == text)
                {
-                  // NOTE: may move this to a function somewhere, TODO: handle exponential variant
+                  // NOTE: may move this to a function somewhere
                   // basedon : https://stackoverflow.com/questions/13488957/interpolate-from-one-color-to-another
+                  int i;
                   double firstVal = 0, secondVal = 0, fraction = 0, start = 0, end = 0, step = 0, exponential = 1;
                   step = args[1].type.type == integer ? (double)args[1].i : args[1].r;
-                  start = args[2].type.type == integer ? (double)args[2].i : args[2].r;
-                  firstVal = args[3].type.type == integer ? (double)args[3].i : args[3].r;
-                  end = args[4].type.type == integer ? (double)args[4].i : args[4].r;
-                  secondVal = args[5].type.type == integer ? (double)args[5].i : args[5].r;
                   if(!strcmp(args[0].s, "exponential"))
-                     exponential = args[6].type.type == integer ? (double)args[6].i : args[6].r;
-                  fraction = step - start / (end - start);
-
-                  //TOFIX: exponential
-                  //firstVal * (secondVal / firstVal) ^ fraction
-
+                     exponential = args[numArgs-1].type.type == integer ? (double)args[numArgs-1].i : args[numArgs-1].r;
+                  //TOFIX: exponential //firstVal * (secondVal / firstVal) ^ fraction
+                  //NOTE: the value is only interpolated *between* the stops, not before and after
+                  for(i = 2; i < exponential ? numArgs-4 : numArgs-3; i+=2)
+                  {
+                     start = args[i].type.type == integer ? (double)args[i].i : args[i].r;
+                     end = args[i+2].type.type == integer ? (double)args[i+2].i : args[i+2].r;
+                     firstVal = args[i+1].type.type == integer ? (double)args[i+1].i : args[i+1].r;
+                     secondVal = args[i+3].type.type == integer ? (double)args[i+3].i : args[i+3].r;
+                     if(step > start && i == 2)
+                     {
+                        end = 0;
+                        break;
+                     }
+                     else if(step < end && i == (numArgs -4))
+                     {
+                        start = 0;
+                        break;
+                     }
+                     else if( step <= start && step >= end)
+                     {
+                        fraction = (start - step) / (start - end);
+                        break;
+                     }
+                  }
                   if(args[3].type.type == integer)
                   {
                      value.type = { integer };
                      if(args[3].type.format == hex) value.type.format = hex;
-                     value.i = (int)round((secondVal - firstVal) * fraction + firstVal) * exponential;
+                     if(args[3].type.format == color)
+                     {
+                        // convert to rgb, interpolate each, convert back to integer
+                        Color firstCol = (Color)firstVal, secondCol = (Color)secondVal;
+                        Color final {};
+                        value.type.format = color;
+                        if(start && end)
+                        {
+                           final.r = (byte)(round((secondCol.r - firstCol.r) * fraction + firstCol.r) * exponential);
+                           final.g = (byte)(round((secondCol.g - firstCol.g) * fraction + firstCol.g) * exponential);
+                           final.b = (byte)(round((secondCol.b - firstCol.b) * fraction + firstCol.b) * exponential);
+                           value.i = final;
+                        }
+                        else
+                           value.i = start ? (int)firstVal : (int)secondVal;
+                     }
+                     else
+                     {
+                        if(start && end)
+                           value.i = (int)(round((secondVal - firstVal) * fraction + firstVal) * exponential);
+                        else
+                           value.i = start ? (int)firstVal : (int)secondVal;
+                     }
                   }
                   else
                   {
                      value.type = { real };
-                     value.r = ((secondVal - firstVal) * fraction + firstVal) * exponential;
+                     if(start && end)
+                        value.r = ((secondVal - firstVal) * fraction + firstVal) * exponential;
+                     else
+                        value.r = start ? firstVal : secondVal;
                   }
                }
                break;
