@@ -1315,7 +1315,7 @@ public:
                flags |= arg.compute(args[numArgs++], evaluator, computeType, stylesClass);
 
                // NOTE: for interpolation handling use color format, ECCSSEvaluator_computeFunction does not have access to destType
-               if(destType == class(Color) && args[numArgs-1].type.format == hex)
+               if(a.expType && a.expType == class(Color) && args[numArgs-1].type.type == integer && args[numArgs-1].type.format == hex)
                   args[numArgs-1].type.format = color;
                if(!flags.resolved) nonResolved = true;
             }
