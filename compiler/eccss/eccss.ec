@@ -326,7 +326,8 @@ public struct ECCSSEvaluator
             case log:
             {
                if(args.list.count >= 1) args[0].destType = class(double);
-               if(args.list.count >= 2) args[1].destType = class(double);
+               // NOTE: We could also support 2 arguments, with first argument being base in that case?
+               // if(args.list.count >= 2) args[1].destType = class(double);
                expType = class(double);
                break;
             }
