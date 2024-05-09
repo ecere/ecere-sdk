@@ -23,6 +23,7 @@
 #include "ccstr.h"
 #include "mm.h"
 #include "mmhash.h"
+#include "cchash.h"
 
 #include "fontmanager.h"
 
@@ -178,23 +179,23 @@ struct fmManager
 ////
 
 
-static inline CC_ALWAYSINLINE void fmGlyphHashClearEntry( void *entry )
+static inline CC_ALWAYSINLINE void fmGlyphHashClearEntry( void * context, void *entry )
 {
   ((fmGlyph *)entry)->glyphkey = 0;
   return;
 }
 
-static inline CC_ALWAYSINLINE int fmGlyphHashEntryValid( const void *entry )
+static inline CC_ALWAYSINLINE int fmGlyphHashEntryValid( void * context, const void *entry )
 {
   return ( ((fmGlyph *)entry)->glyphkey != 0 );
 }
 
-static inline CC_ALWAYSINLINE uint32_t fmGlyphHashEntryKey( const void *entry )
+static inline CC_ALWAYSINLINE uint32_t fmGlyphHashEntryKey( void * context, const void *entry )
 {
   return ccHash32Int64Inline( ((fmGlyph *)entry)->glyphkey );
 }
 
-static inline CC_ALWAYSINLINE int fmGlyphHashEntryCmp( const void *entry, const void *entryref )
+static inline CC_ALWAYSINLINE int fmGlyphHashEntryCmp( void * context, const void *entry, const void *entryref )
 {
   uint64_t glyphkey;
   glyphkey = ((fmGlyph *)entry)->glyphkey;
@@ -252,25 +253,25 @@ typedef struct
 
 #define FM_KERNCACHE_CODE_MASK (((int64_t)1<<(FM_KERNCACHE_PREVCODE_BITS+FM_KERNCACHE_NEXTCODE_BITS))-1)
 
-static inline CC_ALWAYSINLINE void fmKernCacheClearEntry( void *entry )
+static inline CC_ALWAYSINLINE void fmKernCacheClearEntry( void * context, void *entry )
 {
   ((fmKernCacheEntry *)entry)->value = 0;
   return;
 }
 
-static inline CC_ALWAYSINLINE int fmKernCacheEntryValid( const void *entry )
+static inline CC_ALWAYSINLINE int fmKernCacheEntryValid( void * context, const void *entry )
 {
   return ( ((fmKernCacheEntry *)entry)->value != 0 );
 }
 
-static inline CC_ALWAYSINLINE uint32_t fmKernCacheEntryKey( const void *entry )
+static inline CC_ALWAYSINLINE mmHashIndex fmKernCacheEntryKey( void * context, const void *entry )
 {
   int64_t value;
   value = ((fmKernCacheEntry *)entry)->value & FM_KERNCACHE_CODE_MASK;
   return ccHash32Int64Inline( value );
 }
 
-static inline CC_ALWAYSINLINE int fmKernCacheEntryCmp( const void *entry, const void *entryref )
+static inline CC_ALWAYSINLINE int fmKernCacheEntryCmp( void * context, const void *entry, const void *entryref )
 {
   int64_t value;
   value = ((fmKernCacheEntry *)entry)->value & FM_KERNCACHE_CODE_MASK;
@@ -354,8 +355,8 @@ static inline unsigned char *fmtt_getGlyphBitmap( fmFont *font, int glyphindex )
 
 static int fmtt_getGlyphKernAdvance( fmFont *font, uint32_t prevglyph, uint32_t nextglyph, int size, float kerningfactor )
 {
-  int kerning, hashbits;
-  size_t hashsize;
+  int kerning;
+  size_t hashsize, hashSize /* review*/;
   void *newhashtable;
   FT_Vector kerningvector;
   fmKernCacheEntry kerncache;
@@ -375,16 +376,16 @@ static int fmtt_getGlyphKernAdvance( fmFont *font, uint32_t prevglyph, uint32_t 
     printf( "  KERNING CHECK ; Real %d ; Check %d\n", (int)kerningvector.x, ( (int)( (float)kerning * kerningfactor ) + 32 ) >> 6 );
 #endif
     fmKernCacheAdd( font->kernhashtable, &kerncache, 0 );
-    if( mmHashGetStatus( font->kernhashtable, &hashbits ) == MM_HASH_STATUS_MUSTGROW )
+    if( mmHashGetStatus( font->kernhashtable, &hashSize ) == MM_HASH_STATUS_MUSTGROW )
     {
-      if( hashbits >= FM_KERNCACHE_HASH_BITS_MAX )
+      if( hashSize >= (1LL << FM_KERNCACHE_HASH_BITS_MAX) )
         mmHashReset( font->kernhashtable, &fmKernCacheHashAccess );
       else
       {
-        hashbits++;
-        hashsize = mmHashRequiredSize( sizeof(fmKernCacheEntry), hashbits, 8 );
+        hashSize *= 2;
+        hashsize = mmHashRequiredSize( sizeof(fmKernCacheEntry), hashSize, 8 );
         newhashtable = malloc( hashsize );
-        mmHashResize( newhashtable, font->kernhashtable, &fmKernCacheHashAccess, hashbits, 8 );
+        mmHashResize( newhashtable, font->kernhashtable, &fmKernCacheHashAccess, hashSize, 8 );
         free( font->kernhashtable );
         font->kernhashtable = newhashtable;
       }
@@ -689,9 +690,9 @@ fmFont *fmAddFontData( fmManager *fm, unsigned char *data, int datasize, int gly
   }
 
   /* Prepare glyph hash table */
-  hashsize = mmHashRequiredSize( sizeof(fmGlyph), FM_GLYPH_HASH_BITS, 8 );
+  hashsize = mmHashRequiredSize( sizeof(fmGlyph), (1LL << FM_GLYPH_HASH_BITS), 8 );
   hashtable = malloc( hashsize );
-  mmHashInit( hashtable, &fmGlyphHashAccess, sizeof(fmGlyph), FM_GLYPH_HASH_BITS, 8, 0x0 );
+  mmHashInit( hashtable, &fmGlyphHashAccess, sizeof(fmGlyph), (1LL << FM_GLYPH_HASH_BITS), 8, 0x0, NULL );
   font->glyphhashtable = hashtable;
 
   /* Store face metrics */
@@ -718,9 +719,9 @@ fmFont *fmAddFontData( fmManager *fm, unsigned char *data, int datasize, int gly
   /* Prepare kerning cache */
   if( font->kerningflag )
   {
-    hashsize = mmHashRequiredSize( sizeof(fmKernCacheEntry), FM_KERNCACHE_HASH_BITS, 8 );
+    hashsize = mmHashRequiredSize( sizeof(fmKernCacheEntry), (1LL << FM_KERNCACHE_HASH_BITS), 8 );
     hashtable = malloc( hashsize );
-    mmHashInit( hashtable, &fmKernCacheHashAccess, sizeof(fmKernCacheEntry), FM_KERNCACHE_HASH_BITS, 8, 0x0 );
+    mmHashInit( hashtable, &fmKernCacheHashAccess, sizeof(fmKernCacheEntry), (1LL << FM_KERNCACHE_HASH_BITS), 8, 0x0, NULL );
     font->kernhashtable = hashtable;
   }
 
@@ -800,8 +801,8 @@ static void fmBuildCursorGlyph( unsigned char *dst, int glyphwidth, int glyphhei
 static fmGlyph *fmGetGlyph( fmManager *fm, fmFont *font, uint32_t codepoint, int size, int subpixel, int processindex, int extrapadding, int *noflushadvance )
 {
   int i, glyphindex, advance, x0, y0, x1, y1, gx, gy;
-  int glyphwidth, glyphheight, glyphareawidth, glyphareaheight, hashbits;
-  size_t hashsize;
+  int glyphwidth, glyphheight, glyphareawidth, glyphareaheight;
+  size_t hashsize, hashSize;
   uint64_t glyphkey;
   fmGlyph *glyph;
   void *newhashtable;
@@ -888,12 +889,12 @@ static fmGlyph *fmGetGlyph( fmManager *fm, fmFont *font, uint32_t codepoint, int
     glyphref.imageindex = fm->renderer.registerimage( fm->rendererhandle, gx, gy, glyphareawidth, glyphareaheight );
 
   glyph = fmGlyphHashAdd( font->glyphhashtable, &glyphref, 0 );
-  if( mmHashGetStatus( font->glyphhashtable, &hashbits ) == MM_HASH_STATUS_MUSTGROW )
+  if( mmHashGetStatus( font->glyphhashtable, &hashSize ) == MM_HASH_STATUS_MUSTGROW )
   {
-    hashbits++;
-    hashsize = mmHashRequiredSize( sizeof(fmGlyph), hashbits, 8 );
+    hashSize *= 2;
+    hashsize = mmHashRequiredSize( sizeof(fmGlyph), hashSize, 8 );
     newhashtable = malloc( hashsize );
-    mmHashResize( newhashtable, font->glyphhashtable, &fmGlyphHashAccess, hashbits, 8 );
+    mmHashResize( newhashtable, font->glyphhashtable, &fmGlyphHashAccess, hashSize, 8 );
     free( font->glyphhashtable );
     font->glyphhashtable = newhashtable;
   }

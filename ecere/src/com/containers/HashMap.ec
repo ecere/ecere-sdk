@@ -9,6 +9,7 @@ import "Container"
 
 #include "cpuconfig.h"
 #include "cc.h"
+#include "cchash.h"
 #include "mmhash.h"
 
 static define HASH_PAGE_SHIFT = 7;
@@ -22,13 +23,13 @@ struct HashMapEntry
 
 #define NULL_KEY  ((int64)0xFFFFFFFFFFFFFFFFLL)
 
-static void hashClearEntry(HashMapEntry entry)
+static void hashClearEntry(void * context, HashMapEntry entry)
 {
    entry.key = NULL_KEY;
    entry.value = 0;
 }
 
-static void hashClearEntries(HashMapEntry * entries, uint numEntries)
+static void hashClearEntries(void * context, HashMapEntry * entries, uint numEntries)
 {
    int i;
    for(i = 0; i < numEntries; i++)
@@ -39,13 +40,13 @@ static void hashClearEntries(HashMapEntry * entries, uint numEntries)
    }
 }
 
-static int hashEntryValid(const HashMapEntry entry)
+static int hashEntryValid(void * context, const HashMapEntry entry)
 {
    return entry.key != NULL_KEY;
 }
 
 // TOCHECK: we're hashing to 32-bit but storing 64 bit key, is it to avoid conflict with the -1 NULL key?
-static uint32_t hashEntryKey(const HashMapEntry entry)
+static uint32_t hashEntryKey(void * context, const HashMapEntry entry)
 {
    uint32 hashkey;
 #if CPUCONF_WORD_SIZE == 64
@@ -57,7 +58,7 @@ static uint32_t hashEntryKey(const HashMapEntry entry)
    return hashkey;
 }
 
-static int hashEntryCmp(const HashMapEntry entry, const HashMapEntry entryRef)
+static int hashEntryCmp(void * context, const HashMapEntry entry, const HashMapEntry entryRef)
 {
    if(entry.key == NULL_KEY) return MM_HASH_ENTRYCMP_INVALID;
    if(entry.key == entryRef.key) return MM_HASH_ENTRYCMP_FOUND;
@@ -147,15 +148,16 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
 
    private static inline void resizeEx(IteratorPointer * movedEntry, bool forceResize)
    {
-      int bits, status = tbl ? mmHashGetStatus(tbl, &bits) : MM_HASH_STATUS_NORMAL;
-      if(status == MM_HASH_STATUS_MUSTGROW) bits++;
-      else if(status == MM_HASH_STATUS_MUSTSHRINK && bits > 12) bits--;
+      uintsize hashSize;
+      int status = tbl ? mmHashGetStatus(tbl, &hashSize) : MM_HASH_STATUS_NORMAL;
+      if(status == MM_HASH_STATUS_MUSTGROW) hashSize *= 2;// bits++;
+      else if(status == MM_HASH_STATUS_MUSTSHRINK && hashSize > (1LL << 12)) hashSize /= 2; //bits--;
       else if(!forceResize || !noRemResize || !tbl) return; // Must re-pack if we were not doing mem resize
       {
          uint pageShift = 4;
-         uintsize memSize = mmHashRequiredSize(sizeof(HashMapEntry), bits, pageShift);
+         uintsize memSize = mmHashRequiredSize(sizeof(HashMapEntry), hashSize, pageShift);
          void *newTbl = malloc(memSize);
-         mmHashResize2(newTbl, tbl, &hashAccess, bits, pageShift, movedEntry);
+         mmHashResize2(newTbl, tbl, &hashAccess, hashSize, pageShift, movedEntry);
          free(tbl);
          tbl = newTbl;
       }
@@ -182,9 +184,9 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
          if(!tbl)
          {
             int bits = 8;
-            uintsize size = mmHashRequiredSize(sizeof(HashMapEntry), bits, bits-1);
+            uintsize size = mmHashRequiredSize(sizeof(HashMapEntry), (1LL << bits), bits-1);
             tbl = malloc(size);
-            mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), bits, bits-1, 0);
+            mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), (1LL << bits), bits-1, 0, null);
          }
          r = mmHashDirectAddEntry2(tbl, &hashAccess, &newEntry, bool::true, &entry);
          if(r != MM_HASH_FOUND)
@@ -226,18 +228,18 @@ public class HashMap<class KT = int64, class VT = uintptr> : Container<VT, I = K
 
    public property int count
    {
-      get { return tbl ? mmHashGetCount(tbl) : 0; }
+      get { return tbl ? (int)mmHashGetEntryCount(tbl) : 0; }
    }
    public property int initSize
    {
       set
       {
          int bits = Max(8, log2i(value));  // size == 1, 1 bit causes crashes...
-         uintsize s = mmHashRequiredSize(sizeof(HashMapEntry), bits, HASH_PAGE_SHIFT);
+         uintsize s = mmHashRequiredSize(sizeof(HashMapEntry), (1LL << bits), HASH_PAGE_SHIFT);
          if(tbl) free(tbl);
          tbl = malloc(s);
          if(tbl)
-            mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), bits, HASH_PAGE_SHIFT, 0);
+            mmHashInit(tbl, &hashAccess, sizeof(HashMapEntry), (1LL << bits), HASH_PAGE_SHIFT, 0, null);
       }
    }
 }

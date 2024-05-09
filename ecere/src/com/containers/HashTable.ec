@@ -9,30 +9,31 @@ import "Container"
 
 #include "cpuconfig.h"
 #include "cc.h"
+#include "cchash.h"
 #include "mmhash.h"
 
 static define HASH_PAGE_SHIFT = 7;
 
 #define NULL_KEY  ((int64)0xFFFFFFFFFFFFFFFFLL)
 
-static void hashClearEntry(int64 *entry)
+static void hashClearEntry(void * context, int64 *entry)
 {
    *entry = NULL_KEY;
 }
 
-static int hashEntryValid(const int64 *entry)
+static int hashEntryValid(void * context, const int64 *entry)
 {
    return *entry != NULL_KEY;
 }
 
-static void hashClearEntries(int64 * entries, uint numEntries)
+static void hashClearEntries(void * context, int64 * entries, uint numEntries)
 {
    int i;
    for(i = 0; i < numEntries; i++)
       entries[i] = NULL_KEY;
 }
 
-static uint32_t hashEntryKey(const int64 *entry)
+static uint32_t hashEntryKey(void * context, const int64 *entry)
 {
    uint32 hashkey;
 #if CPUCONF_WORD_SIZE == 64
@@ -44,7 +45,7 @@ static uint32_t hashEntryKey(const int64 *entry)
    return hashkey;
 }
 
-static int hashEntryCmp(const int64 *entry, const int64 *entryRef)
+static int hashEntryCmp(void * context, const int64 *entry, const int64 *entryRef)
 {
    if(*entry == NULL_KEY) return MM_HASH_ENTRYCMP_INVALID;
    if(*entry == *entryRef) return MM_HASH_ENTRYCMP_FOUND;
@@ -75,9 +76,9 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
    HashTable()
    {
       int bits = 8;
-      uintsize size = mmHashRequiredSize( sizeof(int64), bits, HASH_PAGE_SHIFT);
+      uintsize size = mmHashRequiredSize( sizeof(int64), (1LL << bits), HASH_PAGE_SHIFT);
       tbl = malloc(size);
-      mmHashInit(tbl, &hashAccess, sizeof(int64), bits, HASH_PAGE_SHIFT, 0 /*MM_HASH_FLAGS_NO_COUNT*/);
+      mmHashInit(tbl, &hashAccess, sizeof(int64), (1LL << bits), HASH_PAGE_SHIFT, 0 /*MM_HASH_FLAGS_NO_COUNT*/, null);
    }
 
    IteratorPointer Add(T value)
@@ -119,15 +120,16 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
 
    static void resize(bool down)
    {
-      int bits, status = mmHashGetStatus(tbl, &bits);
-      if(status == MM_HASH_STATUS_MUSTGROW) bits++;
-      else if(status == MM_HASH_STATUS_MUSTSHRINK && down && bits > 12 && (1 << bits) > initSize) bits--;
+      uintsize hashSize;
+      int status = mmHashGetStatus(tbl, &hashSize);
+      if(status == MM_HASH_STATUS_MUSTGROW) hashSize *= 2;
+      else if(status == MM_HASH_STATUS_MUSTSHRINK && down && hashSize > (1LL << 12) && hashSize > initSize) hashSize /= 2;
       else return;
       {
          uint pageShift = 4;
-         uintsize memSize = mmHashRequiredSize(sizeof(int64), bits, pageShift);
+         uintsize memSize = mmHashRequiredSize(sizeof(int64), hashSize, pageShift);
          void *newTbl = malloc(memSize);
-         mmHashResize(newTbl, tbl, &hashAccess, bits, pageShift);
+         mmHashResize(newTbl, tbl, &hashAccess, hashSize, pageShift);
          free(tbl);
          tbl = newTbl;
       }
@@ -177,12 +179,12 @@ public class HashTable<class KT = int64> : Container<KT, I = KT>
       set
       {
          int bits = Max(8, log2i(value));  // size == 1, 1 bit causes crashes...
-         uintsize s = mmHashRequiredSize(sizeof(int64), bits, HASH_PAGE_SHIFT);
+         uintsize s = mmHashRequiredSize(sizeof(int64), (1LL << bits), HASH_PAGE_SHIFT);
          initSize = value;
          if(tbl) free(tbl);
          tbl = malloc(s);
          if(tbl)
-            mmHashInit(tbl, &hashAccess, sizeof(int64), bits, HASH_PAGE_SHIFT, 0);
+            mmHashInit(tbl, &hashAccess, sizeof(int64), (1LL << bits), HASH_PAGE_SHIFT, 0, null);
       }
    }
 }

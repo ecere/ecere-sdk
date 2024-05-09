@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2007-2016 Alexis Naveros.
+ * Copyright (c) 2007-2023 Alexis Naveros.
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
@@ -9,50 +9,38 @@
  * Global memory management header.
  */
 
+
 #ifndef MM_H
 #define MM_H
 
-#include "cpuconfig.h"
 
-#include <stdio.h>
-// #include <stdlib.h>
+////
 
-#if !defined(__WIN32__)
-#include <sys/time.h>
-#include <sys/types.h>
-#else
-#define WIN32_LEAN_AND_MEAN
-#include <winsock.h>
-#endif
-
-#define OFFSET(s, m) ((unsigned int)(uintptr_t) (&((s *) 0)->m))
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 
+#include <stdio.h>
 
+#include "mmcore.h"
+
+
+/* __FILE__ and __LINE__ are passed as hidden arguments, and propagated down the stack */
+/* All malloc/free is buffered, recorded and checked with guard bytes, mmListUses() can list allocations */
 #define MM_DEBUG (0)
 
-#define MM_INLINE_LIST_FUNCTIONS (1)
-
+/* If MM_ALLOC_CHECK is enabled, any failed malloc/realloc will print a message on stderr */
 #define MM_ALLOC_CHECK (1)
 
-
+/* Only if MM_DEBUG_TRACK is enabled, guard bytes per chunk */
 #define MM_DEBUG_GUARD_BYTES (32)
-#define MM_DEBUG_MMAP (1)
-/* Enabling this will lead to ever growing memory usage! Strictly for debugging. */
-#define MM_DEBUG_MMAP_LINGERING (0)
-
+/* Only if MM_DEBUG_TRACK is enabled, enable to put each allocation in its own mmap() */
+#define MM_DEBUG_MMAP (0)
 
 
 ////
-
-
-#ifdef MM_NUMA
- #include <numa.h>
-#endif
 
 
 #if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux)
@@ -72,12 +60,48 @@ extern "C" {
  #define MM_WINDOWS (1)
 #endif
 
+#if defined(__ANDROID__)
+ #define MM_ANDROID (1)
+#endif
+
 #if __MINGW64__
  #define MM_MINGW32 (1)
  #define MM_MINGW64 (1)
 #elif __MINGW32__
  #define MM_MINGW32 (1)
 #endif
+
+#if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
+ #define MM_ARCH_AMD64 (1)
+#endif
+#if defined(i386) || defined(__i386) || defined(__i386__) || defined(__i386) || defined(__IA32__) || defined(_M_IX86) || defined(__X86__) || defined(_X86_)
+ #define MM_ARCH_IA32 (1)
+#endif
+#if defined(__arm__) || defined(_ARM) || defined(_M_ARM) || defined(__arm)
+ #define MM_ARCH_ARM (1)
+#endif
+#if defined(__aarch64__)
+ #define MM_ARCH_ARM64 (1)
+#endif
+
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+ #define MM_CAP_NEON (1)
+#endif
+#if ( defined(__SSE2__) || defined(_M_X64) || (defined(_M_IX86_FP) && _M_IX86_FP >= 2) )
+ #define MM_CAP_SSE2 (1)
+#endif
+#if ( defined(__SSE__) || defined(_M_X64) || (defined(_M_IX86_FP) && _M_IX86_FP >= 1) )
+ #define MM_CAP_SSE (1)
+#endif
+#if __AVX__
+ #define MM_CAP_AVX (1)
+#endif
+#if __AVX2__
+ #define MM_CAP_AVX2 (1)
+#endif
+
+
+////
 
 
 #if !MM_UNIX
@@ -86,12 +110,8 @@ extern "C" {
 #endif
 
 
-#define MM_CPU_COUNT_MAXIMUM (1024)
-#define MM_NODE_COUNT_MAXIMUM (256)
-
-
 #ifndef CPUCONF_CACHE_LINE_SIZE
- #define CPUCONF_CACHE_LINE_SIZE 64
+ #define CPUCONF_CACHE_LINE_SIZE (64)
 #endif
 
 
@@ -108,6 +128,11 @@ extern "C" {
  #define MM_ALIGNED16(p) __builtin_assume_aligned(p,16)
  #define MM_ALIGNED32(p) __builtin_assume_aligned(p,32)
  #define MM_ALIGNED64(p) __builtin_assume_aligned(p,64)
+ #if MM_ARCH_AMD64 || MM_ARCH_IA32
+  #define MM_PACKED_SAFE __attribute__((packed))
+ #else
+  #define MM_PACKED_SAFE
+ #endif
 #elif defined(_MSC_VER)
  #define MM_CACHE_ALIGN __declspec(align(64))
  #define MM_RESTRICT __restrict
@@ -121,6 +146,7 @@ extern "C" {
  #define MM_ALIGNED16(p) (p)
  #define MM_ALIGNED32(p) (p)
  #define MM_ALIGNED64(p) (p)
+ #define MM_PACKED_SAFE
  #ifndef inline
   #define inline __inline
  #endif
@@ -147,7 +173,9 @@ extern "C" {
  #define MM_ALIGNED16(p) (p)
  #define MM_ALIGNED32(p) (p)
  #define MM_ALIGNED64(p) (p)
+ #define MM_PACKED_SAFE
 #endif
+
 
 #define MM_ERROR()  {printf("MM Error at %s:%d\n",file,line);exit(1)}
 
@@ -159,71 +187,50 @@ extern "C" {
  #define ADDRESSDIFF(a,b) (((char *)a)-((char *)b))
 #endif
 
-#include "cc.h"
 
-#if CC_UNIX || defined(__MINGW32__)
-#include <sys/time.h>
+#if MM_UNIX
+ #include <sys/time.h>
+#elif MM_WINDOWS
+ #include <winsock2.h> /* For struct timeval, don't ask me how that makes any sense */
 #endif
 
-#ifdef __WIN32__
-
+#ifdef MM_WINDOWS
 int mmGetTimeOfDay( struct timeval *tv );
 #define gettimeofday(a,b) mmGetTimeOfDay(a)
 #endif
 
 
-typedef struct
-{
-  int numaflag;
-  int pagesize;
-  int cpucount;
-  int nodecount;
-  int cpunode[MM_CPU_COUNT_MAXIMUM];
-  int64_t nodesize[MM_NODE_COUNT_MAXIMUM];
-  int nodecpucount[MM_NODE_COUNT_MAXIMUM];
-  int64_t sysmemory;
-} mmContext;
-
-extern mmContext mmcontext;
+#ifdef MM_NUMA
+ #if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux)
+  #include <numa.h>
+ #endif
+#endif
 
 
-#include "mmatomic.h"
+////
+
+
+void *mmNumaAlignAlloc( int nodeindex, size_t size, intptr_t align );
+void mmNumaAlignFree( int nodeindex, void *v, size_t size );
+
+
+
+#include "mmthread.h"
 
 
 #if MM_DEBUG
  #define MM_FUNC(n) mm##n##Debug
- #define MM_PARAMS , const char *file, int line
+ #define MM_PARAMS , char *file, int line
 #else
  #define MM_FUNC(n) mm##n
  #define MM_PARAMS
 #endif
 
 
-////
-
-
-void mmInit();
-void mmEnd();
-
-
-void mmThreadBindToNode( int nodeindex );
-void mmThreadBindToNode( int nodeindex );
-void mmThreadBindToCpu( int cpuindex );
-int mmCpuGetNode( int cpuindex );
-
-void *mmNodeAlloc( int nodeindex, size_t size );
-void mmNodeFree( int nodeindex, void *v, size_t size );
-void mmNodeMap( int nodeindex, void *start, size_t bytes );
-
-void *mmNodeAlignAlloc( int nodeindex, size_t size, intptr_t align );
-void mmNodeAlignFree( int nodeindex, void *v, size_t size );
-
-
 
 ////
 
 
-#include "mmthread.h"
 
 typedef struct
 {
@@ -243,22 +250,6 @@ typedef struct
   void *last;
 } mmListLoopHead;
 
-#if !MM_INLINE_LIST_FUNCTIONS
-
-void mmListAdd( void **list, void *item, intptr_t offset );
-void mmListRemove( void *item, intptr_t offset );
-void mmListMergeList( void **listdst, void **listsrc, intptr_t offset );
-void mmListMoveList( void **listdst, void **listsrc, intptr_t offset );
-
-void mmListDualInit( mmListDualHead *head );
-void mmListDualAddFirst( mmListDualHead *head, void *item, intptr_t offset );
-void mmListDualAddLast( mmListDualHead *head, void *item, intptr_t offset );
-void mmListDualInsertAfter( mmListDualHead *head, void **prevnext, void *item, intptr_t offset );
-void mmListDualRemove( mmListDualHead *head, void *item, intptr_t offset );
-void *mmListDualLast( mmListDualHead *head, intptr_t offset );
-void *mmListDualPrevious( mmListDualHead *head, void *item, intptr_t offset );
-
-#else
 
 static inline void mmListAdd( void **list, void *item, intptr_t offset )
 {
@@ -397,7 +388,7 @@ static inline void *mmListDualLast( mmListDualHead *head, intptr_t offset )
 {
   if( !( head->first ) )
     return 0;
-  return ADDRESS( head->last, -( offset + OFFSET(mmListNode,next) ) );
+  return ADDRESS( head->last, -( offset + (int)offsetof(mmListNode,next) ) );
 }
 
 static inline void *mmListDualPrevious( mmListDualHead *head, void *item, intptr_t offset )
@@ -406,10 +397,8 @@ static inline void *mmListDualPrevious( mmListDualHead *head, void *item, intptr
   if( item == head->first )
     return 0;
   node = ADDRESS( item, offset );
-  return ADDRESS( node->prev, -( offset + OFFSET(mmListNode,next) ) );
+  return ADDRESS( node->prev, -( offset + (int)offsetof(mmListNode,next) ) );
 }
-
-#endif
 
 void mmListLoopInit( mmListLoopHead *head );
 void mmListLoopAddFirst( mmListLoopHead *head, void *item, intptr_t offset );
@@ -423,20 +412,49 @@ void *mmListLoopLast( mmListLoopHead *head, intptr_t offset );
 ////
 
 
+/* Pack bits in pointer, save 8 bytes! ~ is there a bug somewhere? */
+#define MM_BTREE_MERGED_FLAGS (1)
 
 typedef struct
 {
   void *child[2];
+#if MM_BTREE_MERGED_FLAGS
+  uintptr_t parentnflags;
+#else
   void *parent;
   int flags;
+#endif
 } mmBTreeNode;
 
 #define MM_BTREE_FLAGS_LEFT (0)
 #define MM_BTREE_FLAGS_RIGHT (1)
-#define MM_BTREE_FLAGS_DIRECTION_MASK (1)
+#define MM_BTREE_FLAGS_DIR_MASK (1)
 #define MM_BTREE_FLAGS_STEP (2)
+#define MM_BTREE_FLAGS_MASK (MM_BTREE_FLAGS_DIR_MASK|MM_BTREE_FLAGS_STEP)
+
+#if MM_BTREE_MERGED_FLAGS
+ #define MM_BTREE_GET_PARENT(n) (void *)(((n)->parentnflags)&~MM_BTREE_FLAGS_MASK)
+ #define MM_BTREE_SET_PARENT(n,p) ((n)->parentnflags=(uintptr_t)(p)|((n)->parentnflags&MM_BTREE_FLAGS_MASK))
+ #define MM_BTREE_SET_FLAGS(n,f) ((n)->parentnflags=(((n)->parentnflags)&~MM_BTREE_FLAGS_MASK)|(f))
+ #define MM_BTREE_SETOR_FLAGS(n,f) ((n)->parentnflags|=(f))
+ #define MM_BTREE_SETAND_FLAGS(n,f) ((n)->parentnflags&=(f))
+ #define MM_BTREE_AND_FLAGS(n,f) ((n)->parentnflags&(f))
+ #define MM_BTREE_SET_PARENT_AND_FLAGS(n,p,f) ((n)->parentnflags=(uintptr_t)(p)|(f))
+ #define MM_BTREE_COPY_PARENT_AND_FLAGS(d,s) ((d)->parentnflags=(s)->parentnflags)
+#else
+ #define MM_BTREE_GET_PARENT(n) ((n)->parent)
+ #define MM_BTREE_SET_PARENT(n,p) ((n)->parent=(p))
+ #define MM_BTREE_SET_FLAGS(n,f) ((n)->flags=(f))
+ #define MM_BTREE_SETOR_FLAGS(n,f) ((n)->flags|=(f))
+ #define MM_BTREE_SETAND_FLAGS(n,f) ((n)->flags&=(f))
+ #define MM_BTREE_AND_FLAGS(n,f) ((n)->flags&(f))
+ #define MM_BTREE_SET_PARENT_AND_FLAGS(n,p,f) do{(n)->parent=(p);(n)->flags=(f);}while(0)
+ #define MM_BTREE_COPY_PARENT_AND_FLAGS(d,s) do{(d)->parent=(s)->parent;(d)->flags=(s)->flags;}while(0)
+#endif
 
 void mmBTreeInsert( void *item, void *parent, int itemflag, intptr_t offset, void **root );
+void mmBTreeInsertLeft( void *item, void *target, intptr_t offset, void **root );
+void mmBTreeInsertRight( void *item, void *target, intptr_t offset, void **root );
 void mmBTreeRemove( void *item, intptr_t offset, void **root );
 
 void *mmBtreeMostLeft( void *root, intptr_t offset );
@@ -458,6 +476,8 @@ typedef struct
   mmListNode listnode;
   mmBTreeNode node;
   int freecount;
+  int blockwidth;
+  /* Only used by mmBlockProcessList(), is that even important? */
   int blockindex;
 } mmBlock;
 
@@ -470,6 +490,7 @@ typedef struct
   int alignment;
   size_t allocsize;
   int keepfreecount;
+  int blockcount;
   int chunkfreecount;
   void *treeroot;
   void *(*relayalloc)( void *head, size_t bytes MM_PARAMS );
@@ -479,10 +500,13 @@ typedef struct
 } mmBlockHead;
 
 void MM_FUNC(BlockInit)( mmBlockHead *head, size_t chunksize, int chunkperblock, int keepfreecount, int alignment MM_PARAMS );
-void MM_FUNC(BlockNodeInit)( mmBlockHead *head, int nodeindex, size_t chunksize, int chunkperblock, int keepfreecount, int alignment MM_PARAMS );
+void MM_FUNC(BlockNumaInit)( mmBlockHead *head, int nodeindex, size_t chunksize, int chunkperblock, int keepfreecount, int alignment MM_PARAMS );
 void *MM_FUNC(BlockAlloc)( mmBlockHead *head MM_PARAMS );
+void *MM_FUNC(BlockLockAlloc)( mmBlockHead *head MM_PARAMS );
 void MM_FUNC(BlockRelease)( mmBlockHead *head, void *v MM_PARAMS );
+void MM_FUNC(BlockLockRelease)( mmBlockHead *head, void *v MM_PARAMS );
 void MM_FUNC(BlockFree)( mmBlockHead *head, void *v MM_PARAMS );
+void MM_FUNC(BlockLockFree)( mmBlockHead *head, void *v MM_PARAMS );
 void MM_FUNC(BlockFreeAll)( mmBlockHead *head MM_PARAMS );
 void MM_FUNC(BlockProcessList)( mmBlockHead *head, void *userpointer, int (*processchunk)( void *chunk, void *userpointer ) MM_PARAMS );
 int MM_FUNC(BlockUseCount)( mmBlockHead *head MM_PARAMS );
@@ -490,10 +514,13 @@ int MM_FUNC(BlockFreeCount)( mmBlockHead *head MM_PARAMS );
 
 #if MM_DEBUG
  #define mmBlockInit(v,w,x,y,z) MM_FUNC(BlockInit)(v,w,x,y,z,__FILE__,__LINE__)
- #define mmBlockNodeInit(u,v,w,x,y,z) MM_FUNC(BlockNodeInit)(u,v,w,x,y,z,__FILE__,__LINE__)
+ #define mmBlockNumaInit(u,v,w,x,y,z) MM_FUNC(BlockNumaInit)(u,v,w,x,y,z,__FILE__,__LINE__)
  #define mmBlockAlloc(x) MM_FUNC(BlockAlloc)(x,__FILE__,__LINE__)
+ #define mmBlockLockAlloc(x) MM_FUNC(BlockLockAlloc)(x,__FILE__,__LINE__)
  #define mmBlockRelease(x,y) MM_FUNC(BlockRelease)(x,y,__FILE__,__LINE__)
+ #define mmBlockLockRelease(x,y) MM_FUNC(BlockLockRelease)(x,y,__FILE__,__LINE__)
  #define mmBlockFree(x,y) MM_FUNC(BlockFree)(x,y,__FILE__,__LINE__)
+ #define mmBlockLockFree(x,y) MM_FUNC(BlockLockFree)(x,y,__FILE__,__LINE__)
  #define mmBlockFreeAll(x) MM_FUNC(BlockFreeAll)(x,__FILE__,__LINE__)
  #define mmBlockProcessList(x,y,z) MM_FUNC(BlockProcessList)(x,y,z,__FILE__,__LINE__)
  #define mmBlockUseCount(x) MM_FUNC(BlockProcessList)(x,__FILE__,__LINE__)
@@ -534,30 +561,6 @@ size_t mmIndexCount( mmIndexHead *head );
 
 typedef struct
 {
-  uintptr_t bitmask;
-  int bitshift;
-  uintptr_t countalign;
-  uintptr_t indexshift;
-  uintptr_t indexmask;
-  uintptr_t initmask;
-  size_t mapsize;
-  uintptr_t *map;
-  mtSpin spinlock;
-} mmBitTableHead;
-
-void mmBitTableInit( mmBitTableHead *head, int bitsperentry, int chunksize, int initmask );
-void mmBitTableFreeAll( mmBitTableHead *head );
-void mmBitTableSet( mmBitTableHead *head, uintptr_t index, int flags, int editmask );
-uintptr_t mmBitTableGet( mmBitTableHead *head, uintptr_t index );
-
-
-
-////
-
-
-
-typedef struct
-{
   size_t size;
   size_t used;
   void *next;
@@ -573,6 +576,7 @@ typedef struct
 int MM_FUNC(GrowInit)( mmGrow *mgrow, size_t nodesize MM_PARAMS );
 void MM_FUNC(GrowFreeAll)( mmGrow *mgrow MM_PARAMS );
 void *MM_FUNC(GrowAlloc)( mmGrow *mgrow, size_t bytes MM_PARAMS );
+void *MM_FUNC(GrowLockAlloc)( mmGrow *mgrow, size_t bytes MM_PARAMS );
 void MM_FUNC(GrowRewindLast)( mmGrow *mgrow, size_t rewind MM_PARAMS );
 
 #if MM_DEBUG
@@ -582,44 +586,6 @@ void MM_FUNC(GrowRewindLast)( mmGrow *mgrow, size_t rewind MM_PARAMS );
  #define mmGrowRewindLast(x) MM_FUNC(GrowRewindLast)(x,__FILE__,__LINE__)
 #endif
 
-
-
-////
-
-
-#if 0
-
-typedef struct
-{
-  void ***table;
-  intptr_t pagecount;
-  intptr_t pagesize;
-  intptr_t pagemask;
-  intptr_t pageshift;
-  mtSpin spinlock;
-} mmDirectory;
-
-#define MM_DIR_ENTRY(dir,index) ( (dir)->table[ index >> (dir)->pageshift ][ index & (dir)->pagemask ] )
-
-int MM_FUNC(DirInit)( mmDirectory *dir, intptr_t pageshift, intptr_t pagecount MM_PARAMS );
-void MM_FUNC(DirSize)( mmDirectory *dir, intptr_t size MM_PARAMS );
-void MM_FUNC(DirSet)( mmDirectory *dir, intptr_t index, void *entry MM_PARAMS );
-void *MM_FUNC(DirGet)( mmDirectory *dir, intptr_t index MM_PARAMS );
-void MM_FUNC(DirSetFast)( mmDirectory *dir, intptr_t index, void *entry MM_PARAMS );
-void *MM_FUNC(DirGetFast)( mmDirectory *dir, intptr_t index MM_PARAMS );
-void MM_FUNC(DirFree)( mmDirectory *dir MM_PARAMS );
-
-#if MM_DEBUG
- #define mmDirInit(x,y,z) MM_FUNC(DirInit)(x,y,z,__FILE__,__LINE__)
- #define mmDirSize(x,y) MM_FUNC(DirSize)(x,y,__FILE__,__LINE__)
- #define mmDirSet(x,y,z) MM_FUNC(DirSet)(x,y,z,__FILE__,__LINE__)
- #define mmDirGet(x,y) MM_FUNC(DirGet)(x,y,__FILE__,__LINE__)
- #define mmDirSetFast(x,y,z) MM_FUNC(DirSetFast)(x,y,z,__FILE__,__LINE__)
- #define mmDirGetFast(x,y) MM_FUNC(DirGetFast)(x,y,__FILE__,__LINE__)
- #define mmDirFree(x) MM_FUNC(DirFree)(x,__FILE__,__LINE__)
-#endif
-
-#endif
 
 
 ////
@@ -664,7 +630,7 @@ typedef struct
 } mmVolumeHead;
 
 void MM_FUNC(VolumeInit)( mmVolumeHead *head, size_t volumesize, size_t minchunksize, size_t keepfreesize, size_t alignment MM_PARAMS );
-void MM_FUNC(VolumeNodeInit)( mmVolumeHead *head, int nodeindex, size_t volumesize, size_t minchunksize, size_t keepfreesize, size_t alignment MM_PARAMS );
+void MM_FUNC(VolumeNumaInit)( mmVolumeHead *head, int nodeindex, size_t volumesize, size_t minchunksize, size_t keepfreesize, size_t alignment MM_PARAMS );
 void *MM_FUNC(VolumeAlloc)( mmVolumeHead *head, size_t bytes MM_PARAMS );
 void MM_FUNC(VolumeRelease)( mmVolumeHead *head, void *v MM_PARAMS );
 void MM_FUNC(VolumeFree)( mmVolumeHead *head, void *v MM_PARAMS );
@@ -676,7 +642,7 @@ void *MM_FUNC(VolumeRealloc)( mmVolumeHead *head, void *v, size_t bytes MM_PARAM
 
 #if MM_DEBUG
  #define mmVolumeInit(w,x,y,z,a) MM_FUNC(VolumeInit)(w,x,y,z,a,__FILE__,__LINE__);
- #define mmVolumeNodeInit(v,w,x,y,z,a) MM_FUNC(VolumeNodeInit)(v,w,x,y,z,a,__FILE__,__LINE__);
+ #define mmVolumeNumaInit(v,w,x,y,z,a) MM_FUNC(VolumeNumaInit)(v,w,x,y,z,a,__FILE__,__LINE__);
  #define mmVolumeAlloc(x,y) MM_FUNC(VolumeAlloc)(x,y,__FILE__,__LINE__);
  #define mmVolumeRelease(x,y) MM_FUNC(VolumeRelease)(x,y,__FILE__,__LINE__);
  #define mmVolumeFree(x,y) MM_FUNC(VolumeFree)(x,y,__FILE__,__LINE__);
@@ -685,19 +651,10 @@ void *MM_FUNC(VolumeRealloc)( mmVolumeHead *head, void *v, size_t bytes MM_PARAM
  #define mmVolumeClean(x) MM_FUNC(VolumeClean)(x,__FILE__,__LINE__);
  #define mmVolumeFreeAll(x) MM_FUNC(VolumeFreeAll)(x,__FILE__,__LINE__);
  #define mmVolumeRealloc(x,y,z) MM_FUNC(VolumeRealloc)(x,y,z,__FILE__,__LINE__);
-/*
- #define mmVolumeAlloc MM_FUNC(VolumeAlloc)
- #define mmVolumeRelease MM_FUNC(VolumeRelease)
- #define mmVolumeFree MM_FUNC(VolumeFree)
-*/
 #endif
 
 void mmVolumeDebugList( mmVolumeHead *volumehead );
 int mmVolumeDebugGetTreeDepth( mmVolumeHead *volumehead );
-
-/*
-void mmVolumeRelayByZone( mmVolumeHead *head, void *zonehead );
-*/
 
 
 
@@ -739,14 +696,20 @@ void *mmAlloc( void *unused, size_t bytes MM_PARAMS );
 void *mmRealloc( void *unused, void *v, size_t bytes MM_PARAMS );
 void mmFree( void *unused, void *v, size_t bytes MM_PARAMS );
 
-void *mmDebugAlloc( size_t bytes, const char *file, int line );
-void *mmDebugRealloc( void *v, size_t bytes, const char *file, int line );
-void mmDebugFree( void *v, const char *file, int line );
+void *mmDebugAlloc( size_t bytes, char *file, int line );
+void *mmDebugRealloc( void *v, size_t bytes, char *file, int line );
+void mmDebugFree( void *v, char *file, int line );
 #define mmDebugAlloc(x) mmDebugAlloc(x,__FILE__,__LINE__)
 #define mmDebugFree(x) mmDebugFree(x,__FILE__,__LINE__)
 #define mmDebugRealloc(x,y) mmDebugRealloc(x,y,__FILE__,__LINE__)
 
-void mmListUses( const char *file, int line );
+void mmAssertMemoryWasAllocated( void *v, char *file, int line );
+#define mmAssertMemoryWasAllocated(v) mmAssertMemoryWasAllocated(v,__FILE__,__LINE__);
+
+void mmCheckMemoryGuards( char *file, int line );
+#define mmCheckMemoryGuards() mmCheckMemoryGuards(__FILE__,__LINE__);
+
+void mmListUses( char *file, int line );
 #define mmListUses() mmListUses(__FILE__,__LINE__);
 
 
@@ -758,8 +721,7 @@ void mmListUses( const char *file, int line );
  #define realloc(x,y) mmRealloc(0,(x),(y),__FILE__,__LINE__)
  #define free(x) mmFree(0,(x),0,__FILE__,__LINE__)
 #elif MM_ALLOC_CHECK
-
-static inline void *mmAllocCheck( size_t size, const char *file, int line )
+static inline void *mmAllocCheck( size_t size, char *file, int line )
 {
   void *p;
   p = malloc( size );
@@ -772,8 +734,7 @@ static inline void *mmAllocCheck( size_t size, const char *file, int line )
 #endif
   return p;
 }
-
-static inline void *mmReallocCheck( void *p, size_t size, const char *file, int line )
+static inline void *mmReallocCheck( void *p, size_t size, char *file, int line )
 {
   p = realloc( p, size );
 #if MM_WINDOWS
@@ -785,16 +746,12 @@ static inline void *mmReallocCheck( void *p, size_t size, const char *file, int 
 #endif
   return p;
 }
-
  #define malloc(x) mmAllocCheck((x),__FILE__,__LINE__)
  #define realloc(x,y) mmReallocCheck((x),(y),__FILE__,__LINE__)
 #endif
 
 
-
-
 ////
-
 
 
 static inline uint64_t mmGetMillisecondsTime()
@@ -821,9 +778,14 @@ static inline uint64_t mmGetNanosecondsTime()
 }
 
 
-
 ////
 
+
+void *mmMmapAlloc( size_t memsize, int trymmap, int trymlock, int tryhugepages, size_t *retmmapsize, int *retlockflag );
+void mmMmapFree( void *alloc, size_t mmapsize );
+
+
+////
 
 
 #ifdef __cplusplus
@@ -831,4 +793,8 @@ static inline uint64_t mmGetNanosecondsTime()
 #endif
 
 
+////
+
+
 #endif
+

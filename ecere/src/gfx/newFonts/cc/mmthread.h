@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2007-2014 Alexis Naveros.
+ * Copyright (c) 2009-2023 Alexis Naveros.
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
@@ -49,13 +49,15 @@
 
 
 #define MT_THREAD_FLAGS_JOINABLE (0x1)
-#define MT_THREAD_FLAGS_SETSTACK (0x2)
 
 #ifdef MT_DEBUG
  #ifndef MT_DEBUG_WARNING()
   #define MT_DEBUG_WARNING() ({printf( "\nMMTHREAD WARNING : %s %s %d\n", __FILE__, __FUNCTION__, __LINE__ ); fflush( stdout );})
  #endif
 #endif
+
+
+////
 
 
 ////
@@ -83,20 +85,17 @@ static inline void mtYield()
 }
 
 
+
 typedef struct
 {
   pthread_t pthread;
 } mtThread;
 
-static inline void mtThreadCreate( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags, void *stack, size_t stacksize )
+static inline void mtThreadCreate( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags )
 {
   pthread_attr_t attr;
 
   pthread_attr_init( &attr );
- #if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux) || defined(__APPLE__) || defined(__unix__) || defined(__unix) || defined(unix)
-  if( flags & MT_THREAD_FLAGS_SETSTACK )
-    pthread_attr_setstack( &attr, stack, stacksize );
-#endif
   if( flags & MT_THREAD_FLAGS_JOINABLE )
     pthread_attr_setdetachstate( &attr, PTHREAD_CREATE_JOINABLE );
   else
@@ -149,11 +148,11 @@ static inline size_t mtGetMinimumStackSize()
 
 typedef struct
 {
-#ifdef MT_DEBUG
+ #ifdef MT_DEBUG
   unsigned char *function;
   unsigned char *file;
   int line;
-#endif
+ #endif
   pthread_mutex_t pmutex;
 } mtMutex;
 
@@ -300,14 +299,14 @@ static inline int mtSignalWaitTimeout( mtSignal *signal, mtMutex *mutex, long mi
   struct timespec ts;
   struct timeval tp;
   gettimeofday( &tp, NULL );
-  ts.tv_sec  = tp.tv_sec + ( milliseconds / 1000 );
+  ts.tv_sec = tp.tv_sec + ( milliseconds / 1000 );
   microsecs = tp.tv_usec + ( ( milliseconds % 1000 ) * 1000 );
   if( microsecs >= 1000000 )
   {
     ts.tv_sec++;
     microsecs -= 1000000;
   }
-  ts.tv_nsec = (long)(microsecs * 1000);
+  ts.tv_nsec = microsecs * 1000;
   return ( pthread_cond_timedwait( &signal->pcond, &mutex->pmutex, &ts ) == 0 );
 }
 
@@ -323,8 +322,8 @@ static inline unsigned long long mtSignalTime( long milliseconds )
 static inline int mtSignalWaitTime( mtSignal *signal, mtMutex *mutex, unsigned long long millitime )
 {
   struct timespec ts;
-  ts.tv_sec = (long)(millitime / 1000);
-  ts.tv_nsec = (long)(( millitime % 1000 ) * 1000000);
+  ts.tv_sec = millitime / 1000;
+  ts.tv_nsec = ( millitime % 1000 ) * 1000000;
   return ( pthread_cond_timedwait( &signal->pcond, &mutex->pmutex, &ts ) == 0 );
 }
 
@@ -340,9 +339,7 @@ static inline int mtSignalWaitTime( mtSignal *signal, mtMutex *mutex, unsigned l
 
 /* Windows threads */
 
- #ifndef WIN32_LEAN_AND_MEAN
  #define WIN32_LEAN_AND_MEAN
- #endif
  #include <windows.h>
  #if MT_MSVC
   #include <intrin.h>
@@ -376,13 +373,18 @@ static DWORD WINAPI mtWinThreadMain( void *launchdata )
   return 0;
 }
 
-static inline void mtThreadCreate( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags, void *stack, size_t stacksize )
+static inline void mtThreadCreate( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags )
 {
   mtWinThreadLaunch *launch;
   launch = (mtWinThreadLaunch *)malloc( sizeof(mtWinThreadLaunch) );
   launch->threadmain = threadmain;
   launch->value = value;
-  thread->winthread = CreateThread( (LPSECURITY_ATTRIBUTES)0, stacksize, mtWinThreadMain, (void *)launch, 0, &thread->threadidentifier );
+  thread->winthread = CreateThread( (LPSECURITY_ATTRIBUTES)0, 0, mtWinThreadMain, (void *)launch, 0, &thread->threadidentifier );
+  if( !( flags & MT_THREAD_FLAGS_JOINABLE ) )
+  {
+    CloseHandle( thread->winthread );
+    thread->winthread = 0;
+  }
   return;
 }
 
@@ -394,8 +396,12 @@ static inline void mtThreadExit()
 
 static inline void mtThreadJoin( mtThread *thread )
 {
-  WaitForSingleObject( thread->winthread, INFINITE );
-  CloseHandle( thread->winthread );
+  if( thread->winthread )
+  {
+    WaitForSingleObject( thread->winthread, INFINITE );
+    CloseHandle( thread->winthread );
+    thread->winthread = 0;
+  }
   return;
 }
 
@@ -589,15 +595,15 @@ static inline int mtSignalWaitTime( mtSignal *signal, mtMutex *mutex, unsigned l
   #define MT_DISABLED (1)
  #endif
 
-typedef struct mtMutex { int foo; } mtMutex;
-typedef struct mtSpin { int foo; } mtSpin;
-typedef struct mtSignal { int foo; } mtSignal;
+typedef struct { } mtMutex;
+typedef struct { } mtSpin;
+typedef struct { } mtSignal;
 
  #define mtMutexInit(a)
  #define mtMutexDestroy(a)
  #define mtMutexLock(a)
  #define mtMutexUnlock(a)
- #define mtMutexTryLock(a) 1
+ #define mtMutexTryLock(a)
 
  #define mtSpinInit(a)
  #define mtSpinDestroy(a)
@@ -620,7 +626,51 @@ typedef struct mtSignal { int foo; } mtSignal;
 ////
 
 
-#if MT_GNUC && !MT_NOTHREADS
+/* Implemented in mmthread.c */
+
+typedef struct
+{
+  mtMutex mutex;
+  mtSignal signal;
+  int resetcount;
+  volatile int index;
+  volatile int count[2];
+  /* Global lock stuff */
+  volatile int lockflag;
+  volatile int lockcount;
+  mtSignal locksignal;
+  mtSignal lockwakesignal;
+} mtSleepBarrier;
+
+#define MT_SLEEP_BARRIER_LOCK_READY(barrier) (((barrier)->count[(barrier)->index])-(((barrier)->lockcount))==1)
+
+/* Initialize sleep barrier, count specifies count of threads before barrier is released for all threads */
+void mtSleepBarrierInit( mtSleepBarrier *barrier, int count );
+
+/* Destroy barrier */
+void mtSleepBarrierDestroy( mtSleepBarrier *barrier );
+
+/* Wait on barrier until 'count' threads are sleeping on it */
+int mtSleepBarrierSync( mtSleepBarrier *barrier );
+
+/* Wait on barrier until 'count' threads are sleeping on it, return 0 on failure if timeout reached */
+int mtSleepBarrierSyncTimeout( mtSleepBarrier *barrier, long milliseconds );
+
+/* Check if any thread requested a global barrier lock, sleep until fully locked if so */
+void mtSleepBarrierCheckGlobal( mtSleepBarrier *barrier );
+
+/* Acquire global barrier lock, all other threads will be in barrier */
+void mtSleepBarrierLockGlobal( mtSleepBarrier *barrier );
+
+/* Release an acquired global barrier lock */
+void mtSleepBarrierUnlockGlobal( mtSleepBarrier *barrier );
+
+
+
+////
+
+
+#if MT_GNUC
 
 
 /* Spin locks, GNUC/clang/ICC implementation */
@@ -634,6 +684,16 @@ static inline void mtSpinInit( mtSpin *spin )
 {
   __asm__ __volatile__( "":::"memory" );
   spin->atomicspin = 0;
+  /* Insert store-load memory barrier */
+ #if defined(__x86_64__) || defined(__x86_64) || defined(__amd64__) || defined(__amd64)
+  __asm__ __volatile__( "lock ; addl $0,(%%rsp)"::: "memory", "cc" );
+ #elif defined(__i386__) || defined(__i386)  || defined(i386)
+  __asm__ __volatile__( "lock ; addl $0,(%%esp)"::: "memory", "cc" );
+ #elif defined(__ARM_ARCH_8__)
+  __asm__ __volatile__( "dmb st":::"memory" );
+ #else
+  __sync_synchronize();
+ #endif
   return;
 }
 
@@ -655,11 +715,23 @@ static inline void mtSpinLock( mtSpin *spin )
  #endif
     }
   }
+  /* Insert store-load memory barrier */
+  /* NOT NEEDED ~ Implicit in __sync_val_compare_and_swap() */
   return;
 }
 
 static inline void mtSpinUnlock( mtSpin *spin )
 {
+  /* Insert load-store memory barrier */
+ #if defined(__x86_64__) || defined(__x86_64) || defined(__amd64__) || defined(__amd64)
+  /* Not needed on arch */
+ #elif defined(__i386__) || defined(__i386)  || defined(i386)
+  /* Not needed on arch */
+ #elif defined(__ARM_ARCH_8__)
+  __asm__ __volatile__( "dmb ld":::"memory" );
+ #else
+  __sync_synchronize();
+ #endif
   __asm__ __volatile__( "":::"memory" );
   spin->atomicspin = 0;
   return;
@@ -667,11 +739,15 @@ static inline void mtSpinUnlock( mtSpin *spin )
 
 static inline int mtSpinTryLock( mtSpin *spin )
 {
-  return ( __sync_val_compare_and_swap( &spin->atomicspin, 0x0, 0x1 ) == 0x0 );
+  int retval;
+  retval = ( __sync_val_compare_and_swap( &spin->atomicspin, 0x0, 0x1 ) == 0x0 );
+  /* Insert store-load memory barrier */
+  /* NOT NEEDED ~ Implicit in __sync_val_compare_and_swap() */
+  return retval;
 }
 
 
-#elif MT_MSVC && !MT_NOTHREADS
+#elif MT_MSVC
 
 
 /* Spin locks, MSVC implementation */
@@ -685,6 +761,12 @@ static inline void mtSpinInit( mtSpin *spin )
 {
   _ReadWriteBarrier();
   spin->atomicspin = 0;
+  /* Insert store-load memory barrier */
+#if ( defined(__SSE2__) || defined(_M_X64) || (defined(_M_IX86_FP) && _M_IX86_FP >= 2) )
+  _mm_mfence();
+#elif _WIN32_WINNT >= 0x600
+  MemoryBarrier();
+#endif
   return;
 }
 
@@ -703,11 +785,19 @@ static inline void mtSpinLock( mtSpin *spin )
       _ReadWriteBarrier();
     }
   }
+  /* Insert store-load memory barrier */
+  /* NOT NEEDED ~ Implicit in _InterlockedCompareExchange() */
   return;
 }
 
 static inline void mtSpinUnlock( mtSpin *spin )
 {
+  /* Insert load-store memory barrier */
+#if defined(i386) || defined(__i386) || defined(__i386__) || defined(__i386) || defined(__IA32__) || defined(_M_IX86) || defined(__X86__) || defined(_X86_) || defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
+  /* x86/AMD64 don't normally reorder loads ~ different rules apply to WC/WT/UC memory */
+#elif _WIN32_WINNT >= 0x600
+  MemoryBarrier();
+#endif
   _ReadWriteBarrier();
   spin->atomicspin = 0;
   return;
@@ -715,29 +805,33 @@ static inline void mtSpinUnlock( mtSpin *spin )
 
 static inline int mtSpinTryLock( mtSpin *spin )
 {
-  return ( _InterlockedCompareExchange( &spin->atomicspin, 0x1, 0x0 ) == 0x0 );
+  int retval;
+  retval = ( _InterlockedCompareExchange( &spin->atomicspin, 0x1, 0x0 ) == 0x0 );
+  /* Insert store-load memory barrier */
+  /* NOT NEEDED ~ Implicit in _InterlockedCompareExchange() */
+  return retval;
 }
 
 
- #elif !MT_NOTHREADS
+#else
 
 
 typedef struct mtMutex mtSpin;
 
-  #define mtSpinInit(a) mtMutexInit(a)
-  #define mtSpinDestroy(a) mtMutexDestroy(a)
-  #define mtSpinLock(a) mtMutexLock(a)
-  #define mtSpinUnlock(a) mtMutexUnlock(a)
-  #define mtSpinTryLock(a) mtMutexTryLock(a)
+ #define mtSpinInit(a) mtMutexInit(a)
+ #define mtSpinDestroy(a) mtMutexDestroy(a)
+ #define mtSpinLock(a) mtMutexLock(a)
+ #define mtSpinUnlock(a) mtMutexUnlock(a)
+ #define mtSpinTryLock(a) mtMutexTryLock(a)
 
 
- #endif
+#endif
 
 
 ////
 
 
-#if MT_GNUC && !MT_NOTHREADS
+#if MT_GNUC
 
 
 typedef struct
@@ -764,7 +858,7 @@ static inline unsigned int mtBarrierWait( mtBarrier *barrier, unsigned int spinw
 
   stateref = barrier->stateref;
   if( __sync_sub_and_fetch( &barrier->counter, 1 ) == 0 )
-{
+  {
     nextstateref = stateref + 1;
     /* Barrier is cleared, that was the last thread waiting on it */
     barrier->stateref = nextstateref;
@@ -772,18 +866,18 @@ static inline unsigned int mtBarrierWait( mtBarrier *barrier, unsigned int spinw
     /* Ensure stateref and counter are updated and visible before releasing all spinning threads */
     __sync_synchronize();
     barrier->state = nextstateref;
-}
+  }
   else
   {
     /* Spin-wait */
     for( ; ( barrier->state == stateref ) && ( spinwaitcounter ) ; spinwaitcounter-- )
-{
+    {
  #if defined(__x86_64__) || defined(__x86_64) || defined(__amd64__) || defined(__amd64) || defined(__i386__) || defined(__i386)  || defined(i386)
       __asm__ __volatile__( "rep ; nop" :::"memory" );
-#else
+ #else
       __asm__ __volatile__( "":::"memory" );
-#endif
-}
+ #endif
+    }
     /* Spin-wait counter exhausted, yield thread */
     if( !spinwaitcounter )
     {
@@ -860,53 +954,107 @@ static inline unsigned int mtBarrierWait( mtBarrier *barrier, unsigned int spinw
 ////
 
 
-#if defined(__linux__) || defined(__gnu_linux__) || defined(__linux) || defined(__linux)
+/* Functions below require mmcore stuff */
+#include "mm.h"
 
- #ifndef _GNU_SOURCE
-  #define _GNU_SOURCE
-#endif
- #include <sched.h>
 
- #if ( !defined(CPU_ZERO) || !defined(CPU_SET) ) && !defined(MM_H)
-  #warning Headers were included without #define _GNU_SOURCE, mtBindThreadToCpu() is not available
-#endif
-
-static inline void mtBindThreadToCpu( int cpuindex )
+typedef struct
 {
- #if defined(CPU_ZERO) && defined(CPU_SET)
-  cpu_set_t cpuset;
-  CPU_ZERO( &cpuset );
-  CPU_SET( cpuindex, &cpuset );
-  sched_setaffinity( 0, sizeof(cpu_set_t), &cpuset );
- #elif defined(MM_H)
-  mmThreadBindToCpu( cpuindex );
+  void *arg;
+  int cpulock;
+  int cpulockcount;
+  int nodelock;
+  void *(*threadmain)( void *value );
+} mtThreadLaunchState;
+
+static MM_NOINLINE void *mtThreadLaunchJump( void *p )
+{
+  mtThreadLaunchState *launch;
+  /* Waste a page of stack _after_ locking the thread on CPU/node, so that the stack is allocated on the proper NUMA node */
+  __attribute__((unused)) volatile char stackpage[4096];
+  void *arg;
+  void *(*threadmain)( void *value );
+
+  launch = p;
+  arg = launch->arg;
+  threadmain = launch->threadmain;
+  free( launch );
+  return threadmain( arg );
+}
+
+static void *mtThreadLaunch( void *p )
+{
+  mtThreadLaunchState *launch;
+
+  launch = p;
+  if( launch->cpulock != -1 )
+  {
+    if( launch->cpulockcount <= 1 )
+      mmBindThreadToCpu( launch->cpulock );
+    else
+      mmBindThreadToCpuGroup( launch->cpulock, launch->cpulockcount );
+  }
+  else if( launch->nodelock != -1 )
+    mmBindThreadToNode( launch->nodelock );
+
+  /* Migrate the stack to the proper NUMA node */
+#if MT_PTHREADS && MM_LINUX
+/*
+  pthread_attr_t attr;
+  void *stackstart;
+  size_t stacksize;
+  if( ( pthread_getattr_np( pthread_self(), &attr ) == 0 ) && ( pthread_attr_getstack( &attr, &stackstart, &stacksize ) == 0 ) )
+    mmNumaMigrate( nodeindex, stackstart, stacksize );
+*/
 #endif
+
+  return mtThreadLaunchJump( p );
+}
+
+
+static inline void mtThreadCreateOnCpu( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags, int cpulock )
+{
+  mtThreadLaunchState *launch;
+  launch = malloc( sizeof(mtThreadLaunchState) );
+  launch->arg = value;
+  launch->cpulock = cpulock;
+  launch->cpulockcount = 1;
+  launch->nodelock = -1;
+  launch->threadmain = threadmain;
+  mtThreadCreate( thread, mtThreadLaunch, launch, flags );
   return;
 }
 
-#elif defined(_WIN64) || defined(__WIN64__) || defined(WIN64) || defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
-
- #include <windows.h>
-
-static inline void mtBindThreadToCpu( int cpuindex )
+static inline void mtThreadCreateOnCpuGroup( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags, int cpulock, int cpulockcount )
 {
-  HANDLE handle;
-  handle = GetCurrentThread();
-  SetThreadAffinityMask( handle, (size_t)1 << cpuindex );
+  mtThreadLaunchState *launch;
+  launch = malloc( sizeof(mtThreadLaunchState) );
+  launch->arg = value;
+  launch->cpulock = cpulock;
+  launch->cpulockcount = cpulockcount;
+  launch->nodelock = -1;
+  launch->threadmain = threadmain;
+  mtThreadCreate( thread, mtThreadLaunch, launch, flags );
   return;
 }
 
-#else
-
-static inline void mtBindThreadToCpu( int cpuindex )
+static inline void mtThreadCreateOnNode( mtThread *thread, void *(*threadmain)( void *value ), void *value, int flags, int nodelock )
 {
+  mtThreadLaunchState *launch;
+  launch = malloc( sizeof(mtThreadLaunchState) );
+  launch->arg = value;
+  launch->cpulock = -1;
+  launch->cpulockcount = 1;
+  launch->nodelock = nodelock;
+  launch->threadmain = threadmain;
+  mtThreadCreate( thread, mtThreadLaunch, launch, flags );
   return;
 }
-
-#endif
 
 
 ////
 
 
 #endif
+
+

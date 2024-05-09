@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2007-2014 Alexis Naveros.
+ * Copyright (c) 2007-2023 Alexis Naveros.
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
@@ -35,48 +35,102 @@ asm(".symver exp,exp@GLIBC_2.2.5");
  #define CC_WIN32 (1)
  #define CC_WINDOWS (1)
 #endif
-
-#if CC_UNIX || defined(__MINGW32__)
-#include <sys/time.h>
+#if defined(__ANDROID__)
+ #define CC_ANDROID (1)
 #endif
 
-#if CC_WINDOWS
-
-#if defined(__UWP__) || !defined(__MINGW32__)
-/*
-struct timeval
-{
-   long tv_sec;
-   long tv_usec;
-};
-*/
-#define WIN32_LEAN_AND_MEAN
-#define Size Size_
-#define Alignment Alignment_
-#define String String_
-#define String2 String2_
-#define Arc Arc_
-#define Polygon Polygon_
-#define Ellipse Ellipse_
-#include <winsock.h>
-#undef Arc
-#undef Ellipse
-#undef Polygon
-#undef Size
-#undef Alignment
-#undef String
-#undef String2
+#if defined(__EMSCRIPTEN__)
+ #define CC_WEBASSEMBLY (1)
 #endif
 
-#if !defined(ssize_t) && !defined(__MINGW32__)
-#if defined(_WIN64)
-#define ssize_t long long
+#if __STDC_VERSION__ >= 201112L
+ #define CC_STDC (2011)
+#elif __STDC_VERSION__ >= 199901L
+ #define CC_STDC (1999)
+#elif __STDC_VERSION__ >= 199401L
+ #define CC_STDC (1990)
 #else
-#define ssize_t long
-#endif
+ #define CC_STDC (1989)
 #endif
 
+#if __MINGW64__
+ #define CC_MINGW32 (1)
+ #define CC_MINGW64 (1)
+#elif __MINGW32__
+ #define CC_MINGW32 (1)
 #endif
+
+#if defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64) || defined(_M_AMD64)
+ #define CC_ARCH_AMD64 (1)
+ #define CC_ARCH_64BITS (1)
+ #define CC_ARCH_LE (1)
+ #define CC_ARCH_BE (0)
+#endif
+#if defined(i386) || defined(__i386) || defined(__i386__) || defined(__i386) || defined(__IA32__) || defined(_M_IX86) || defined(__X86__) || defined(_X86_)
+ #define CC_ARCH_IA32 (1)
+ #define CC_ARCH_32BITS (1)
+ #define CC_ARCH_LE (1)
+ #define CC_ARCH_BE (0)
+#endif
+#if defined(__arm__) || defined(_ARM) || defined(_M_ARM) || defined(__arm)
+ #define CC_ARCH_ARM (1)
+ #define CC_ARCH_32BITS (1)
+ #define CC_ARCH_LE (1)
+ #define CC_ARCH_BE (0)
+#endif
+#if defined(__aarch64__)
+ #define CC_ARCH_ARM64 (1)
+ #define CC_ARCH_64BITS (1)
+ #define CC_ARCH_LE (1)
+ #define CC_ARCH_BE (0)
+#endif
+#if defined(__EMSCRIPTEN__)
+ #define CC_ARCH_WEBASSEMBLY (1)
+ #define CC_ARCH_LE (1)
+ #define CC_ARCH_BE (0)
+#endif
+
+#ifndef CC_ARCH_LE
+ #if defined(__BYTE_ORDER__)
+  #if defined(__ORDER_LITTLE_ENDIAN__) && ( __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__ )
+   #define CC_ARCH_LE (1)
+   #define CC_ARCH_BE (0)
+  #endif
+  #if defined(__ORDER_BIG_ENDIAN__) && ( __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__ )
+   #define CC_ARCH_LE (0)
+   #define CC_ARCH_BE (1)
+  #endif
+ #endif
+#endif
+
+#ifndef CC_ARCH_LE
+ #if __LITTLE_ENDIAN__
+  #define CC_ARCH_LE (1)
+  #define CC_ARCH_BE (0)
+ #endif
+ #if __BIG_ENDIAN__
+  #define CC_ARCH_LE (0)
+  #define CC_ARCH_BE (1)
+ #endif
+#endif
+
+#if defined(__ARM_NEON) || defined(__ARM_NEON__)
+ #define CC_CAP_NEON (1)
+#endif
+#if ( defined(__SSE2__) || defined(_M_X64) || (defined(_M_IX86_FP) && _M_IX86_FP >= 2) )
+ #define CC_CAP_SSE2 (1)
+#endif
+#if ( defined(__SSE__) || defined(_M_X64) || (defined(_M_IX86_FP) && _M_IX86_FP >= 1) )
+ #define CC_CAP_SSE (1)
+#endif
+#if __AVX__
+ #define CC_CAP_AVX (1)
+#endif
+#if __AVX2__
+ #define CC_CAP_AVX2 (1)
+#endif
+
+
 ////
 
 
@@ -88,15 +142,20 @@ struct timeval
  #define ADDRESSDIFF(a,b) (((char *)a)-((char *)b))
 #endif
 
+#define CC_TRACE() do{printf("TRACE ~ %s:%d\n",__FILE__,__LINE__);}while(0)
+
 #if defined(__GNUC__) || defined(__INTEL_COMPILER) || defined(__clang__)
  #define CC_NOINLINE __attribute__((noinline))
- #define CC_ALWAYSINLINE __attribute__((always_inline)) __attribute__((unused))
+ #define CC_ALWAYSINLINE __attribute__((always_inline))
  #define CC_LIKELY(x) __builtin_expect(!!(x), 1)
  #define CC_UNLIKELY(x) __builtin_expect(!!(x), 0)
  #define CC_UNUSED __attribute__((unused))
  #define CC_DEPRECATED __attribute__((deprecated))
  #define CC_DEPRECATED_MSG(x) __attribute__((deprecated(x)))
- #define MM_UNREACHABLE __builtin_unreachable()
+ #define CC_UNREACHABLE __builtin_unreachable()
+ #define CC_OPTIMIZE __attribute__((optimize("-O3")))
+ #define CC_OPTIMIZE_FASTMATH __attribute__((optimize("-O3,-ffast-math")))
+ #define CC_OPTIMIZE_NATIVE __attribute__((optimize("-O3,-march=native,-mtune=native")))
 #elif defined(_MSC_VER)
  #define CC_NOINLINE __declspec(noinline)
  #define CC_ALWAYSINLINE __forceinline
@@ -105,7 +164,10 @@ struct timeval
  #define CC_UNUSED
  #define CC_DEPRECATED _declspec(deprecated)
  #define CC_DEPRECATED_MSG(x) _declspec(deprecated(x))
- #define MM_UNREACHABLE _assume(0)
+ #define CC_UNREACHABLE _assume(0)
+ #define CC_OPTIMIZE
+ #define CC_OPTIMIZE_FASTMATH
+ #define CC_OPTIMIZE_NATIVE
  #ifndef inline
   #define inline __inline
  #endif
@@ -127,7 +189,10 @@ struct timeval
  #define CC_UNUSED
  #define CC_DEPRECATED
  #define CC_DEPRECATED_MSG(x)
- #define MM_UNREACHABLE
+ #define CC_UNREACHABLE
+ #define CC_OPTIMIZE
+ #define CC_OPTIMIZE_FASTMATH
+ #define CC_OPTIMIZE_NATIVE
 #endif
 
 #if CC_UNIX
@@ -158,6 +223,50 @@ struct timeval
 #define CC_SIZEOF_ALIGN16(x) ((sizeof(x)+0xF)&~0xF)
 #define CC_SIZEOF_ALIGN32(x) ((sizeof(x)+0x1F)&~0x1F)
 #define CC_SIZEOF_ALIGN64(x) ((sizeof(x)+0x3F)&~0x3F)
+#ifdef CPUCONF_CACHE_LINE_SIZE
+ #define CC_SIZEOF_ALIGN_CACHELINE(x) ((sizeof(x)+CPUCONF_CACHE_LINE_SIZE-1)&~(CPUCONF_CACHE_LINE_SIZE-1))
+#else
+ #define CC_SIZEOF_ALIGN_CACHELINE(x) ((sizeof(x)+64-1)&~(64-1))
+#endif
+
+#if CC_STDC < 1999
+ #ifndef fminf
+static inline float cc_fminf( float a, float b ) { return ( a < b ? a : b ); }
+  #define fminf(a,b) cc_fminf(a,b)
+ #endif
+ #ifndef fmaxf
+static inline float cc_fmaxf( float a, float b ) { return ( a > b ? a : b ); }
+  #define fmaxf(a,b) cc_fmaxf(a,b)
+ #endif
+ #ifndef fmin
+static inline double cc_fmin( double a, double b ) { return ( a < b ? a : b ); }
+  #define fmin(a,b) cc_fmin(a,b)
+ #endif
+ #ifndef fmax
+static inline double cc_fmax( double a, double b ) { return ( a > b ? a : b ); }
+  #define fmax(a,b) cc_fmax(a,b)
+ #endif
+ #ifndef roundf
+static inline double cc_roundf( double a ) { return floorf( a + 0.5f ); }
+  #define roundf(a) cc_roundf(a)
+ #endif
+ #ifndef round
+static inline double cc_round( double a ) { return floor( a + 0.5 ); }
+  #define round(a) cc_round(a)
+ #endif
+#endif
+
+
+////
+
+
+#if CC_UNIX
+ #include <sys/time.h>
+#elif CC_WINDOWS
+ #include <winsock2.h> /* For struct timeval, don't ask me how that makes any sense */
+#endif
+
+#include <stdarg.h>
 
 
 ////
@@ -166,30 +275,6 @@ struct timeval
 #define CC_MIN(x,y) ((x)>(y)?(y):(x))
 #define CC_MAX(x,y) ((x)<(y)?(y):(x))
 #define CC_CLAMP(x,min,max) ((x)<(min)?(min):((x)>(max)?(max):(x)))
-
-
-#define CC_MAX_INT8(x,y) (((int8_t)x)-((((int8_t)x)-((int8_t)y))&((((int8_t)x)-((int8_t)y))>>7)))
-#define CC_MAX_INT16(x,y) (((int16_t)x)-((((int16_t)x)-((int16_t)y))&((((int16_t)x)-((int16_t)y))>>15)))
-#define CC_MAX_INT32(x,y) (((int32_t)x)-((((int32_t)x)-((int32_t)y))&((((int32_t)x)-((int32_t)y))>>31)))
-#define CC_MAX_INT64(x,y) (((int64_t)x)-((((int64_t)x)-((int64_t)y))&((((int64_t)x)-((int64_t)y))>>63)))
-
-#define CC_MIN_INT8(x,y) (((int8_t)y)+((((int8_t)x)-((int8_t)y))&((((int8_t)x)-((int8_t)y))>>7)))
-#define CC_MIN_INT16(x,y) (((int16_t)y)+((((int16_t)x)-((int16_t)y))&((((int16_t)x)-((int16_t)y))>>15)))
-#define CC_MIN_INT32(x,y) (((int32_t)y)+((((int32_t)x)-((int32_t)y))&((((int32_t)x)-((int32_t)y))>>31)))
-#define CC_MIN_INT64(x,y) (((int64_t)y)+((((int64_t)x)-((int64_t)y))&((((int64_t)x)-((int64_t)y))>>63)))
-
-#define CC_SHIFTDIV_INT8(value,shift) ({uint8_t _s=((uint8_t)value)>>7;((int8_t)((value)+(_s<<shift)-_s))>>shift;})
-#define CC_SHIFTDIV_INT16(value,shift) ({uint16_t _s=((uint16_t)value)>>15;((int16_t)((value)+(_s<<shift)-_s))>>shift;})
-#define CC_SHIFTDIV_INT32(value,shift) ({uint32_t _s=((uint32_t)value)>>31;((int32_t)((value)+(_s<<shift)-_s))>>shift;})
-#define CC_SHIFTDIV_INT64(value,shift) ({uint64_t _s=((uint64_t)value)>>63;((int64_t)((value)+(_s<<shift)-_s))>>shift;})
-
-#define CC_SHIFTDIVROUND(value,shift) ((value>>shift)+(((value&((1<<shift)-1))<<1)>=(1<<shift)))
-
-#define CC_SHIFTDIVROUND_INT8(value,shift) ((value>>shift)+((((value&((1<<shift)-1))-((uint8_t)value>>7))<<1)>=(1<<shift)))
-#define CC_SHIFTDIVROUND_INT16(value,shift) ((value>>shift)+((((value&((1<<shift)-1))-((uint16_t)value>>15))<<1)>=(1<<shift)))
-#define CC_SHIFTDIVROUND_INT32(value,shift) ((value>>shift)+((((value&((1<<shift)-1))-((uint32_t)value>>31))<<1)>=(1<<shift)))
-#define CC_SHIFTDIVROUND_INT64(value,shift) ((value>>shift)+((((value&((1<<shift)-1))-((uint64_t)value>>63))<<1)>=(1<<shift)))
-
 
 #define CC_NUMBITS2(n) ((n&2)?1:0)
 #define CC_NUMBITS4(n) ((n&(0xC))?(2+CC_NUMBITS2(n>>2)):(CC_NUMBITS2(n)))
@@ -492,173 +577,6 @@ extern const size_t ccTypeSize[CC_TYPE_COUNT];
 ////
 
 
-uint32_t ccHash32Data( void *data, int size );
-uint32_t ccHash32Int32( uint32_t data );
-uint32_t ccHash32Int64( uint64_t data );
-uint32_t ccHash32Array32( uint32_t *data, int count );
-uint32_t ccHash32Array64( uint64_t *data, int count );
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Int16Inline( uint32_t i )
-{
-  uint32_t hash;
-  hash = ( i << 16 ) ^ i;
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Int32Inline( uint32_t i )
-{
-  uint32_t hash;
-  hash = i & 0xFFFF;
-  hash = ( ( hash << 16 ) ^ hash ) ^ ( ( i & 0xFFFF0000 ) >> 5 );
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Int64Inline( uint64_t i )
-{
-  uint32_t hash;
-  hash = (uint32_t)(i & 0xFFFF);
-  hash = ( ( hash << 16 ) ^ hash ) ^ ( ( (uint32_t)( i >> 16 ) & 0xFFFF ) << 11 );
-  hash += ( hash >> 11 ) + ( (uint32_t)( i >> 32 ) & 0xFFFF );
-  hash = ( ( hash << 16 ) ^ hash ) ^ (uint32_t)( ( i >> 37 ) & 0x7FFF800 );
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Data3Inline( uint8_t *data )
-{
-  uint32_t hash;
-  hash = 0;
-  hash += ( (uint32_t)data[1] << 8 ) | (uint32_t)data[0];
-  hash ^= hash << 16;
-  hash ^= (uint32_t)data[2] << 18;
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Data4Inline( uint8_t *data )
-{
-  uint32_t hash;
-  hash = 0;
-  hash += ( (uint32_t)data[1] << 8 ) | (uint32_t)data[0];
-  hash = ( hash << 16 ) ^ ( ( ( (uint32_t)data[3] << 19 ) | ( (uint32_t)data[2] << 11 ) ) ^ hash );
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Data5Inline( uint8_t *data )
-{
-  uint32_t hash;
-  hash = 0;
-  hash += ( (uint32_t)data[1] << 8 ) | (uint32_t)data[0];
-  hash = ( hash << 16 ) ^ ( ( ( (uint32_t)data[3] << 19 ) | ( (uint32_t)data[2] << 11 ) ) ^ hash );
-  hash += hash >> 11;
-  hash += (uint32_t)data[4];
-  hash ^= hash << 10;
-  hash += hash >> 1;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Data6Inline( uint8_t *data )
-{
-  uint32_t hash;
-  hash = 0;
-  hash += ( (uint32_t)data[1] << 8 ) | (uint32_t)data[0];
-  hash = ( hash << 16 ) ^ ( ( ( (uint32_t)data[3] << 19 ) | ( (uint32_t)data[2] << 11 ) ) ^ hash );
-  hash += hash >> 11;
-  hash += ( (uint32_t)data[5] << 8 ) | (uint32_t)data[4];
-  hash ^= hash << 11;
-  hash += hash >> 17;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Data7Inline( uint8_t *data )
-{
-  uint32_t hash;
-  hash = 0;
-  hash += ( (uint32_t)data[1] << 8 ) | (uint32_t)data[0];
-  hash = ( hash << 16 ) ^ ( ( ( (uint32_t)data[3] << 19 ) | ( (uint32_t)data[2] << 11 ) ) ^ hash );
-  hash += hash >> 11;
-  data = ADDRESS( data, 4 );
-  hash += ( (uint32_t)data[5] << 8 ) | (uint32_t)data[4];
-  hash ^= hash << 16;
-  hash ^= (uint32_t)data[6] << 18;
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-static inline CC_ALWAYSINLINE uint32_t ccHash32Data8Inline( uint8_t *data )
-{
-  uint32_t hash;
-  hash = 0;
-  hash += ( (uint32_t)data[1] << 8 ) | (uint32_t)data[0];
-  hash = ( hash << 16 ) ^ ( ( ( (uint32_t)data[3] << 19 ) | ( (uint32_t)data[2] << 11 ) ) ^ hash );
-  hash += hash >> 11;
-  hash += ( (uint32_t)data[5] << 8 ) | (uint32_t)data[4];
-  hash = ( hash << 16 ) ^ ( ( ( (uint32_t)data[7] << 19 ) | ( (uint32_t)data[6] << 11 ) ) ^ hash );
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-
-////
-
-
 typedef struct
 {
   uint32_t a;
@@ -676,6 +594,16 @@ static inline CC_ALWAYSINLINE uint32_t ccQuickRand32( ccQuickRandState32 *randst
   randstate->c = randstate->d + e;
   randstate->d = e + randstate->a;
   return randstate->d;
+}
+
+static inline CC_ALWAYSINLINE float ccQuickRand32Float( ccQuickRandState32 *randstate )
+{
+  return (float)ccQuickRand32( randstate ) * (1.0f/4294967295.0f);
+}
+
+static inline CC_ALWAYSINLINE double ccQuickRand32Double( ccQuickRandState32 *randstate )
+{
+  return (double)ccQuickRand32( randstate ) * (1.0/4294967295.0);
 }
 
 static inline CC_ALWAYSINLINE void ccQuickRand32Seed( ccQuickRandState32 *randstate, uint32_t seed )
@@ -738,12 +666,8 @@ static inline CC_ALWAYSINLINE void ccQuickRand64Seed( ccQuickRandState64 *randst
 ////
 
 
-int ccMemCmp( void *s0, void *s1, int size );
-int ccMemCmp32( uint32_t *s0, uint32_t *s1, int count );
-int ccMemCmp64( uint64_t *s0, uint64_t *s1, int count );
-int ccMemCmpRetSize( void *s0, void *s1, int size );
-
-static inline CC_ALWAYSINLINE int ccMemCmpInline( void *s0, void *s1, int size )
+/* Appropriate for small sizes, without undefined behavior on invalid pointers when size is zero */
+static inline CC_ALWAYSINLINE int ccMemCmp( void *s0, void *s1, int size )
 {
   int i;
   uint8_t *t0, *t1;
@@ -757,7 +681,32 @@ static inline CC_ALWAYSINLINE int ccMemCmpInline( void *s0, void *s1, int size )
   return 1;
 }
 
-static inline CC_ALWAYSINLINE int ccMemCmpSizeInline( void *s0, void *s1, int size )
+/* Appropriate for small sizes, without undefined behavior on invalid pointers when size is zero */
+static inline CC_ALWAYSINLINE int ccMemCmp32( uint32_t *s0, uint32_t *s1, int count )
+{
+  int i;
+  for( i = 0 ; i < count ; i++ )
+  {
+    if( s0[i] != s1[i] )
+      return 0;
+  }
+  return 1;
+}
+
+/* Appropriate for small sizes, without undefined behavior on invalid pointers when size is zero */
+static inline CC_ALWAYSINLINE int ccMemCmp64( uint64_t *s0, uint64_t *s1, int count )
+{
+  int i;
+  for( i = 0 ; i < count ; i++ )
+  {
+    if( s0[i] != s1[i] )
+      return 0;
+  }
+  return 1;
+}
+
+/* Appropriate for small sizes, without undefined behavior on invalid pointers when size is zero */
+static inline CC_ALWAYSINLINE int ccMemCmpSize( void *s0, void *s1, int size )
 {
   int i;
   uint8_t *t0, *t1;
@@ -771,6 +720,21 @@ static inline CC_ALWAYSINLINE int ccMemCmpSizeInline( void *s0, void *s1, int si
   return i;
 }
 
+#define ccMemCmpInline(a,b,c) ccMemCmp(a,b,c)
+
+/* Appropriate for small sizes, without undefined behavior on invalid pointers when size is zero */
+static inline CC_ALWAYSINLINE void *ccMemCpy( void *s0, void *s1, int size )
+{
+  int i;
+  uint8_t *t0, *t1;
+  t0 = s0;
+  t1 = s1;
+  for( i = 0 ; i < size ; i++ )
+    t0[i] = t1[i];
+  return ADDRESS( s0, size );
+}
+
+
 
 ////
 
@@ -779,7 +743,7 @@ uint8_t ccLog2Int8( uint8_t i );
 uint16_t ccLog2Int16( uint16_t i );
 uint32_t ccLog2Int32( uint32_t i );
 uint64_t ccLog2Int64( uint64_t i );
-#if CPUCONF_LONG_SIZE == 8
+#if CC_ARCH_64BITS
  #define ccLog2IntL(v) ccLog2Int64(v)
 #else
  #define ccLog2IntL(v) ccLog2Int32(v)
@@ -833,7 +797,7 @@ static inline CC_ALWAYSINLINE int32_t ccPowInt32( int32_t base, int exp )
 
 static inline CC_ALWAYSINLINE int64_t ccPowInt64( int64_t base, int exp )
 {
-  int result;
+  int64_t result;
   result = 1;
   while( exp )
   {
@@ -869,7 +833,7 @@ static inline CC_ALWAYSINLINE uint64_t ccMergeIntMask64( uint64_t i0, uint64_t i
   return i0 ^ ( ( i0 ^ i1 ) & mask );
 }
 
-#if CPUCONF_LONG_SIZE == 8
+#if CC_ARCH_64BITS
  #define ccMergeIntMaskL(v) ccMergeIntMask64(v)
 #else
  #define ccMergeIntMaskL(v) ccMergeIntMask32(v)
@@ -879,22 +843,26 @@ static inline CC_ALWAYSINLINE uint64_t ccMergeIntMask64( uint64_t i0, uint64_t i
 ////
 
 
-static inline CC_ALWAYSINLINE int ccCountBits64( uint64_t i )
+static inline CC_ALWAYSINLINE int ccCountBits64( uint64_t v )
 {
-  int r;
-  for( r = 0 ; i ; r++ )
-    i &= i - 1;
-  return r;
+#if defined(__GNUC__)
+  return __builtin_popcountll( v );
+#else
+  v = v - ( ( v >> 1 ) & 0x5555555555555555 );
+  v = ( v & 0x3333333333333333 ) + ( ( v >> 2 ) & 0x3333333333333333 );
+  return ( ( ( v + ( v >> 4 ) ) & 0xF0F0F0F0F0F0F0F ) * 0x101010101010101 ) >> 56;
+#endif
 }
-
 
 static inline CC_ALWAYSINLINE int ccCountBits32( uint32_t v )
 {
-  int c;
+#if defined(__GNUC__)
+  return __builtin_popcount( v );
+#else
   v = v - ( ( v >> 1 ) & 0x55555555 );
   v = ( v & 0x33333333 ) + ( ( v >> 2 ) & 0x33333333 );
-  c = ( ( ( v + ( v >> 4 ) ) & 0xF0F0F0F ) * 0x1010101 ) >> 24;
-  return c;
+  return ( ( ( v + ( v >> 4 ) ) & 0xF0F0F0F ) * 0x1010101 ) >> 24;
+#endif
 }
 
 
@@ -1078,6 +1046,7 @@ static inline CC_ALWAYSINLINE uint64_t ccIsPow2Int64( uint64_t v )
 }
 
 
+/* Round to next highest power of two */
 static inline CC_ALWAYSINLINE uint8_t ccPow2Round8( uint8_t v )
 {
   v--;
@@ -1088,6 +1057,7 @@ static inline CC_ALWAYSINLINE uint8_t ccPow2Round8( uint8_t v )
   return v;
 }
 
+/* Round to next highest power of two */
 static inline CC_ALWAYSINLINE uint16_t ccPow2Round16( uint16_t v )
 {
   v--;
@@ -1099,6 +1069,7 @@ static inline CC_ALWAYSINLINE uint16_t ccPow2Round16( uint16_t v )
   return v;
 }
 
+/* Round to next highest power of two */
 static inline CC_ALWAYSINLINE uint32_t ccPow2Round32( uint32_t v )
 {
   v--;
@@ -1111,6 +1082,7 @@ static inline CC_ALWAYSINLINE uint32_t ccPow2Round32( uint32_t v )
   return v;
 }
 
+/* Round to next highest power of two */
 static inline CC_ALWAYSINLINE uint64_t ccPow2Round64( uint64_t v )
 {
   v--;
@@ -1124,7 +1096,7 @@ static inline CC_ALWAYSINLINE uint64_t ccPow2Round64( uint64_t v )
   return v;
 }
 
-#if CPUCONF_LONG_SIZE == 8
+#if CC_ARCH_64BITS
  #define ccPow2RoundL(v) ccPow2Round64(v)
 #else
  #define ccPow2RoundL(v) ccPow2Round32(v)
@@ -1181,7 +1153,7 @@ static inline CC_ALWAYSINLINE uint32_t ccAbs32( int32_t v )
 
 static inline CC_ALWAYSINLINE uint64_t ccAbs64( int64_t v )
 {
-  int64_t mask;
+  int32_t mask;
   mask = (int32_t)(v >> 63);
   return ( v ^ mask ) - mask;
 }
@@ -1190,7 +1162,7 @@ static inline CC_ALWAYSINLINE uint64_t ccAbs64( int64_t v )
 ////
 
 
-static inline CC_ALWAYSINLINE int32_t ccMortonNumber32( int32_t x, int32_t y )
+static inline CC_ALWAYSINLINE uint32_t ccMortonNumber32( uint32_t x, uint32_t y )
 {
   int i;
   uint32_t z;
@@ -1203,7 +1175,7 @@ static inline CC_ALWAYSINLINE int32_t ccMortonNumber32( int32_t x, int32_t y )
   return z;
 }
 
-static inline CC_ALWAYSINLINE int64_t ccMortonNumber64( int32_t x, int32_t y )
+static inline CC_ALWAYSINLINE uint64_t ccMortonNumber64( uint32_t x, uint32_t y )
 {
   int i;
   uint64_t z;
@@ -1228,6 +1200,7 @@ typedef uint32_t ccuintf;
 typedef uint64_t ccuintf;
 #else
  #undef CC_FLT_INT_MAPPING
+typedef uint32_t ccuintf;
 #endif
 
 #if CPUCONF_DOUBLE_SIZE == 4
@@ -1236,37 +1209,100 @@ typedef uint32_t ccuintd;
 typedef uint64_t ccuintd;
 #else
  #undef CC_FLT_INT_MAPPING
+typedef uint64_t ccuintd;
 #endif
 
-
-#ifdef CC_FLT_INT_MAPPING
 
 static inline CC_ALWAYSINLINE ccuintf ccFloatToUint( float f )
 {
-  void *p = &f;
-  return *((ccuintf *)p);
+  union
+  {
+    ccuintf i;
+    float f;
+  } u;
+  u.f = f;
+  return u.i;
 }
 
-static inline CC_ALWAYSINLINE float ccUintToFloat( ccuintf f )
+static inline CC_ALWAYSINLINE float ccUintToFloat( ccuintf i )
 {
-  void *p = &f;
-  return *((float *)p);
+  union
+  {
+    ccuintf i;
+    float f;
+  } u;
+  u.i = i;
+  return u.f;
 }
 
 
-static inline CC_ALWAYSINLINE ccuintd ccDoubleToUint( double d )
+static inline CC_ALWAYSINLINE ccuintd ccDoubleToUint( double f )
 {
-  void *p = &d;
-  return *((ccuintd *)p);
+  union
+  {
+    ccuintd i;
+    double f;
+  } u;
+  u.f = f;
+  return u.i;
 }
 
-static inline CC_ALWAYSINLINE double ccUintToDouble( ccuintd d )
+static inline CC_ALWAYSINLINE double ccUintToDouble( ccuintd i )
 {
-  void *p = &d;
-  return *((double *)p);
+  union
+  {
+    ccuintd i;
+    double f;
+  } u;
+  u.i = i;
+  return u.f;
 }
 
-#endif
+
+/* Floats converted to ordered ints are suitable for integer comparisons */
+static inline int32_t ccFloatToOrderedInt( float f )
+{
+  union
+  {
+    int32_t i;
+    float f;
+  } u;
+  u.f = f;
+  return ( u.i >= 0 ? u.i : u.i ^ 0x7FFFFFFF );
+}
+
+static inline float ccOrderedIntToFloat( int32_t i )
+{
+  union
+  {
+    int32_t i;
+    float f;
+  } u;
+  u.i = ( i >= 0 ? i : i ^ 0x7FFFFFFF );
+  return u.f;
+}
+
+static inline int64_t ccDoubleToOrderedInt( double f )
+{
+  union
+  {
+    int64_t i;
+    double f;
+  } u;
+  u.f = f;
+  return ( u.i >= 0 ? u.i : u.i ^ 0x7FFFFFFFFFFFFFFF );
+}
+
+static inline double ccOrderedIntToDouble( int64_t i )
+{
+  union
+  {
+    int64_t i;
+    double f;
+  } u;
+  u.i = ( i >= 0 ? i : i ^ 0x7FFFFFFFFFFFFFFF );
+  return u.f;
+}
 
 
 ////
@@ -1306,7 +1342,7 @@ static inline CC_ALWAYSINLINE float ccFastExpFloatNearZero( float x )
 
 static inline CC_ALWAYSINLINE double ccFastExpDouble( double x )
 {
-#if CPUCONF_WORD_SIZE >= 64
+#if CC_ARCH_64BITS
   union
   {
     uint64_t i;
@@ -1316,7 +1352,7 @@ static inline CC_ALWAYSINLINE double ccFastExpDouble( double x )
     return exp( x );
   else if( x < -80.0 )
     return 0.0;
-  u.i = (int64_t)( x * ( (double)0x10000000000000 * CC_LOG2_E ) ) + ( (uint64_t)0x3ff0000000000000 - (uint64_t)261138306564096 );
+  u.i = (uint64_t)( x * ( (double)0x10000000000000 * CC_LOG2_E ) ) + ( (uint64_t)0x3ff0000000000000 - (uint64_t)261138306564096 );
   return u.d;
 #else
   union
@@ -1325,14 +1361,14 @@ static inline CC_ALWAYSINLINE double ccFastExpDouble( double x )
     double d;
   } u;
   if( x > 88.0 )
-    return expf( (float)x );
+    return expf( x );
   else if( x < -80.0 )
     return 0.0;
- #ifdef CPUCONF_LITTLE_ENDIAN
-  u.i[1] = (int32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + ( 0x3ff00000 - 60801 );
+ #if CC_ARCH_LE
+  u.i[1] = (uint32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + ( 0x3ff00000 - 60801 );
   u.i[0] = 0;
  #else
-  u.i[0] = (int32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + ( 0x3ff00000 - 60801 );
+  u.i[0] = (uint32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + ( 0x3ff00000 - 60801 );
   u.i[1] = 0;
  #endif
   return u.d;
@@ -1341,17 +1377,17 @@ static inline CC_ALWAYSINLINE double ccFastExpDouble( double x )
 
 static inline CC_ALWAYSINLINE double ccFastExpDoubleNearZero( double x )
 {
-#if CPUCONF_WORD_SIZE >= 64
+#if CC_ARCH_64BITS
   union
   {
     uint64_t i;
     double d;
   } u;
   if( x > 88.0 )
-    return exp( x );
+    return expf( (float)x );
   else if( x < -80.0 )
     return 0.0;
-  u.i = (int64_t)( x * ( (double)0x10000000000000 * CC_LOG2_E ) ) + (uint64_t)0x3ff0000000000000;
+  u.i = (uint64_t)( x * ( (double)0x10000000000000 * CC_LOG2_E ) ) + (uint64_t)0x3ff0000000000000;
   return u.d;
 #else
   union
@@ -1360,14 +1396,14 @@ static inline CC_ALWAYSINLINE double ccFastExpDoubleNearZero( double x )
     double d;
   } u;
   if( x > 88.0 )
-    return expf( (float)x );
+    return expf( x );
   else if( x < -80.0 )
     return 0.0;
- #ifdef CPUCONF_LITTLE_ENDIAN
-  u.i[1] = (int32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + 0x3ff00000;
+ #if CC_ARCH_LE
+  u.i[1] = (uint32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + 0x3ff00000;
   u.i[0] = 0;
  #else
-  u.i[0] = (int32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + 0x3ff00000;
+  u.i[0] = (uint32_t)( x * ( (double)0x100000 * CC_LOG2_E ) ) + 0x3ff00000;
   u.i[1] = 0;
  #endif
   return u.d;
@@ -1391,11 +1427,11 @@ static inline CC_ALWAYSINLINE float ccFastLog2Float( float x )
   u.i &= ~( (uint32_t)0xff << 23 );
   u.i += (uint32_t)0x7f << 23;
   return (float)base + ( u.f * ( 2.0f + u.f * ( -1.0f/3.0f ) ) ) - ( 2.0f/3.0f );
-}
+} 
 
-static inline CC_ALWAYSINLINE float ccFastLog2Double( double x )
+static inline CC_ALWAYSINLINE double ccFastLog2Double( double x )
 {
-#if CPUCONF_WORD_SIZE >= 64
+#if CC_ARCH_64BITS
   int base;
   union
   {
@@ -1419,7 +1455,7 @@ static inline CC_ALWAYSINLINE float ccFastLog2Double( double x )
   u.i[1] += (uint32_t)0x3ff << 20;
 #endif
   return (double)base + ( u.f * ( 2.0 + u.f * ( -1.0/3.0 ) ) ) - ( 2.0/3.0 );
-}
+} 
 
 
 ////
@@ -1429,7 +1465,7 @@ static inline CC_ALWAYSINLINE float ccFastLog2Double( double x )
 static inline CC_ALWAYSINLINE float ccFastSinFloat( float x )
 {
   float s;
-  s = (float)(( 1.27323954474 * x ) + ( -0.405284734569 * x * fabsf( x ) ));
+  s = ( 1.27323954474f * x ) + ( -0.405284734569f * x * fabsf( x ) );
   return s;
 }
 
@@ -1445,14 +1481,27 @@ static inline CC_ALWAYSINLINE double ccFastSinDouble( double x )
 ////
 
 
-#define CC_INT16_BSWAP(i) (__extension__({uint16_t bsw=(i);((bsw&0xff)<<8)|(bsw>>8);}))
-#define CC_INT32_BSWAP(i) (__extension__({uint32_t bsw=(i);(bsw<<24)|((bsw&0xff00)<<8)|((bsw>>8)&0xff00)|(bsw>>24);}))
-#define CC_INT64_BSWAP(i) (__extension__({uint64_t bsw=(i);(bsw>>56)|((bsw&0x00ff000000000000LL)>>40)|((bsw&0x0000ff0000000000LL)>>24)|((bsw&0x000000ff00000000LL)>>8)|((bsw&0x00000000ff000000LL)<<8)|((bsw&0x0000000000ff0000LL)<<24)|((bsw&0x000000000000ff00LL)<<40)|(bsw<<56);}))
+static inline CC_ALWAYSINLINE float ccFastNextAfterPositivef( float f )
+{
+  ccuintf i;
+  i = ccFloatToUint( f );
+  i++;
+  f = ccUintToFloat( i );
+  return f;
+}
+
+
+////
+
+
+#define CC_INT16_BSWAP(i) ((((i)&0xff)<<8)|((i)>>8))
+#define CC_INT32_BSWAP(i) (((i)<<24)|(((i)&0xff00)<<8)|(((i)>>8)&0xff00)|((i)>>24))
+#define CC_INT64_BSWAP(i) (((i)>>56)|(((i)&0x00ff000000000000LL)>>40)|(((i)&0x0000ff0000000000LL)>>24)|(((i)&0x000000ff00000000LL)>>8)|(((i)&0x00000000ff000000LL)<<8)|(((i)&0x0000000000ff0000LL)<<24)|(((i)&0x000000000000ff00LL)<<40)|((i)<<56))
 
 
 static inline CC_ALWAYSINLINE uint16_t ccByteSwap16( uint16_t i )
 {
-  return (uint16_t)(CC_INT16_BSWAP( i ));
+  return CC_INT16_BSWAP( i );
 }
 
 #if defined(__GNUC__) && defined(__i386__)
@@ -1557,7 +1606,7 @@ static inline CC_ALWAYSINLINE uintptr_t ccAlignIntPtr( uintptr_t i )
   i |= i >> 4;
   i |= i >> 8;
   i |= i >> 16;
-#if CPUCONF_INTPTR_BITS > 32
+#if CC_ARCH_64BITS
   i |= i >> 32;
 #endif
   return i + 1;
@@ -1569,43 +1618,43 @@ static inline CC_ALWAYSINLINE uintptr_t ccAlignIntPtr( uintptr_t i )
 
 static inline CC_ALWAYSINLINE uint8_t ccRotateLeft8( uint8_t x, int bits )
 {
-  return ( x << bits ) | ( x >> ( 8 - bits ) );
+  return (uint8_t)( ( x << bits ) | ( x >> ( 8 - bits ) ) );
 }
 
 static inline CC_ALWAYSINLINE uint16_t ccRotateLeft16( uint16_t x, int bits )
 {
-  return ( x << bits ) | ( x >> ( 16 - bits ) );
+  return (uint16_t)( ( x << bits ) | ( x >> ( 16 - bits ) ) );
 }
 
 static inline CC_ALWAYSINLINE uint32_t ccRotateLeft32( uint32_t x, int bits )
 {
-  return ( x << bits ) | ( x >> ( 32 - bits ) );
+  return (uint32_t)( ( x << bits ) | ( x >> ( 32 - bits ) ) );
 }
 
 static inline CC_ALWAYSINLINE uint64_t ccRotateLeft64( uint64_t x, int bits )
 {
-  return ( x << bits ) | ( x >> ( 64 - bits ) );
+  return (uint64_t)( ( x << bits ) | ( x >> ( 64 - bits ) ) );
 }
 
 
 static inline CC_ALWAYSINLINE uint8_t ccRotateRight8( uint8_t x, int bits )
 {
-  return ( x >> bits ) | ( x << ( 8 - bits ) );
+  return (uint8_t)( ( x >> bits ) | ( x << ( 8 - bits ) ) );
 }
 
 static inline CC_ALWAYSINLINE uint16_t ccRotateRight16( uint16_t x, int bits )
 {
-  return ( x >> bits ) | ( x << ( 16 - bits ) );
+  return (uint16_t)( ( x >> bits ) | ( x << ( 16 - bits ) ) );
 }
 
 static inline CC_ALWAYSINLINE uint32_t ccRotateRight32( uint32_t x, int bits )
 {
-  return ( x >> bits ) | ( x << ( 32 - bits ) );
+  return (uint32_t)( ( x >> bits ) | ( x << ( 32 - bits ) ) );
 }
 
 static inline CC_ALWAYSINLINE uint64_t ccRotateRight64( uint64_t x, int bits )
 {
-  return ( x >> bits ) | ( x << ( 64 - bits ) );
+  return (uint64_t)( ( x >> bits ) | ( x << ( 64 - bits ) ) );
 }
 
 
@@ -1771,7 +1820,7 @@ static inline CC_ALWAYSINLINE int32_t ccFloatToInt32Sat( float f )
   if( f >= (float)CC_INT32_MAX )
     return CC_INT32_MAX;
   else if( f <= -(float)CC_INT32_MAX )
-    return -CC_INT32_MAX;
+    return -(int32_t)CC_INT32_MAX;
   else
     return (int32_t)f;
 }
@@ -1782,7 +1831,7 @@ static inline CC_ALWAYSINLINE int32_t ccDoubleToInt32Sat( double f )
   if( f >= (double)CC_INT32_MAX )
     return CC_INT32_MAX;
   else if( f <= -(double)CC_INT32_MAX )
-    return -CC_INT32_MAX;
+    return -(int32_t)CC_INT32_MAX;
   else
     return (int32_t)f;
 }
@@ -1795,7 +1844,7 @@ static inline CC_ALWAYSINLINE int64_t ccFloatToInt64Sat( float f )
   if( f >= (float)CC_INT64_MAX )
     return CC_INT64_MAX;
   else if( f <= -(float)CC_INT64_MAX )
-    return -CC_INT64_MAX;
+    return -(int64_t)CC_INT64_MAX;
   else
     return (int64_t)f;
 }
@@ -1806,24 +1855,11 @@ static inline CC_ALWAYSINLINE int64_t ccDoubleToInt64Sat( double f )
   if( f >= (double)CC_INT64_MAX )
     return CC_INT64_MAX;
   else if( f <= -(double)CC_INT64_MAX )
-    return -CC_INT64_MAX;
+    return -(int64_t)CC_INT64_MAX;
   else
     return (int64_t)f;
 }
 
-
-
-static inline CC_ALWAYSINLINE float ccFastNextAfterPositivef( float f )
-{
-  ccuintf i;
-  i = ccFloatToUint( f );
-  i++;
-  f = ccUintToFloat( i );
-  return f;
-}
-
-
-////
 
 ////
 
@@ -1852,9 +1888,11 @@ typedef struct
   size_t allocsize;
   size_t offset;
   char *data;
+  int staticflag;
 } ccGrowth;
 
-void ccGrowthInit( ccGrowth *growth, int defaultsize );
+void ccGrowthInit( ccGrowth *growth, size_t defaultsize );
+void ccGrowthInitStatic( ccGrowth *growth, char *buffer, size_t buffersize );
 int ccGrowthPrintf( ccGrowth *growth, char *format, ... );
 int ccGrowthData( ccGrowth *growth, void *data, size_t size );
 int ccGrowthSeek( ccGrowth *growth, int offset );
@@ -1865,12 +1903,14 @@ void ccGrowthElapsedTimeString( ccGrowth *growth, int64_t timecount, int maxfiel
 ////
 
 
+int ccMakeDirectory( const char *path );
 void *ccFileLoad( const char *path, size_t maxsize, size_t *retsize );
 size_t ccFileLoadDirect( const char *path, void *data, size_t minsize, size_t maxsize );
 int ccFileStore( const char *path, void *data, size_t datasize, int fsyncflag );
 int ccFileExists( char *path );
 int ccFileStat( char *path, size_t *retfilesize, time_t *retfiletime );
 int ccRenameFile( char *oldpath, char *newpath );
+int ccFileIsDirectory( char *path );
 
 
 ////
@@ -1881,12 +1921,6 @@ typedef struct _ccDir ccDir;
 ccDir *ccOpenDir( char *path );
 char *ccReadDir( ccDir *dir );
 void ccCloseDir( ccDir *dir );
-
-
-////
-
-
-int64_t ccGetFreeDiskSpace( char *dirpath );
 
 
 ////
@@ -1921,8 +1955,61 @@ static inline CC_ALWAYSINLINE uint64_t ccGetNanosecondsTime()
 ////
 
 
+typedef struct
+{
+  double adaptiverate;
+  double rate;
+  double weight;
+  double timespent;
+  double partdone;
+} ccProgress;
+
+/* 1.0: fully reactive to new input, 0.0: does not react to new input ~ try 0.3 or so */
+static inline void ccProgressClear( ccProgress *progress, double adaptiverate )
+{
+  progress->adaptiverate = adaptiverate;
+  progress->rate = -1.0;
+  progress->weight = 0.0;
+  progress->timespent = 0.0;
+  progress->partdone = 0.0;
+  return;
+}
+
+static inline double ccProgressUpdate( ccProgress *progress, double partdone, double timespent )
+{
+  double rate, adaptiveweight, remtime;
+  rate = ( partdone - progress->partdone ) / ( timespent - progress->timespent );
+  if( progress->rate >= 0.0 )
+  {
+    adaptiveweight = (1.0-progress->adaptiverate) * (1.0-progress->weight );
+    progress->rate = ( adaptiveweight * progress->rate ) + ( (1.0-adaptiveweight) * rate );
+    progress->weight *= 1.0 - progress->adaptiverate;
+  }
+  else
+  {
+    progress->rate = rate;
+    progress->weight = 1.0 - progress->adaptiverate;
+  }
+  progress->partdone = partdone;
+  progress->timespent = timespent;
+  remtime = 0.0;
+  if( progress->rate )
+    remtime = ( 1.0 - progress->partdone ) / progress->rate;
+  return remtime;
+}
+
+
+////
+
+
+int64_t ccGetFreeDiskSpace( char *dirpath );
+
+
 /* Returned string must be free()d */
 char *ccGetSystemName();
+
+
+////
 
 
 #endif

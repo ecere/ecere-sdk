@@ -92,6 +92,7 @@ BOWLS = $(call shwspace,$(addprefix $(OBJ),$(patsubst %.ec,%$(B),$(notdir $(_ECS
 
 _OBJECTS = \
 	$(OBJ)mmhash$(O) \
+	$(OBJ)cc$(O) \
 	$(OBJ)instance.c.o
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
@@ -327,6 +328,9 @@ $(OBJ)HashTable$(O): $(OBJ)HashTable.c
 
 $(OBJ)mmhash$(O): src/gfx/newFonts/cc/mmhash.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmhash.c) -o $(call quote_path,$@)
+
+$(OBJ)cc$(O): src/gfx/newFonts/cc/cc.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/cc.c) -o $(call quote_path,$@)
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o

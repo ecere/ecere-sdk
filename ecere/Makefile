@@ -276,6 +276,7 @@ _OBJECTS = \
 	$(if $(DISABLE_GL),,$(OBJ)ccstr$(O)) \
 	$(if $(DISABLE_GL),,$(OBJ)mm$(O)) \
 	$(OBJ)mmhash$(O) \
+	$(OBJ)mmcore$(O) \
 	$(if ,$(OBJ)CocoaEcereBridge.o,) \
 	$(if ,$(OBJ)EcereView.o,) \
 	$(OBJ)instance.c.o
@@ -311,6 +312,7 @@ SOURCES = $(ECSOURCES) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/ccstr.c) \
 	$(if $(DISABLE_GL),,src/gfx/newFonts/cc/mm.c) \
 	src/gfx/newFonts/cc/mmhash.c \
+	src/gfx/newFonts/cc/mmcore.c \
 	$(if ,src/gui/drivers/cocoa/CocoaEcereBridge.m,) \
 	$(if ,src/gui/drivers/cocoa/EcereView.m,) \
 	src/com/instance.c
@@ -1957,6 +1959,9 @@ $(OBJ)ccstr$(O): src/gfx/newFonts/cc/ccstr.c
 
 $(OBJ)mmhash$(O): src/gfx/newFonts/cc/mmhash.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmhash.c) -o $(call quote_path,$@)
+
+$(OBJ)mmcore$(O): src/gfx/newFonts/cc/mmcore.c
+	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mmcore.c) -o $(call quote_path,$@)
 
 $(OBJ)mm$(O): src/gfx/newFonts/cc/mm.c
 	$(CC) $(CFLAGS) $(CUSTOM3_PRJ_CFLAGS) -c $(call quote_path,src/gfx/newFonts/cc/mm.c) -o $(call quote_path,$@)

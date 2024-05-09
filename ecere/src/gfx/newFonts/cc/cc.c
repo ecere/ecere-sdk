@@ -1,8 +1,9 @@
 /* *****************************************************************************
- * Copyright (c) 2007-2014 Alexis Naveros.
+ * Copyright (c) 2007-2023 Alexis Naveros.
  *
  * Ecere Corporation has unlimited/unrestricted rights.
  * *****************************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stddef.h>
@@ -17,14 +18,7 @@
 #include <errno.h>
 #include <assert.h>
 
-#include <stddef.h>
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-#include <stdlib.h>
-
 #include "cc.h"
-#include "ccstr.h"
 
 #if CC_UNIX
  #include <sys/types.h>
@@ -36,7 +30,7 @@
  #include <dirent.h> /* For readdir() */
  #include <sys/statvfs.h> /* For statvfs( ) */
 #elif CC_WINDOWS
- #define WIN32_LEAN_AND_MEAN
+// #define COMPILE_MULTIMON_STUBS
  #include <windows.h>
  #include <direct.h>
  #include <sys/types.h>
@@ -46,14 +40,6 @@
 #endif
 
 
-#if defined(__linux__) && !defined(__ANDROID__) && !defined(__EMSCRIPTEN__) && !defined(__i386__)
-
-asm(".symver __xstat,__xstat@GLIBC_2.2.5");
-
-int stat_glibcwrapper(const char *fn, struct stat * buf);
-#define stat(a, b) stat_glibcwrapper(a, b)
-
-#endif
 
 ////
 
@@ -61,6 +47,7 @@ int stat_glibcwrapper(const char *fn, struct stat * buf);
 
 const size_t ccTypeSize[CC_TYPE_COUNT] =
 {
+#if CC_STDC >= 1999
  [CC_TYPE_UINT8] = sizeof(uint8_t),
  [CC_TYPE_INT8] = sizeof(int8_t),
  [CC_TYPE_UINT16] = sizeof(uint16_t),
@@ -71,202 +58,19 @@ const size_t ccTypeSize[CC_TYPE_COUNT] =
  [CC_TYPE_INT64] = sizeof(int64_t),
  [CC_TYPE_FLOAT] = sizeof(float),
  [CC_TYPE_DOUBLE] = sizeof(double)
+#else
+ sizeof(uint8_t),
+ sizeof(int8_t),
+ sizeof(uint16_t),
+ sizeof(int16_t),
+ sizeof(uint32_t),
+ sizeof(int32_t),
+ sizeof(uint64_t),
+ sizeof(int64_t),
+ sizeof(float),
+ sizeof(double)
+#endif
 };
-
-
-////
-
-
-#define CC_HASH_READ8(d,o) ((uint32_t)(((uint8_t *)d)[o]))
-#define CC_HASH_AREAD16(d,o) ((uint32_t)(*((uint16_t *)ADDRESS(d,o))))
-#define CC_HASH_UREAD16(d,o) ((((uint32_t)(((uint8_t *)(d))[o+1]))<<8)+(uint32_t)(((uint8_t *)(d))[o]))
-
-uint32_t ccHash32Data( void *data, int size )
-{
-  uint32_t hash;
-  int rem;
-  rem = size & 3;
-  size >>= 2;
-  hash = 0;
-  if( !( ( (uintptr_t)data ) & 0x1 ) )
-  {
-    for( ; size ; size-- )
-    {
-      hash += CC_HASH_AREAD16( data, 0 );
-      hash = ( hash << 16 ) ^ ( ( CC_HASH_AREAD16( data, 2 ) << 11 ) ^ hash );
-      hash += hash >> 11;
-      data = ADDRESS( data, 4 );
-    }
-  }
-  else
-  {
-    for( ; size ; size-- )
-    {
-      hash += CC_HASH_UREAD16( data, 0 );
-      hash = ( hash << 16 ) ^ ( ( CC_HASH_UREAD16( data, 2 ) << 11 ) ^ hash );
-      hash += hash >> 11;
-      data = ADDRESS( data, 4 );
-    }
-  }
-  switch( rem )
-  {
-    case 3:
-      hash += CC_HASH_UREAD16( data, 0 );
-      hash ^= hash << 16;
-      hash ^= CC_HASH_READ8( data, 2 ) << 18;
-      hash += hash >> 11;
-      break;
-    case 2:
-      hash += CC_HASH_UREAD16( data, 0 );
-      hash ^= hash << 11;
-      hash += hash >> 17;
-      break;
-    case 1:
-      hash += CC_HASH_READ8( data, 0 );
-      hash ^= hash << 10;
-      hash += hash >> 1;
-      break;
-    case 0:
-      break;
-  }
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-uint32_t ccHash32Int32( uint32_t i )
-{
-  uint32_t hash;
-  hash = i & 0xFFFF;
-  hash = ( ( hash << 16 ) ^ hash ) ^ ( ( i & 0xFFFF0000 ) >> 5 );
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-uint32_t ccHash32Int64( uint64_t i )
-{
-  uint32_t hash;
-  hash = i & 0xFFFF;
-  hash = ( ( hash << 16 ) ^ hash ) ^ ( ( (uint32_t)( i >> 16 ) & 0xFFFF ) << 11 );
-  hash += ( hash >> 11 ) + ( (uint32_t)( i >> 32 ) & 0xFFFF );
-  hash = ( ( hash << 16 ) ^ hash ) ^ (uint32_t)( ( i >> 37 ) & 0x7FFF800 );
-  hash += hash >> 11;
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-uint32_t ccHash32Array32( uint32_t *data, int count )
-{
-  uint32_t hash;
-  hash = 0;
-  for( ; count ; count-- )
-  {
-    hash += *data & 0xFFFF;
-    hash = ( ( hash << 16 ) ^ hash ) ^ ( ( *data & 0xFFFF0000 ) >> 5 );
-    hash += hash >> 11;
-    data = ADDRESS( data, 4 );
-  }
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-uint32_t ccHash32Array64( uint64_t *data, int count )
-{
-  uint32_t hash;
-  uint64_t v;
-  hash = 0;
-  for( ; count ; count-- )
-  {
-    v = *data;
-    hash += v & 0xFFFF;
-    hash = ( ( hash << 16 ) ^ hash ) ^ ( ( (uint32_t)( v >> 16 ) & 0xFFFF ) << 11 );
-    hash += ( hash >> 11 ) + ( (uint32_t)( v >> 32 ) & 0xFFFF );
-    hash = ( ( hash << 16 ) ^ hash ) ^ (uint32_t)( ( v >> 37 ) & 0x7FFF800 );
-    hash += hash >> 11;
-    data = ADDRESS( data, 8 );
-  }
-  hash ^= hash << 3;
-  hash += hash >> 5;
-  hash ^= hash << 4;
-  hash += hash >> 17;
-  hash ^= hash << 25;
-  hash += hash >> 6;
-  return hash;
-}
-
-
-////
-
-
-int ccMemCmp( void *s0, void *s1, int size )
-{
-  int i;
-  uint8_t *t0, *t1;
-  t0 = s0;
-  t1 = s1;
-  for( i = 0 ; i < size ; i++ )
-  {
-    if( t0[i] != t1[i] )
-      return 0;
-  }
-  return 1;
-}
-
-int ccMemCmp32( uint32_t *s0, uint32_t *s1, int count )
-{
-  int i;
-  for( i = 0 ; i < count ; i++ )
-  {
-    if( s0[i] != s1[i] )
-      return 0;
-  }
-  return 1;
-}
-
-int ccMemCmp64( uint64_t *s0, uint64_t *s1, int count )
-{
-  int i;
-  for( i = 0 ; i < count ; i++ )
-  {
-    if( s0[i] != s1[i] )
-      return 0;
-  }
-  return 1;
-}
-
-int ccMemCmpSize( void *s0, void *s1, int size )
-{
-  int i;
-  uint8_t *t0, *t1;
-  t0 = s0;
-  t1 = s1;
-  for( i = 0 ; i < size ; i++ )
-  {
-    if( t0[i] != t1[i] )
-      break;
-  }
-  return i;
-}
 
 
 ////
@@ -385,7 +189,7 @@ uint64_t ccLog2Int64( uint64_t v )
 ////
 
 
-#define CC_SORT_SWAP(a,b) ({temp=table[b];table[b]=table[a];table[a]=temp;})
+#define CC_SORT_SWAP(a,b) do{temp=table[b];table[b]=table[a];table[a]=temp;}while(0)
 
 #define CC_SORT_STACK_DEPTH (512)
 
@@ -404,79 +208,79 @@ static void ccQuickSortPart( void **table, int count, int (*sortfunc)( void *t0,
   {
     case 4:
       if( sortfunc( table[0], table[1] ) )
-      CC_SORT_SWAP( 1, 0 );
+        CC_SORT_SWAP( 1, 0 );
       if( sortfunc( table[2], table[3] ) )
-      CC_SORT_SWAP( 3, 2 );
+        CC_SORT_SWAP( 3, 2 );
       if( sortfunc( table[0], table[2] ) )
       {
-      temp = table[2];
-      table[2] = table[1];
-      table[1] = table[0];
-      table[0] = temp;
-      if( sortfunc( table[2], table[3] ) )
-      {
-        CC_SORT_SWAP( 3, 2 );
-        if( sortfunc( table[1], table[2] ) )
-          CC_SORT_SWAP( 2, 1 );
-      }
+        temp = table[2];
+        table[2] = table[1];
+        table[1] = table[0];
+        table[0] = temp;
+        if( sortfunc( table[2], table[3] ) )
+        {
+          CC_SORT_SWAP( 3, 2 );
+          if( sortfunc( table[1], table[2] ) )
+            CC_SORT_SWAP( 2, 1 );
+        }
       }
       else
       {
-      if( sortfunc( table[1], table[2] ) )
-      {
-        CC_SORT_SWAP( 2, 1 );
-        if( sortfunc( table[2], table[3] ) )
-          CC_SORT_SWAP( 3, 2 );
-      }
+        if( sortfunc( table[1], table[2] ) )
+        {
+          CC_SORT_SWAP( 2, 1 );
+          if( sortfunc( table[2], table[3] ) )
+            CC_SORT_SWAP( 3, 2 );
+        }
       }
       break;
     case 3:
       if( sortfunc( table[0], table[1] ) )
       {
-      if( sortfunc( table[1], table[2] ) )
-      {
-        /* [1]>[0], [2]>[1] = [2]>[1]>[0] */
-        CC_SORT_SWAP( 2, 0 );
-      }
-      else
-      {
+        if( sortfunc( table[1], table[2] ) )
+        {
+          /* [1]>[0], [2]>[1] = [2]>[1]>[0] */
+          CC_SORT_SWAP( 2, 0 );
+        }
+        else
+        {
           if( sortfunc( table[0], table[2] ) )
-        {
-          /* [1]>[0], [2]<[1], [2]>[0] = [1]>[2]>[0] */
-          temp = table[0];
-          table[0] = table[1];
-          table[1] = table[2];
-          table[2] = temp;
-        }
-        else
-        {
-          /* [1]>[0], [2]<[1], [2]<[0] = [1]>[0]>[2] */
-          CC_SORT_SWAP( 1, 0 );
-        }
-      }
-      }
-      else
-      {
-      if( sortfunc( table[1], table[2] ) )
-      {
-        if( sortfunc( table[0], table[2] ) )
-        {
-          /* [1]<[0], [2]>[1], [2]>[0] = [2]>[0]>[1] */
-          temp = table[2];
-          table[2] = table[1];
-          table[1] = table[0];
-          table[0] = temp;
-        }
-        else
-        {
-          /* [1]<[0], [2]>[1], [2]<[0] = [0]>[2]>[1] */
-          CC_SORT_SWAP( 1, 2 );
+          {
+            /* [1]>[0], [2]<[1], [2]>[0] = [1]>[2]>[0] */
+            temp = table[0];
+            table[0] = table[1];
+            table[1] = table[2];
+            table[2] = temp;
+          }
+          else
+          {
+            /* [1]>[0], [2]<[1], [2]<[0] = [1]>[0]>[2] */
+            CC_SORT_SWAP( 1, 0 );
+          }
         }
       }
       else
       {
-        /* [1]<[0], [2]<[1] = [0]>[1]>[2] */
-      }
+        if( sortfunc( table[1], table[2] ) )
+        {
+          if( sortfunc( table[0], table[2] ) )
+          {
+            /* [1]<[0], [2]>[1], [2]>[0] = [2]>[0]>[1] */
+            temp = table[2];
+            table[2] = table[1];
+            table[1] = table[0];
+            table[0] = temp;
+          }
+          else
+          {
+            /* [1]<[0], [2]>[1], [2]<[0] = [0]>[2]>[1] */
+            CC_SORT_SWAP( 1, 2 );
+          }
+        }
+        else
+        {
+          /* [1]<[0], [2]<[1] = [0]>[1]>[2] */
+        }
       }
       break;
     case 2:
@@ -593,79 +397,79 @@ static void ccQuickSortContextPart( void **table, int count, int (*sortfunc)( vo
   {
     case 4:
       if( sortfunc( context, table[0], table[1] ) )
-      CC_SORT_SWAP( 1, 0 );
+        CC_SORT_SWAP( 1, 0 );
       if( sortfunc( context, table[2], table[3] ) )
-      CC_SORT_SWAP( 3, 2 );
+        CC_SORT_SWAP( 3, 2 );
       if( sortfunc( context, table[0], table[2] ) )
       {
-      temp = table[2];
-      table[2] = table[1];
-      table[1] = table[0];
-      table[0] = temp;
-      if( sortfunc( context, table[2], table[3] ) )
-      {
-        CC_SORT_SWAP( 3, 2 );
-        if( sortfunc( context, table[1], table[2] ) )
-          CC_SORT_SWAP( 2, 1 );
-      }
+        temp = table[2];
+        table[2] = table[1];
+        table[1] = table[0];
+        table[0] = temp;
+        if( sortfunc( context, table[2], table[3] ) )
+        {
+          CC_SORT_SWAP( 3, 2 );
+          if( sortfunc( context, table[1], table[2] ) )
+            CC_SORT_SWAP( 2, 1 );
+        }
       }
       else
       {
-      if( sortfunc( context, table[1], table[2] ) )
-      {
-        CC_SORT_SWAP( 2, 1 );
-        if( sortfunc( context, table[2], table[3] ) )
-          CC_SORT_SWAP( 3, 2 );
-      }
+        if( sortfunc( context, table[1], table[2] ) )
+        {
+          CC_SORT_SWAP( 2, 1 );
+          if( sortfunc( context, table[2], table[3] ) )
+            CC_SORT_SWAP( 3, 2 );
+        }
       }
       break;
     case 3:
       if( sortfunc( context, table[0], table[1] ) )
       {
-      if( sortfunc( context, table[1], table[2] ) )
-      {
-        /* [1]>[0], [2]>[1] = [2]>[1]>[0] */
-        CC_SORT_SWAP( 2, 0 );
-      }
-      else
-      {
+        if( sortfunc( context, table[1], table[2] ) )
+        {
+          /* [1]>[0], [2]>[1] = [2]>[1]>[0] */
+          CC_SORT_SWAP( 2, 0 );
+        }
+        else
+        {
           if( sortfunc( context, table[0], table[2] ) )
-        {
-          /* [1]>[0], [2]<[1], [2]>[0] = [1]>[2]>[0] */
-          temp = table[0];
-          table[0] = table[1];
-          table[1] = table[2];
-          table[2] = temp;
-        }
-        else
-        {
-          /* [1]>[0], [2]<[1], [2]<[0] = [1]>[0]>[2] */
-          CC_SORT_SWAP( 1, 0 );
-        }
-      }
-      }
-      else
-      {
-      if( sortfunc( context, table[1], table[2] ) )
-      {
-        if( sortfunc( context, table[0], table[2] ) )
-        {
-          /* [1]<[0], [2]>[1], [2]>[0] = [2]>[0]>[1] */
-          temp = table[2];
-          table[2] = table[1];
-          table[1] = table[0];
-          table[0] = temp;
-        }
-        else
-        {
-          /* [1]<[0], [2]>[1], [2]<[0] = [0]>[2]>[1] */
-          CC_SORT_SWAP( 1, 2 );
+          {
+            /* [1]>[0], [2]<[1], [2]>[0] = [1]>[2]>[0] */
+            temp = table[0];
+            table[0] = table[1];
+            table[1] = table[2];
+            table[2] = temp;
+          }
+          else
+          {
+            /* [1]>[0], [2]<[1], [2]<[0] = [1]>[0]>[2] */
+            CC_SORT_SWAP( 1, 0 );
+          }
         }
       }
       else
       {
-        /* [1]<[0], [2]<[1] = [0]>[1]>[2] */
-      }
+        if( sortfunc( context, table[1], table[2] ) )
+        {
+          if( sortfunc( context, table[0], table[2] ) )
+          {
+            /* [1]<[0], [2]>[1], [2]>[0] = [2]>[0]>[1] */
+            temp = table[2];
+            table[2] = table[1];
+            table[1] = table[0];
+            table[0] = temp;
+          }
+          else
+          {
+            /* [1]<[0], [2]>[1], [2]<[0] = [0]>[2]>[1] */
+            CC_SORT_SWAP( 1, 2 );
+          }
+        }
+        else
+        {
+          /* [1]<[0], [2]<[1] = [0]>[1]>[2] */
+        }
       }
       break;
     case 2:
@@ -1347,17 +1151,44 @@ void ccDebugLog( char *filename, char *string, ... )
 ////
 
 
-void ccGrowthInit( ccGrowth *growth, int defaultsize )
+void ccGrowthInit( ccGrowth *growth, size_t defaultsize )
 {
   growth->allocsize = CC_MAX( defaultsize, 512 );
   growth->offset = 0;
   growth->data = malloc( growth->allocsize );
+  growth->staticflag = 0;
+  return;
+}
+
+void ccGrowthInitStatic( ccGrowth *growth, char *buffer, size_t buffersize )
+{
+  growth->allocsize = buffersize;
+  growth->offset = 0;
+  growth->data = buffer;
+  growth->staticflag = 1;
+  return;
+}
+
+static inline void ccGrowthRealloc( ccGrowth *growth, size_t allocsize )
+{
+  void *staticdata;
+  growth->allocsize = allocsize;
+  if( !growth->staticflag )
+    growth->data = realloc( growth->data, growth->allocsize );
+  else
+  {
+    staticdata = growth->data;
+    growth->data = malloc( growth->allocsize );
+    memcpy( growth->data, staticdata, growth->offset );
+    growth->staticflag = 0;
+  }
   return;
 }
 
 int ccGrowthPrintf( ccGrowth *growth, char *format, ... )
 {
   int strsize, clampsize;
+  size_t allocsize;
   va_list ap;
 
   for( ; ; )
@@ -1372,8 +1203,8 @@ int ccGrowthPrintf( ccGrowth *growth, char *format, ... )
 #endif
     if( strsize < clampsize )
       break;
-    growth->allocsize = CC_MAX( growth->offset + strsize + 1, growth->allocsize << 1 );
-    growth->data = realloc( growth->data, growth->allocsize );
+    allocsize = CC_MAX( growth->offset + strsize + 1, growth->allocsize << 1 );
+    ccGrowthRealloc( growth, allocsize );
   }
   growth->offset += strsize;
 
@@ -1382,10 +1213,11 @@ int ccGrowthPrintf( ccGrowth *growth, char *format, ... )
 
 int ccGrowthData( ccGrowth *growth, void *data, size_t size )
 {
+  size_t allocsize;
   if( ( growth->offset + size ) >= growth->allocsize )
   {
-    growth->allocsize = CC_MAX( growth->offset + size, growth->allocsize << 1 );
-    growth->data = realloc( growth->data, growth->allocsize );
+    allocsize = CC_MAX( growth->offset + size, growth->allocsize << 1 );
+    ccGrowthRealloc( growth, allocsize );
   }
   memcpy( ADDRESS( growth->data, growth->offset ), data, size );
   growth->offset += size;
@@ -1394,10 +1226,11 @@ int ccGrowthData( ccGrowth *growth, void *data, size_t size )
 
 int ccGrowthSeek( ccGrowth *growth, int offset )
 {
+  size_t allocsize;
   if( offset >= growth->allocsize )
   {
-    growth->allocsize = CC_MAX( offset, growth->allocsize << 1 );
-    growth->data = realloc( growth->data, growth->allocsize );
+    allocsize = CC_MAX( offset, growth->allocsize << 1 );
+    ccGrowthRealloc( growth, allocsize );
   }
   if( offset > growth->offset )
     memset( ADDRESS( growth->data, growth->offset ), 0, offset - growth->offset );
@@ -1407,7 +1240,8 @@ int ccGrowthSeek( ccGrowth *growth, int offset )
 
 void ccGrowthFree( ccGrowth *growth )
 {
-  free( growth->data );
+  if( !growth->staticflag )
+    free( growth->data );
   memset( growth, 0, sizeof(ccGrowth) );
   return;
 }
@@ -1468,13 +1302,26 @@ void ccGrowthElapsedTimeString( ccGrowth *growth, int64_t timecount, int maxfiel
 }
 
 
-
 ////
+
+
+int ccMakeDirectory( const char *dirpath )
+{
+#if CC_UNIX
+  return ( mkdir( dirpath, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH ) == 0 );
+#elif CC_WINDOWS
+  return ( _mkdir( dirpath ) == 0 );
+#else
+ #error Unknown/Unsupported platform!
+#endif
+  return 0;
+}
 
 
 void *ccFileLoad( const char *path, size_t maxsize, size_t *retsize )
 {
   FILE *file;
+  long ftellret;
   size_t size;
   char *data;
 
@@ -1482,7 +1329,13 @@ void *ccFileLoad( const char *path, size_t maxsize, size_t *retsize )
   if( !( file ) )
     return 0;
   fseek( file, 0, SEEK_END );
-  size = ftell( file );
+  ftellret = ftell( file );
+  if( ftellret == -1 )
+  {
+    fclose( file );
+    return 0;
+  }
+  size = ftellret;
   fseek( file, 0, SEEK_SET );
   if( ( maxsize ) && ( size > maxsize ) )
   {
@@ -1490,6 +1343,11 @@ void *ccFileLoad( const char *path, size_t maxsize, size_t *retsize )
     return 0;
   }
   data = malloc( size + 1 );
+  if( !data )
+  {
+    fclose( file );
+    return 0;
+  }
   data[size] = 0;
   if( fread( data, size, 1, file ) != 1 )
   {
@@ -1530,11 +1388,23 @@ int ccFileStore( const char *path, void *data, size_t datasize, int fsyncflag )
   int retval;
 #if CC_UNIX
   int fd;
+  ssize_t writtensize;
   if( ( fd = open( path, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR ) ) == -1 )
     return 0;
   retval = 1;
-  if( write( fd, data, datasize ) != datasize )
-    retval = 0;
+  for( ; ; )
+  {
+    writtensize = write( fd, data, datasize );
+    if( writtensize == -1 )
+    {
+      retval = 0;
+      break;
+    }
+    if( writtensize >= datasize )
+      break;
+    datasize -= writtensize;
+    data = ADDRESS( data, writtensize );
+  }
   if( fsyncflag )
   {
  #if CC_LINUX
@@ -1545,7 +1415,7 @@ int ccFileStore( const char *path, void *data, size_t datasize, int fsyncflag )
   }
   if( close( fd ) != 0 )
     retval = 0;
-#elif CC_WINDOWS && !defined(__UWP__)
+#elif CC_WINDOWS
   HANDLE file;
   DWORD byteswritten;
   file = CreateFileA( path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
@@ -1601,24 +1471,24 @@ int ccFileStat( char *path, size_t *retfilesize, time_t *retfiletime )
 #if CC_UNIX
   struct stat filestat;
   statret = stat( path, &filestat );
-  if( !( statret ) )
+  if( !statret )
   {
     if( retfilesize )
       *retfilesize = filestat.st_size;
     if( retfiletime )
       *retfiletime = filestat.st_mtime;
-    return 1;
+    return ( ( filestat.st_mode & S_IFDIR ) ? 2 : 1 );
   }
 #elif CC_WINDOWS
   struct _stat filestat;
   statret = _stat( path, &filestat );
-  if( !( statret ) )
+  if( !statret )
   {
     if( retfilesize )
       *retfilesize = filestat.st_size;
     if( retfiletime )
       *retfiletime = filestat.st_mtime;
-    return 1;
+    return ( ( filestat.st_mode & _S_IFDIR ) ? 2 : 1 );
   }
 #endif
   if( retfilesize )
@@ -1648,6 +1518,24 @@ int ccRenameFile( char *oldpath, char *newpath )
     return 0;
 #endif
   return 1;
+}
+
+
+int ccFileIsDirectory( char *path )
+{
+#if CC_UNIX
+  struct stat path_stat;
+  stat( path, &path_stat );
+  return S_ISDIR( path_stat.st_mode );
+#elif CC_WINDOWS
+  DWORD fileattribs;
+  fileattribs = GetFileAttributesA( path );
+  if( fileattribs == INVALID_FILE_ATTRIBUTES )
+    return 0;
+  return fileattribs & FILE_ATTRIBUTE_DIRECTORY;
+#else
+ #error Unknown/Unsupported platform!
+#endif
 }
 
 
@@ -1799,6 +1687,32 @@ void ccSleep( int milliseconds )
 ////
 
 
+static inline char *ccStrAllocPrintfInline( char *format, ... )
+{
+  char *str;
+  int strsize, allocsize;
+  va_list ap;
+
+  allocsize = 512;
+  str = malloc( allocsize );
+  for( ; ; )
+  {
+    va_start( ap, format );
+    strsize = vsnprintf( str, allocsize, format, ap );
+#if CC_WINDOWS
+    if( strsize == -1 )
+      strsize = allocsize << 1;
+#endif
+    va_end( ap );
+    if( strsize < allocsize )
+      break;
+    allocsize = strsize + 2;
+    str = realloc( str, allocsize );
+  }
+
+  return str;
+}
+
 /* Returned string must be free()d */
 char *ccGetSystemName()
 {
@@ -1807,7 +1721,7 @@ char *ccGetSystemName()
   struct utsname unamebuf;
   if( uname( &unamebuf ) )
     return 0;
-  string = ccStrAllocPrintf( "%s %s, Build %s, %s", unamebuf.sysname, unamebuf.release, unamebuf.version, unamebuf.machine );
+  string = ccStrAllocPrintfInline( "%s %s, Build %s, %s", unamebuf.sysname, unamebuf.release, unamebuf.version, unamebuf.machine );
 #elif CC_WINDOWS
  #ifndef VER_SUITE_WH_SERVER
   #define VER_SUITE_WH_SERVER 0x00008000
@@ -1881,12 +1795,9 @@ char *ccGetSystemName()
   ZeroMemory( &si, sizeof(SYSTEM_INFO) );
   ZeroMemory( &osvi, sizeof(OSVERSIONINFOEX) );
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-#if !defined(__UWP__)
   if( !( GetVersionEx( (OSVERSIONINFO*) &osvi ) ) )
-#endif
    return 0;
 
-#if !defined(__UWP__)
   pGNSI = (PGNSI)GetProcAddress( GetModuleHandleA( "kernel32.dll" ), "GetNativeSystemInfo" );
   if( pGNSI )
     pGNSI( &si );
@@ -2033,7 +1944,7 @@ char *ccGetSystemName()
     sysname = "Windows 2000 ";
     if( osvi.wProductType == VER_NT_WORKSTATION )
       detailname = "Professional";
-    else
+    else 
     {
       if( osvi.wSuiteMask & VER_SUITE_DATACENTER )
         detailname = "Datacenter Server";
@@ -2054,24 +1965,10 @@ char *ccGetSystemName()
   }
 
   /* Finally build the string */
-  string = ccStrAllocPrintf( "%s%s%s%s%s (build %d )%s", sysname, ( detailname ? ", " : "" ), ( detailname ? detailname : "" ), ( packname ? ", " : "" ), ( packname ? packname : "" ), buildnumber, ( archname ? archname : "" ) );
-#endif
+  string = ccStrAllocPrintfInline( "%s%s%s%s%s (build %d )%s", sysname, ( detailname ? ", " : "" ), ( detailname ? detailname : "" ), ( packname ? ", " : "" ), ( packname ? packname : "" ), buildnumber, ( archname ? archname : "" ) );
 
 #endif
   return string;
 }
 
-// TODO: Improve how this is resolved... output in .main.c?
-#if defined(__clang__) && defined(_MSC_VER)
 
-int strcasecmp(const char * a, const char * b)
-{
-   return strcmpi(a, b);
-}
-
-int strncasecmp(const char * a, const char * b, size_t n)
-{
-   return strnicmp(a, b, n);
-}
-
-#endif

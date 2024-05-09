@@ -2495,7 +2495,9 @@
                               },
                               "mmhash.h",
                               "mmhashinline.h",
-                              "mmhashinternal.h"
+                              "mmhashinternal.h",
+                              "mmcore.c",
+                              "cchash.h"
                            ]
                         },
                         "atlasBuilder.ec",
