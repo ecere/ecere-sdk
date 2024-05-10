@@ -470,86 +470,55 @@ public struct ECCSSEvaluator
                {
                   // NOTE: may move this to a function somewhere
                   // basedon : https://stackoverflow.com/questions/13488957/interpolate-from-one-color-to-another
+                  bool isExponential = !strcmp(args[0].s, "exponential");
+                  double base = isExponential ?
+                     (args[numArgs-1].type.type == integer ? (double)args[numArgs-1].i : args[numArgs-1].r) : 1;
+                  double input = args[1].type.type == integer ? (double)args[1].i : args[1].r;
+                  int lastStep = isExponential ? numArgs-3 : numArgs-2;
+                  bool isColor = args[3].type.type == integer && args[3].type.format == color;
+                  double start = args[2].type.type == integer ? (double)args[2].i : args[2].r, end;
+                  double firstVal = args[3].type.type == integer ? (double)args[3].i : args[3].r, secondVal;
+                  double fraction;
                   int i;
-                  double firstVal = 0, secondVal = 0, fraction = 0, start = 0, end = 0, step = 0, base = 0;
-                  step = args[1].type.type == integer ? (double)args[1].i : args[1].r;
-                  if(!strcmp(args[0].s, "exponential"))
-                     base = args[numArgs-1].type.type == integer ? (double)args[numArgs-1].i : args[numArgs-1].r;
-                  //TOFIX: exponential
-                  //NOTE: the value is only interpolated *between* the stops, not before and after
 
-                  for(i = 2; i < base ? numArgs-4 : numArgs-3; i+=2)
+                  for(i = 2; i <= lastStep; i += 2)
                   {
-                     start = args[i].type.type == integer ? (double)args[i].i : args[i].r;
-                     end = args[i+2].type.type == integer ? (double)args[i+2].i : args[i+2].r;
-                     firstVal = args[i+1].type.type == integer ? (double)args[i+1].i : args[i+1].r;
-                     secondVal = args[i+3].type.type == integer ? (double)args[i+3].i : args[i+3].r;
-                     if(step > start && i == 2)
-                     {
-                        end = 0;
+                     end = start, secondVal = firstVal;
+                     if(input <= start || i == lastStep)
                         break;
-                     }
-                     else if(step < end && i == (numArgs -4))
-                     {
-                        start = 0;
-                        break;
-                     }
-                     else if( step <= start && step >= end)
-                     {
-                        fraction = (start - step) / (start - end);
-                        break;
-                     }
-                  }
-                  if(args[3].type.type == integer)
-                  {
-                     value.type = { integer };
-                     if(args[3].type.format == hex) value.type.format = hex;
-                     if(args[3].type.format == color)
-                     {
-                        // convert to rgb, interpolate each, convert back to integer
-                        Color firstCol = (Color)firstVal, secondCol = (Color)secondVal;
-                        Color final {};
-                        value.type.format = color;
-                        if(start && end)
-                        {
-                           if(base)
-                           {
-                              final.r = (byte)round(firstCol.r + (secondCol.r - firstCol.r) * (pow(base, fraction - 1) / (base - 1)));//(byte)(round(pow(firstCol.r * (firstCol.r / secondCol.r), fraction * exponential));
-                              final.g = (byte)round(firstCol.g + (secondCol.g - firstCol.g) * (pow(base, fraction - 1) / (base - 1)));
-                              final.b = (byte)round(firstCol.b + (secondCol.b - firstCol.b) * (pow(base, fraction - 1) / (base - 1)));
-                           }
-                           else
-                           {
-                              final.r = (byte)round((secondCol.r - firstCol.r) * fraction + firstCol.r);
-                              final.g = (byte)round((secondCol.g - firstCol.g) * fraction + firstCol.g);
-                              final.b = (byte)round((secondCol.b - firstCol.b) * fraction + firstCol.b);
-                           }
-                           value.i = final;
-                        }
-                        else
-                           value.i = start ? (int)firstVal : (int)secondVal;
-                     }
                      else
                      {
-                        if(start && end)
+                        double nextStep = args[i+2].type.type == integer ? (double)args[i+2].i : args[i+2].r;
+                        double nextValue = args[i+3].type.type == integer ? (double)args[i+3].i : args[i+3].r;
+                        if(input < nextStep)
                         {
-                           if(base) value.i = (int)round(firstVal + (secondVal - firstVal) * (pow(base, fraction - 1) / (base - 1)));//(int)(round(pow(firstVal * (firstVal / secondVal), fraction * exponential));
-                           else value.i = (int)round((secondVal - firstVal) * fraction + firstVal);
+                           end = nextStep, secondVal = nextValue;
+                           break;
                         }
                         else
-                           value.i = start ? (int)firstVal : (int)secondVal;
+                           start = nextStep, firstVal = nextValue;
                      }
+                  }
+                  fraction = (end == start) ? 1 : (input - start) / (end - start);
+                  if(base != 1)
+                     fraction = (pow(base, fraction) - 1) / (base - 1);
+
+                  if(isColor)
+                  {
+                     // convert to rgb, interpolate each, convert back to integer
+                     Color firstCol = (Color)firstVal, secondCol = (Color)secondVal;
+                     value.i = Color
+                     {
+                        r = (byte)round(firstCol.r + (secondCol.r - firstCol.r) * fraction);
+                        g = (byte)round(firstCol.g + (secondCol.g - firstCol.g) * fraction);
+                        b = (byte)round(firstCol.b + (secondCol.b - firstCol.b) * fraction);
+                     };
+                     value.type.format = color;
                   }
                   else
                   {
                      value.type = { real };
-                     if(start && end)
-                     {
-                        if(base) value.r = firstVal + (secondVal - firstVal) * (pow(base, fraction - 1) / (base - 1));//old version value.r = pow(firstVal * (firstVal / secondVal), fraction * base);
-                        else value.r = ((secondVal - firstVal) * fraction + firstVal);
-                     }
-                     else
-                        value.r = start ? firstVal : secondVal;
+                     value.r = firstVal + (secondVal - firstVal) * fraction;
                   }
                }
                break;
