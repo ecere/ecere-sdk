@@ -20,8 +20,10 @@ enum ECCSSFunctionIndex : int
    // Text manipulation
    strupr = 1,
    strlwr,
+   strtod,
    subst,
    format,
+   concatenate,
    pow,
    log,
    like,
@@ -316,6 +318,12 @@ public struct ECCSSEvaluator
                expType = class(String);
                break;
             }
+            case concatenate:
+            {
+               if(args.list.count >= 1) args[0].destType = class(String);
+               expType = class(String);
+               break;
+            }
             case pow:
             {
                if(args.list.count >= 1) args[0].destType = class(double);
@@ -324,6 +332,14 @@ public struct ECCSSEvaluator
                break;
             }
             case log:
+            {
+               if(args.list.count >= 1) args[0].destType = class(double);
+               // NOTE: We could also support 2 arguments, with first argument being base in that case?
+               // if(args.list.count >= 2) args[1].destType = class(double);
+               expType = class(double);
+               break;
+            }
+            case strtod:
             {
                if(args.list.count >= 1) args[0].destType = class(double);
                // NOTE: We could also support 2 arguments, with first argument being base in that case?
@@ -407,6 +423,30 @@ public struct ECCSSEvaluator
                   value.type = { text, true };
                   value.s = formatValues(args[0].s, numArgs-1, &args[1]);
                   expType = class(String);
+               }
+               break;
+            }
+            case concatenate:
+            {
+               if(numArgs >= 1)
+               {
+                  int i;
+                  char newStr[MAX_LOCATION];
+                  newStr[MAX_LOCATION-1] = '\0';
+                  newStr[0] = 0;
+                  value.type = { text, true };
+                  for(i = 0; i < numArgs; i++)
+                  {
+                     if(args[i].type.type == text)
+                        //if(i == 0) sprintf(newStr, "%s", args[i].s);
+                        strcat(newStr, args[i].s);
+                     else
+                     {
+                        //if(i == 0) sprintf(newStr, args[i].type.type == integer ? "%d" : "%f", args[i].type.type == integer ? args[i].i : args[i].r);
+                        strcatf(newStr, args[i].type.type == integer ? "%d" : "%f", args[i].type.type == integer ? args[i].i : args[i].r);
+                     }
+                  }
+                  value.s = CopyString(newStr);
                }
                break;
             }
@@ -520,6 +560,19 @@ public struct ECCSSEvaluator
                      value.type = { real };
                      value.r = firstVal + (secondVal - firstVal) * fraction;
                   }
+               }
+               break;
+            }
+            case strtod:
+            {
+               if(numArgs == 1) //TODO: options for base?
+               {
+                  value.type = { real };
+                  if(args[0].type.type == text && strlen(args[0].s) > 1)
+                     value.r = strtod(args[0].s, null);
+                  // optional fallback value, but this is behavior specific to mbgl 'to-number', not strod
+                  /*else if(numArgs > 1 && (args[1].type.type == integer || args[1].type.type == real))
+                     value.r = args[1].type.type == integer ? args[1].i : args[1].r;*/
                }
                break;
             }
