@@ -473,7 +473,8 @@ public:
       // TODO: Review for 32 bit and big-endian..
       else if(type && expType && (expType != class(int64) && expType != class(uint64)) && strcmp(type.dataTypeString, expType.dataTypeString))
          type = null;
-
+      else if(type && type.type == unitClass)
+         type = null;
       if(type && !constant.type.isDateTime) // Review this type check logic
       {
          const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *) = type._vTbl[__ecereVMethodID_class_OnGetString];
