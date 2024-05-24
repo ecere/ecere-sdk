@@ -23,7 +23,7 @@ static Array<Vector3D> vertices { };
 
 /*static */ GLUtesselator * butterburTesselator = null;
 
-static double ccw(Pointf a, Pointf b, Pointf c)
+private static inline double ccw(const Pointf a, const Pointf b, const Pointf c)
 {
    return (((double)b.x - (double)a.x) * ((double)c.y - (double)a.y) - ((double)c.x - (double)a.x) * ((double)b.y - (double)a.y));
 }
