@@ -236,7 +236,18 @@ public CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
 
    if(e._class == class(CMSSExpBrackets) && ((CMSSExpBrackets)e).list && ((CMSSExpBrackets)e).list.list.count > 1)
       return e; // Do not simplify lists with more than one element
-   else if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray) && e._class != class(CMSSExpConditional))
+   else if(e._class == class(CMSSExpConditional))
+   {
+      CMSSExpConditional conditional = (CMSSExpConditional)e;
+      CMSSExpression ne;
+      if(conditional.result)
+         ne = conditional.expList.lastIterator.data, conditional.expList.RemoveAll();
+      else
+         ne = conditional.elseExp, conditional.elseExp = null;;
+      delete e;
+      return simplifyResolved(val, ne);
+   }
+   else if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
    {
       CMSSExpression ne = (val.type.type == text) ? (val.s ? CMSSExpString { string = CopyString(val.s) } :  CMSSExpIdentifier { identifier = CMSSIdentifier { string = CopyString("null") } })  : CMSSExpConstant { constant = val };
       ne.destType = e.destType;
@@ -1042,6 +1053,7 @@ public:
    CMSSExpression condition;
    CMSSExpList expList;
    CMSSExpression elseExp;
+   bool result; // Work-around for simplifyResolved() challenges not having access to computed condition FieldValue
 
    CMSSExpConditional copy()
    {
@@ -1093,11 +1105,13 @@ public:
 
    ExpFlags compute(FieldValue value, ECCSSEvaluator evaluator, ComputeType computeType, Class stylesClass)
    {
+      // RVVIEW: computeType ignored here ?
       ExpFlags flags = 0;
       FieldValue condValue { };
       ExpFlags flagsCond = condition.compute(condValue, evaluator, computeType, stylesClass);
       if(flagsCond.resolved)
       {
+         result = (bool)condValue.i;
          if(condValue.i)
          {
             CMSSExpression last = expList.lastIterator.data;   // CMSS Only currently supports a single expression...
@@ -1105,13 +1119,17 @@ public:
             {
                last.destType = destType;
                flags = last.compute(value, evaluator, computeType, stylesClass);
+               if(!expType) expType = last.expType;
             }
          }
          else
+         {
             flags = elseExp.compute(value, evaluator, computeType, stylesClass);
+            if(!expType) expType = elseExp.expType;
+         }
          if(!flags.resolved)
             condition = simplifyResolved(condValue, condition);
-          // TOOD: Support for replacing condition expression entirely eventually?
+          // TODO: Support for replacing condition expression entirely eventually?
       }
       else
       {
@@ -1690,6 +1708,7 @@ public:
          }
          else if(expType && expType.type == unitClass)
          {
+            value = { { nil } };
             for(i : instance.members)
             {
                CMSSMemberInitList members = i;
@@ -1707,7 +1726,7 @@ public:
          }
          else if(!expType || expType != class(DateTime))
             value = { { blob }, b = instData };
-         if(!instData)
+         else if(!instData)
             value = { { nil } };
       }
       return flags;
