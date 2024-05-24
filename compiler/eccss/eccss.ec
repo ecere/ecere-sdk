@@ -959,7 +959,8 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                      else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
-                        setInstance(object,  (void *)(uintptr)val.i);
+                        if(val.i)    // REVIEW: Was getting a crash on GEFont...
+                           setInstance(object,  (void *)(uintptr)val.i);
                      }
                      else if((destType.type == noHeadClass || destType.type == normalClass) && exp._class == class(CMSSExpArray))
                      {
@@ -1011,7 +1012,8 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                      }
                      else if(destType.type == structClass && exp._class == class(CMSSExpInstance))
                      {
-                        memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
+                        if(val.i) // REVIEW: Crash on GEFont
+                           memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
