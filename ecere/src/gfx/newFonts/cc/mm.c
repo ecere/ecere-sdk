@@ -887,6 +887,44 @@ void mmBTreeInsert( void *item, void *parent, int itemflag, intptr_t offset, voi
   return;
 }
 
+void mmBTreeInsertLeft( void *item, void *target, intptr_t offset, void **root )
+{
+  mmBTreeNode *tnode;
+  tnode = ADDRESS( target, offset );
+  if( !tnode->child[MM_BTREE_FLAGS_LEFT] )
+    mmBTreeInsert( item, target, MM_BTREE_FLAGS_LEFT, offset, root );
+  else
+  {
+    for( target = tnode->child[MM_BTREE_FLAGS_LEFT] ; ; target = tnode->child[MM_BTREE_FLAGS_RIGHT] )
+    {
+      tnode = ADDRESS( target, offset );
+      if( !tnode->child[MM_BTREE_FLAGS_RIGHT] )
+        break;
+    }
+    mmBTreeInsert( item, target, MM_BTREE_FLAGS_RIGHT, offset, root );
+  }
+  return;
+}
+
+
+void mmBTreeInsertRight( void *item, void *target, intptr_t offset, void **root )
+{
+  mmBTreeNode *tnode;
+  tnode = ADDRESS( target, offset );
+  if( !tnode->child[MM_BTREE_FLAGS_RIGHT] )
+    mmBTreeInsert( item, target, MM_BTREE_FLAGS_RIGHT, offset, root );
+  else
+  {
+    for( target = tnode->child[MM_BTREE_FLAGS_RIGHT] ; ; target = tnode->child[MM_BTREE_FLAGS_LEFT] )
+    {
+      tnode = ADDRESS( target, offset );
+      if( !tnode->child[MM_BTREE_FLAGS_LEFT] )
+        break;
+    }
+    mmBTreeInsert( item, target, MM_BTREE_FLAGS_LEFT, offset, root );
+  }
+  return;
+}
 
 /**
  * Find lowest left gap to use as pivot for removal.
