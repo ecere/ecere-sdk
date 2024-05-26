@@ -2129,6 +2129,61 @@ static int Float_OnCompare(Class _class, float * data1, float * data2)
    return result;
 }
 
+static void cleanFinalDigits(char * number, int numDigits)
+{
+   int len = strlen(number);
+   int c;
+   int last = 0;
+   bool checkFor1 = true, checkFor9 = true;
+   int first9 = 0;
+   const char * dot = strchr(number, '.');
+
+   for(c = len-1; c >= 0; c--)
+   {
+      char ch = number[c];
+      if(ch != '0' && dot)
+      {
+         if(ch == '1' && number + c - dot >= numDigits-1 && c == len - 1 && checkFor1)
+            checkFor1 = false;
+         else if(ch == '9' && number + c - dot >= numDigits-1 && c == len - 1 && checkFor9)
+            first9 = c;
+         else
+         {
+            last = Max(last, c);
+            checkFor9 = false;
+            checkFor1 = false;
+         }
+      }
+      if(ch == '.')
+      {
+         if(last == c)
+            number[c] = 0;
+         else
+         {
+            number[last+1] = 0;
+            if(first9)
+            {
+               while(--first9 > 0)
+               {
+                  if(first9 != c)
+                  {
+                     ch = number[first9];
+                     if(!ch || ch == '.');
+                     else if(number[first9] < '9')   // REVIEW:
+                     {
+                        number[first9]++;
+                        number[first9+1] = 0;
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+         break;
+      }
+   }
+}
+
 static char * Float_OnGetString(Class _class, float * data, char * string, void * fieldData, ObjectNotationType * onType)
 {
    float f = *data;
@@ -2150,68 +2205,15 @@ static char * Float_OnGetString(Class _class, float * data, char * string, void 
       sprintf(string, "%.15e", f);
    else
    {
-      int c;
-      int last = 0;
-      bool checkFor1 = true, checkFor9 = true;
-      int numDigits = 7, num = 1;
-      int first9 = 0;
-      char format[10];
-      char * dot;
-      int len;
-      while(numDigits && num < f) numDigits--, num *= 10;
+      int numDigits = 9;
+      float num = 0.01f;
+      char format[128];
+      double af = fabs(f);
+      // REVIEW: Use ccStrPrintDouble() instead?
+      while(numDigits && num < af) numDigits--, num *= 10;
       sprintf(format, "%%.%df", numDigits);
-
-      //sprintf(string, "%f", f);
       sprintf(string, format, f);
-      dot = strchr(string, '.');
-
-      len = strlen(string);
-      c = len-1;
-      for( ; c >= 0; c--)
-      {
-         char ch = string[c];
-         if(ch != '0' && dot)
-         {
-            if(ch == '1' && string + c - dot >= 6 && c == len - 1 && checkFor1)
-               checkFor1 = false;
-            else if(ch == '9' && string + c - dot >= 6 && c == len - 1 && checkFor9)
-               first9 = c;
-            else
-            {
-               last = Max(last, c);
-               checkFor9 = false;
-               checkFor1 = false;
-            }
-         }
-         if(ch == '.')
-         {
-            if(last == c)
-               string[c] = 0;
-            else
-            {
-               string[last+1] = 0;
-               if(first9)
-               {
-                  while(--first9 > 0)
-                  {
-                     if(first9 != c)
-                        if(string[first9] < '9')
-                        {
-                           string[first9]++;
-                           break;
-                        }
-                  }
-                  if(first9 < c) // TOCHECK: How is this code reachable?
-                  {
-                     string[c-1] = '1';
-                     first9 = c;
-                  }
-                  string[first9+1] = 0;
-               }
-            }
-            break;
-         }
-      }
+      cleanFinalDigits(string, numDigits);
    }
    return string;
 }
@@ -2300,29 +2302,17 @@ static char * Double_OnGetString(Class _class, double * data, char * string, voi
       sprintf(string, "%.15e", f);
    else
    {
-      int c;
-      int last = 0;
-      //sprintf(string, "%.20f", f);
-      if(runtimePlatform == win32)
-      // sprintf(string, "%.16g", f);
-         sprintf(string, "%.15g", f);
-      else
-         sprintf(string, "%.13lf", f);
+      int numDigits = 17;
+      double num = 0.01;
+      char format[128];
+      double af = fabs(f);
 
-      c = strlen(string)-1;
-      for( ; c >= 0; c--)
-      {
-         if(string[c] != '0')
-            last = Max(last, c);
-         if(string[c] == '.')
-         {
-            if(last == c)
-               string[c] = 0;
-            else
-               string[last+1] = 0;
-            break;
-         }
-      }
+      while(numDigits && num < af) numDigits--, num *= 10;
+      // REVIEW: %g means to pick the optimal between scientific (%e) vs. fixed-point (%lf)
+      //          Is %lf not supported in MinGW?
+      sprintf(format, runtimePlatform == win32 ? "%%.%dg" : "%%.%dlf", numDigits);
+      sprintf(string, format, f);
+      cleanFinalDigits(string, numDigits);
    }
    return string;
 }
