@@ -313,9 +313,9 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      bool quote = needsQuotes(string);
+      bool quote = !string || needsQuotes(string);
       if(quote) out.Print('`');
-      out.Print(string);
+      out.Print(string ? string : "<null>");
       if(quote) out.Print('`');
    }
 
@@ -768,9 +768,24 @@ public:
 
    void print(File out, int indent, CMSSOutputOptions o)
    {
-      if(exp1) { exp1.print(out, indent, o); if(exp2) out.Print(" "); }
+      if(exp1)
+      {
+         if(exp1._class == (void *)(uintptr)0xecececececececec)
+            out.Print("<freed exp>");
+         else
+            exp1.print(out, indent, o);
+         if(exp2) out.Print(" ");
+      }
       op.print(out, indent, o);
-      if(exp2) { if(exp1 || op == bitNot) out.Print(" "); exp2.print(out, indent, o); }
+      if(exp2)
+      {
+         if(exp1 || op == bitNot) out.Print(" ");
+
+         if(exp2._class == (void *)(uintptr)0xecececececececec)
+            out.Print("<freed exp>");
+         else
+            exp2.print(out, indent, o);
+      }
    }
 
    CMSSExpression ::parse(int prec, CMSSLexer lexer)
@@ -1125,7 +1140,7 @@ public:
          else
          {
             flags = elseExp.compute(value, evaluator, computeType, stylesClass);
-            if(!expType) expType = elseExp.expType;
+            if(elseExp && !expType) expType = elseExp.expType;
          }
          if(!flags.resolved)
             condition = simplifyResolved(condValue, condition);
@@ -2366,10 +2381,10 @@ public:
       }
       else if(type && type.type == unitClass)
       {
+         stylesMask = identifierStr && stylesClass && stylesClass.type != structClass
+            ? evaluator.evaluatorClass.maskFromString(identifierStr, stylesClass) : 0;
          if(initializer)
          {
-            stylesMask = identifierStr && stylesClass && stylesClass.type != structClass
-               ? evaluator.evaluatorClass.maskFromString(identifierStr, stylesClass) : 0;
             CMSSExpression e = initializer;
             if(e)
             {
