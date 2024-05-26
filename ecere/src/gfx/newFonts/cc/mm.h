@@ -439,6 +439,9 @@ typedef struct
 void mmBTreeInsert( void *item, void *parent, int itemflag, intptr_t offset, void **root );
 void mmBTreeRemove( void *item, intptr_t offset, void **root );
 
+void mmBTreeInsertLeft( void *item, void *target, intptr_t offset, void **root );
+void mmBTreeInsertRight( void *item, void *target, intptr_t offset, void **root );
+
 void *mmBtreeMostLeft( void *root, intptr_t offset );
 void *mmBtreeMostRight( void *root, intptr_t offset );
 void *mmBtreeNeighbourLeft( void *item, intptr_t offset );
