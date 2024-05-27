@@ -334,8 +334,8 @@ public struct ECCSSEvaluator
             case log:
             {
                if(args.list.count >= 1) args[0].destType = class(double);
-               // NOTE: We could also support 2 arguments, with first argument being base in that case?
-               // if(args.list.count >= 2) args[1].destType = class(double);
+               // NOTE: With 2 arguments, the first argument is understood as the base
+               if(args.list.count >= 2) args[1].destType = class(double);
                expType = class(double);
                break;
             }
@@ -466,11 +466,17 @@ public struct ECCSSEvaluator
             }
             case log:
             {
-               if(numArgs == 1 &&
-                  (args[0].type.type == integer || args[0].type.type == real))
+               if((numArgs == 1 || numArgs == 2) &&
+                  (args[0].type.type == integer || args[0].type.type == real) &&
+                  (numArgs == 1 || (args[1].type.type == integer || args[1].type.type == real)))
                {
                   value.type = { real };
-                  value.r = log(args[0].type.type == integer ? (double)args[0].i : args[0].r);
+                  if(numArgs == 1)
+                     value.r = log(args[0].type.type == integer ? (double)args[0].i : args[0].r);
+                  else
+                     value.r =
+                        log(args[1].type.type == integer ? (double)args[1].i : args[1].r) /
+                        log(args[0].type.type == integer ? (double)args[0].i : args[0].r);
                }
                break;
             }
