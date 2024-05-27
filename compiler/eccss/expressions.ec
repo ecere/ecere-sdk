@@ -486,6 +486,9 @@ public:
          type = null;
       else if(type && type.type == unitClass)
          type = null;
+      if(constant.type.type == integer && constant.type.format == color)
+         type = class(Color);
+
       if(type && !constant.type.isDateTime) // Review this type check logic
       {
          const char *(* onGetString)(void *, void *, char *, void *, ObjectNotationType *) = type._vTbl[__ecereVMethodID_class_OnGetString];
@@ -500,7 +503,7 @@ public:
             out.Print(s);
             if(addCurlies) out.Print(" }");
          }
-         else if(constant.type.format == hex)
+         else if(constant.type.format == hex || constant.type.format == color)
          {
             char number[64];
             sprintf(number,
@@ -701,14 +704,18 @@ public:
                if(c.class::OnGetDataFromString(identifier.string))
                   color = c;
                value.i = color;
+
+               //if(destType != class(Color)) value.i = strtol(identifier.string, null, 0);
+               expType = destType;
+               value.type.type = integer;
+               value.type.format = FieldValueFormat::color;
+               flags.resolved = true;
             }
             else
-               onGetDataFromString(destType, &value.i, identifier.string);
-
-            //if(destType != class(Color)) value.i = strtol(identifier.string, null, 0);
-            expType = destType;
-            value.type.type = integer;
-            flags.resolved = true;
+            {
+               flags.resolved = onGetDataFromString(destType, &value.i, identifier.string);
+               value.type.type = flags.resolved ? integer : nil;
+            }
          }
          else if(evaluator != null)
          {
@@ -3494,7 +3501,7 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
             else if(!strcmp(type.dataTypeString, "char *"))
                fType = { text, mustFree = true };
             else if(type == class(Color))
-               fType.format = hex;
+               fType.format = color; //hex;
 
             for(i = 0; i < count; i++)
             {
@@ -3563,7 +3570,7 @@ public CMSSExpression expressionFromValue(const FieldValue value, Class c)
                      else if(!strcmp(type.dataTypeString, "char *"))
                         v.type = { text, mustFree = true };
                      else if(type == class(Color))
-                        v.type.format = hex;
+                        v.type.format = color; //hex;
 
                      if(v.type.type == integer)
                      {
