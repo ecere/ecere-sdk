@@ -121,8 +121,24 @@ public class TIManager : DrawingManager
 
 #include <math.h>
 
-enum LWFMHorizontalAlignment { left, center, right };
-enum LWFMVerticalAlignment { baseline, top, middle, bottom = 4 };
+/*
+#define FM_ALIGN_LEFT (0x0)
+#define FM_ALIGN_CENTER (0x1)
+#define FM_ALIGN_RIGHT (0x2)
+
+#define FM_ALIGN_BASELINE (0x0)
+#define FM_ALIGN_TOP (0x4)
+#define FM_ALIGN_MIDDLE (0x8)
+#define FM_ALIGN_BOTTOM (0x10)
+*/
+enum LWFMHorizontalAlignment
+{
+   left, center, right
+};
+enum LWFMVerticalAlignment
+{
+   baseline, top = 1, middle = 2, bottom = 4
+};
 
 /// FONT MANAGER /////////////////////////////////////
 class LWFMTextAlignment : uint16
@@ -137,10 +153,11 @@ public:
       {
          HAlignment h = value.horzAlign;
          VAlignment v = value.vertAlign;
+
          return
          {
-            horzAlignment = (h == unset ? left : (LWFMHorizontalAlignment)(h-1)),
-            vertAlignment = (v == unset ? top  : v == baseLine ? baseline : (LWFMVerticalAlignment)v)
+            horzAlignment = (h == unset || h == left ? left : h == right ? right : center),
+            vertAlignment = (v == unset ? top  : v == baseLine ? baseline : v == top ? top : v == bottom ? bottom : middle)
          };
       }
       get
