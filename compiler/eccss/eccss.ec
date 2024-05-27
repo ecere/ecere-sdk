@@ -361,6 +361,13 @@ public struct ECCSSEvaluator
                expType = class(String);
                break;
             }
+            case interpolate:
+            {
+               // REVIEW: Support setting destType on output arguments based on destType of function call? (pass in destType?)
+               if(args.list.count > 1) args[0].destType = class(String);
+               // if(destType)
+               break;
+            }
          }
       }
       return expType;
