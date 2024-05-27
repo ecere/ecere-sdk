@@ -1593,6 +1593,20 @@ extern int __ecereVMethodID_class_OnFree;
 
 public class CMSSExpInstance : CMSSExpression
 {
+   property bool printsAsMultiline
+   {
+      get
+      {
+         // NOTE: We do not want to resolve against arbitrary registered runtime classes (style sheet should be bound for output)
+         Class type = expType ? expType : destType;
+         if(!type || (type.type == structClass && strcmp(type.name, "HillShading") && strcmp(type.name, "StrokeStyling")) ||
+            type.type == unitClass || type.type == bitClass ||
+            (type.type == noHeadClass && strcmp(type.name, "Fill") && strcmp(type.name, "Stroke")))  // image.hotSpot currently doesn't get type set? -- bind needed
+            return false;
+         else
+            return true;
+      }
+   }
 public:
    CMSSInstantiation instance;
    StylesMask targetMask;
@@ -1630,6 +1644,8 @@ public:
       if(instance)
       {
          Class type = expType ? expType : destType;
+         if(!type && instance._class && instance._class.name)
+            type = eSystem_FindClass(__thisModule, instance._class.name);
          if(type)
          {
             if(type.type == structClass &&
@@ -1639,11 +1655,7 @@ public:
             else if(type.type == bitClass)
                o.skipImpliedID = true;
          }
-         if(!type || (type.type == structClass && strcmp(type.name, "HillShading")) ||
-            type.type == unitClass || type.type == bitClass || type.type == noHeadClass)  // image.hotSpot currently doesn't get type set?
-            o.multiLineInstance = false;
-         else
-            o.multiLineInstance = true;
+         o.multiLineInstance = printsAsMultiline;
          instance.print(out, indent, o);
       }
    }
@@ -2123,7 +2135,8 @@ public:
                CMSSMemberInitList init = it.data;
                printIndent(indent, out);
                init.print(out, indent, o);
-               if(init._class == class(CMSSMemberInitList))
+               // REVIEW: When we want this semicolon?
+               if(init._class == class(CMSSMemberInitList) && members.GetNext(it.pointer))
                   out.Print(";");
                out.PrintLn("");
             }
@@ -2451,7 +2464,7 @@ public:
          }
          out.Print(" ");
          assignType.print(out, indent, o);
-         if(slType)
+         if(slType && (!initializer || initializer._class != class(CMSSExpInstance) || !((CMSSExpInstance)initializer).printsAsMultiline))
             out.Print(" "); // Not multiline
       }
       if(initializer)
