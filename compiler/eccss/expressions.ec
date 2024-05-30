@@ -1349,7 +1349,7 @@ public:
 
             flags.resolved = false;
             if(computeType == preprocessing)
-               expType = evaluator.evaluatorClass.resolveFunction(evaluator, expValue, arguments, &flags);
+               expType = evaluator.evaluatorClass.resolveFunction(evaluator, expValue, arguments, &flags, destType);
             for(a = (Link<CMSSExpression>)arguments.list.first; a && numArgs < 50; a = a.next)
             {
                CMSSExpression arg = (CMSSExpression)*&a.data;
