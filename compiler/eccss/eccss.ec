@@ -288,7 +288,7 @@ public struct ECCSSEvaluator
       }
    }
    virtual void evaluateMember(DataMember prop, CMSSExpression exp, const FieldValue parentVal, FieldValue value, ExpFlags * flags);
-   virtual Class resolveFunction(const FieldValue e, CMSSExpList args, ExpFlags * flags)
+   virtual Class resolveFunction(const FieldValue e, CMSSExpList args, ExpFlags * flags, Class destType)
    {
       Class expType = null;
 
@@ -365,7 +365,18 @@ public struct ECCSSEvaluator
             {
                // REVIEW: Support setting destType on output arguments based on destType of function call? (pass in destType?)
                if(args.list.count > 1) args[0].destType = class(String);
-               // if(destType)
+               if(destType && args.list.count >=4)
+               {
+                  int i;
+                  args[1].destType = class(double);
+                  for(i = 2; i < args.list.count; i++)
+                  {
+                     if(i & 1)
+                        args[i].destType = destType;
+                     else
+                        args[i].destType = class(double);
+                  }
+               }
                break;
             }
          }
