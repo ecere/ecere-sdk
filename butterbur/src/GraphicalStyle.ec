@@ -369,6 +369,7 @@ Map<ShapeStyleKind, const String> shapeStringFromMaskMap
    { strokeCasingWidth, "stroke.casing.width" },
    { strokeCasingColor, "stroke.casing.color" },
    { strokeCasingOpacity, "stroke.casing.opacity" },
+   { strokeCenter, "stroke.center" },
    { strokeCenterWidth, "stroke.center.width" },
    { strokeCenterColor, "stroke.center.color" },
    { strokeCenterOpacity, "stroke.center.opacity" },
