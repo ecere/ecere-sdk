@@ -1741,9 +1741,9 @@ public:
             value = { { integer, isDateTime = true }, i = (int64)(SecSince1970)dt };
             //value.type = fType;
          }
-         else if(expType && expType.type == unitClass)
+         else if(expType && (expType.type == unitClass || expType.type == bitClass))
          {
-            value = { { nil } };
+            value = destType == class(Color) ? { { integer, format = color } } : { { nil } };
             for(i : instance.members)
             {
                CMSSMemberInitList members = i;
@@ -1753,8 +1753,22 @@ public:
                   if(mInit.initializer)
                   {
                      CMSSExpression exp = mInit.initializer;
-                     //if(exp.destType)
-                        flags = exp.compute(value, evaluator, runtime, stylesClass);
+                     if(destType == class(Color))
+                     {
+                        FieldValue val {};
+                        String s = (mInit.identifiers && mInit.identifiers.first) ? mInit.identifiers[0].string : null;
+                        Color col = (Color)value.i;
+                        flags |= exp.compute(val, evaluator, runtime, stylesClass);
+                        if(!strcmp(s, "r"))
+                           col.r = (byte)Min(Max(val.i,0),255);
+                        else if(!strcmp(s, "g"))
+                           col.g = (byte)Min(Max(val.i,0),255);
+                        else if(!strcmp(s, "b"))
+                           col.b = (byte)Min(Max(val.i,0),255);
+                        value.i = col;
+                     }
+                     else
+                        flags |= exp.compute(value, evaluator, runtime, stylesClass);
                   }
                }
             }
@@ -2374,7 +2388,7 @@ public:
          }
          this.dataMember = dataMember;
 
-         stylesMask = identifierStr && stylesClass && stylesClass.type != structClass
+         stylesMask = identifierStr && stylesClass && stylesClass.type != structClass && destType != class(byte)
             ? evaluator.evaluatorClass.maskFromString(identifierStr, stylesClass) : 0;
          if(initializer)
          {
