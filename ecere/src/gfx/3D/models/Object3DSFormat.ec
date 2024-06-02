@@ -1851,8 +1851,8 @@ static bool ReadKeyFrameChunks(FileInfo * info, void * data)
                if(model)
                {
                   object = Object { };
-                  object.name  = new char[strlen(block.dummyName) + strlen(model.name) + 2];
-                  sprintf(object.name, "%s.%s", model.name, block.dummyName);
+                  *&object.name  = new char[strlen(block.dummyName) + strlen(*&model.name) + 2];
+                  sprintf((char *)*&object.name, "%s.%s", *&model.name, block.dummyName);
                   object.flags = model.flags;
                   object.flags.ownMesh = false;
                   object.mesh = model.mesh;
