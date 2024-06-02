@@ -68,7 +68,8 @@ struct Neuron
    void Unactivate()
    {
       int c;
-      for(c = 0; c<dendrons.size; c++)
+      uint dendronsCount = dendrons.count;
+      for(c = 0; c < dendronsCount; c++)
       {
          Synapse * synapse = dendrons[c].ptr;
          if(synapse->dendron->state != cleared)
@@ -80,13 +81,14 @@ struct Neuron
 
    void Activate() // Feed-forward algorithm
    {
+      uint dendronsCount = dendrons.count;
 #ifdef USE_STATES
-      if(dendrons.size)
+      if(dendronsCount)
 #endif
       {
          double sum = bias;
          int c;
-         for(c = 0; c < dendrons.size; c++)
+         for(c = 0; c < dendronsCount; c++)
          {
             Synapse * synapse = dendrons[c].ptr;
             Neuron * dendron = synapse->dendron;
@@ -107,10 +109,11 @@ struct Neuron
    {
       int c;
 
-      if(axons.size)
+      uint axonsCount = axons.count;
+      if(axonsCount)
       {
          double err = 0;
-         for(c = 0; c < axons.size; c++)
+         for(c = 0; c < axonsCount; c++)
          {
             Synapse * synapse = &axons[c];
             Neuron * axon = synapse->axon;
@@ -132,25 +135,31 @@ struct Neuron
    void Teach(double learnRate)
    {
       int i;
-#ifdef USE_STATES
-      if(dendrons.size)
-#endif
+      uint dendronsCount = dendrons.count;
+
+      if(error)
       {
-         for(i = 0; i < dendrons.size; i++)
+#ifdef USE_STATES
+         if(dendronsCount)
+#endif
          {
-            Synapse * synapse = dendrons[i].ptr;
-            Neuron * dendron = synapse->dendron;
+            double lrErr = learnRate * error;
+            for(i = 0; i < dendronsCount; i++)
+            {
+               Synapse * synapse = dendrons[i].ptr;
+               Neuron * dendron = synapse->dendron;
 #ifdef USE_STATES
-            if(state != taught)
-               dendron->Teach(learnRate);
+               if(state != taught)
+                  dendron->Teach(learnRate);
 #endif
-            synapse->weight += learnRate * error * dendron->activation;
+               synapse->weight += lrErr * dendron->activation;
+            }
+            bias += lrErr;
          }
-         bias += learnRate * error;
-      }
 #ifdef USE_STATES
-      state = taught;
+         state = taught;
 #endif
+      }
    }
 
    void Render(Surface surface, Size size, int ny, int height, int nx, int width, int nextWidth,
@@ -286,21 +295,27 @@ class NeuronLayer : Array<Neuron>
 
    property int winner
    {
-      get
+      get { return getWinnerRange(0, count); }
+   }
+
+   int getWinnerRange(int start, int count)
+   {
+      double bestActivation = -MAXDOUBLE;
+      int i, best = start;
+
+      if(start + count > this.count)
+         return -1;
+
+      for(i = start; i < start + count; i++)
       {
-         double bestActivation = -MAXDOUBLE;
-         int i, best = 0;
-         for(i = 0; i < count; i++)
+         Neuron * neuron = &this[i];
+         if(neuron->activation > bestActivation)
          {
-            Neuron * neuron = &this[i];
-            if(neuron->activation > bestActivation)
-            {
-               best = i;
-               bestActivation = neuron->activation;
-            }
+            best = i;
+            bestActivation = neuron->activation;
          }
-         return best;
       }
+      return best;
    }
 
    ~NeuronLayer()
@@ -392,22 +407,14 @@ class NeuralNet : Array<NeuronLayer>
 #endif
    }
 
-   void learn(int expected, double learnRate)
+   void doLearning(double learnRate)
    {
-      NeuronLayer output = this[count-1];
-#ifdef USE_STATES
-      NeuronLayer input = this[0];
-#endif
       int i;
 
-      for(i = 0; i < output.count; i++)
-      {
-         Neuron * neuron = &output[i];
-         bool fired = expected == i;
-         neuron->error = (double)fired - neuron->activation;
-      }
-
 #ifdef USE_STATES
+      NeuronLayer input = this[0];
+      NeuronLayer output = this[count-1];
+
       for(i = 0; i < input.count; i++)
         input[i].BackPropagate();
 
@@ -432,7 +439,177 @@ class NeuralNet : Array<NeuronLayer>
 #endif
    }
 
+   void learn(int expected, double learnRate)
+   {
+      NeuronLayer output = this[count-1];
+      int i;
+
+      for(i = 0; i < output.count; i++)
+      {
+         Neuron * neuron = &output[i];
+         bool fired = expected == i;
+         neuron->error = (double)fired - neuron->activation;
+      }
+
+      doLearning(learnRate);
+   }
+
+   void learnMulti(int num, int * expected, double learnRate)
+   {
+      NeuronLayer output = this[count-1];
+      int i;
+
+      for(i = 0; i < output.count; i++)
+      {
+         Neuron * neuron = &output[i];
+         int j;
+         bool fired = false;
+         for(j = 0; j < num; j++)
+         {
+            if(expected[j] == i)
+            {
+               fired = true;
+               break;
+            }
+         }
+         neuron->error = (double)fired - neuron->activation;
+      }
+
+      doLearning(learnRate);
+   }
+
+   void learnValues(Array<double> values, double learnRate)
+   {
+      NeuronLayer output = this[count-1];
+      int i;
+
+      for(i = 0; i < output.count; i++)
+      {
+         Neuron * neuron = &output[i];
+         int j;
+         double value = values[i];
+         neuron->error = value - neuron->activation;
+      }
+
+      doLearning(learnRate);
+   }
+
+
    property int winner { get { return this[count-1].winner; } }
+
+   int getWinnerRange(int start, int count)
+   {
+      return this[this.count-1].getWinnerRange(start, count);
+   }
+
+   void save(File f)
+   {
+      int i;
+
+      f.Put(this.count);
+      for(i = 0; i < count; i++)
+      {
+         NeuronLayer layer = this[i];
+         f.Put(layer.count);
+      }
+      for(i = 0; i < count; i++)
+      {
+         NeuronLayer layer = this[i];
+         int j;
+         for(j = 0; j < layer.count; j++)
+         {
+            const Neuron * neuron = &layer[j];
+            Array<Synapse> axons = neuron->axons;
+            int k;
+
+            f.Put(neuron->bias);
+            for(k = 0; k < axons.count; k++)
+               f.Put(axons[k].weight);
+         }
+      }
+   }
+
+   bool saveTo(const String fileName)
+   {
+      bool result = false;
+      File f = FileOpen(fileName, write);
+      if(f)
+      {
+         save(f);
+         delete f;
+         result = true;
+      }
+      return result;
+   }
+
+   bool loadFrom(const String fileName)
+   {
+      bool result = false;
+      File f = FileOpen(fileName, read);
+      if(f)
+      {
+         result = load(f);
+         delete f;
+      }
+      return result;
+   }
+
+   bool load(File f)
+   {
+      bool result = false;
+      int numLayers = 0, inputCount = 0;
+
+      f.Get(numLayers);
+      f.Get(inputCount);
+
+      if(numLayers >= 2 && inputCount &&
+         (!count || count == numLayers) &&
+         (!count || this[0].count == inputCount))
+      {
+         Array<int> innerCounts { };
+         int i, outputCount;
+         bool mismatchedInnerCount = false;
+
+         innerCounts.size = numLayers - 2;
+
+         for(i = 0; i < numLayers - 2; i++)
+         {
+            f.Get(innerCounts[i]);
+            if(count && innerCounts[i] != this[i + 1].count)
+            {
+               mismatchedInnerCount = true;
+               break;
+            }
+         }
+
+         f.Get(outputCount);
+
+         if(!mismatchedInnerCount && outputCount && (!count || this[count-1].count == outputCount))
+         {
+            if(!count)
+               construct(numLayers - 2, inputCount, outputCount, innerCounts);
+
+            for(i = 0; i < count; i++)
+            {
+               NeuronLayer layer = this[i];
+               int j;
+               for(j = 0; j < layer.count; j++)
+               {
+                  const Neuron * neuron = &layer[j];
+                  Array<Synapse> axons = neuron->axons;
+                  int k;
+
+                  f.Get(neuron->bias);
+                  for(k = 0; k < axons.count; k++)
+                     f.Get(axons[k].weight);
+               }
+            }
+            result = true;
+         }
+         delete innerCounts;
+      }
+      return result;
+   }
 }
 
 class NeuralNetView : Window
@@ -476,10 +653,12 @@ class NeuralNetView : Window
    void OnRedraw(Surface surface)
    {
       nn.render(surface, clientSize);
-      writeLabels(surface, clientSize, false);
-      writeLabels(surface, clientSize, true);
+      if(nn.count)
+      {
+         writeLabels(surface, clientSize, false);
+         writeLabels(surface, clientSize, true);
+      }
    }
-
 public:
    Array<const String> inputLabels { };
    Array<const String> outputLabels { };
