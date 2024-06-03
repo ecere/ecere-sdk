@@ -1,38 +1,42 @@
 import "ecere"
 
-private static inline double sigmoid(double x)
+#include <math.h>
+
+#define floatType double
+// #define floatType float
+
+private static inline floatType sigmoid(floatType x)
 {
    return 1 / (1 + exp(-x));
 }
 
-private static inline double sigmoidDerivative(double x)
+private static inline floatType sigmoidDerivative(floatType x)
 {
    return x * (1 - x);
 }
 
-double GetRandDouble(double lo, double hi)
+floatType GetRandDouble(floatType lo, floatType hi)
 {
-   return GetRandom((int)(lo * 1000000000), (int)(hi * 1000000000)) / 1000000000.0;
+   return GetRandom((int)(lo * 1000000000), (int)(hi * 1000000000)) / 1000000000.0f;
 }
 
 struct Neuron
 {
    int dummy;
 
-   double ::activate(double bias, const double * prevLayerSynapses, const double * prevLayerActivations, int dendronsCount, int nCount) // Feed-forward algorithm
+   floatType ::activate(floatType bias, const floatType * prevLayerSynapses, const floatType * prevLayerActivations, int dendronsCount) // Feed-forward algorithm
    {
-      double sum = bias;
-      const double * synapse = prevLayerSynapses;
+      floatType sum = bias;
       int i;
-      for(i = 0; i < dendronsCount; i++, synapse += nCount)
-         sum += prevLayerActivations[i] * *synapse;
+      for(i = 0; i < dendronsCount; i++)
+         sum += prevLayerActivations[i] * prevLayerSynapses[i];
       return sigmoid(sum);
    }
 
    // NOTE: this is not called on the final output layer
-   double ::backPropagate(const double * synapticWeights, const double * nextLayerErrors, int axonsCount)
+   floatType ::backPropagate(const floatType * synapticWeights, const floatType * nextLayerErrors, int axonsCount)
    {
-      double error = 0;
+      floatType error = 0;
       int i;
 
       for(i = 0; i < axonsCount; i++)
@@ -40,26 +44,25 @@ struct Neuron
       return error;
    }
                                                                                                   // number of neurons in previous layer
-   void ::teach(double errorLearnRate, const double * prevLayerActivations, double * prevLayerSynapses, int dendronsCount, int nCount)
+   void ::teach(floatType errorLearnRate, const floatType * prevLayerActivations, floatType * prevLayerSynapses, int dendronsCount, int nCount)
    {
       if(errorLearnRate)
       {
-         double * synapse = prevLayerSynapses;
          int i;
 
-         for(i = 0; i < dendronsCount; i++, synapse += nCount)
-            *synapse += errorLearnRate * prevLayerActivations[i];
+         for(i = 0; i < dendronsCount; i++)
+            prevLayerSynapses[i] += errorLearnRate * prevLayerActivations[i];
       }
    }
 
    void ::Render(Surface surface, Size size, int ny, int height, int nx, int width,
-      double biasRange, double weightRange, int axonsCount, double bias, const double * axonicSynapses)
+      floatType biasRange, floatType weightRange, int axonsCount, floatType bias, const floatType * axonicSynapses, int nCount)
    {
-      double nw = Max(1, size.w / (2*width+1));     // Width of one neuron
-      double nh = Max(1, size.h / (height+1));        // Height of one neuron
-      double snw = Max(1, size.w / (2*axonsCount+1));   // Synapse width
-      double spx = snw / 2;
-      double px = nw / 2, py = (size.h - (height * Min(8, nh))) / (height);
+      floatType nw = Max(1, size.w / (2*width+1));     // Width of one neuron
+      floatType nh = Max(1, size.h / (height+1));        // Height of one neuron
+      floatType snw = Max(1, size.w / (2*axonsCount+1));   // Synapse width
+      floatType spx = snw / 2;
+      floatType px = nw / 2, py = (size.h - (height * Min(8, nh))) / (height);
       int x, y, sy;
 
       nh = Min(nh, 8.0);
@@ -80,19 +83,19 @@ struct Neuron
          for(i = 0; i < axonsCount; i++)
          {
             int sx = (size.w - axonsCount * (spx + snw)) / 2 + spx + i * (spx + snw) + snw/2;
-            surface.foreground = weightToColor(axonicSynapses[i], weightRange);
+            surface.foreground = weightToColor(axonicSynapses[i * nCount], weightRange);
             surface.DrawLine((int)(x + nw/2), (int)(y + nh), sx, sy);
          }
       }
    }
 };
 
-static inline ColorAlpha biasToColor(double value, double range)
+static inline ColorAlpha biasToColor(floatType value, floatType range)
 {
    return ColorHSV { value > 0 ? 120 : 0, 100, (float)(fabs(value) * 100 / range) };
 }
 
-static inline ColorAlpha weightToColor(double value, double range)
+static inline ColorAlpha weightToColor(floatType value, floatType range)
 {
    return ColorHSV { value > 0 ? 240 : 30, 100, (float)(fabs(value) * 100 / range) };
 }
@@ -101,50 +104,51 @@ class NeuronLayer
 {
    uint count;                // number of neurons
    int axonsCount;            // number of neurons of the next layer
-   double * axonicSynapses;   // count * axonsCount weights
-   double * biases;           // count biases
-   double * activations;      // count activations
-   double * errors;           // count errors
+   floatType * axonicSynapses;   // axonsCount * count weights (now the weights from all neurons of this layer to a neuron of next layer are contiguous)
+   floatType * biases;           // count biases
+   floatType * activations;      // count activations
+   floatType * errors;           // count errors
+   floatType * tempNeuronSynapses;  // Temporary contiguous copy of synaptic weights for one neuron for backPropagate()
 
    void create(int nextLayerCount)
    {
       axonsCount = nextLayerCount;
-      activations = new0 double[count];
-      errors = new0 double[count];
-      biases = new0 double[count];
-      axonicSynapses = nextLayerCount ? new0 double[nextLayerCount * count] : null;
+      activations = new0 floatType[count];
+      errors = new0 floatType[count];
+      biases = new0 floatType[count];
+      axonicSynapses = nextLayerCount ? new0 floatType[nextLayerCount * count] : null;
+      tempNeuronSynapses = new0 floatType[axonsCount];
    }
 
    void initialize(bool initBias, bool initWeight, bool random)
    {
       int i, axonsCount = this.axonsCount;
-      double * axonicSynapses = this.axonicSynapses;
+      floatType * axonicSynapses = this.axonicSynapses;
 
       for(i = 0; i < count; i++)
       {
          if(initBias)
-            biases[i] = random ? GetRandDouble(-0.5, 0.5) : 0;
+            biases[i] = random ? GetRandDouble(-0.5f, 0.5f) : 0;
          if(initWeight)
          {
             int j;
 
             for(j = 0; j < axonsCount; j++)
             {
-               // while(fabs(axonicSynapses[j]) < 0.01)
-                  axonicSynapses[j] = random ? GetRandDouble(-0.5, 0.5) : 0.5;
+               while(fabs(axonicSynapses[j * count + i]) < 0.01)
+                  axonicSynapses[j * count + i] = random ? GetRandDouble(-0.5f, 0.5f) : 0.5f;
             }
          }
-         axonicSynapses += axonsCount;
       }
    }
 
    void render(Surface surface, Size size, int layer, int numLayers, NeuronLayer nextLayer)
    {
       int i;
-      double biasRange = 0.5;
-      double weightRange = 0;
+      floatType biasRange = 0.5;
+      floatType weightRange = 0;
       int axonCount = nextLayer ? nextLayer.count : 0;
-      const double * axonicSynapses = this.axonicSynapses;
+      const floatType * axonicSynapses = this.axonicSynapses;
 
       for(i = 0; i < count; i++)
       {
@@ -154,10 +158,9 @@ class NeuronLayer
 
             for(j = 0; j < axonCount; j++)
             {
-               double a = fabs(axonicSynapses[j]);
+               floatType a = fabs(axonicSynapses[j * count + i]);
                if(a > weightRange) weightRange = a;
             }
-            axonicSynapses += axonCount;
          }
       }
 
@@ -165,8 +168,7 @@ class NeuronLayer
       for(i = 0; i < count; i++)
       {
          Neuron::Render(surface, size, layer, numLayers, i, count,
-            biasRange, weightRange, axonCount, biases[i], axonicSynapses);
-         axonicSynapses += axonCount;
+            biasRange, weightRange, axonCount, biases[i], axonicSynapses + i, count);
       }
    }
 
@@ -177,7 +179,7 @@ class NeuronLayer
 
    int getWinnerRange(int start, int count)
    {
-      double bestActivation = -MAXDOUBLE;
+      floatType bestActivation = -MAXFLOAT; //MAXDOUBLE;
       int i, best = start;
 
       if(start + count > this.count)
@@ -185,7 +187,7 @@ class NeuronLayer
 
       for(i = start; i < start + count; i++)
       {
-         double activation = activations[i];
+         floatType activation = activations[i];
          if(activation > bestActivation)
          {
             best = i;
@@ -201,50 +203,60 @@ class NeuronLayer
       delete errors;
       delete axonicSynapses;
       delete biases;
+      delete tempNeuronSynapses;
    }
 
    void activate(NeuronLayer prevLayer)
    {
       int count = this.count, j;
-      const double * prevLayerSynapses = prevLayer.axonicSynapses;
-      const double * prevLayerActivations = prevLayer.activations;
+      const floatType * prevLayerSynapses = prevLayer.axonicSynapses;
+      const floatType * prevLayerActivations = prevLayer.activations;
       int prevLayerCount = prevLayer.count;
 
       for(j = 0; j < count; j++)
-         activations[j] = Neuron::activate(biases[j], prevLayerSynapses + j, prevLayerActivations, prevLayerCount, count);
+         activations[j] = Neuron::activate(biases[j], prevLayerSynapses + j * prevLayerCount, prevLayerActivations, prevLayerCount);
    }
 
    void backPropagate(NeuronLayer nextLayer)
    {
       int count = this.count, j;
-      const double * activations = this.activations;
-      double * errors = this.errors;
+      const floatType * activations = this.activations;
+      floatType * errors = this.errors;
 
       if(nextLayer)
       {
-         const double * nextLayerErrors = nextLayer ? nextLayer.errors : null;
-         double * axonicSynapses = this.axonicSynapses;
+         const floatType * nextLayerErrors = nextLayer ? nextLayer.errors : null;
+         const floatType * axonicSynapses = this.axonicSynapses;
          int axonsCount = this.axonsCount;
-         for(j = 0; j < count; j++, axonicSynapses += axonsCount)
-            errors[j] = Neuron::backPropagate(axonicSynapses, nextLayerErrors, axonsCount);
+         floatType * tempNeuronSynapses = this.tempNeuronSynapses;
+
+         for(j = 0; j < count; j++)
+         {
+            int k;
+            const floatType * synapse = axonicSynapses + j;
+
+            for(k = 0; k < axonsCount; k++, synapse += count)
+               tempNeuronSynapses[k] = *synapse;
+            errors[j] = Neuron::backPropagate(tempNeuronSynapses, nextLayerErrors, axonsCount);
+         }
       }
       for(j = 0; j < count; j++)
          if(errors[j])
             errors[j] *= sigmoidDerivative(activations[j]);
    }
 
-   void learn(NeuronLayer prevLayer, double rate)
+   void learn(NeuronLayer prevLayer, floatType rate)
    {
-      double * prevLayerSynapses = prevLayer.axonicSynapses;
-      const double * prevLayerActivations = prevLayer.activations;
-      const double * errors = this.errors;
+      floatType * prevLayerSynapses = prevLayer.axonicSynapses;
+      const floatType * prevLayerActivations = prevLayer.activations;
+      const floatType * errors = this.errors;
       int count = this.count, prevLayerCount = prevLayer.count, j;
 
       for(j = 0; j < count; j++)
       {
-         double errorLearnRate = rate * errors[j];
-         Neuron::teach(errorLearnRate, prevLayerActivations, prevLayerSynapses + j, prevLayerCount, count);
-         biases[j] += errorLearnRate;
+         floatType errorLearnRate = rate * errors[j];
+         Neuron::teach(errorLearnRate, prevLayerActivations, prevLayerSynapses + j * prevLayerCount, prevLayerCount, count);
+         biases[j] += errorLearnRate; ///*0.25 * */errorLearnRate * sigmoidDerivative(activations[j]);
       }
    }
 }
@@ -302,10 +314,10 @@ class NeuralNet : Array<NeuronLayer>
          this[i].initialize(i != 0, i != count-1, random);
    }
 
-   void activate(Container<double> inputs)
+   void activate(Container<floatType> inputs)
    {
       int i, inputCount = this[0].count;
-      double * inputActivations = this[0].activations;
+      floatType * inputActivations = this[0].activations;
 
       for(i = 0; i < inputCount; i++)
          inputActivations[i] = inputs[i];
@@ -314,7 +326,7 @@ class NeuralNet : Array<NeuronLayer>
          this[i].activate(this[i-1]);
    }
 
-   void doLearning(double learnRate)
+   void doLearning(floatType learnRate)
    {
       int i;
 
@@ -324,27 +336,27 @@ class NeuralNet : Array<NeuronLayer>
          this[i].learn(this[i-1], learnRate);
    }
 
-   void learn(int expected, double learnRate)
+   void learn(int expected, floatType learnRate)
    {
       NeuronLayer output = this[count-1];
-      double * errors = output.errors;
-      const double * activations = output.activations;
+      floatType * errors = output.errors;
+      const floatType * activations = output.activations;
       int i, outputCount = output.count;
 
       for(i = 0; i < outputCount; i++)
       {
          bool fired = expected == i;
-         errors[i] = (double)fired - activations[i];
+         errors[i] = (floatType)fired - activations[i];
       }
 
       doLearning(learnRate);
    }
 
-   void learnMulti(int num, int * expected, double learnRate)
+   void learnMulti(int num, int * expected, floatType learnRate)
    {
       NeuronLayer output = this[count-1];
-      double * errors = output.errors;
-      const double * activations = output.activations;
+      floatType * errors = output.errors;
+      const floatType * activations = output.activations;
       int i, outputCount = output.count;
 
       for(i = 0; i < outputCount; i++)
@@ -359,17 +371,17 @@ class NeuralNet : Array<NeuronLayer>
                break;
             }
          }
-         errors[i] = (double)fired - activations[i];
+         errors[i] = (floatType)fired - activations[i];
       }
 
       doLearning(learnRate);
    }
 
-   void learnValues(Array<double> values, double learnRate)
+   void learnValues(Array<floatType> values, floatType learnRate)
    {
       NeuronLayer output = this[count-1];
-      double * errors = output.errors;
-      const double * activations = output.activations;
+      floatType * errors = output.errors;
+      const floatType * activations = output.activations;
       int i, outputCount = output.count;
 
       for(i = 0; i < outputCount; i++)
@@ -400,7 +412,20 @@ class NeuralNet : Array<NeuronLayer>
       {
          NeuronLayer layer = this[i];
          int j, axonsCount = layer.axonsCount;
-         const double * axons = layer.axonicSynapses;
+         const floatType * axons = layer.axonicSynapses;
+         floatType * temp = new floatType[layer.count * axonsCount];
+
+         if(axonsCount)
+         {
+            int k;
+
+            for(j = 0; j < layer.count; j++)
+               for(k = 0; k < axonsCount; k++)
+                  temp[j * axonsCount + k] =
+                     axons[k * layer.count + j];
+            axons = temp;
+         }
+
          for(j = 0; j < layer.count; j++)
          {
             int k;
@@ -411,6 +436,7 @@ class NeuralNet : Array<NeuronLayer>
 
             axons += axonsCount;
          }
+         delete temp;
       }
    }
 
@@ -478,7 +504,7 @@ class NeuralNet : Array<NeuronLayer>
             {
                NeuronLayer layer = this[i];
                int j, axonsCount = layer.axonsCount;
-               double * axons = layer.axonicSynapses;
+               floatType * axons = layer.axonicSynapses;
                for(j = 0; j < layer.count; j++)
                {
                   int k;
@@ -487,6 +513,19 @@ class NeuralNet : Array<NeuronLayer>
                   for(k = 0; k < axonsCount; k++)
                      f.Get(axons[k]);
                   axons += axonsCount;
+               }
+
+               if(axonsCount)
+               {
+                  floatType * temp = new floatType[layer.count * axonsCount];
+                  int k;
+
+                  for(j = 0; j < layer.count; j++)
+                     for(k = 0; k < axonsCount; k++)
+                        temp[k * layer.count + j] =
+                           layer.axonicSynapses[j * axonsCount + k];
+                  memcpy(layer.axonicSynapses, temp, layer.count * axonsCount * sizeof(floatType));
+                  delete temp;
                }
             }
             result = true;
@@ -516,9 +555,9 @@ class NeuralNetView : Window
       if(labels.count == width)
       {
          int i;
-         double nw = Max(1, size.w / (2*width+1));  // Width of one neuron
-         double nh = Max(1, size.h / (3+1));        // Height of one neuron
-         double px = nw / 2, py = (size.h - (height * Min(8, nh))) / height;
+         floatType nw = Max(1, size.w / (2*width+1));  // Width of one neuron
+         floatType nh = Max(1, size.h / (3+1));        // Height of one neuron
+         floatType px = nw / 2, py = (size.h - (height * Min(8, nh))) / height;
          int x, y;
          int mod = Min(3, Max(1, width / 10));
 
