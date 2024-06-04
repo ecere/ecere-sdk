@@ -29,7 +29,8 @@ enum ECCSSFunctionIndex : int
    like,
    casei,
    accenti,
-   interpolate
+   interpolate,
+   map
 };
 
 static int strncpymax(String output, const String input, int count, int max)
@@ -363,9 +364,8 @@ public struct ECCSSEvaluator
             }
             case interpolate:
             {
-               // REVIEW: Support setting destType on output arguments based on destType of function call? (pass in destType?)
                if(args.list.count > 1) args[0].destType = class(String);
-               if(destType && args.list.count >=4)
+               if(destType && args.list.count >= 4)
                {
                   int i;
                   args[1].destType = class(double);
@@ -376,6 +376,25 @@ public struct ECCSSEvaluator
                      else
                         args[i].destType = class(double);
                   }
+                  expType = destType;
+               }
+               break;
+            }
+            case map:
+            {
+               if(destType && args.list.count >= 4)
+               {
+                  int i, count = args.list.count;
+
+                  args[0].destType = class(int); //double);
+                  for(i = 1; i < count; i++)
+                  {
+                     if((i & 1) || i == count-1)
+                        args[i].destType = class(int);//double);
+                     else
+                        args[i].destType = destType;
+                  }
+                  expType = destType;
                }
                break;
             }
@@ -584,6 +603,29 @@ public struct ECCSSEvaluator
                      value.type = { real };
                      value.r = firstVal + (secondVal - firstVal) * fraction;
                   }
+               }
+               break;
+            }
+            case map:
+            {
+               if(numArgs >= 4)
+               {
+                  int64 input = args[0].type.type == integer ? args[0].i : (int64)args[0].r;
+                  bool matched = false;
+                  int i;
+
+                  for(i = 1; i < numArgs-1; i += 2)
+                  {
+                     int64 key = args[i].type.type == integer ? args[i].i : (int64)args[i].r;
+                     if(key == input)
+                     {
+                        value = args[i+1];
+                        matched = true;
+                        break;
+                     }
+                  }
+                  if(!matched)
+                     value = args[numArgs-1];
                }
                break;
             }
