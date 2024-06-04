@@ -1337,6 +1337,7 @@ public:
          FieldValue expValue { type = { nil } };
          FieldValue args[50]; // Max 50 args for now?
          int i, numArgs = 0;
+         subclass(ECCSSEvaluator) evaluatorClass = evaluator.evaluatorClass;
 
          if(computeType == preprocessing)
             exp.destType = class(GlobalFunction);
@@ -1349,25 +1350,28 @@ public:
 
             flags.resolved = false;
             if(computeType == preprocessing)
-               expType = evaluator.evaluatorClass.resolveFunction(evaluator, expValue, arguments, &flags, destType);
+               expType = evaluatorClass.resolveFunction(evaluator, expValue, arguments, &flags, destType);
+                                                                     // WARNING: This may not be enough for interpolate() / map()
             for(a = (Link<CMSSExpression>)arguments.list.first; a && numArgs < 50; a = a.next)
             {
                CMSSExpression arg = (CMSSExpression)*&a.data;
+               FieldValue * argV = &args[numArgs++];
                flags.resolved = false;
 
-               args[numArgs] = { }; // FIXME: compute() sometimes returns uninitialized value
-               flags |= arg.compute(args[numArgs++], evaluator, computeType, stylesClass);
+               *argV = { }; // FIXME: compute() sometimes returns uninitialized value
+               flags |= arg.compute(argV, evaluator, computeType, stylesClass);
 
                // NOTE: for interpolation handling use color format, ECCSSEvaluator_computeFunction does not have access to destType
-               if(destType == class(Color) && args[numArgs-1].type.type == integer && args[numArgs-1].type.format == hex)
-                  args[numArgs-1].type.format = color;
-               if(!flags.resolved) nonResolved = true;
+               if(destType == class(Color) && argV->type == { integer, format = hex })
+                  argV->type = { integer, format = color };
+               if(!flags.resolved)
+                  nonResolved = true;
             }
             if(nonResolved) flags.resolved = false;
          }
          // We need to evaluate the function if resolved is true (should not yet be set if e.g., featureID / geometry is needed)
          if(evaluator != null && flags.resolved)
-            expType = evaluator.evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
+            expType = evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
          for(i = 0; i < numArgs; i++)
             args[i].OnFree();
          expValue.OnFree();
