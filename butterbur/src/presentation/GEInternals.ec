@@ -425,7 +425,7 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
       {
          MultiGraphicalElement mge = (MultiGraphicalElement)ge;
 
-         for(e : mge.elements)
+         for(e : mge.elements; e != null)
             rdrFlags |= calculateGE(e, mgr, anchored);
 
          break;

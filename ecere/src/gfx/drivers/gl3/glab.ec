@@ -462,10 +462,16 @@ public struct GLB
             {
                int e;
 
+#if !defined(__EMSCRIPTEN__) || defined(_DEBUG)
                while(glGetError());
+#endif
 
                glBufferData(glBufferType, size, data, bufferUsages[usage]);
+#if !defined(__EMSCRIPTEN__) || defined(_DEBUG)
                e = glGetError();
+#else
+               e = 0;
+#endif
                if(e)
                {
                   result = false;
@@ -817,7 +823,9 @@ public struct GLFB
             glGenRenderbuffers(1, &colorRBO);
       }
 
+#if !defined(__EMSCRIPTEN__) || defined(_DEBUG)
       while(glGetError());
+#endif
 
       // *** Set up Color attachment first ***
       if(allocateColor)

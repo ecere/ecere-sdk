@@ -125,6 +125,8 @@ public Array<FaceInfo> ResolveFont(const String faceName, float size, FontFlags 
    PrintLn("Resolving font ", faceName, " with flags: ", flags, ", size: ", size);
    if(SearchString(faceName, 0, "Arial", false, false) || SearchString(faceName, 0, "Lucida", false, false))
       faceName = flags.bold ? ":fonts/Arial-Unicode-Bold.ttf" : ":fonts/Arial-Unicode-Regular.ttf";
+   else if(SearchString(faceName, 0, "NotoSansJP", false, false) || SearchString(faceName, 0, "Tahoma", false, false))
+      faceName = ":fonts/NotoSansJP.ttf";
 #endif
    strcpy(fileName, faceName);
 

@@ -88,7 +88,15 @@ public:
        return false;
      }
      if( internalformat == -1 )
+     {
        internalformat = glformat;
+#if defined(__EMSCRIPTEN__)    // REVIEW: Is this needed for other GL ES 3.0 platforms?
+       if(glformat == GL_RG)
+         internalformat = GL_RG8;
+       else if(glformat == GL_RED)
+         internalformat = GL_R8;
+#endif
+     }
 
      width = image.format.width;
      height = image.format.height;
