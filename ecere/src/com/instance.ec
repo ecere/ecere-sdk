@@ -2,7 +2,7 @@
 
 namespace com;
 
-#if defined(__ANDROID__)
+#if defined(__EMSCRIPTEN__) || defined(__ANDROID__)
  #define DISABLE_MEMMGR
  // #define USE_ATOMICS
 #endif

@@ -343,6 +343,10 @@ bool System_Execute(const char * env, const char * command, va_list args, bool w
    return result;
 }
 
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#endif
+
 bool System_ShellOpen(const char * fileName, va_list args)
 {
    bool result = false;
@@ -364,7 +368,14 @@ bool System_ShellOpen(const char * fileName, va_list args)
    filePath[len] = '\0';
 #endif
 
-#if !defined(__WIN32__)
+#if defined(__EMSCRIPTEN__)
+   {
+      char command[sizeof(filePath) + 100] = "";
+      sprintf(command, "window.open('%s', '_blank');", filePath);
+
+      emscripten_run_script(command);
+   }
+#elif !defined(__WIN32__)
    {
       char command[sizeof(filePath) + 61] = "";
       char desktop[MAX_F_STRING];

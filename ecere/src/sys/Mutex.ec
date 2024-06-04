@@ -111,9 +111,9 @@ public class Mutex : struct
 public:
    void Wait(void)
    {
+#if !defined(__EMSCRIPTEN__)
       if(this)
       {
-#if !defined(__EMSCRIPTEN__)
          /*
          if(this == globalSystem.fileMonitorMutex)
             printf("[%d] Waiting on Mutex %x\n", (int)GetCurrentThreadID(), this);
@@ -137,17 +137,18 @@ public:
          pthread_mutex_lock(&mutex);
 #endif
 #endif
-#endif
 
 //#ifdef _DEBUG
          _owningThread = GetCurrentThreadID();
 //#endif
          _lockCount++;
       }
+#endif
    }
 
    void Release(void)
    {
+#if !defined(__EMSCRIPTEN__)
       if(this)
       {
          /*
@@ -165,8 +166,6 @@ public:
             _owningThread = 0;
 //#endif
          }
-#if !defined(__EMSCRIPTEN__)
-
 #if defined(__WIN32__)
 #ifdef _DEBUG
          ReleaseMutex(mutex);
@@ -185,13 +184,13 @@ public:
          pthread_mutex_unlock(&mutex);
 #endif
 #endif
-#endif
 
 #ifdef _DEBUG
          if(_lockCount < 0)
             PrintLn("WARNING: lockCount < 0");
 #endif
       }
+#endif
    }
 
    property int lockCount { get { return _lockCount; } }
