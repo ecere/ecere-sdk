@@ -475,12 +475,14 @@ public struct ECCSSEvaluator
                   for(i = 0; i < numArgs; i++)
                   {
                      if(args[i].type.type == text)
-                        //if(i == 0) sprintf(newStr, "%s", args[i].s);
                         strcat(newStr, args[i].s);
                      else
                      {
-                        //if(i == 0) sprintf(newStr, args[i].type.type == integer ? "%d" : "%f", args[i].type.type == integer ? args[i].i : args[i].r);
-                        strcatf(newStr, args[i].type.type == integer ? "%d" : "%f", args[i].type.type == integer ? args[i].i : args[i].r);
+                        switch(args[i].type.type)
+                        {
+                           case integer: strcatf(newStr,"%d",args[i].i);break;
+                           case real: strcatf(newStr, "%f", args[i].r);break;
+                        }
                      }
                   }
                   value.s = CopyString(newStr);
