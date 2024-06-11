@@ -1744,6 +1744,8 @@ public:
       CMSSExpArray arr = null;
       CMSSExpConditional cond = null;
       int unit = unitVal;
+      subclass(ECCSSEvaluator) evaluatorClass = evaluator.evaluatorClass;
+
       if(e)
       {
          inst = e._class == class(CMSSExpInstance) ? (CMSSExpInstance)e : null;
@@ -1794,13 +1796,13 @@ public:
          if(evaluator != null)
          {
             // TODO: Do this in a more generic manner
-            Array<Instance> array = object ? evaluator.evaluatorClass.accessSubArray(object, mSet) : null;
+            Array<Instance> array = object ? evaluatorClass.accessSubArray(object, mSet) : null;
             if(array)
                for(e : arr.elements; e._class == class(CMSSExpInstance))
                {
                   CMSSExpInstance expInstance = (CMSSExpInstance)e;
                   Instance createdInstance = createGenericInstance(expInstance.instance,
-                     evaluator.evaluatorClass.getClassFromInst(expInstance.instance, expInstance.destType, null), evaluator, flg);
+                     evaluatorClass.getClassFromInst(expInstance.instance, expInstance.destType, null), evaluator, flg);
                   if(createdInstance) array.Add(createdInstance);
                }
             else
@@ -1809,7 +1811,7 @@ public:
                FieldValue value { };
                ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
                if(object)
-                  evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
+                  evaluatorClass.applyStyle(object, mSet, value, unit);
                *flg |= mFlg;
             }
          }
@@ -1830,7 +1832,7 @@ public:
                convertFieldValue(value, {integer}, value);
          }
          if(object)
-            evaluator.evaluatorClass.applyStyle(object, mSet, value, unit);
+            evaluatorClass.applyStyle(object, mSet, value, unit);
          *flg |= mFlg;
       }
    }
@@ -1840,12 +1842,17 @@ public:
    {
       if(inst)
       {
-         for(i : inst.instance.members)
+         CMSSInstInitList instMembers = inst.instance.members;
+         List<CMSSMemberInitList> membersInitList = instMembers ? instMembers.list : null;
+         Link i;
+         for(i = membersInitList ? membersInitList.first : null; i; i = i.next)
          {
-            CMSSMemberInitList members = i;
-            for(m : members)
+            CMSSMemberInitList members = (CMSSMemberInitList)(uintptr)i.data;
+            List<CMSSMemberInit> membersList = members.list;
+            Link m;
+            for(m = membersList.first; m; m = m.next)
             {
-               CMSSMemberInit mInit = m;
+               CMSSMemberInit mInit = (CMSSMemberInit)(uintptr)m.data;
                if(mInit.initializer)
                {
                   StylesMask sm = mInit.stylesMask;

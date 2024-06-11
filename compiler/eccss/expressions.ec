@@ -1354,7 +1354,7 @@ public:
                                                                      // WARNING: This may not be enough for interpolate() / map()
             for(a = (Link<CMSSExpression>)arguments.list.first; a && numArgs < 50; a = a.next)
             {
-               CMSSExpression arg = (CMSSExpression)*&a.data;
+               CMSSExpression arg = (CMSSExpression)(uintptr)*&a.data;
                FieldValue * argV = &args[numArgs++];
                flags.resolved = false;
 
