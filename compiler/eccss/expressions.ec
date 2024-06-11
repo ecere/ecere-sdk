@@ -1255,7 +1255,10 @@ public:
       ExpFlags flags { };
       FieldValue val { };
       ExpFlags expFlg = exp.compute(val, evaluator, computeType, stylesClass);
-      if(exp.expType)
+      // REVIEW: Can we check for runtime here?
+      // REVIEW: If the expression is really resolved during preprocessing, it might be possible to compute it already,
+      //         but some scenarios might not yet be handled properly
+      if(expFlg.resolved && evaluator != null && computeType == runtime && exp.expType)
       {
          // FIXME: Can we compute this prop and save it in class to compute it only during preprocessing?
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
@@ -1265,16 +1268,7 @@ public:
          }
          // This is not right, the type of the member is different...: expType = exp.expType;
          if(prop)
-         {
-            // REVIEW: Can we check for runtime here?
-            if(expFlg.resolved && evaluator != null && computeType == runtime)
-               evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
-            else
-            {
-               flags = expFlg;
-               value = { { nil } };
-            }
-         }
+            evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
          else
          {
             flags.invalid = true;
@@ -1369,8 +1363,10 @@ public:
             }
             if(nonResolved) flags.resolved = false;
          }
+         // REVIEW: If the expression is really resolved during preprocessing, it might be possible to compute it already,
+         //         but some scenarios might not yet be handled properly
          // We need to evaluate the function if resolved is true (should not yet be set if e.g., featureID / geometry is needed)
-         if(evaluator != null && flags.resolved)
+         if(evaluator != null && flags.resolved && (computeType == runtime || !flags.isNotLiteral))
             expType = evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
          for(i = 0; i < numArgs; i++)
             args[i].OnFree();
@@ -1587,7 +1583,8 @@ public:
          flags.resolved = resolved;
       }
       else
-         //if(!resolved) flags.resolved = false;
+         // REVIEW: Shouldn't resolved sometimes be set in preprocessing, if all elements are resolved?
+         // if(!resolved) flags.resolved = false;
          flags.resolved = false;
       return flags;
    }
