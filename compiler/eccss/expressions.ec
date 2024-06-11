@@ -1216,6 +1216,8 @@ public:
          if(prop)
             evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
       }
+      else
+         flags = expFlg;
       return flags;
    }
 
