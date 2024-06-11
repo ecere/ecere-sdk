@@ -143,6 +143,7 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
             {
                // printf("Found one window with processID\n");
                {
+                  // REVIEW: Is this what's causing display lock-up issues?
                   XRaiseWindow(xGlobalDisplay, children[c]);
                   // WaitForViewableWindow(xGlobalDisplay, children[c]);
                   if(xa_activeWindow)
@@ -160,7 +161,9 @@ static void EnumWindowBringToTop(X11Display * xGlobalDisplay, X11Window window, 
                      XSendEvent(xGlobalDisplay, DefaultRootWindow(xGlobalDisplay), bool::false, SubstructureRedirectMask | SubstructureNotifyMask, (union _XEvent *)&event);
                   }
                   else
+                  {
                      XSetInputFocus(xGlobalDisplay, children[c], RevertToPointerRoot, CurrentTime);
+                  }
                }
             }
          }

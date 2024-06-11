@@ -12,6 +12,9 @@ import "debugFindCtx"
 import "debugTools"
 import "dpl.ec"
 
+// Work around for lockups while step-debugging on Linux
+define focusNotContinue = GetRuntimePlatform() == win32;
+
 #ifdef _DEBUG
 #define GDB_DEBUG_CONSOLE
 #define _DPL_ON
@@ -2107,7 +2110,7 @@ class Debugger
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecNext()");
       gdbExecution = next;
       GdbExecCommon();
-      GdbCommand(0, true, "-exec-next");
+      GdbCommand(0, focusNotContinue, "-exec-next");
    }
 
    void ForceUpdateCurrentFrame()
@@ -2134,15 +2137,15 @@ class Debugger
       {
          const char * objectFileExt = currentCompiler ? currentCompiler.objectFileExt : objectDefaultFileExt;
          ide.workspace.GetRelativePath(absoluteFilePath, relativeFilePath, null, objectFileExt);
-         if(!GdbCommand(0.1, true, "-exec-until %s:%d", relativeFilePath, lineNumber))
+         if(!GdbCommand(0.1, focusNotContinue, "-exec-until %s:%d", relativeFilePath, lineNumber))
          {
             GetLastDirectory(relativeFilePath, relativeFilePath);
-            if(GdbCommand(1, true, "-exec-until %s:%d", relativeFilePath, lineNumber))
+            if(GdbCommand(1, focusNotContinue, "-exec-until %s:%d", relativeFilePath, lineNumber))
                forceUpdate = true;
          }
       }
       else
-         GdbCommand(0, true, "-exec-until");
+         GdbCommand(0, focusNotContinue, "-exec-until");
 
       // This is to handle GDB 6.3 on OS X not giving us *running then *stopped:
       // (It may not be ideal, we may need to wait?)
@@ -2161,19 +2164,19 @@ class Debugger
       {
          const char * objectFileExt = currentCompiler ? currentCompiler.objectFileExt : objectDefaultFileExt;
          ide.workspace.GetRelativePath(absoluteFilePathOrLocation, relativeFilePath, null, objectFileExt);
-         if(!GdbCommand(0.1, true, "advance %s:%d", relativeFilePath, lineNumber)) // should use -exec-advance -- GDB/MI implementation missing
+         if(!GdbCommand(0.1, focusNotContinue, "advance %s:%d", relativeFilePath, lineNumber)) // should use -exec-advance -- GDB/MI implementation missing
          {
             GetLastDirectory(relativeFilePath, relativeFilePath);
-            if(GdbCommand(1, true, "advance %s:%d", relativeFilePath, lineNumber))
+            if(GdbCommand(1, focusNotContinue, "advance %s:%d", relativeFilePath, lineNumber))
                forceUpdate = true;
          }
       }
       else
       {
-         if(!GdbCommand(0.1, true, "advance %s", absoluteFilePathOrLocation)) // should use -exec-advance -- GDB/MI implementation missing
+         if(!GdbCommand(0.1, focusNotContinue, "advance %s", absoluteFilePathOrLocation)) // should use -exec-advance -- GDB/MI implementation missing
          {
             GetLastDirectory(absoluteFilePathOrLocation, relativeFilePath);
-            if(GdbCommand(1, true, "advance %s", relativeFilePath))
+            if(GdbCommand(1, focusNotContinue, "advance %s", relativeFilePath))
                forceUpdate = true;
          }
       }
@@ -2189,7 +2192,7 @@ class Debugger
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecStep()");
       gdbExecution = step;
       GdbExecCommon();
-      GdbCommand(0, true, "-exec-step");
+      GdbCommand(0, focusNotContinue, "-exec-step");
    }
 
    void GdbExecFinish()
@@ -2197,7 +2200,7 @@ class Debugger
       _dpcl(_dpct, dplchan::debuggerCall, 0, "Debugger::GdbExecFinish()");
       gdbExecution = finish;
       GdbExecCommon();
-      GdbCommand(0, true, "-exec-finish");
+      GdbCommand(0, focusNotContinue, "-exec-finish");
    }
 
    void GdbExecCommon()
