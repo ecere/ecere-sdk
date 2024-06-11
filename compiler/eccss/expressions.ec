@@ -236,7 +236,7 @@ public CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
       return e; // Do not simplify lists with more than one element
    else if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
    {
-      CMSSExpression ne = (val.type.type == text) ? CMSSExpString { string = CopyString(val.s) } : CMSSExpConstant { constant = val };
+      CMSSExpression ne = (val.type.type == text) ? (val.s ? CMSSExpString { string = CopyString(val.s) } :  CMSSExpIdentifier { identifier = CMSSIdentifier { string = CopyString("null") } })  : CMSSExpConstant { constant = val };
       ne.destType = e.destType;
       ne.expType = e.expType;
       delete e;
