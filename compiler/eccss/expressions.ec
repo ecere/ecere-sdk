@@ -1158,8 +1158,12 @@ public:
          CMSSExpression last = expList.lastIterator.data;   // CMSS Only currently supports a single expression...
          FieldValue val1 { };
          FieldValue val2 { };
-         ExpFlags flags1 = last ? last.compute(val1, evaluator, computeType, stylesClass) : 0;
-         ExpFlags flags2 = elseExp ? elseExp.compute(val2, evaluator, computeType, stylesClass) : 0;
+         ExpFlags flags1;
+         ExpFlags flags2;
+         if(last) last.destType = destType;
+         if(elseExp) elseExp.destType = destType;
+         flags1 = last ? last.compute(val1, evaluator, computeType, stylesClass) : 0;
+         flags2 = elseExp ? elseExp.compute(val2, evaluator, computeType, stylesClass) : 0;
 
          flags = (flagsCond | flags1 | flags2) & ~ ExpFlags { resolved = true };
          if(flags1.resolved)
