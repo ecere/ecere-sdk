@@ -2397,18 +2397,28 @@ public:
             {
                FieldValue val { };
                e.destType = destType;
-               if(e._class == class(CMSSExpInstance))
-                  ((CMSSExpInstance)e).targetMask = stylesMask;
-               else if(e._class == class(CMSSExpConditional))
-               {
-                  CMSSExpConditional cond = (CMSSExpConditional)e;
-                  if(cond.expList.lastIterator.data._class == class(CMSSExpInstance))
-                     ((CMSSExpInstance)cond.expList.lastIterator.data).targetMask = stylesMask;
-                  if(cond.elseExp._class == class(CMSSExpInstance))
-                     ((CMSSExpInstance)cond.elseExp).targetMask = stylesMask;
-               }
 
-               flags = e.compute(val, evaluator, preprocessing, stylesClass);
+               if(assignType == addAssign && destType && eClass_IsDerived(destType, class(Container)))
+               {
+                  ClassTemplateArgument a = destType.templateArgs[0];
+                  Class dtc = a.dataTypeClass;
+                  e.destType = dtc;
+                  flags = e.compute(val, evaluator, preprocessing, null);
+               }
+               else
+               {
+                  if(e._class == class(CMSSExpInstance))
+                     ((CMSSExpInstance)e).targetMask = stylesMask;
+                  else if(e._class == class(CMSSExpConditional))
+                  {
+                     CMSSExpConditional cond = (CMSSExpConditional)e;
+                     if(cond.expList.lastIterator.data._class == class(CMSSExpInstance))
+                        ((CMSSExpInstance)cond.expList.lastIterator.data).targetMask = stylesMask;
+                     if(cond.elseExp._class == class(CMSSExpInstance))
+                        ((CMSSExpInstance)cond.elseExp).targetMask = stylesMask;
+                  }
+                  flags = e.compute(val, evaluator, preprocessing, stylesClass);
+               }
                if(flags.resolved)
                   initializer = simplifyResolved(val, e);
             }

@@ -664,7 +664,7 @@ public struct ECCSSEvaluator
       return c;
    }
 
-   virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit);
+   virtual void ::applyStyle(void * object, StylesMask mSet, const FieldValue value, int unit, CMSSTokenType assignType);
 
    // NOTE: These are quite likely to get ridden of with more generic code...
    virtual const String ::stringFromMask(StylesMask mask, Class c) { return null; }
@@ -1167,7 +1167,18 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                      {
                         void (* setInstance)(void * o, void * v) = (void *)prop.Set;
                         CMSSExpArray arrayExp = (CMSSExpArray) exp;
-                        if(arrayExp.array)
+                         // memcpy and renew instead?
+                        if(mInit.assignType == addAssign && object) // instantiated check?
+                        {
+                           IteratorPointer i;
+                           int c;
+                           for(c = 0, i = arrayExp.array.GetFirst(); i; i = arrayExp.array.GetNext(i), c++)
+                           {
+                              uintptr data = (uintptr)arrayExp.array.GetData(i);
+                              ((Array)object).Add(data);
+                           }
+                        }
+                        else
                            setInstance(object, arrayExp.array);
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
@@ -1657,14 +1668,29 @@ public:
                   CMSSExpression e = member.initializer;
                   StylesMask sm = member.stylesMask;
                   ExpFlags f = 0;
+
                   if(apply)
                   {
-                     if(sm & m)
+                     // since the stylesMask for the CMSSMemberInit in a += scenario could repeat, subsequent elements will be filtered out here with the mask logic
+                     // TODO: retrieve the masks from the initializer?
+                     /*if(member.assignType == addAssign && e._class == class(CMSSExpInstance))
                      {
-                        applyStyle(object, sm & m, evaluator, e, &f, 0);
+                        CMSSExpInstance inst = (CMSSExpInstance)e;
+                        CMSSSpecName spec = (CMSSSpecName)inst.instance._class;
+                        String n = spec ? spec.name : null;
+                        if(n) sm = evaluator.evaluatorClass.maskFromString(n, evaluator.evaluatorClass.getClassFromInst(inst.instance, inst.destType, null));
+                     }
+                     else*/
+                        sm = member.stylesMask;
+                     if((sm & m) || (member.assignType == addAssign))
+                     {
+                        applyStyle(object, sm & m, evaluator, e, &f, 0, member.assignType);
                         *flg |= f;
-                        m &= ~sm;
-                        result = m;
+                        if(!(member.assignType == addAssign))
+                        {
+                           m &= ~sm;
+                           result = m;
+                        }
                      }
                   }
                   else
@@ -1726,10 +1752,12 @@ public:
                   CMSSMemberInit member = (CMSSMemberInit)itMember.data;
                   CMSSExpression e = member.initializer;
                   StylesMask sm = member.stylesMask;
-                  if(sm & m)
+                  if((sm & m) || (member.assignType == addAssign))
                   {
-                     applyStyle(object, sm & m, evaluator, e, flg, 0);
-                     m &= ~sm;
+                     applyStyle(object, sm & m, evaluator, e, flg, 0, member.assignType);
+                     //m &= ~sm;
+                     if(!(member.assignType == addAssign))
+                        m &= ~sm;
                   }
                   itMember = itMember.prev;
                }
@@ -1740,7 +1768,7 @@ public:
       return m;
    }
 
-   private static void ::applyStyle(void * object, StylesMask mSet, ECCSSEvaluator evaluator, CMSSExpression e, ExpFlags * flg, int unitVal)
+   private static void ::applyStyle(void * object, StylesMask mSet, ECCSSEvaluator evaluator, CMSSExpression e, ExpFlags * flg, int unitVal, CMSSTokenType assignType)
    {
       CMSSExpInstance inst = null;
       CMSSExpArray arr = null;
@@ -1790,7 +1818,19 @@ public:
             inst = null;*/
          }
          if(object) //else if(object)
-            applyInstanceStyle(object, mSet, inst, evaluator, flg, unit);
+         {
+            if(assignType == addAssign) // also pass mInit desttype to be sure of object?
+            {
+               Array<Instance> array = object ? evaluatorClass.accessSubArray(object, mSet) : null;
+               if(array)
+               {
+                  array.Add(createGenericInstance(inst.instance,
+                     evaluatorClass.getClassFromInst(inst.instance, inst.destType, null), evaluator, flg));
+               }
+            }
+            else
+               applyInstanceStyle(object, mSet, inst, evaluator, flg, unit);
+         }
       }
 
       if(arr)
@@ -1813,7 +1853,7 @@ public:
                FieldValue value { };
                ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
                if(object)
-                  evaluatorClass.applyStyle(object, mSet, value, unit);
+                  evaluatorClass.applyStyle(object, mSet, value, unit, 0);
                *flg |= mFlg;
             }
          }
@@ -1834,7 +1874,7 @@ public:
                convertFieldValue(value, {integer}, value);
          }
          if(object)
-            evaluatorClass.applyStyle(object, mSet, value, unit);
+            evaluatorClass.applyStyle(object, mSet, value, unit, 0);
          *flg |= mFlg;
       }
    }
@@ -1860,7 +1900,7 @@ public:
                   StylesMask sm = mInit.stylesMask;
                   if(sm & mask) // || unit
                   {
-                     applyStyle(object, sm & mask, evaluator, mInit.initializer, flg, unit);
+                     applyStyle(object, sm & mask, evaluator, mInit.initializer, flg, unit, mInit.assignType);
                      mask &= ~sm;
                   }
                }
