@@ -414,9 +414,9 @@ Map<ImageStyleKind, const String> imageStringFromMaskMap
 
 public struct GraphicalStyleEvaluator : ECCSSEvaluator
 {
-   void applyStyle(GraphicalStyle object, GraphicalStyleMask mSet, const FieldValue value, int unit)
+   void applyStyle(GraphicalStyle object, GraphicalStyleMask mSet, const FieldValue value, int unit, CMSSTokenType assignType)
    {
-      object.applyStyle(mSet, value, unit);
+      object.applyStyle(mSet, value, unit, assignType);
    }
 };
 public class GraphicalStyle : struct
@@ -476,7 +476,7 @@ public:
       if(mask.visibility) visibility = true;
    }
 
-   private void applyStyle(GraphicalStyleKind mSet, const FieldValue value, int unit)
+   private void applyStyle(GraphicalStyleKind mSet, const FieldValue value, int unit, CMSSTokenType assignType)
    {
       switch(mSet)
       {
@@ -528,7 +528,7 @@ public:
       GraphicalStyle::applyDefaults(mask);
    }
 
-   private void applyStyle(ShapeStyleKind mSet, const FieldValue value, int unit)
+   private void applyStyle(ShapeStyleKind mSet, const FieldValue value, int unit, CMSSTokenType assignType)
    {
       switch(mSet)
       {
@@ -552,7 +552,7 @@ public:
          case strokeJoin: stroke.join = (LineJoin)value.i; break;
          case strokeCap: stroke.cap = (LineCap)value.i; break;
          case strokeDashPattern: stroke.dashes = value.b; break;
-         default: GraphicalStyle::applyStyle(mSet, value, unit);
+         default: GraphicalStyle::applyStyle(mSet, value, unit, assignType);
       }
    }
 }
@@ -578,7 +578,7 @@ public:
       GraphicalStyle::applyDefaults(mask);
    }
 
-   private void applyStyle(TextStyleKind mSet, const FieldValue value, int unit)
+   private void applyStyle(TextStyleKind mSet, const FieldValue value, int unit, CMSSTokenType assignType)
    {
       switch(mSet)
       {
@@ -594,7 +594,7 @@ public:
          case fontOutlineOpacity: font.outline.opacity = (float)value.r; break;
          case alignmentHorzAlign: alignment.horzAlign = (HAlignment)value.i; break;
          case alignmentVertAlign: alignment.vertAlign = (VAlignment)value.i; break;
-         default: GraphicalStyle::applyStyle(mSet, value, unit);
+         default: GraphicalStyle::applyStyle(mSet, value, unit, assignType);
       }
    }
 }
@@ -618,7 +618,7 @@ public:
    {
       GraphicalStyle::applyDefaults(mask);
    }
-   private void applyStyle(ImageStyleKind mSet, const FieldValue value, int unit)
+   private void applyStyle(ImageStyleKind mSet, const FieldValue value, int unit, CMSSTokenType assignType)
    {
       switch(mSet)
       {
@@ -632,7 +632,7 @@ public:
          case blackTint: blackTint = (Color)value.i; break;
          // FIXME:
          //case hotSpot: image.hotSpot = value.b; break; //maybe hotSpotX, hotSpotY???
-         default: GraphicalStyle::applyStyle(mSet, value, unit);
+         default: GraphicalStyle::applyStyle(mSet, value, unit, assignType);
       }
    }
 }
