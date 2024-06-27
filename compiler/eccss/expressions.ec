@@ -1783,20 +1783,20 @@ public:
 
    void setMemberValue(const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class c)
    {
-      setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), null, null);
+      setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), null, null, none);
    }
 
    void setMemberValue2(const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class c, ECCSSEvaluator evaluator, Class stylesClass)
    {
-      setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), evaluator, stylesClass);
+      setMember2(idsString, mask, createSubInstance, expressionFromValue(value, c), evaluator, stylesClass, none);
    }
 
    void setMember(const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression)
    {
-      setMember2(idsString, mask, createSubInstance, expression, null, null);
+      setMember2(idsString, mask, createSubInstance, expression, null, null, none);
    }
 
-   void setMember2(const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
+   void setMember2(const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass, CMSSTokenType tt)
    {
       #ifdef _DEBUG
          if(!expression)
@@ -1817,7 +1817,7 @@ public:
                CMSSMemberInitList im = it.data;
                if(im)
                {
-                  if(!placed && im.setSubMember(createSubInstance, expType, idsString, mask, expression, null, evaluator, stylesClass))
+                  if(!placed && im.setSubMember(createSubInstance, expType, idsString, mask, expression, null, evaluator, stylesClass, none))
                      placed = true;
                   else
                   {
@@ -1826,7 +1826,7 @@ public:
                      if(im.removeByIDs(idsString, mask, &after) && !placed)
                      {
                         CMSSMemberInit mInit;
-                        CMSSMemberInitList::setSubMember(null, createSubInstance, expType, idsString, mask, expression, &mInit, evaluator, stylesClass);
+                        CMSSMemberInitList::setSubMember(null, createSubInstance, expType, idsString, mask, expression, &mInit, evaluator, stylesClass, none);
                         im.Insert(after, mInit);
                         placed = true;
                      }
@@ -1851,7 +1851,7 @@ public:
             CMSSMemberInitList initList = strchr(idsString, '.') ? null : instance.members.lastIterator.data;
             if(!initList)
                instance.members.Add((initList = { }));
-            initList.setMember2(expType, idsString, mask, createSubInstance, expression, evaluator, stylesClass);
+            initList.setMember2(expType, idsString, mask, createSubInstance, expression, evaluator, stylesClass, tt);
             instance.members.mask |= mask;
          }
       }
@@ -2021,23 +2021,23 @@ public:
 
    void setMemberValue(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc)
    {
-      setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), null, null);
+      setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), null, null, none);
    }
 
    void setMemberValue2(Class c, const String idsString, StylesMask mask, bool createSubInstance, const FieldValue value, Class uc, ECCSSEvaluator evaluator, Class stylesClass)
    {
-      setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), evaluator, stylesClass);
+      setMember2(c, idsString, mask, createSubInstance, expressionFromValue(value, uc), evaluator, stylesClass, none);
    }
 
    void setMember(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression)
    {
       if(expression)
-         setMember2(c, idString, msk, createSubInstance, expression, null, null);
+         setMember2(c, idString, msk, createSubInstance, expression, null, null, none);
       else
          removeStyle(msk); // TOCHECK: Should the style be removed if attempting to set a null expression?
    }
 
-   void setMember2(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
+   void setMember2(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass, CMSSTokenType tt)
    {
       if(this)
       {
@@ -2090,7 +2090,7 @@ public:
          if(!list)
             Add((list = { }));
 
-         list.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass);
+         list.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass, tt);
 
          mask |= msk;
       }
@@ -2102,7 +2102,7 @@ public:
       CMSSExpression e = expressionFromValue(value, uc);
       FieldValue v { };
 
-      setMember2(c, idString, msk, !isNested, e, evaluator, c);
+      setMember2(c, idString, msk, !isNested, e, evaluator, c, none);
       e.compute(v, evaluator, preprocessing, c); // REVIEW: use of c for stylesClass here...
       return true;
    }
@@ -2590,7 +2590,7 @@ public:
    }
 
    private static bool setSubMember(bool createSubInstance, Class c, const String idsString, StylesMask mask, CMSSExpression expression,
-      CMSSMemberInit * mInitPtr, ECCSSEvaluator evaluator, Class stylesClass)
+      CMSSMemberInit * mInitPtr, ECCSSEvaluator evaluator, Class stylesClass, CMSSTokenType tt)
    {
       CMSSMemberInit mInit = null;
       CMSSMemberInit mInit2 = null;
@@ -2610,7 +2610,7 @@ public:
             memcpy(member, idsString, len);
             member[len] = 0;
 
-            if(this)
+            if(this && tt != addAssign) //
             {
                e = getMemberByIDs2([ member ], &mInit2); // TOCHECK: Is this still needed?
                if(!e && mask)
@@ -2690,7 +2690,7 @@ public:
             {
                initializer = expression,
                // identifiers = { }, // FIXME: #1220
-               assignType = equal,
+               assignType = tt == addAssign ? addAssign : equal,
                stylesMask = mask;
             };
             if(expression && mInit.destType) expression.destType = mInit.destType;
@@ -2815,14 +2815,14 @@ public:
 
    void setMember(Class c, const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression)
    {
-      setMember2(c, idsString, mask, createSubInstance, expression, null, null);
+      setMember2(c, idsString, mask, createSubInstance, expression, null, null, none);
    }
 
-   void setMember2(Class c, const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass)
+   void setMember2(Class c, const String idsString, StylesMask mask, bool createSubInstance, CMSSExpression expression, ECCSSEvaluator evaluator, Class stylesClass, CMSSTokenType tt)
    {
       CMSSMemberInit mInit;
 
-      if(!setSubMember(createSubInstance, c, idsString, mask, expression, &mInit, evaluator, stylesClass))
+      if(!setSubMember(createSubInstance, c, idsString, mask, expression, &mInit, evaluator, stylesClass, tt))
       {
          // Delete old values
          bool placed = false;
