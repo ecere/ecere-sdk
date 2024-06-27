@@ -1487,12 +1487,12 @@ public:
 
 
    void setStyle(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression,
-      ECCSSEvaluator evaluator, Class stylesClass)
+      ECCSSEvaluator evaluator, Class stylesClass, CMSSTokenType tt)
    {
       if(msk)
       {
          if(!styles) styles = { };
-         styles.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass);
+         styles.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass, tt);
          mask |= msk;
       }
    }
