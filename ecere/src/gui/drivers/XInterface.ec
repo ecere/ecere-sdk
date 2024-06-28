@@ -1739,6 +1739,10 @@ class XInterface : Interface
                case KeyPress:
                {
                   XKeyEvent * event = (XKeyEvent *) thisEvent;
+                  int releaseCode = (event->keycode == lastKeyCode) ? 2 : 0;
+
+                  lastKeyCode = event->keycode; // NOTE: We need to set this before invoking ProcessKeyMessage() which may create a modal dialog
+
                   incref window;
                   timeStamp = event->time;
                   if(!window.active)
@@ -1763,9 +1767,10 @@ class XInterface : Interface
                      }
                   }
                   //*XUnlockDisplay(xGlobalDisplay);
-                  ProcessKeyMessage(window, event->keycode, (event->keycode == lastKeyCode) ? 2 : 0, event);
+
+                  ProcessKeyMessage(window, event->keycode, releaseCode, event);
+
                   //*if(xGlobalDisplay) XLockDisplay(xGlobalDisplay);
-                  lastKeyCode = event->keycode;
                   delete window;
                   break;
                }
@@ -1773,8 +1778,10 @@ class XInterface : Interface
                {
                   XKeyEvent * event = (XKeyEvent *) thisEvent;
                   XEvent nextEvent;
+
                   lastKeyCode = 0;
                   timeStamp = event->time;
+
                   if(!autoRepeatDetectable && XCheckIfEvent(xGlobalDisplay, (XEvent *)&nextEvent, EventChecker, (void *)KeyPress))
                   {
                      if(im && XFilterEvent(&nextEvent, None))
