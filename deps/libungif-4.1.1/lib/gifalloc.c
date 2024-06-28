@@ -28,7 +28,7 @@
 int BitSize(int n)
 /* return smallest bitfield size n will fit in */
 {
-    register	i;
+    register int i;
 
     for (i = 1; i <= 8; i++)
 	if ((1 << i) >= n)

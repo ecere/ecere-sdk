@@ -28,6 +28,8 @@
 
 #include <fficonfig.h>
 
+int open_temp_exec_file(void);
+
 #ifdef FFI_EXEC_STATIC_TRAMP
 
 /* -------------------------- Headers and Definitions ---------------------*/
