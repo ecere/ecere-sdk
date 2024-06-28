@@ -1350,11 +1350,13 @@ class SQLiteRow : DriverRow
       int result = 1;
       Class dataType = fld.type;
       SerialBuffer buffer = null;
+      int dts = data._class.typeSize;
+
       switch(fld.sqliteType)
       {
          case SQLITE_INTEGER:
          {
-            switch(dataType.typeSize)
+            switch(dts) //dataType.typeSize)
             {
                case 8:
                   result = sqlite3_bind_int64(statement, pos, (sqlite3_int64)*(int64 *)data);
@@ -1777,59 +1779,55 @@ class SQLiteRow : DriverRow
       SQLiteField sqlFld = (SQLiteField)fld;
       int num = sqlFld.num + 1;
       Class dataType = *&sqlFld.type;
-
+      int dataArgSize = data._class.typeSize;  // FIXME: data._class cannot be assigned to Class
 
       switch(sqlFld.sqliteType)
       {
          case SQLITE_INTEGER:
          {
+            int64 value = 0;
+
             switch(dataType.typeSize)
             {
                case 8:
                   if(fld == tbl.primaryKey)
-                     *(int64 *)data = rowID;
+                     value = rowID;
                   else
-                     *(int64 *)data = sqlite3_column_int64(curStatement, num);
+                     value = sqlite3_column_int64(curStatement, num);
                   break;
                case 4:
                   if(fld == tbl.primaryKey)
-                     *(int *)data = (int)(uint)rowID;
+                     value = rowID;
                   else
-                     *(int *)data = sqlite3_column_int(curStatement, num);
+                     value = sqlite3_column_int(curStatement, num);
                   break;
                case 2:
-               {
-                  int value;
                   if(fld == tbl.primaryKey)
-                     value = (int)(uint)rowID;
+                     value = rowID;
                   else
                      value = sqlite3_column_int(curStatement, num);
-                  if(value < 0)
-                     *(short *)data = (short)value;
-                  else
-                     *(uint16 *)data = (uint16)value;
                   break;
-               }
                case 1:
-               {
-                  int value;
                   if(fld == tbl.primaryKey)
-                     value = (int)(uint)rowID;
+                     value = rowID;
                   else
                      value = sqlite3_column_int(curStatement, num);
-                  if(value < 0)
-                     *(char *)data = (char)value;
-                  else
-                     *(byte *)data = (byte)value;
                   break;
-               }
             }
+            if(dataArgSize == 8)
+               *(int64 *)data = (int64)value;
+            else if(dataArgSize == 4)
+               *(int *)data = (int)value;
+            else if(dataArgSize == 2)
+               *(short *)data = (short)value;
+            else if(dataArgSize == 1)
+               *(char *)data = (char)value;
             break;
          }
          case SQLITE_FLOAT:
          {
             double d = sqlite3_column_double(curStatement, num);
-            if(dataType.typeSize == 8)
+            if(dataArgSize == 8) //dataType.typeSize == 8)
                *(double *)data = d;
             else
                *(float *)data = (float)d;
