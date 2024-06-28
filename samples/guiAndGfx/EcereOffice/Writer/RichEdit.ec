@@ -250,7 +250,8 @@ class RichEdit : HTMLView
                startSelBlock.text = renew startSelBlock.text char[startSel + 1];
                startSelBlock.textLen = startSel;
 
-               memmove(endSelBlock.text, endSelBlock.text + endSel, endSelBlock.textLen - endSel + 1);
+               if(endSelBlock.text)
+                  memmove(endSelBlock.text, endSelBlock.text + endSel, endSelBlock.textLen - endSel + 1);
                endSelBlock.text = renew endSelBlock.text char[endSelBlock.textLen - endSel + 1];
                endSelBlock.textLen = endSelBlock.textLen - endSel;
             }
@@ -405,8 +406,8 @@ class RichEdit : HTMLView
             case Key { home, ctrl = true, shift = true }:
             case ctrlHome:
                curPosition = 0;
-               while(textBlock.prev)
-                  textBlock = textBlock.prev.prev;
+               while(textBlock.prev) // && textBlock.prev.prev)   // FIXME: Write a getNextLineBlock() function...
+                  textBlock = textBlock.prev; //.prev;
                if(!key.shift)
                {
                   selPosition = curPosition;
@@ -417,8 +418,8 @@ class RichEdit : HTMLView
                return false;
             case Key { end, ctrl = true, shift = true }:
             case ctrlEnd:
-               while(textBlock.next && textBlock.next.next)
-                  textBlock = textBlock.next.next;
+               while(textBlock.next)// && textBlock.next.next) // FIXME: Write a getNextLineBlock() function...
+                  textBlock = textBlock.next; //.next;
                curPosition = textBlock.textLen;
                if(!key.shift)
                {
@@ -679,7 +680,7 @@ class RichEdit : HTMLView
                      positionCaret(false);
                      return false;
                   }
-                  else if(textPos == textBlock.textLen && textBlock.next && textBlock.next.next)
+                  else if(textPos == textBlock.textLen && textBlock.next && textBlock.next.next)   // FIXME: Write a getNextLineBlock() function...
                   {
                      startPos = 0;
                      textPos = 0;
