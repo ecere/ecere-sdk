@@ -73,6 +73,11 @@ static int ReplaceClassSpec(OldList specs, Specifier spec, bool param)
       {
          Class _class = classSym.registered;
 
+         // REVIEW: Review where proper logic should be to update the templated classes types
+         //         when the class template was registered later
+         if(_class && _class.templateClass && _class.type != _class.templateClass.type)
+            _class.type = _class.templateClass.type;
+
          FreeSpecifierContents(spec);
 
          spec.type = nameSpecifier;
@@ -81,7 +86,7 @@ static int ReplaceClassSpec(OldList specs, Specifier spec, bool param)
             //Externalexternal;
             char name[1024];
             name[0] = 0;
-            FullClassNameCat(name, _class.fullName, false);
+            FullClassNameCat(name, _class.templateClass ? _class.templateClass.fullName : _class.fullName, false);
             FreeSpecifierContents(spec);
             spec.type = structSpecifier;
             spec.baseSpecs = null;
@@ -94,7 +99,7 @@ static int ReplaceClassSpec(OldList specs, Specifier spec, bool param)
          else if(_class && _class.type == noHeadClass)
          {
             char name[1024] = "";
-            FullClassNameCat(name, _class.fullName, false);
+            FullClassNameCat(name, _class.templateClass ? _class.templateClass.fullName : _class.fullName, false);
             spec.type = structSpecifier;
             spec.baseSpecs = null;
             spec.id = MkIdentifier(name);
@@ -759,6 +764,7 @@ static void InstDeclPassDeclaration(Declaration decl)
          if(decl.specifiers)
          {
             Specifier spec;
+
             for(spec = decl.specifiers->first; spec; spec = spec.next)
             {
                int type;

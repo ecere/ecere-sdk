@@ -1118,6 +1118,8 @@ if(classSym)
 {
 struct __ecereNameSpace__ecere__com__Class * _class = classSym->__anon1.registered;
 
+if(_class && _class->templateClass && _class->type != _class->templateClass->type)
+_class->type = _class->templateClass->type;
 FreeSpecifierContents(spec);
 spec->type = 1;
 if(_class && _class->type == 1)
@@ -1125,7 +1127,7 @@ if(_class && _class->type == 1)
 char name[1024];
 
 name[0] = 0;
-FullClassNameCat(name, _class->fullName, 0);
+FullClassNameCat(name, _class->templateClass ? _class->templateClass->fullName : _class->fullName, 0);
 FreeSpecifierContents(spec);
 spec->type = 3;
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
@@ -1139,7 +1141,7 @@ else if(_class && _class->type == 5)
 {
 char name[1024] = "";
 
-FullClassNameCat(name, _class->fullName, 0);
+FullClassNameCat(name, _class->templateClass ? _class->templateClass->fullName : _class->fullName, 0);
 spec->type = 3;
 spec->__anon1.__anon2.baseSpecs = (((void *)0));
 spec->__anon1.__anon2.id = MkIdentifier(name);

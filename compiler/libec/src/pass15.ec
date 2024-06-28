@@ -11971,6 +11971,9 @@ static void ProcessSpecifier(Specifier spec, bool declareStruct, bool warnClasse
          else if(spec.symbol /*&& declareStruct*/)
          {
             Class c = spec.symbol.registered;
+            if(c && c.templateClass && c.type != c.templateClass.type)
+               c.type = c.templateClass.type;
+
             if(warnClasses && !c)
                Compiler_Warning("Undeclared class %s\n", spec.name);
             DeclareStruct(curExternal, spec.name, c && c.type == noHeadClass, declareStruct && c && c.type == structClass);

@@ -14900,6 +14900,8 @@ else if(spec->__anon1.__anon1.symbol)
 {
 struct __ecereNameSpace__ecere__com__Class * c = spec->__anon1.__anon1.symbol->__anon1.registered;
 
+if(c && c->templateClass && c->type != c->templateClass->type)
+c->type = c->templateClass->type;
 if(warnClasses && !c)
 Compiler_Warning("Undeclared class %s\n", spec->__anon1.__anon1.name);
 DeclareStruct(curExternal, spec->__anon1.__anon1.name, c && c->type == 5, declareStruct && c && c->type == 1);
