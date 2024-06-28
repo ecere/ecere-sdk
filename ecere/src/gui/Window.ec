@@ -5006,7 +5006,7 @@ private:
             if(!hotKeyWindow.KeyMessage(method, Key::hotKey, character))
             {
                // *********   WORKING ON THIS   ***********
-               if(prevActiveWindow && !guiApp.interimWindow)
+               if(prevActiveWindow && !guiApp.interimWindow && hotKeyWindow.active)
                   prevActiveWindow.ActivateEx(true, false, false, false, null, null);
                status = false;
             }
