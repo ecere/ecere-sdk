@@ -243,7 +243,7 @@ public class SavingDataBox : DataBox
          if(!SaveData())
             // Force Refresh on Enter if SaveData didn't do it
             Refresh();
-         return true;
+         return false; //true; // REVIEW: No way to prevent other keyboard action?
       }
       return DataBox::OnKeyDown(key, ch);
    }
