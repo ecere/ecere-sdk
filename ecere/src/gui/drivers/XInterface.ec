@@ -2918,6 +2918,18 @@ class XInterface : Interface
          XSetWMHints(xGlobalDisplay, windowHandle, &wmHints);
       }
 
+      {
+         XClassHint hints = { 0 };
+         const String appName = guiApp.appName;
+
+         if(!strcmp(appName, "ECERE Application"))
+            appName = window._class.name;
+
+         hints.res_name = (char *)appName; //window.caption ? (char *)window.caption : (char *)window._class.name;
+         hints.res_class = (char *)appName; //(char *)window._class.name;
+         XSetClassHint(xGlobalDisplay, windowHandle, &hints);
+      }
+
       // XFlush(xGlobalDisplay);
       window.windowData = XWindowData { visualInfo, ic
 #if !defined(ECERE_VANILLA) && !defined(ECERE_NO3D) && !defined(ECERE_NOGL) && !defined(__ODROID__)

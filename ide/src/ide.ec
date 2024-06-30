@@ -3909,6 +3909,8 @@ class IDEApp : GuiApplication
    // skin = "Aqua";
    //skin = "TVision";
 
+   appName = "Ecere IDE";
+
    TempFile includeFile { };
    int argFilesCount;
 
