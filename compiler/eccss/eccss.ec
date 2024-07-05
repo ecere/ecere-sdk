@@ -1487,6 +1487,17 @@ public:
 
 
    void setStyle(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression,
+      ECCSSEvaluator evaluator, Class stylesClass)
+   {
+      if(msk)
+      {
+         if(!styles) styles = { };
+         styles.setMember2(c, idString, msk, createSubInstance, expression, evaluator, stylesClass, none);
+         mask |= msk;
+      }
+   }
+
+   void setStyleEx(Class c, const String idString, StylesMask msk, bool createSubInstance, CMSSExpression expression,
       ECCSSEvaluator evaluator, Class stylesClass, CMSSTokenType tt)
    {
       if(msk)
