@@ -2263,7 +2263,8 @@ public:
       {
          assignType = assignType, initializer = initializer.copy(), stylesMask = stylesMask,
          identifiers = copyList(identifiers, (void *)CMSSIdentifier::copy),
-         destType = destType, dataMember = dataMember
+         destType = destType, dataMember = dataMember,
+         offset = offset
       };
       return memberInit;
    }
