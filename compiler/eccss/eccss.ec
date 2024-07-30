@@ -1642,7 +1642,8 @@ public:
          {
             StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
             FieldValue value { };
-            CMSSExpression e = sel.exp;
+            // REVIEW: scale-dependent compute() was broken without a copy
+            CMSSExpression e = sel.exp; // ? sel.exp.copy() : null;
             ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
             flags |= sFlags;
 
@@ -1651,6 +1652,7 @@ public:
 
             if(!sFlags.resolved || !value.i)
                apply = false;
+            //delete e;
          }
          *flg |= flags;
       }
@@ -1734,13 +1736,15 @@ public:
          {
             StylingRuleSelector sel = (StylingRuleSelector)(uintptr)s.data;
             FieldValue value { };
-            CMSSExpression e = sel.exp;
+            // REVIEW: scale-dependent compute() was broken without a copy
+            CMSSExpression e = sel.exp; // ? sel.exp.copy() : null;
             ExpFlags sFlags = e.compute(value, evaluator, runtime, null);
             flags |= sFlags;
 
             if(!sFlags.resolved || !value.i)
                apply = false;
             //callAgain = flags.callAgain;
+            //delete e;
          }
          *flg |= flags;
       }
