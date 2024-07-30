@@ -1793,6 +1793,8 @@ public:
          arr = e._class == class(CMSSExpArray) ? (CMSSExpArray)e : null;
          cond = e._class == class(CMSSExpConditional) ? (CMSSExpConditional)e : null;
       }
+
+      // REVIEW: Shouldn't the expType be what indicate the unit?
       // special handling for conditional with potential unitClass as a compute on conditional would not yield the unit
       if(cond && (cond.expList.lastIterator.data._class == class(CMSSExpInstance) || cond.elseExp._class == class(CMSSExpInstance)))
       {
@@ -1875,6 +1877,9 @@ public:
          ExpFlags mFlg = e.compute(value, evaluator, runtime, e.destType); // TODO: Review stylesClass here?
          Class destType = e.destType;
          Class expType = e.expType;
+
+         if(expType && expType == class(Meters))
+            unit = 1; // meters
          if(mFlg.resolved && destType && expType != destType)
          {
             if(destType == class(float) || destType == class(double))
