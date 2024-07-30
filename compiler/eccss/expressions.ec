@@ -957,6 +957,14 @@ public:
                      case rShift:               tbl->RShift    (value, val1, val2); break;
                   }
                   flags.resolved = value.type.type != nil;
+
+                  // REVIEW: Assigning expType?
+                  if(!expType)
+                  {
+                     expType = exp1.expType && exp1.expType == class(Meters) ? exp1.expType :
+                               exp2.expType && exp2.expType == class(Meters) ? exp2.expType :
+                               exp1.expType ? exp1.expType : exp2.expType;
+                  }
                }
                else if((val1.type.type == nil || val2.type.type == nil) && (op == equal || op == notEqual))
                {
@@ -1058,7 +1066,11 @@ public:
          Iterator<CMSSExpression> last { container = list, pointer = list.GetLast() };
          CMSSExpression lastExp = last.data;
          if(lastExp)
+         {
+            lastExp.destType = destType;
             flags = lastExp.compute(value, evaluator, computeType, stylesClass);
+            expType = lastExp.expType;
+         }
       }
       return flags;
    }
