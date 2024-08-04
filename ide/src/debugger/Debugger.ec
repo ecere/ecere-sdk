@@ -2728,7 +2728,7 @@ class Debugger
                   Operand op = GetOperand(exp);
                   char * s = null;
                   char * (* onGetString)(void *, void *, void *, void *, void *) = (void *)c._vTbl[__ecereVMethodID_class_OnGetString];
-                  if(op.type)
+                  if(op.type && onGetString) // REVIEW: Why can onGetString() be null (e.g., Color?)
                   {
                      if(op.type) op.type.refCount++;
                      switch(op.kind)

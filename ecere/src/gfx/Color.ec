@@ -118,8 +118,9 @@ public:
       }
       else if((strlen(string) == 6 || strlen(string) == 8) && ishexdigit(string[0]))
       {
-         this = (Color)strtoul(string, null, 16);
-         return true;
+         char * endPtr;
+         this = (Color)strtoul(string, &endPtr, 16);
+         return !endPtr[0];
       }
       else
          return class::OnGetDataFromString(string);
