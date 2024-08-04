@@ -175,7 +175,8 @@ OpTable opTables[FieldType] =
 public class ExpFlags : uint
 {
 public:
-   bool resolved:1;
+   bool resolved:1:0;
+   bool invalid:1:5;
 };
 
 public enum ComputeType { preprocessing, runtime, other };
@@ -1205,8 +1206,9 @@ public:
       ExpFlags flags { };
       FieldValue val { };
       ExpFlags expFlg = exp.compute(val, evaluator, computeType, stylesClass);
-      if(expFlg.resolved && evaluator != null && exp.expType && computeType == runtime)   // REVIEW: Can we check for runtime here?
+      if(exp.expType)
       {
+         // FIXME: Can we compute this prop and save it in class to compute it only during preprocessing?
          DataMember prop = eClass_FindDataMember(exp.expType, member.string, exp.expType.module, null, null);
          if(!prop)
          {
@@ -1214,7 +1216,15 @@ public:
          }
          // This is not right, the type of the member is different...: expType = exp.expType;
          if(prop)
-            evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
+         {
+            // REVIEW: Can we check for runtime here?
+            if(expFlg.resolved && evaluator != null && computeType == runtime)
+               evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
+            else
+               flags = expFlg;
+         }
+         else
+            flags.invalid = true;
       }
       else
          flags = expFlg;
