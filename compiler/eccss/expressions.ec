@@ -1529,6 +1529,7 @@ public:
    CMSSInstantiation instance;
    StylesMask targetMask;
    void * instData;
+   ExpFlags instanceFlags;
 
    CMSSExpInstance ::parse(CMSSSpecName spec, CMSSLexer lexer)
    {
@@ -1593,10 +1594,13 @@ public:
             setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags, stylesClass);
          }
          expType = c;
+
+         instanceFlags = flags;
       }
       else if(computeType == runtime)
       {
-         if(instData)
+         // REVIEW: Not re-computing if no extra flag is set -- does this only happen with literal instances?
+         if(instData && instanceFlags != { resolved = true })
          {
             if(expType && expType.type != structClass)
             {
@@ -1614,8 +1618,13 @@ public:
                delete instData;
          }
 
-         // TODO: Avoid constantly re-creating if constant?
-         instData = evaluator.evaluatorClass.computeInstance(evaluator, instance, destType, &flags, &expType);
+         if(instData)
+            flags = instanceFlags;
+         else
+         {
+            instData = evaluator.evaluatorClass.computeInstance(evaluator, instance, destType, &flags, &expType);
+            instanceFlags = flags;
+         }
 
          if((expType && expType == class(DateTime)) && instData && expType.type == structClass)
          {
