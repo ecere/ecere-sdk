@@ -844,12 +844,16 @@ public:
                            tbl = &opTables[type.type];
                            tbl->Equ(v, v1, v2);
                            if(v.i)
+                           {
+                              v2.OnFree();
                               break;
+                           }
                         }
                      }
                   }
                   else
                      flags |= f2;
+                  v2.OnFree();
                }
                v1.OnFree();
                value = v;
@@ -881,9 +885,9 @@ public:
                (flags.resolved && op == '|' && (flags1.resolved ? val1.i : val2.i)))
             {
                if(!flags1.resolved)
-                  val1 = { type = { integer }, i = 0 };
+                  val1.OnFree(), val1 = { type = { integer }, i = 0 };
                if(!flags2.resolved)
-                  val2 = { type = { integer }, i = 0 };
+                  val2.OnFree(), val2 = { type = { integer }, i = 0 };
                if(val2.type.type != nil && val2.type.type != type.type)
                   convertFieldValue(val2, type, val2);
 
@@ -1221,13 +1225,23 @@ public:
             if(expFlg.resolved && evaluator != null && computeType == runtime)
                evaluator.evaluatorClass.evaluateMember(evaluator, prop, exp, val, value, &flags);
             else
+            {
                flags = expFlg;
+               value = { { nil } };
+            }
          }
          else
+         {
             flags.invalid = true;
+            value = { { nil } };
+         }
       }
       else
+      {
          flags = expFlg;
+         value = { { nil } };
+      }
+      val.OnFree();
       return flags;
    }
 
@@ -1277,7 +1291,7 @@ public:
       {
          FieldValue expValue { type = { nil } };
          FieldValue args[50]; // Max 50 args for now?
-         int numArgs = 0;
+         int i, numArgs = 0;
 
          if(computeType == preprocessing)
             exp.destType = class(GlobalFunction);
@@ -1293,6 +1307,7 @@ public:
             for(a : arguments; numArgs < 50)
             {
                flags.resolved = false;
+               args[numArgs] = { }; // FIXME: compute() sometimes returns uninitialized value
                flags |= a.compute(args[numArgs++], evaluator, computeType, stylesClass);
                if(!flags.resolved) nonResolved = true;
             }
@@ -1301,6 +1316,9 @@ public:
          // We need to evaluate the function if resolved is true (should not yet be set if e.g., featureID / geometry is needed)
          if(evaluator != null && flags.resolved)
             expType = evaluator.evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
+         for(i = 0; i < numArgs; i++)
+            args[i].OnFree();
+         expValue.OnFree();
       }
       return flags;
    }
@@ -1497,6 +1515,8 @@ public:
                if(array)
                   /*array.Free(), */delete array; // REVIEW:
             }
+
+            v.OnFree();
          }
          else
             PrintLn("ERROR: null destination type!");
@@ -1595,6 +1615,8 @@ public:
             value.i = 0;
             setGenericBitMembers(this, (uint64 *)&value.i, evaluator, &flags, stylesClass);
          }
+         else
+            value = { { nil } };
          expType = c;
 
          instanceFlags = flags;
@@ -3245,6 +3267,7 @@ static bool realMod(FieldValue val, const FieldValue op1, const FieldValue op2)
 
 public void convertFieldValue(const FieldValue src, FieldTypeEx type, FieldValue dest)
 {
+   FieldValue origSrc = src;
    if(src.type.type == text)
    {
       if(type.type == real)
@@ -3320,6 +3343,8 @@ public void convertFieldValue(const FieldValue src, FieldTypeEx type, FieldValue
    }
    else
       dest = { type = { nil } };
+   if(src == dest) // This is sometimes called with the same FieldValue for both src and dest
+      origSrc.OnFree();
 }
 
 public CMSSExpression expressionFromValue(const FieldValue value, Class c)
