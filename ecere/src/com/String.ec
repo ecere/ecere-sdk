@@ -1595,6 +1595,10 @@ public:
    void copy(ZString s)
    {
       copyString(s._string, s.len);
+
+      // WARNING: auto-decref'ing for now when s is of pointer type!
+      if(s.allocType == pointer)
+         delete s;
    }
 };
 
