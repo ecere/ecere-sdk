@@ -845,8 +845,18 @@ public class Image : GraphicalElement
       image.OnFree();
    }
 
-public:
    ImageResource image;
+public:
+
+   property ImageResource image
+   {
+      set
+      {
+         image.OnFree();
+         image.OnCopy(value);
+      }
+      get { value = image; }
+   }
 
    // (hotSpot.x * width, hotSpot.y * height) is the pixel which will be shown at the graphic's (0, 0) position
    Pointf hotSpot;
