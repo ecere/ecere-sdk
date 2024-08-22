@@ -1543,6 +1543,7 @@ public:
    }
 }
 
+extern int __ecereVMethodID_class_OnCopy;
 extern int __ecereVMethodID_class_OnFree;
 
 public class CMSSExpInstance : CMSSExpression
@@ -1565,6 +1566,17 @@ public:
          instance = instance ? instance.copy() : null,
          targetMask = targetMask, expType = expType, destType = destType
       };
+      if(instData && instanceFlags == { resolved = true } && expType)
+      {
+         // Avoid re-computation of resolved instance
+         void (* onCopy)(void *, void *, void *) = expType._vTbl[__ecereVMethodID_class_OnCopy];
+         if(expType.type == structClass)
+         {
+            e.instData = new0 byte[expType.structSize];
+            onCopy(expType, e.instData, instData);
+            e.instanceFlags = instanceFlags;
+         }
+      }
       return e;
    }
 
@@ -1595,7 +1607,7 @@ public:
    {
       ExpFlags flags = 0; //can an instance be resolved entirely to a constant? -- we resolve it to a 'blob' FieldValue
 
-      if(computeType == preprocessing)
+      if(computeType == preprocessing && (!instData || instanceFlags != { resolved = true }))
       {
          Class c = evaluator.evaluatorClass.getClassFromInst(instance, destType, &stylesClass);
          int memberID = 0;
