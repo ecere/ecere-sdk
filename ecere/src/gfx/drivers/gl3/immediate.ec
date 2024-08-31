@@ -293,63 +293,66 @@ public void glimtkNormal3fd(double * coords)                     { glimtkNormal3
 
 public void glimtkEnd()
 {
-   GLIMTKMode mode = beginMode;
-   if(!glCaps_quads)
+   if(verticesBuf->count)
    {
-      if(mode == quads)        mode = triangles;
-      else if(mode == polygon) mode = triangleFan;
-   }
+      GLIMTKMode mode = beginMode;
+      if(!glCaps_quads)
+      {
+         if(mode == quads)        mode = triangles;
+         else if(mode == polygon) mode = triangleFan;
+      }
 
-   GLEnableClientState(TEXCOORDS);
+      GLEnableClientState(TEXCOORDS);
 
-   if(glCaps_vertexBuffer)
-   {
-      verticesBuf->upload();
-      verticesBuf->use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), none, 0);
-   }
-   else
-      noAB.use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer);
-
-   if(vertexColorValues)
-   {
-      GLEnableClientState(COLORS);
-      if(glCaps_vertexBuffer)
-         verticesBuf->use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), none, (void *)(2 * sizeof(float)));
-      else
-         noAB.use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer + 2);
-
-#if ENABLE_GL_SHADERS
-      if(glCaps_shaders)
-         defaultShader.setPerVertexColor(true);
-#endif
-   }
-   else
-   {
-#if ENABLE_GL_SHADERS
-      if(glCaps_shaders)
-         defaultShader.setPerVertexColor(false);
-#endif
-   }
-
-   if(glCaps_vertexBuffer)
-      verticesBuf->use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), none, (void *)(vertexOffset * sizeof(float)));
-   else
-      noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer + vertexOffset);
-
-   if(normalsBuf.count && normalsBuf.count == verticesBuf->count)
-   {
-      GLEnableClientState(NORMALS);
       if(glCaps_vertexBuffer)
       {
-         normalsBuf.upload();
-         normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), none, 0);
+         verticesBuf->upload();
+         verticesBuf->use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), none, 0);
       }
       else
-         noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), none, normalsBuf.pointer);
-   }
+         noAB.use(texCoord, 2, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer);
 
-   GLFlushMatrices();
-   glDrawArrays(mode, 0, verticesBuf->count);
+      if(vertexColorValues)
+      {
+         GLEnableClientState(COLORS);
+         if(glCaps_vertexBuffer)
+            verticesBuf->use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), none, (void *)(2 * sizeof(float)));
+         else
+            noAB.use(color, 4, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer + 2);
+
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders)
+            defaultShader.setPerVertexColor(true);
+#endif
+      }
+      else
+      {
+#if ENABLE_GL_SHADERS
+         if(glCaps_shaders)
+            defaultShader.setPerVertexColor(false);
+#endif
+      }
+
+      if(glCaps_vertexBuffer)
+         verticesBuf->use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), none, (void *)(vertexOffset * sizeof(float)));
+      else
+         noAB.use(vertex, numCoords, GL_FLOAT, verticesBuf->stride * sizeof(float), none, verticesBuf->pointer + vertexOffset);
+
+      if(normalsBuf.count && normalsBuf.count == verticesBuf->count)
+      {
+         GLEnableClientState(NORMALS);
+         if(glCaps_vertexBuffer)
+         {
+            normalsBuf.upload();
+            normalsBuf.use(normal, 3, GL_FLOAT, 3*sizeof(float), none, 0);
+         }
+         else
+            noAB.use(normal, 3, GL_FLOAT, 3*sizeof(float), none, normalsBuf.pointer);
+      }
+
+      GLFlushMatrices();
+      glDrawArrays(mode, 0, verticesBuf->count);
+   }
 
    if(normalsBuf.count)
       GLDisableClientState(NORMALS);

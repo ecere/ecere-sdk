@@ -2660,7 +2660,7 @@ class OpenGLDisplayDriver : DisplayDriver
    void Blit(Display display, Surface surface, Bitmap bitmap, int dx, int dy, int sx, int sy, int w, int h)
    {
       OGLSurface oglSurface = surface.driverData;
-      GLuint tex = (GLuint)(uintptr)bitmap.driverData;
+      GLuint tex = bitmap ? (GLuint)(uintptr)bitmap.driverData : 0;
       if(!tex) return;
 
       if(!oglSurface.writingText)
