@@ -1015,6 +1015,11 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                         if(val.i) // REVIEW: Crash on GEFont
                            memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
                      }
+                     // for TimeInterval case
+                     else if(destType == class(DateTime) && exp._class == class(CMSSExpConstant) && exp.expType == class(int64))
+                     {
+                         *(DateTime *)((byte *)object + mInit.offset) = val.type.type == integer ? (SecSince1970)(int64)val.i : {};
+                     }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
                         /*ConsoleFile con { };
@@ -1567,8 +1572,9 @@ public:
                for(e : arr.elements; e._class == class(CMSSExpInstance))
                {
                   CMSSExpInstance expInstance = (CMSSExpInstance)e;
-                  array.Add(createGenericInstance(expInstance.instance,
-                     evaluator.evaluatorClass.getClassFromInst(expInstance.instance, expInstance.destType, null), evaluator, flg));
+                  Instance createdInstance = createGenericInstance(expInstance.instance,
+                     evaluator.evaluatorClass.getClassFromInst(expInstance.instance, expInstance.destType, null), evaluator, flg);
+                  if(createdInstance) array.Add(createdInstance);
                }
             else
             {
