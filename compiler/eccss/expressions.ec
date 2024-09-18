@@ -177,6 +177,7 @@ public class ExpFlags : uint
 public:
    bool resolved:1:0;
    bool invalid:1:5;
+   bool isNotLiteral:1:7; // REVIEW: Do we really need this flag
 };
 
 public enum ComputeType { preprocessing, runtime, other };
@@ -1636,7 +1637,7 @@ public:
       else if(computeType == runtime)
       {
          // REVIEW: Not re-computing if no extra flag is set -- does this only happen with literal instances?
-         if(instData && instanceFlags != { resolved = true })
+         if(instData && (instanceFlags != { resolved = true } || instanceFlags.isNotLiteral))
          {
             if(expType && expType.type != structClass)
             {

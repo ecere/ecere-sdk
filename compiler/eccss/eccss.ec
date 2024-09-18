@@ -1016,9 +1016,13 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                            memcpy((byte *)object + mInit.offset, (void *)(uintptr)val.i, destType.structSize);
                      }
                      // for TimeInterval case
-                     else if(destType == class(DateTime) && exp._class == class(CMSSExpConstant) && exp.expType == class(int64))
+                     else if(destType == class(DateTime))
                      {
-                         *(DateTime *)((byte *)object + mInit.offset) = val.type.type == integer ? (SecSince1970)(int64)val.i : {};
+                        if(val.type.type == integer && exp.expType == class(int64))
+                           *(DateTime *)((byte *)object + mInit.offset) = (SecSince1970)(int64)val.i;
+                        else if(val.type.type == text)
+                           ((DateTime *)((byte *)object + mInit.offset))->OnGetDataFromString(val.s);
+
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
