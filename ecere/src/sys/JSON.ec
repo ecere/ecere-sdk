@@ -1347,11 +1347,15 @@ private:
             *object = null;
       }
       SkipEmpty();
-      if(!forMap && eCON && ch != '{')
+      if(!forMap && ((eCON && ch != '{') || (objectType && !strcmp(objectType.name, "FieldValue"))))
       {
          DataValue value { };
-         JSONResult result = GetValue(objectType, value);
-         *object = value.p;
+         JSONResult result;
+         if(objectType.type == structClass)
+            value.p = *object;
+         result = GetValue(objectType, value);
+         if(objectType.type != structClass)
+            *object = value.p;
          return result;
       }
       if(ch == '{')
