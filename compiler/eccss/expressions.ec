@@ -1301,15 +1301,17 @@ public:
          if(arguments)
          {
             bool nonResolved = false;
+            Link<CMSSExpression> a;
 
             flags.resolved = false;
             if(computeType == preprocessing)
                expType = evaluator.evaluatorClass.resolveFunction(evaluator, expValue, arguments, &flags);
-            for(a : arguments; numArgs < 50)
+            for(a = (Link<CMSSExpression>)arguments.list.first; a && numArgs < 50; a = a.next)
             {
+               CMSSExpression arg = (CMSSExpression)*&a.data;
                flags.resolved = false;
                args[numArgs] = { }; // FIXME: compute() sometimes returns uninitialized value
-               flags |= a.compute(args[numArgs++], evaluator, computeType, stylesClass);
+               flags |= arg.compute(args[numArgs++], evaluator, computeType, stylesClass);
                if(!flags.resolved) nonResolved = true;
             }
             if(nonResolved) flags.resolved = false;
