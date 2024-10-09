@@ -1022,7 +1022,15 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                            *(DateTime *)((byte *)object + mInit.offset) = (SecSince1970)(int64)val.i;
                         else if(val.type.type == text)
                            ((DateTime *)((byte *)object + mInit.offset))->OnGetDataFromString(val.s);
-
+                     }
+                     else if(destType == class(SecSince1970))
+                     {
+                        if(val.type.type == integer && exp.expType == class(int64))
+                           *(SecSince1970 *)((byte *)object + mInit.offset) = (SecSince1970)(int64)val.i;
+                        else if(val.type.type == text)
+                           ((SecSince1970 *)((byte *)object + mInit.offset))->OnGetDataFromString(val.s);
+                        else if(val.type.type == nil)
+                           *((SecSince1970 *)((byte *)object + mInit.offset)) = MININT64; // unsetTime;
                      }
                      else if(flag.resolved) //!flag.callAgain && !flag.record)  //flag.resolved) //
                      {
