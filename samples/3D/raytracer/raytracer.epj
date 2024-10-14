@@ -1,13 +1,13 @@
 {
    "Version" : 0.2,
-   "ModuleName" : "mandelbulb",
+   "ModuleName" : "raytracer",
    "Options" : {
       "Warnings" : "All",
       "MemoryGuard" : false,
       "Profile" : false,
       "StrictNameSpaces" : false,
       "TargetType" : "Executable",
-      "TargetFileName" : "mandelbulb",
+      "TargetFileName" : "raytracer",
       "Libraries" : [
          "ecere"
       ],
@@ -36,14 +36,29 @@
       {
          "Name" : "Release",
          "Options" : {
-            "Debug" : false,
+            "Debug" : true,
             "Optimization" : "Speed",
             "FastMath" : true
          }
       }
    ],
    "Files" : [
-      "mandelbulb.ec"
+      {
+         "Folder" : "src",
+         "Files" : [
+            {
+               "Folder" : "objects",
+               "Files" : [
+                  "mandelbulb.ec",
+                  "cube.ec",
+                  "sphere.ec"
+               ]
+            },
+            "raytracer.ec",
+            "rtView.ec"
+         ]
+      },
+      "testScene.ec"
    ],
    "ResourcesPath" : "",
    "Resources" : [
