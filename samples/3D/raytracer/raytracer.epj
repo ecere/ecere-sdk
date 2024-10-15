@@ -51,7 +51,8 @@
                "Files" : [
                   "mandelbulb.ec",
                   "cube.ec",
-                  "sphere.ec"
+                  "sphere.ec",
+                  "icosahedron.ec"
                ]
             },
             "raytracer.ec",
