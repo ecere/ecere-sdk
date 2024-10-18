@@ -1170,12 +1170,16 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                          // memcpy and renew instead?
                         if(mInit.assignType == addAssign && object) // instantiated check?
                         {
-                           IteratorPointer i;
-                           int c;
-                           for(c = 0, i = arrayExp.array.GetFirst(); i; i = arrayExp.array.GetNext(i), c++)
+                           Array array = arrayExp.array;
+                           if(array)
                            {
-                              uintptr data = (uintptr)arrayExp.array.GetData(i);
-                              ((Array)object).Add(data);
+                              IteratorPointer i;
+                              int c;
+                              for(c = 0, i = array.GetFirst(); i; i = array.GetNext(i), c++)
+                              {
+                                 uintptr data = (uintptr)array.GetData(i);
+                                 ((Array<uintptr>)object).Add(data);
+                              }
                            }
                         }
                         else
