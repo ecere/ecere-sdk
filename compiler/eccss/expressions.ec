@@ -935,21 +935,21 @@ public:
                      case minus:                tbl->Sub       (value, val1, val2); break;
                      case plus:                 tbl->Add       (value, val1, val2); break;
                      case modulo:               tbl->Mod       (value, val1, val2); break;
-                     case equal:                tbl->Equ       (value, val1, val2); break;
-                     case notEqual:             tbl->Nqu       (value, val1, val2); break;
-                     case and:                  tbl->And       (value, val1, val2); break;
-                     case or:                   tbl->Or        (value, val1, val2); break;
-                     case greater:              tbl->Grt       (value, val1, val2); break;
-                     case smaller:              tbl->Sma       (value, val1, val2); break;
-                     case greaterEqual:         tbl->GrtEqu    (value, val1, val2); break;
-                     case smallerEqual:         tbl->SmaEqu    (value, val1, val2); break;
+                     case equal:                tbl->Equ       (value, val1, val2); expType = class(bool); break;
+                     case notEqual:             tbl->Nqu       (value, val1, val2); expType = class(bool); break;
+                     case and:                  tbl->And       (value, val1, val2); expType = class(bool); break;
+                     case or:                   tbl->Or        (value, val1, val2); expType = class(bool); break;
+                     case greater:              tbl->Grt       (value, val1, val2); expType = class(bool); break;
+                     case smaller:              tbl->Sma       (value, val1, val2); expType = class(bool); break;
+                     case greaterEqual:         tbl->GrtEqu    (value, val1, val2); expType = class(bool); break;
+                     case smallerEqual:         tbl->SmaEqu    (value, val1, val2); expType = class(bool); break;
                      case intDivide:            tbl->DivInt    (value, val1, val2); break;
-                     case stringStartsWith:     tbl->StrSrt    (value, val1, val2); break;
-                     case stringNotStartsW:     tbl->StrNotSrt (value, val1, val2); break;
-                     case stringEndsWith:       tbl->StrEnd    (value, val1, val2); break;
-                     case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); break;
-                     case stringContains:       tbl->StrCnt    (value, val1, val2); break;
-                     case stringNotContains:    tbl->StrNotCnt (value, val1, val2); break;
+                     case stringStartsWith:     tbl->StrSrt    (value, val1, val2); expType = class(bool); break;
+                     case stringNotStartsW:     tbl->StrNotSrt (value, val1, val2); expType = class(bool); break;
+                     case stringEndsWith:       tbl->StrEnd    (value, val1, val2); expType = class(bool); break;
+                     case stringNotEndsW:       tbl->StrNotEnd (value, val1, val2); expType = class(bool); break;
+                     case stringContains:       tbl->StrCnt    (value, val1, val2); expType = class(bool); break;
+                     case stringNotContains:    tbl->StrNotCnt (value, val1, val2); expType = class(bool); break;
                      case bitAnd:               tbl->BitAnd    (value, val1, val2); break;
                      case bitOr:                tbl->BitOr     (value, val1, val2); break;
                      case bitXor:               tbl->BitXor    (value, val1, val2); break;
@@ -958,11 +958,13 @@ public:
                   }
                   flags.resolved = value.type.type != nil;
 
-                  // REVIEW: Assigning expType?
+                  // REVIEW: Assigning expType? -- Improve on promotions/conversion rules?
                   if(!expType)
                   {
                      expType = exp1.expType && exp1.expType == class(Meters) ? exp1.expType :
                                exp2.expType && exp2.expType == class(Meters) ? exp2.expType :
+                               exp1.expType && exp1.expType == class(double) ? exp1.expType :
+                               exp2.expType && exp2.expType == class(double) ? exp2.expType :
                                exp1.expType ? exp1.expType : exp2.expType;
                   }
                }
@@ -972,11 +974,15 @@ public:
                   bool result;
 
                   if(falseNullComparisons)
+                  {
+                     // REVIEW: Should the be false or null?
                      result = false;
+                  }
                   else if(op == equal)
                      result = val1.type.type == val2.type.type;
                   else
                      result = val1.type.type != val2.type.type;
+                  expType = class(bool);
                   flags.resolved = true;
                   value = { type = { integer }, i = result };
                }
@@ -1017,7 +1023,7 @@ public:
                switch(op)
                {
                   case '-':    tbl->Neg(value, val2);    break;
-                  case '!':    tbl->Not(value, val2);    break;
+                  case '!':    tbl->Not(value, val2);    expType = class(bool); break;
                   case bitNot: tbl->BitNot(value, val2); break;
                }
             }
@@ -1025,6 +1031,7 @@ public:
             {
                flags.resolved = true;
                value = { type = { integer }, i = !falseNullComparisons };
+               expType = class(bool);
             }
             else
                flags.resolved = false;
