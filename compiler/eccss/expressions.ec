@@ -1300,6 +1300,7 @@ public:
       }
       else
       {
+         expFlg.resolved = false; // Avoid resolved = true which will result in simplyResolved()
          flags = expFlg;
          value = { { nil } };
       }
