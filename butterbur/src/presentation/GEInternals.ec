@@ -5,7 +5,9 @@ public import IMPORT_STATIC "ecere"
 
 import "DrawingManager"
 import "shapesTesselation"
+#ifndef NOE3D
 import "e3dRead"  // For E3DOptions
+#endif
 
 public struct StartAndCount { uint start, count; };
 
@@ -283,7 +285,11 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
          else if(mdl)
          {
             Object object { };
+#ifndef NOE3D
             E3DOptions options { positiveYUp = false, shareIndices = true };
+#else
+            void * options = null;
+#endif
 
             if(object.LoadEx(mdl.model.path, null, displaySystem, options))
             {

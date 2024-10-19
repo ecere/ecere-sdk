@@ -1,4 +1,4 @@
-import "uiWindow"
+import "testUI"
 
 MultiGraphicalElement mge
 { [

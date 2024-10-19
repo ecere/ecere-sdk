@@ -4,7 +4,8 @@
    "Options" : {
       "Warnings" : "All",
       "PreprocessorDefinitions" : [
-         "IMPORT_STATIC=\"\""
+         "IMPORT_STATIC=\"\"",
+         "NOE3D"
       ],
       "IncludeDirs" : [
          "$(ECERE_SDK_SRC)/ecere/src/gfx/drivers/gl3",
