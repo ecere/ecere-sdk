@@ -1707,7 +1707,10 @@ public:
             {
                CMSSMemberInitList member = inst;
                for(m : member)
-                  flags |= m.precompute(stylesClass, c, targetMask, &memberID, evaluator);
+               {
+                  CMSSMemberInit mInit = m;
+                  flags |= mInit.precompute(stylesClass, c, targetMask, &memberID, evaluator);
+               }
             }
          }
          if(flags.resolved && c && c.type == bitClass)
@@ -2433,14 +2436,21 @@ public:
                else
                {
                   if(e._class == class(CMSSExpInstance))
+                  {
                      ((CMSSExpInstance)e).targetMask = stylesMask;
+                  }
                   else if(e._class == class(CMSSExpConditional))
                   {
                      CMSSExpConditional cond = (CMSSExpConditional)e;
-                     if(cond.expList.lastIterator.data._class == class(CMSSExpInstance))
-                        ((CMSSExpInstance)cond.expList.lastIterator.data).targetMask = stylesMask;
-                     if(cond.elseExp._class == class(CMSSExpInstance))
+                     CMSSExpression lastExp = cond.expList ? cond.expList.lastIterator.data : null;
+                     if(lastExp && lastExp._class == class(CMSSExpInstance))
+                     {
+                        ((CMSSExpInstance)lastExp).targetMask = stylesMask;
+                     }
+                     if(cond.elseExp && cond.elseExp._class == class(CMSSExpInstance))
+                     {
                         ((CMSSExpInstance)cond.elseExp).targetMask = stylesMask;
+                     }
                   }
                   flags = e.compute(val, evaluator, preprocessing, stylesClass);
                }
