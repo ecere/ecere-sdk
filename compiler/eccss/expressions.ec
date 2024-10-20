@@ -239,13 +239,18 @@ public CMSSExpression simplifyResolved(FieldValue val, CMSSExpression e)
    else if(e._class == class(CMSSExpConditional))
    {
       CMSSExpConditional conditional = (CMSSExpConditional)e;
-      CMSSExpression ne;
+      CMSSExpression ne = null;
       if(conditional.result)
-         ne = conditional.expList.lastIterator.data, conditional.expList.RemoveAll();
+      {
+         CMSSExpression last = conditional.expList ? conditional.expList.lastIterator.data : null;
+         if(last)
+            ne = last, conditional.expList.TakeOut(last);
+      }
       else
-         ne = conditional.elseExp, conditional.elseExp = null;;
+         ne = conditional.elseExp, conditional.elseExp = null;
+      ne = simplifyResolved(val, ne);
       delete e;
-      return simplifyResolved(val, ne);
+      return ne;
    }
    else if(e._class != class(CMSSExpString) && e._class != class(CMSSExpConstant) && e._class != class(CMSSExpInstance) && e._class != class(CMSSExpArray))
    {
@@ -3531,7 +3536,7 @@ public void convertFieldValue(const FieldValue src, FieldTypeEx type, FieldValue
    }
    else
       dest = { type = { nil } };
-   if(src == dest) // This is sometimes called with the same FieldValue for both src and dest
+   if(src == dest && origSrc.s != dest.s) // This is sometimes called with the same FieldValue for both src and dest
       origSrc.OnFree();
 }
 
