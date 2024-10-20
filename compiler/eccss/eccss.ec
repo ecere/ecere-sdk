@@ -1804,14 +1804,23 @@ public:
 
       // REVIEW: Shouldn't the expType be what indicate the unit?
       // special handling for conditional with potential unitClass as a compute on conditional would not yield the unit
-      if(cond && (cond.expList.lastIterator.data._class == class(CMSSExpInstance) || cond.elseExp._class == class(CMSSExpInstance)))
+      if(cond && cond.condition)
       {
-         FieldValue condValue {};
-         ExpFlags flagsCond = cond.condition.compute(condValue, evaluator, runtime, e.destType);
-         if(flagsCond.resolved && condValue.i)
-            inst = cond.expList.lastIterator.data._class == class(CMSSExpInstance) ? (CMSSExpInstance)cond.expList.lastIterator.data : null;
-         else if(flagsCond.resolved && cond.elseExp._class == class(CMSSExpInstance))
-            inst = (CMSSExpInstance)cond.elseExp;
+         CMSSExpression lastExp = cond.expList ? cond.expList.lastIterator.data : null;
+         if((lastExp && lastExp._class == class(CMSSExpInstance)) ||
+            (cond.elseExp && cond.elseExp._class == class(CMSSExpInstance)))
+         {
+            FieldValue condValue {};
+            ExpFlags flagsCond = cond.condition.compute(condValue, evaluator, runtime, e.destType);
+            if(flagsCond.resolved && condValue.i)
+            {
+               inst = lastExp._class == class(CMSSExpInstance) ? (CMSSExpInstance)lastExp : null;
+            }
+            else if(flagsCond.resolved && cond.elseExp && cond.elseExp._class == class(CMSSExpInstance))
+            {
+               inst = (CMSSExpInstance)cond.elseExp;
+            }
+         }
       }
       if(inst && inst.instance)
       {
