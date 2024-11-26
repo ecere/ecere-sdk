@@ -6,10 +6,16 @@ public import "ecere"
 
 import "e3dDefs"
 
+#ifdef PBR_SHADER
+import "pbrShader"
+#endif
+
 #if defined(__UWP__)
 // FIXME:
 #define strcmpi strcmp
 #endif
+
+CubeMap cubeMap { };
 
 static struct E3DBlockHeader
 {
@@ -142,16 +148,20 @@ File downloadFile(const String url) { return FileOpen(url, read); }
 void freeE3DMaterial(Material material)
 {
    // TOCHECK: Are we somehow holding on to textures to re-use them?
-   if(material.baseMap)
-      delete material.baseMap;
-   if(material.envMap)
-      delete material.envMap;
-   if(material.bumpMap)
-      delete material.bumpMap;
-   if(material.specularMap)
-      delete material.specularMap;
-   if(material.reflectMap)
-      delete material.reflectMap;
+   delete material.baseMap;
+   delete material.envMap;
+   delete material.bumpMap;
+   delete material.specularMap;
+   delete material.reflectMap;
+
+   delete material.albedoMap;
+   delete material.roughMetalMap;
+   delete material.diffuseMap;
+   delete material.glossMap;
+   delete material.ambientOcclusionMap;
+   delete material.emissiveMap;
+   delete material.ambientMap;
+   delete material.heightMap;
 }
 
 void freeE3DMeshMaterials(Mesh mesh)
@@ -361,8 +371,11 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                Material mat = data;
                E3DMaterialFlags flags;
                f.Read(&flags, sizeof(uint), 1);
+
                mat.flags = { doubleSided = flags.doubleSided, translucent = flags.translucent,
                   tile = flags.wrapU || flags.wrapV, partlyTransparent = flags.partlyTransparent, setupTextures = true };
+               mat.flags.separateSpecular = true;
+
                // if(flags.wrapU != flags.wrapV) PrintLn("warning!");
                break;
             }
@@ -374,9 +387,28 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
             case emissive: { Material mat = data; f.Read(&mat.emissive, sizeof(ColorRGB), 1); break; }
             case phongDiffuseMap: { Material mat = data; subData = &mat.baseMap; readSubBlocks = true; break; }
             case normalMap: { Material mat = data; subData = &mat.bumpMap; readSubBlocks = true; break; }
-            case phongSpecularMap: { Material mat = data; subData = &mat.specularMap; readSubBlocks = true; break; }
-            // case phongAmbientMap: { Material mat = data; subData = &mat.amb; readSubBlocks = true; break; }
-            //case pbrSpecDiffuseMap: { Material mat = data; subData = &mat.reflectMap; readSubBlocks = true; break; }
+            case phongSpecularMap: { Material mat = data; subData = &mat.specularMap; readSubBlocks = true;
+               if(!mat.specular.r && !mat.specular.g && !mat.specular.b)
+                  PrintLn(mat.specular);
+               break; }
+            case phongAmbientMap: { Material mat = data; subData = &mat.ambientMap; readSubBlocks = true; break; }
+            case pbrSpecDiffuseMap: { Material mat = data; subData = &mat.diffuseMap; readSubBlocks = true; break; }
+            case pbrSpecSpecularGlossMap: { Material mat = data; subData = &mat.glossMap; readSubBlocks = true; break; }
+            case pbrRMAlbedo: { Material mat = data; subData = &mat.albedoMap; readSubBlocks = true; break; }
+            case pbrRMRoughnessMetalness:
+            {
+               Material mat = data; subData = &mat.roughMetalMap; readSubBlocks = true;
+#ifdef PBR_SHADER
+               mat.shader = pbrShader;
+               mat.envMap = cubeMap;
+               if(mat.baseMap)
+                  mat.baseMap.Free(), delete mat.baseMap;
+#endif
+               break;
+            }
+            case ambientOcclusionMap: { Material mat = data; subData = &mat.ambientOcclusionMap; readSubBlocks = true; break; }
+            case emissiveMap: { Material mat = data; subData = &mat.emissiveMap; readSubBlocks = true; break; }
+            case heightmap: { Material mat = data; subData = &mat.heightMap; readSubBlocks = true; break; }
             case texture:
             {
                Bitmap bitmap { };
@@ -553,8 +585,8 @@ static void readBlocks(E3DContext ctx, File f, DisplaySystem displaySystem, E3DB
                      ctx.saveCompressedMutex.Release();
 
                   if(successfulLoad)
-                  {
-                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing)
+                  {                                                                                  // FIXME: Compressing A16 textures for metalness/roughness?
+                     if(bitmap.pixelFormat != pixelFormatETC2RGBA8 && !ctx.skipTexturesProcessing && bitmap.pixelFormat != pixelFormatA16)
                      {
                         Bitmap bmp = bitmap.ProcessDD(true, 0, ctx.compressedTextures, ctx.resolution ? ctx.resolution : 16384,
                            false, ctx.enforcedTexWidth, ctx.enforcedTexHeight);

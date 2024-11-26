@@ -63,6 +63,13 @@ public:
     bool constantColor:1;
 };
 
+public enum MaterialLightingModel
+{
+   phong,
+   pbrSpecularGlossiness,
+   pbrRoughnessMetalness
+};
+
 public class Material : struct
 {
 public:
@@ -74,10 +81,29 @@ public:
    ColorRGB specular;
    ColorRGB emissive;
    float power;
+   MaterialLightingModel lightingModel;
+
+   // For Phong
    Bitmap baseMap;
-   Bitmap bumpMap;
    Bitmap specularMap;
+
+   // Not yet implemented
+   Bitmap emissiveMap;
+   Bitmap ambientMap;
+   Bitmap heightMap;
+
+   // For PBR Specular/Glossiness (not yet implemented)
+   Bitmap diffuseMap;
+   Bitmap glossMap;
+
+   // For PBR Roughness/Metalness (implementing)
+   Bitmap albedoMap;
+   Bitmap roughMetalMap;
+
+   Bitmap bumpMap; // Normal map
+   Bitmap ambientOcclusionMap;   // Not yet implemented
    Bitmap reflectMap;
+
    CubeMap envMap;
    float reflectivity;
    float refractiveIndex;
@@ -2334,11 +2360,47 @@ public:
       }
       if(mat && uploadTextures)
       {
-         if(mat.baseMap)     UploadTexture(mat.baseMap,     displaySystem, mAT && nAT > 0 ? mAT[0] : null);
+         // REVIEW: Use as alternative?
+         if(mat.albedoMap)   UploadTexture(mat.albedoMap,  displaySystem, mAT && nAT > 0 ? mAT[0] : null);
+         else if(mat.baseMap)     UploadTexture(mat.baseMap,     displaySystem, mAT && nAT > 0 ? mAT[0] : null);
+
+         // REVIEW: Until we have map states for PBR
+         if(!mat.bumpMap && mat.roughMetalMap)
+         {
+            Bitmap purpleTexture { };
+            Surface s;
+            purpleTexture.Allocate(null, 256, 256, 256, pixelFormat888, false);
+            s = purpleTexture.GetSurface(0,0,null);
+            s.background = (Color) ColorRGB { 0.5, 0.5, 1.0 };
+            s.Clear(colorBuffer);
+            delete s;
+            purpleTexture.MakeMipMaps(displaySystem);
+            mat.bumpMap = purpleTexture;
+         }
          if(mat.bumpMap)     UploadTexture(mat.bumpMap,     displaySystem, mAT && nAT > 1 ? mAT[1] : null);
-         if(mat.specularMap) UploadTexture(mat.specularMap, displaySystem, mAT && nAT > 2 ? mAT[2] : null);
+
+         // REVIEW: Use as alternative?
+         if(mat.roughMetalMap)  UploadTexture(mat.roughMetalMap,  displaySystem, mAT && nAT > 2 ? mAT[2] : null);
+         else if(mat.specularMap) UploadTexture(mat.specularMap, displaySystem, mAT && nAT > 2 ? mAT[2] : null);
+
          if(mat.envMap)      UploadTexture(mat.envMap,      displaySystem, mAT && nAT > 3 ? mAT[3] : null);
-         if(mat.reflectMap)  UploadTexture(mat.reflectMap,  displaySystem, mAT && nAT > 4 ? mAT[4] : null);
+
+         // REVIEW: Until we have map states for PBR
+         if(!mat.ambientOcclusionMap && mat.roughMetalMap)
+         {
+            Bitmap whiteTexture { };
+            Surface s;
+            whiteTexture.Allocate(null, 256, 256, 256, pixelFormat888, false);
+            s = whiteTexture.GetSurface(0,0,null);
+            s.background = white;
+            s.Clear(colorBuffer);
+            delete s;
+            whiteTexture.MakeMipMaps(displaySystem);
+            mat.ambientOcclusionMap = whiteTexture;
+         }
+
+         if(mat.ambientOcclusionMap)  UploadTexture(mat.ambientOcclusionMap,  displaySystem, mAT && nAT > 4 ? mAT[4] : null);
+         else if(mat.reflectMap)  UploadTexture(mat.reflectMap,  displaySystem, mAT && nAT > 4 ? mAT[4] : null);
       }
       if(unlockAndDelete && (!g.type.sharedIndices && !meab && !skin))
          delete g.indices;

@@ -829,7 +829,11 @@ public:
             emissive[0] = c[9], emissive[1] = c[10], emissive[2] = c[11];
          }
 
+         if(material.specularMap && !(material.specular.r || material.specular.g || material.specular.b))
+            material.specular = white;
          state.specular = material.power && state.constantColor && (material.specular.r || material.specular.g || material.specular.b);
+
+
          state.separateSpecular = state.specular && matFlags.separateSpecular;
          power = material.power;
          state.alphaTest = matFlags.partlyTransparent;

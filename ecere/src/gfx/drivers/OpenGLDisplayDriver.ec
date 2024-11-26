@@ -2257,7 +2257,7 @@ class OpenGLDisplayDriver : DisplayDriver
       OGLSystem oglSystem = displaySystem.driverData;
       GLCapabilities capabilities = oglSystem.capabilities;
       Bitmap convBitmap = bitmap;
-
+      // TODO: 2 channels support for roughness/metalness etc. (GL_RG / GL_LUMINANCE_ALPHA)?
       if(convBitmap.pixelFormat != pixelFormatRGBAGL && convBitmap.pixelFormat != pixelFormatETC2RGBA8)
          convBitmap = bitmap.ProcessDD(mipMaps, cubeMapFace, false, oglSystem.maxTextureSize, !capabilities.nonPow2Textures, 0, 0);
       if(convBitmap)

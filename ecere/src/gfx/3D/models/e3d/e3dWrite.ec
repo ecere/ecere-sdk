@@ -471,8 +471,20 @@ static void computeFacesMaterials(E3DWriteContext ctx, Mesh mesh)
             materialID = ctx.materials.count;
             ctx.materials[materialID-1] = mat;
 
-            prepareTexture(ctx, mat.baseMap, mat.flags.translucent | mat.flags.partlyTransparent);
-            prepareTexture(ctx, mat.bumpMap, false);
+            prepareTexture(ctx, mat.albedoMap, true | mat.flags.translucent | mat.flags.partlyTransparent);
+            prepareTexture(ctx, mat.roughMetalMap, true);
+
+            prepareTexture(ctx, mat.diffuseMap, mat.flags.translucent | mat.flags.partlyTransparent);
+            prepareTexture(ctx, mat.glossMap, true);
+
+            prepareTexture(ctx, mat.ambientMap, false);
+            prepareTexture(ctx, mat.emissiveMap, false);
+
+            prepareTexture(ctx, mat.ambientOcclusionMap, true);
+
+            prepareTexture(ctx, mat.baseMap, true | mat.flags.translucent | mat.flags.partlyTransparent);
+            prepareTexture(ctx, mat.bumpMap, true | false);
+				prepareTexture(ctx, mat.heightMap, false);
             prepareTexture(ctx, mat.specularMap, false);
             prepareTexture(ctx, mat.reflectMap, false);
          }
@@ -944,6 +956,11 @@ static void writeMaterial(E3DWriteContext ctx, File f, MaterialInfo info)
       int bumpMapID = ctx.texturesToID[(uintptr)material.bumpMap];
       writeE3DBlock(ctx, f, normalMap, &bumpMapID, writeTextureID);
    }
+   if(material.heightMap)
+   {
+      int heightID = ctx.texturesToID[(uintptr)material.heightMap];
+      writeE3DBlock(ctx, f, normalMap, &heightID, writeTextureID);
+   }
 
    if(material.power) writeE3DBlock(ctx, f, phongShininess, &material.power, writeInt);
    if(material.diffuse.r != 1 || material.diffuse.g != 1 || material.diffuse.b != 1)
@@ -963,6 +980,41 @@ static void writeMaterial(E3DWriteContext ctx, File f, MaterialInfo info)
    {
       int specularID = ctx.texturesToID[(uintptr)material.specularMap];
       writeE3DBlock(ctx, f, phongSpecularMap, &specularID, writeTextureID);
+   }
+   if(material.ambientMap)
+   {
+      int ambientID = ctx.texturesToID[(uintptr)material.ambientMap];
+      writeE3DBlock(ctx, f, phongAmbientMap, &ambientID, writeTextureID);
+   }
+   if(material.emissiveMap)
+   {
+      int emissiveID = ctx.texturesToID[(uintptr)material.emissiveMap];
+      writeE3DBlock(ctx, f, emissiveMap, &emissiveID, writeTextureID);
+   }
+   if(material.albedoMap)
+   {
+      int albedoID = ctx.texturesToID[(uintptr)material.albedoMap];
+      writeE3DBlock(ctx, f, pbrRMAlbedo, &albedoID, writeTextureID);
+   }
+   if(material.roughMetalMap)
+   {
+      int roughMetalID = ctx.texturesToID[(uintptr)material.roughMetalMap];
+      writeE3DBlock(ctx, f, pbrRMRoughnessMetalness, &roughMetalID, writeTextureID);
+   }
+   if(material.diffuseMap)
+   {
+      int diffuseID = ctx.texturesToID[(uintptr)material.diffuseMap];
+      writeE3DBlock(ctx, f, pbrSpecDiffuseMap, &diffuseID, writeTextureID);
+   }
+   if(material.glossMap)
+   {
+      int glossID = ctx.texturesToID[(uintptr)material.glossMap];
+      writeE3DBlock(ctx, f, pbrSpecSpecularGlossMap, &glossID, writeTextureID);
+   }
+   if(material.ambientOcclusionMap)
+   {
+      int aoID = ctx.texturesToID[(uintptr)material.ambientOcclusionMap];
+      writeE3DBlock(ctx, f, ambientOcclusionMap, &aoID, writeTextureID);
    }
 }
 

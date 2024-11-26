@@ -107,7 +107,14 @@ class PNGFormat : BitmapFormat
                      png_set_palette_to_rgb(png_ptr);
                   }
                   else if (png_get_valid(png_ptr, info_ptr, PNG_INFO_tRNS))
+                  {
                       png_set_tRNS_to_alpha(png_ptr);
+
+                     if(color_type == PNG_COLOR_TYPE_GRAY && bit_depth == 8 && channels == 1)
+                        channels = 2;
+                     else if(color_type == PNG_COLOR_TYPE_RGB && bit_depth == 8 && channels == 3)
+                        channels = 4;
+                  }
 
                   if(channels == 1 && bit_depth == 16 && color_type == PNG_COLOR_TYPE_GRAY)
                   {

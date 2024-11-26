@@ -248,7 +248,7 @@ class ModelViewer : Window
       sky.Create(displaySystem);
 
       // TODO: Make this an option to save out.e3d ?
-      if(0 && modelFile && !isE3D && /*!FileExists(outName) && */model.LoadEx(modelFile, null, loadDS, options))
+      if(1 && modelFile && !isE3D && /*!FileExists(outName) && */model.LoadEx(modelFile, null, loadDS, options))
       // if(model.LoadEx(modelFile, null, loadDS, options))
       {
          //E3DOptions options { };

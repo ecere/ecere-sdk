@@ -446,6 +446,7 @@ public:
                memcpy(picture, source.picture, sizeBytes);
             else
                memset(picture, 0, sizeBytes);
+            bitmaps = null; // REVIEW:
          }
          else
          {
@@ -1008,7 +1009,7 @@ public:
       Bitmap retValue = null;
       Bitmap convBitmap { mipMaps = false };
       bool freeConvBitmap = true;
-      PixelFormat workingFormat = pixelFormat888;
+      PixelFormat workingFormat = this.pixelFormat == pixelFormatA16 ? pixelFormatA16 : pixelFormat888;
 
 #if defined(_GLES) && !defined(_GLES2) && !defined(_GLES3)
       makePow2 = true; // TOCHECK: Otherwise detect NPOT capability higher up?
@@ -1098,6 +1099,7 @@ public:
          }
 
          // Switch ARGB to RGBA
+         if(workingFormat == pixelFormat888)
          {
             int size = convBitmap.stride * convBitmap.height;
             uint * pic = (uint *)convBitmap.picture;
@@ -1235,6 +1237,59 @@ public:
       if(freeConvBitmap)
          delete convBitmap;
       return retValue;
+   }
+
+   bool CombineChannels(Bitmap a, Bitmap r, Bitmap g, Bitmap b)
+   {
+      bool result = false;
+      int w = Max(Max(r ? r.width : 0, g ? g.width : 0), Max(a ? a.width : 0, b ? b.width : 0));
+      int h = Max(Max(r ? r.height : 0, g ? g.height : 0), Max(a ? a.height : 0, b ? b.height : 0));
+      if(Allocate(null, w, h, w, pixelFormat888, false))
+      {
+         ColorAlpha * dst = (ColorAlpha *)picture;
+         int y, x;
+         for(y = 0; y < h; y++)
+            for(x = 0; x < w; x++)
+            {
+               uint index = y * w + x;
+               byte alpha = 255, red = 0, green = 0, blue = 0;
+               if(a)
+               {
+                  if(a.pixelFormat == pixelFormat8)
+                     alpha = ((byte *)a.picture)[index];
+                  else if(a.pixelFormat == pixelFormat888 || a.pixelFormat == pixelFormatRGBA)
+                     alpha = ((ColorAlpha *)a.picture)[index].a;
+               }
+               if(r)
+               {
+                  if(r.pixelFormat == pixelFormat8)
+                     red = ((byte *)r.picture)[index];
+                  else if(r.pixelFormat == pixelFormat888)
+                     red = ((ColorAlpha *)r.picture)[index].color.r;
+                  else if(r.pixelFormat == pixelFormatRGBA)
+                     red = ((ColorAlpha *)r.picture)[index].color.r; // REVIEW:
+               }
+               if(g)
+               {
+                  if(g.pixelFormat == pixelFormat8)
+                     green = ((byte *)g.picture)[index];
+                  else if(g.pixelFormat == pixelFormat888 || g.pixelFormat == pixelFormatRGBA)
+                     green = ((ColorAlpha *)g.picture)[index].color.g;
+               }
+               if(b)
+               {
+                  if(b.pixelFormat == pixelFormat8)
+                     blue = ((byte *)b.picture)[index];
+                  else if(b.pixelFormat == pixelFormat888)
+                     blue = ((ColorAlpha *)b.picture)[index].color.b;
+                  else if(b.pixelFormat == pixelFormatRGBA)
+                     blue = ((ColorAlpha *)b.picture)[index].color.b; // REVIEW:
+               }
+               dst[index] = { alpha, { red, green, blue } };
+            }
+         result = true;
+      }
+      return result;
    }
 };
 
