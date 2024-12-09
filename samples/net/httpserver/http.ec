@@ -179,6 +179,12 @@ class HTTPClient : Socket
                   strcat(reply, "Content-Type: application/gzip\r\n");
                else if(!strcmp(extension, "data"))
                   strcat(reply, "Content-Type: application/octet-stream\r\n");
+               else if(!strcmp(extension, "js"))
+                  strcat(reply, "Content-Type: text/javascript\r\n");
+               else if(!strcmp(extension, "css"))
+                  strcat(reply, "Content-Type: text/css\r\n");
+               else if(!strcmp(extension, "svg"))
+                  strcat(reply, "Content-Type: image/svg+xml\r\n");
                else
                   strcat(reply, "Content-Type: text/plain\r\n");
                strcat(reply, "Access-Control-Allow-Origin: *\r\n");
