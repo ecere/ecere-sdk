@@ -838,6 +838,10 @@ public struct DateTime
             }
          }
       }
+
+
+      if(!day && (year && strlen(string) == 7 && string[4] == '-'))
+         day = 1; // Support YYYY-MM partial dates
       if(day)
       {
          Date date { year, month, day };
