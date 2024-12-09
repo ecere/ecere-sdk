@@ -1396,7 +1396,7 @@ public:
          //         but some scenarios might not yet be handled properly
          // We need to evaluate the function if resolved is true (should not yet be set if e.g., featureID / geometry is needed)
          if(evaluator != null && flags.resolved && (computeType == runtime || !flags.isNotLiteral))
-            expType = evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, &flags);
+            expType = evaluatorClass.computeFunction(evaluator, value, expValue, args, numArgs, arguments, &flags);
          for(i = 0; i < numArgs; i++)
             args[i].OnFree();
          expValue.OnFree();

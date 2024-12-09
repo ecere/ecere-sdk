@@ -403,7 +403,7 @@ public struct ECCSSEvaluator
       return expType;
    }
 
-   virtual Class computeFunction(FieldValue value, const FieldValue e, const FieldValue * args, int numArgs, ExpFlags * flags)
+   virtual Class computeFunction(FieldValue value, const FieldValue e, const FieldValue * args, int numArgs, CMSSExpList arguments, ExpFlags * flags)
    {
       Class expType = null;
       value = { { nil } };
