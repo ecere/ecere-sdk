@@ -1173,7 +1173,7 @@ public:
             flags = elseExp.compute(value, evaluator, computeType, stylesClass);
             if(elseExp && !expType) expType = elseExp.expType;
          }
-         if(!flags.resolved)
+         if(!flags.resolved && computeType == preprocessing)   // REVIEW: Do we avoid simplifyResolved() at runtime so as to not modify expressions?
             condition = simplifyResolved(condValue, condition);
           // TODO: Support for replacing condition expression entirely eventually?
       }
