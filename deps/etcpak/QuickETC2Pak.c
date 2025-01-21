@@ -12,6 +12,10 @@
 #include <math.h>
 #include <assert.h>
 
+#if (defined(__WORDSIZE) && __WORDSIZE == 8) || defined(__x86_64__) || defined(_M_X64) || defined(_WIN64) || defined(__LP64__) || defined(__LLP64__)
+#define _64_BIT_ARCH
+#endif
+
 #if defined __SSE4_1__ || defined __AVX2__ || (defined _MSC_VER && !defined(__UWP__))
 #include <x86intrin.h>
 #endif
@@ -22,6 +26,9 @@
 
 #ifndef _bswap
 #define _bswap(x) __builtin_bswap32(x)
+#endif
+
+#ifndef _bswap64
 #define _bswap64(x) __builtin_bswap64(x)
 #endif
 
@@ -3555,7 +3562,7 @@ etcpak_force_inline static int16x8_t WidenMultiplier_EAC_NEON( int16x8_t multipl
 
 static etcpak_force_inline uint64_t ProcessAlpha_ETC2( const uint8_t* src )
 {
-#if defined __SSE4_1__
+#if defined(__SSE4_1__) && defined(_64_BIT_ARCH) // _mm_cvtsi128_si64() is not available on 32-bit architectures
     // Check solid
     __m128i s = _mm_loadu_si128( (__m128i*)src );
     __m128i solidCmp = _mm_set1_epi8( src[0] );
@@ -4522,7 +4529,7 @@ static const uint8_t DxtcIndexTable[256] = {
     5,      7,      6,      4,      13,     15,     14,     12,     9,      11,     10,     8,      1,      3,      2,      0
 };
 
-#ifdef __SSE4_1__
+#if defined(__SSE4_1__) && defined(_64_BIT_ARCH)
 static const uint8_t AlphaIndexTable_SSE[64] = {
     9,      15,     14,     13,     12,     11,     10,     8,      57,     63,     62,     61,     60,     59,     58,     56,
     49,     55,     54,     53,     52,     51,     50,     48,     41,     47,     46,     45,     44,     43,     42,     40,
@@ -4635,7 +4642,7 @@ static const uint16_t DivTableNEON[255*3+1] = {
 };
 #endif
 
-#ifdef __SSE4_1__
+#if defined(__SSE4_1__) && defined(_64_BIT_ARCH)
 static const uint16_t DivTableAlpha[256] = {
     0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xe38e, 0xcccc, 0xba2e, 0xaaaa, 0x9d89, 0x9249, 0x8888, 0x8000,
     0x7878, 0x71c7, 0x6bca, 0x6666, 0x6186, 0x5d17, 0x590b, 0x5555, 0x51eb, 0x4ec4, 0x4bda, 0x4924, 0x469e, 0x4444, 0x4210, 0x4000,
@@ -5213,7 +5220,9 @@ static etcpak_force_inline uint64_t ProcessRGB_SSE( __m128i px0, __m128i px1, __
 
     return ( (uint64_t)( ( (uint64_t)to565( vmin ) ) << 16 ) | to565( vmax ) | ( ( (uint64_t)vp ) << 32 ) );
 }
+#endif
 
+#if defined(__SSE4_1__) && defined(_64_BIT_ARCH) // _mm_cvtsi128_si64() is not available on 32-bit architectures
 static etcpak_force_inline uint64_t ProcessAlpha_SSE( __m128i px0, __m128i px1, __m128i px2, __m128i px3 )
 {
     __m128i mask = _mm_setr_epi32( 0x0f0b0703, -1, -1, -1 );
@@ -5381,7 +5390,7 @@ void CompressDxt5( const uint32_t* src, uint64_t* dst, uint32_t blocks, size_t w
     uint64_t * ptr = dst;
     do
     {
-#ifdef __SSE4_1__
+#if defined(__SSE4_1__) && defined(_64_BIT_ARCH)  // _mm_cvtsi128_si64() is not available on 32-bit architectures
         __m128i px0 = _mm_loadu_si128( (__m128i*)( src + width * 0 ) );
         __m128i px1 = _mm_loadu_si128( (__m128i*)( src + width * 1 ) );
         __m128i px2 = _mm_loadu_si128( (__m128i*)( src + width * 2 ) );
