@@ -2804,6 +2804,7 @@ class OpenGLDisplayDriver : DisplayDriver
       int bw = bitmap.width, bh = bitmap.height;
       float invW = 1.0f / bw, invH = 1.0f / bh;
       float s2dw,s2dh,d2sw,d2sh;
+      float sx0, sx1, sy0, sy1;
 
       if(surface.box.right < surface.box.left || surface.box.bottom < surface.box.top) return;
 
@@ -2870,10 +2871,10 @@ class OpenGLDisplayDriver : DisplayDriver
       }
       if((w<=0)||(h<=0)||(sw<=0)||(sh<=0)) return;
 
-      float sx0 = (sx + (flipX ? sw :  0)) * invW;
-      float sx1 = (sx + (flipX ?  0 : sw)) * invW;
-      float sy0 = (sy + (flipY ? sh :  0)) * invH;
-      float sy1 = (sy + (flipY ?  0 : sh)) * invH;
+      sx0 = (sx + (flipX ? sw :  0)) * invW;
+      sx1 = (sx + (flipX ?  0 : sw)) * invW;
+      sy0 = (sy + (flipY ? sh :  0)) * invH;
+      sy1 = (sy + (flipY ?  0 : sh)) * invH;
 
       dx += surface.offset.x;
       dy += surface.offset.y;
