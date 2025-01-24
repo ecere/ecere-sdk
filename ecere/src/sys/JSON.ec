@@ -681,6 +681,7 @@ private:
       if(ch == '[' && type)
       {
          bool isAVLTree = eClass_IsDerived(type, class(AVLTree));
+         bool isArray = eClass_IsDerived(type, class(Array));
 
          mutexTemplateInstanceFix.Wait();
          *array = eInstance_New(type);
@@ -757,7 +758,20 @@ private:
                   t = (uint64)(uintptr)value.p;
                }
                if(*array && (arrayType || value.p))
+               {
+                  if(isArray)
+                  {
+                     Array a = (Array)*array;
+                     if(a.minAllocSize <= a.count)
+                     {
+                        if(a.minAllocSize < 16)
+                           a.minAllocSize = 16;
+                        else
+                           a.minAllocSize += a.count / 2;
+                     }
+                  }
                   ((void *(*)(void *, uint64))(void *)array->Add)(*array, t);
+               }
 
                if(isAVLTree && value.p)
                {
@@ -799,6 +813,11 @@ private:
                else if(ch != ',')
                   result = syntaxError;
             }
+         }
+         if(*array && isArray)
+         {
+            Array a = (Array)*array;
+            a.minAllocSize = 0;
          }
       }
       ch = 0;
