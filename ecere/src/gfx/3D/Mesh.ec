@@ -86,7 +86,13 @@ public:
    MaterialFlags flags;
    float uScale, vScale;
 #if !defined(ECERE_NOGL)
-   Shader shader;
+   private Shader shader;
+
+   property Shader shader
+   {
+      set { shader = value; }
+      get { return shader; }
+   }
 
    #define LAST_MEMBER shader
 #else

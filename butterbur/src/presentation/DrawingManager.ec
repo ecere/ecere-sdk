@@ -140,6 +140,8 @@ public class MDManager : DrawingManager
    }
 }
 
+Material defaultBBMaterial { };
+
 class ShapesManager : MDManager
 {
    vertNCoords = 2;
@@ -270,12 +272,17 @@ class Perspective3DManager : MDManager
             if(glCaps_vao) GLABBindVertexArray(defaultVAO);
             glDisplay.SelectMesh(mesh);
 
-            glDisplay.ApplyMaterial(GetDefaultMaterial(), null); // different material check skips if it's not reset
+            if(!defaultBBMaterial.diffuse.r)
+            {
+               *defaultBBMaterial = *GetDefaultMaterial();
+               defaultBBMaterial.shader = butterburShader;
+            }
+            glDisplay.ApplyMaterial(defaultBBMaterial, null); // different material check skips if it's not reset
 
             for(group = mesh.groups.first; group; group = group.next)
             {
                Material material = group.material ? group.material : null;
-               if(!material) material = GetDefaultMaterial();
+               if(!material) material = defaultBBMaterial;
 
                if(!material.shader)
                   material.shader = butterburShader;
