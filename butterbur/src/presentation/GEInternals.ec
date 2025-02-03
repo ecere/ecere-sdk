@@ -333,7 +333,12 @@ public RenderPassFlags calculateGE(GraphicalElement ge, PresentationManager mgr,
                   partsMap[parts[i].id] = { parts[i].start, parts[i].count };
 
                while((group = mesh.groups.first))
+               {
+                  // Material not currently freed by group and not managed anywhere else here
+                  if(modelData.colorMap)
+                     delete group.material;
                   mesh.FreePrimitiveGroup(group);
+               }
 
                for(c : colorMap)
                {
@@ -657,6 +662,17 @@ public void unloadGraphicsGE(bool shutDown, GraphicalElement ge, DisplaySystem d
             GEModelData modelData = (GEModelData)ge.internal;
             if(modelData && modelData.freeModel && modelData.model)
             {
+               // Material not currently freed by group and not managed anywhere else here
+               if(modelData.colorMap)
+               {
+                  Mesh mesh = modelData.model.mesh;
+                  PrimitiveGroup group;
+
+                  for(group = mesh.groups.first; group; group = group.next)
+                     // Material not currently freed by group and not managed anywhere else here
+                     delete group.material;
+               }
+
                modelData.model.Free(displaySystem);
                delete modelData.model;
                modelData.freeModel = false;
