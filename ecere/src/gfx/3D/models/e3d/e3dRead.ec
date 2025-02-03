@@ -1355,6 +1355,7 @@ void readE3D(File f, const String fileName, Object object, DisplaySystem display
    {
       ctx.shareIndices = options.shareIndices;
       ctx.texturesByID = options.texturesByID ? options.texturesByID : { };
+      if(!options.texturesByID) freeTexturesByID = true;
       ctx.materials = options.materials;
       ctx.texturesPath = options.texturesPath;
       ctx.positiveYUp = options.positiveYUp;
