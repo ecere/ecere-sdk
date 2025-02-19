@@ -138,6 +138,8 @@ _ECSOURCES2 = \
 	src/com/containers/LinkList.ec \
 	src/com/containers/List.ec \
 	src/com/containers/Map.ec \
+	src/com/containers/HashMap.ec \
+	src/com/containers/HashTable.ec \
 	src/com/BinaryTree.ec \
 	src/com/BTNode.ec \
 	src/com/dataTypes.ec \
@@ -194,6 +196,7 @@ _OBJECTS1 = \
 _OBJECTS2 = \
 	$(if $(WINDOWS_TARGET),,$(OBJ)harfbuzz-impl.o) \
 	$(if $(WINDOWS_TARGET),,$(OBJ)harfbuzz-thai.o) \
+	$(OBJ)mmhash$(O) \
 	$(OBJ)instance.c.o
 
 OBJECTS = $(_OBJECTS) $(ECOBJECTS) $(OBJ)$(MODULE).main$(O)
@@ -221,6 +224,7 @@ SOURCES = $(ECSOURCES) \
 	$(if $(WINDOWS_TARGET),,src/gfx/drivers/harfbuzz/harfbuzz-tibetan.c) \
 	$(if $(WINDOWS_TARGET),,src/gfx/drivers/harfbuzz/harfbuzz-impl.c) \
 	$(if $(WINDOWS_TARGET),,src/gfx/drivers/harfbuzz/harfbuzz-thai.c) \
+	src/gfx/newFonts/cc/mmhash.c \
 	src/com/instance.c
 
 RESOURCES = $(RESOURCES1) $(RESOURCES2) $(RESOURCES3)
@@ -364,6 +368,7 @@ PRJ_CFLAGS += \
 			 -DECERE_STATIC \
 			 -DECERE_VANILLA \
 			 -DNOBLENDING \
+			 -Isrc/gfx/newFonts/cc \
 			 -Isrc/gfx/drivers/harfbuzz \
 			 -I/usr/X11R6/include \
 			 -I/usr/X11R6/include/freetype2
@@ -764,6 +769,12 @@ $(OBJ)List.sym: src/com/containers/List.ec
 $(OBJ)Map.sym: src/com/containers/Map.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/Map.ec -o $(OBJ)Map.sym
 
+$(OBJ)HashMap.sym: src/com/containers/HashMap.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/HashMap.ec -o $(OBJ)HashMap.sym
+
+$(OBJ)HashTable.sym: src/com/containers/HashTable.ec
+	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/containers/HashTable.ec -o $(OBJ)HashTable.sym
+
 $(OBJ)BinaryTree.sym: src/com/BinaryTree.ec
 	$(ECP) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.sym
 
@@ -1042,6 +1053,12 @@ $(OBJ)List.c: src/com/containers/List.ec $(OBJ)List.sym | $(SYMBOLS)
 $(OBJ)Map.c: src/com/containers/Map.ec $(OBJ)Map.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/Map.ec -o $(OBJ)Map.c -symbols $(OBJ)
 
+$(OBJ)HashMap.c: src/com/containers/HashMap.ec $(OBJ)HashMap.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/HashMap.ec -o $(OBJ)HashMap.c -symbols $(OBJ)
+
+$(OBJ)HashTable.c: src/com/containers/HashTable.ec $(OBJ)HashTable.sym | $(SYMBOLS)
+	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/containers/HashTable.ec -o $(OBJ)HashTable.c -symbols $(OBJ)
+
 $(OBJ)BinaryTree.c: src/com/BinaryTree.ec $(OBJ)BinaryTree.sym | $(SYMBOLS)
 	$(ECC) $(CFLAGS) $(CECFLAGS) $(ECFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c src/com/BinaryTree.ec -o $(OBJ)BinaryTree.c -symbols $(OBJ)
 
@@ -1256,6 +1273,9 @@ $(OBJ)XDisplayDriver.o: $(OBJ)XDisplayDriver.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)XDisplayDriver.c -o $(OBJ)XDisplayDriver.o
 endif
 
+$(OBJ)mmhash.o: src/gfx/newFonts/cc/mmhash.c
+	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c src/gfx/newFonts/cc/mmhash.c -o $(OBJ)mmhash.o
+
 $(OBJ)Bitmap.o: $(OBJ)Bitmap.c
 	$(CC) $(CFLAGS) $(PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Bitmap.c -o $(OBJ)Bitmap.o
 
@@ -1423,6 +1443,12 @@ $(OBJ)List.o: $(OBJ)List.c
 
 $(OBJ)Map.o: $(OBJ)Map.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)Map.c -o $(OBJ)Map.o
+
+$(OBJ)HashMap.o: $(OBJ)HashMap.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashMap.c -o $(OBJ)HashMap.o
+
+$(OBJ)HashTable.o: $(OBJ)HashTable.c
+	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)HashTable.c -o $(OBJ)HashTable.o
 
 $(OBJ)BinaryTree.o: $(OBJ)BinaryTree.c
 	$(CC) $(CFLAGS) $(CUSTOM1_PRJ_CFLAGS) $(FVISIBILITY) -c $(OBJ)BinaryTree.c -o $(OBJ)BinaryTree.o

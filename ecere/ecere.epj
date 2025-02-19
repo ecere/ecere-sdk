@@ -1413,6 +1413,12 @@
                                        "Options" : {
                                           "ExcludeFromBuild" : true
                                        }
+                                    },
+                                    {
+                                       "Name" : "Vanilla",
+                                       "Options" : {
+                                          "ExcludeFromBuild" : true
+                                       }
                                     }
                                  ]
                               },
