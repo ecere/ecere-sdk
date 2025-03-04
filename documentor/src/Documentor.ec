@@ -97,7 +97,7 @@ private:
 
 static __attribute__((unused)) void Dummy()
 {
-   int a;
+   int a = 0;
    a.OnGetString(null, null, null);
 }
 
@@ -1885,7 +1885,7 @@ class APIPageMethod : APIPage
                f.Printf("</a>\n");
             }
             else
-               f.Printf("<br>%s\n", method, remarksDoc);
+               f.Printf("<br>%s\n", /*method, */remarksDoc);
             f.Printf("%s<br>\n", twoBRs);
             delete remarksDoc;
          }
@@ -1904,7 +1904,7 @@ class APIPageMethod : APIPage
                f.Printf("</a>\n");
             }
             else
-               f.Printf("<br>%s\n", method, seeAlsoDoc);
+               f.Printf("<br>%s\n", /*method, */seeAlsoDoc);
 
             f.Printf("%s<br>\n", twoBRs);
             delete seeAlsoDoc;
