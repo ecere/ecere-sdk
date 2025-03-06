@@ -1507,6 +1507,9 @@ public:
          */
       }
 
+      if(type && type == class(FieldValue))
+         type = class(Array<FieldValue>);
+
       if(type && computeType == runtime && elements)
       {
          if(type.templateClass == class(Container))
@@ -1543,7 +1546,13 @@ public:
 
             if(computeType == runtime && flg.resolved && array)
             {
-               if(v.type.type == real)
+               if(c == class(FieldValue))
+               {
+                  Iterator<FieldValue> it { (Array<FieldValue>)array };
+                  if(it.Index(i, true))
+                     it.SetData(v);
+               }
+               else if(v.type.type == real)
                {
                   if(c && (c.type == enumClass || c.type == bitClass || c.type == systemClass || c.type == unitClass))
                   {
@@ -1608,7 +1617,7 @@ public:
       if(computeType == runtime)
       {
          if(resolved)
-            value = { type = { blob }, b = array };
+            value = { type = { array }, a = (Array<FieldValue>)array };
          flags.resolved = resolved;
       }
       else
