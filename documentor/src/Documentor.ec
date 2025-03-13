@@ -5,7 +5,7 @@ import "HTMLView"
 import "IDESettings"
 import "SettingsDialog"
 
-define slashTR = 1 /*outputtingHTML*/ ? "</TR>" : "</TR><br>\n";
+define slashTR = 1 /*outputtingHTML*/ ? "</TR>\n" : "</TR><br>\n";
 define twoBRs = outputtingHTML ? "" : "<br><br>";
 define oneBR = outputtingHTML ? "" : "<br>";
 
@@ -599,7 +599,8 @@ const char * getAnchor(const void * object, char * output)
             // Anchor
             if(page && page.page)
             {
-               switch(row.tag)
+               int64 tag = row.tag;
+               switch(tag)
                {
                   case 1: strcat(output, "#Classes"); break;
                   case 2: strcat(output, "#Functions"); break;
@@ -609,7 +610,7 @@ const char * getAnchor(const void * object, char * output)
                   case 6: strcat(output, "#Members"); break;
                   case 7: strcat(output, "#Conversions"); break;
                   case 8: strcat(output, "#EnumerationValues"); break;
-                  default: strcatf(output, "#%s", row.string);
+                  default: strcatf(output, "#%s", page.name); //row.string);
                }
             }
          }
@@ -648,7 +649,7 @@ void addLinkPart(DataRow row, char * output, bool thisItem)
             case 6: strcat(output, "#Members"); break;
             case 7: strcat(output, "#Conversions"); break;
             case 8: strcat(output, "#EnumerationValues"); break;
-            default: strcatf(output, "#%s", row.string);
+            default: strcatf(output, "#%s", page.name); //row.string);
          }
       }
    }
@@ -1377,7 +1378,7 @@ class APIPageClass : APIPage
                      f.Printf("<TD valign=top height=22>%s</TD>", desc);
                   delete desc;
                }
-               f.Printf("</TR>");
+               f.Printf("</TR>\n");
             }
             f.Printf("</TABLE>%s\n", oneBR);
          }
@@ -1801,7 +1802,7 @@ class APIPageMethod : APIPage
          char * desc = ReadDoc(module, methodDoc, method, returnValue, null);
          if(method.dataType.params.first && ((Type)method.dataType.params.first).kind != voidType)
          {
-            f.Printf("<TR><TD>&nbsp;</TD></TR>");
+            f.Printf("<TR><TD>&nbsp;</TD></TR>\n");
          }
          f.Printf("<TR>");
          f.Printf($"<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n");
@@ -2038,7 +2039,7 @@ class APIPageFunction : APIPage
          char * desc = ReadDoc(module, functionDoc, function, returnValue, null);
          if(function.dataType.params.first && ((Type)function.dataType.params.first).kind != voidType)
          {
-            f.Printf("<TR><TD>&nbsp;</TD></TR>");
+            f.Printf("<TR><TD>&nbsp;</TD></TR>\n");
          }
          f.Printf("<TR>");
          f.Printf($"<TD valign=top height=22 nowrap=1><B>Return Value</B></TD>\n");
@@ -2056,7 +2057,7 @@ class APIPageFunction : APIPage
                f.Printf("</a>&nbsp;</TD>\n");
             }
             else
-               f.Printf("<TD valign=top height=22>%s&nbsp;</TD>\n", function, desc);
+               f.Printf("<TD valign=top height=22>%s&nbsp;</TD>\n", /*function, */desc);
             delete desc;
          }
          f.Printf("</TR>\n");
