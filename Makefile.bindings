@@ -40,7 +40,7 @@ _bg_input_lib_names := $(BG_LIB_GOALS)
 endif
 
 ifndef BG_LIB_SEARCH_LOCATIONS
-_bg_lib_search_paths := obj/$(PLATFORM)/lib $(BG_ADD_LIB_SEARCH_LOCATIONS)
+_bg_lib_search_paths := $(HOST_SODESTDIR) $(BG_ADD_LIB_SEARCH_LOCATIONS)
 else
 _bg_lib_search_paths := $(BG_LIB_SEARCH_LOCATIONS)
 endif
@@ -74,9 +74,9 @@ _bg_header_cpp := hpp
 _bg_bypass_c :=
 _bg_bypass_cpp := -bypassmacros
 
-_bg_dep_ec := $(_CF_DIR)obj/$(PLATFORM)/lib/$(LP)ec$(SO)
-_bg_dep_ec2 := $(_CF_DIR)obj/$(PLATFORM)/lib/$(LP)ec2$(SO)
-_bg_dep_ecere := $(_CF_DIR)obj/$(PLATFORM)/lib/$(LP)ecere$(SO)
+_bg_dep_ec := $(_CF_DIR)$(HOST_SODESTDIR)$(LP)ec$(SO)
+_bg_dep_ec2 := $(_CF_DIR)$(HOST_SODESTDIR)$(LP)ec2$(SO)
+_bg_dep_ecere := $(_CF_DIR)$(HOST_SODESTDIR)$(LP)ecere$(SO)
 _bg_deps := $(_bg_dep_ec) $(_bg_dep_ec2) $(_bg_dep_ecere)
 
 _bg_quiet := $(if $(SILENT_IS_ON),-quiet,)
@@ -356,7 +356,7 @@ PY_BINDINGS_DIR := $(_bg_dir)/py
 endif
 
 ifndef BGEN_LIBS
-BGEN_LIBS := obj/linux/lib/$(LP)ecereCOM$(SO) obj/linux/lib/$(LP)ecere$(SO) obj/linux/lib/$(LP)EDA$(SO) $(ADDITIONAL_BGEN_LIBS)
+BGEN_LIBS := $(HOST_SODESTDIR)$(LP)ecereCOM$(SO) $(HOST_SODESTDIR)$(LP)ecere$(SO) $(HOST_SODESTDIR)$(LP)EDA$(SO) $(ADDITIONAL_BGEN_LIBS)
 endif
 
 _BGEN_OUTS := $(foreach _lib,$(BGEN_LIBS),$(call renameEcereCOM,$(call lib_path_to_name,$(_lib))))
