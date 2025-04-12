@@ -1150,7 +1150,7 @@ int ccStrPrintDouble( char *str, int bufsize, int decimals, double value )
   {
     if( bufsize < CC_STR_PRINT_BUFSIZE_UINT32 )
       goto error;
-    u32 = (int32_t)value;
+    u32 = (uint32_t)value;
     offset = ccStrPrintUint32( str, u32 );
     size += offset;
     bufsize -= size;
@@ -1160,7 +1160,7 @@ int ccStrPrintDouble( char *str, int bufsize, int decimals, double value )
   {
     if( bufsize < CC_STR_PRINT_BUFSIZE_UINT64 )
       goto error;
-    u64 = (int64_t)value;
+    u64 = (uint64_t)value;
     offset = ccStrPrintUint64( str, u64 );
     size += offset;
     bufsize -= size;
