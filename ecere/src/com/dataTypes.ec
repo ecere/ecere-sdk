@@ -2137,6 +2137,8 @@ static void cleanFinalDigits(char * number, int numDigits)
    bool checkFor1 = true, checkFor9 = true;
    int first9 = 0;
    const char * dot = strchr(number, '.');
+   //const char * e = SearchString(number, 0, "e", false, false);
+   //if(e) return; // Ignore if output is in scientific notation
 
    for(c = len-1; c >= 0; c--)
    {
@@ -2310,7 +2312,7 @@ static char * Double_OnGetString(Class _class, double * data, char * string, voi
       while(numDigits && num < af) numDigits--, num *= 10;
       // REVIEW: %g means to pick the optimal between scientific (%e) vs. fixed-point (%lf)
       //          Is %lf not supported in MinGW?
-      sprintf(format, runtimePlatform == win32 ? "%%.%dg" : "%%.%dlf", numDigits);
+      sprintf(format, /*runtimePlatform == win32 ? "%%.%dg" :*/ "%%.%dlf", numDigits);
       sprintf(string, format, f);
       cleanFinalDigits(string, numDigits);
    }
