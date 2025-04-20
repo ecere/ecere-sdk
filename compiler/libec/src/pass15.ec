@@ -1877,7 +1877,7 @@ void ProcessMemberInitData(MemberInit member, Class _class, Class * curClass, Da
             }
          }
       }
-      if(type && type.kind == classType && type._class && type._class.registered && strchr(type._class.registered.fullName, '<'))
+      if(type && type.kind == classType && type._class && type._class.registered && strchr(type._class.registered.fullName, '<') && type._class.registered.templateClass)
       {
          Class expClass = type._class.registered;
          Class cClass = null;
