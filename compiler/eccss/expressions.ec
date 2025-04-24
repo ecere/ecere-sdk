@@ -1973,6 +1973,7 @@ public:
       while(result && result._class == class(CMSSExpInstance))
       {
          CMSSExpInstance ei = (CMSSExpInstance)result;
+
          if(uc && ei.instance && ei.instance._class)
          {
             CMSSSpecName sn = (CMSSSpecName)ei.instance._class;
@@ -1981,6 +1982,7 @@ public:
             {
                *uc = c;
                msk = 0;
+               break;
             }
          }
          else
@@ -1988,6 +1990,8 @@ public:
 
          if(ei.instance && ei.instance.members)
          {
+            result = null;
+
             // NOTE: This piece and the while loop should no longer be required now with findDeepStyle()
             // TODO: Should iterate from the last?
             for(i : ei.instance.members)
@@ -2001,6 +2005,8 @@ public:
                }
             }
          }
+         else
+            break;
       }
       return result;
    }
