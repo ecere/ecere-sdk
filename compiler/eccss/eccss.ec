@@ -33,27 +33,14 @@ enum ECCSSFunctionIndex : int
    map
 };
 
-static int strncpymax(String output, const String input, int count, int max)
-{
-   int copied = Min(count, Max(0, max - 1));
-   if(copied)
-   {
-      memcpy(output, input, copied);
-      output[copied] = 0;
-   }
-   return copied;
-}
-
 static String formatValues(const String format, int numArgs, const FieldValue * values)
 {
-   char output[1024];
-   int totalLen = 0;
+   String result;
+   ZString output { allocType = heap, minSize = 1024 };
    int formatLen = format ? strlen(format) : 0;
    const String start = format;
    int arg = 0;
    const FieldValue * value = &values[arg];
-
-   output[0] = '\0';
 
    while(true)
    {
@@ -62,7 +49,7 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
       {
          if(nextArg[1] == '%')
          {
-            totalLen += strncpymax(output + totalLen, start, (int)(nextArg+1 - start), sizeof(output) - totalLen);
+            output.concatn(start, (int)(nextArg+1 - start));
             start = nextArg + 2;
          }
          else
@@ -73,8 +60,7 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
             bool argWidth = false, argPrecision = false;
             int width = 0, precision = 0;
 
-            totalLen += strncpymax(output + totalLen, start, (int)(nextArg - start), sizeof(output) - totalLen);
-
+            output.concatn(start, (int)(nextArg - start));
             while(true)
             {
                bool done = false;
@@ -156,7 +142,7 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
                if(type == text && value->type.type == text && argFormat[0] == '%' && argFormat[1] == 's')
                {
                   if(value->s)
-                     totalLen += strncpymax(output + totalLen, value->s, strlen(value->s), sizeof(output) - totalLen);
+                     output.concatn(value->s, strlen(value->s));
                }
                else
                {
@@ -238,7 +224,7 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
                      }
                   }
                   if(numArgs > 0)
-                     totalLen += strncpymax(output + totalLen, argString, numArgs, sizeof(output) - totalLen);
+                     output.concatn(argString, numArgs);
                }
 
                value = &values[++arg];
@@ -247,11 +233,14 @@ static String formatValues(const String format, int numArgs, const FieldValue * 
       }
       else
       {
-         totalLen += strncpymax(output + totalLen, start, (int)(formatLen - (start - format)), sizeof(output) - totalLen);
+         output.concatn(start, (int)(formatLen - (start - format)));
          break;
       }
    }
-   return CopyString(output);
+   result = output._string;
+   output._string = null;
+   delete output;
+   return result;
 }
 
 // For extending ECCSS with custom identifiers and styling properties
@@ -468,24 +457,24 @@ public struct ECCSSEvaluator
                if(numArgs >= 1)
                {
                   int i;
-                  char newStr[MAX_LOCATION];
-                  newStr[MAX_LOCATION-1] = '\0';
-                  newStr[0] = 0;
+                  ZString newStr { allocType = heap };
                   value.type = { text, true };
                   for(i = 0; i < numArgs; i++)
                   {
                      if(args[i].type.type == text)
-                        strcat(newStr, args[i].s);
+                        newStr.concat(args[i].s);
                      else
                      {
                         switch(args[i].type.type)
                         {
-                           case integer: strcatf(newStr,"%d",args[i].i);break;
-                           case real: strcatf(newStr, "%f", args[i].r);break;
+                           case integer: newStr.concatf("%d",args[i].i);break;
+                           case real: newStr.concatf("%f", args[i].r);break;
                         }
                      }
                   }
-                  value.s = CopyString(newStr);
+                  value.s = newStr._string;
+                  newStr._string = null;
+                  delete newStr;
                }
                break;
             }
