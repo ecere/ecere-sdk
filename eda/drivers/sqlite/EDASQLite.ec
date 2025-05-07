@@ -147,7 +147,8 @@ class SQLiteDataSource : DirFilesDataSourceDriver
             bool success = true;
             char command[1024];
 
-            sqlite3_exec(db, "PRAGMA page_size=4096;", null, null, null);
+            sqlite3_exec(db, "PRAGMA max_page_count=4294967294;", null, null, null); // SQLite versions prior to 3.45.0 had a lower number...
+            sqlite3_exec(db, "PRAGMA page_size=4096;", null, null, null); // Allows for up to 17.5 terabytes (can go up to 65536 for 281 terabytes)
             sqlite3_exec(db, "PRAGMA synchronous=off;", null, null, null);
 
             sprintf(command, "CREATE TABLE eda_table_fields(Table_Name TEXT, Name TEXT, Type TEXT, Length INT);");
