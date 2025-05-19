@@ -2173,8 +2173,13 @@ static void cleanFinalDigits(char * number, int numDigits)
                      if(!ch || ch == '.');
                      else if(number[first9] < '9')   // REVIEW:
                      {
+                        int j;
+
                         number[first9]++;
-                        number[first9+1] = 0;
+
+                        for(j = first9+1; j < (dot - number); j++)
+                           number[j] = '0';
+                        number[j] = 0;
                         break;
                      }
                   }
