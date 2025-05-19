@@ -8313,6 +8313,8 @@ public:
 
                   int vpw, vph;
 
+                  if(!parent) return; // REVIEW: IDE crashes with eC core
+
                   x += parent.absPosition.x - value.absPosition.x + parent.clientStart.x - value.clientStart.x;
                   y += parent.absPosition.y - value.absPosition.y + parent.clientStart.y - value.clientStart.y;
 
@@ -8723,7 +8725,7 @@ public:
                order = null;
             }
 
-            if(created)
+            if(created && parent) // parent check to avoid IDE crash on FormDesigner?
             {
                active = false; // true;
                if(parent.activeChild == this)
@@ -8926,7 +8928,7 @@ public:
             {
                if(rootWindow == this)
                   guiApp.interfaceDriver.OrderRootWindow(this, true);
-               else if(parent.children.last != this)
+               else if(parent && parent.children.last != this)
                {
                   parent.children.Move(this, parent.children.last);
                   Update(null);

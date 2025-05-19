@@ -1570,20 +1570,21 @@ static void ProcessExpression(Expression exp)
 
 static void ProcessInitializer(Initializer init)
 {
-   switch(init.type)
-   {
-      case expInitializer:
-         init.exp.usage.usageGet = true;
-         ProcessExpression(init.exp);
-         break;
-      case listInitializer:
+   if(init)
+      switch(init.type)
       {
-         Initializer i;
-         for(i = init.list->first; i; i = i.next)
-            ProcessInitializer(i);
-         break;
+         case expInitializer:
+            init.exp.usage.usageGet = true;
+            ProcessExpression(init.exp);
+            break;
+         case listInitializer:
+         {
+            Initializer i;
+            for(i = init.list->first; i; i = i.next)
+               ProcessInitializer(i);
+            break;
+         }
       }
-   }
 }
 
 static void ProcessSpecifier(Specifier spec)
