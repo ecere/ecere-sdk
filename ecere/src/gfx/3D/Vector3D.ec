@@ -82,9 +82,9 @@ public struct Vector3D
          s.x * v.y - s.y * v.x
       };
       //cross.CrossProduct(s, v);
-      x = (float)(2 * dotVS * v.x + a * s.x + 2 * w * cross.x);
-      y = (float)(2 * dotVS * v.y + a * s.y + 2 * w * cross.y);
-      z = (float)(2 * dotVS * v.z + a * s.z + 2 * w * cross.z);
+      x = 2 * dotVS * v.x + a * s.x + 2 * w * cross.x;
+      y = 2 * dotVS * v.y + a * s.y + 2 * w * cross.y;
+      z = 2 * dotVS * v.z + a * s.z + 2 * w * cross.z;
    }
 
    void DivideMatrix(const Vector3D v, const Matrix m)
