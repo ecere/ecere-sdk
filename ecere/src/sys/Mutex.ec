@@ -21,7 +21,7 @@ namespace sys;
 #if defined(__WIN32__)
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-#else
+#elif !defined(__EMSCRIPTEN__)
 #include <pthread.h>
 #endif
 #undef uint
@@ -35,8 +35,10 @@ public int64 GetCurrentThreadID()
 {
 #if defined(__WIN32__)
    return (int64)GetCurrentThreadId();
-#else
+#elif !defined(__EMSCRIPTEN__)
    return (int64)pthread_self();
+#else
+   return 0;
 #endif
 }
 
