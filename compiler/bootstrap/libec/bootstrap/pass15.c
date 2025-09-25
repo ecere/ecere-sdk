@@ -13263,7 +13263,7 @@ if(type)
 }
 }
 }
-if(type && type->kind == 8 && type->__anon1._class && type->__anon1._class->__anon1.registered && strchr(type->__anon1._class->__anon1.registered->fullName, '<'))
+if(type && type->kind == 8 && type->__anon1._class && type->__anon1._class->__anon1.registered && strchr(type->__anon1._class->__anon1.registered->fullName, '<') && type->__anon1._class->__anon1.registered->templateClass)
 {
 struct __ecereNameSpace__ecere__com__Class * expClass = type->__anon1._class->__anon1.registered;
 struct __ecereNameSpace__ecere__com__Class * cClass = (((void *)0));

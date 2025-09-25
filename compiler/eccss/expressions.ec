@@ -380,10 +380,14 @@ public:
 
    CMSSExpList copy()
    {
-      CMSSExpList e { };
-      for(n : list)
-         e.list.Add(n.copy());
-      return e;
+      if(this)
+      {
+         CMSSExpList e { };
+         for(n : list)
+            e.list.Add(n.copy());
+         return e;
+      }
+      return null;
    }
 }
 

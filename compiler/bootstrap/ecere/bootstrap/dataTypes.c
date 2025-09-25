@@ -269,6 +269,8 @@ extern uint64 __ecereNameSpace__ecere__com___strtoui64(const char *  string, con
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
 
+extern double fabs(double number);
+
 extern double strtod(const char * , char * * );
 
 extern unsigned int __ecereNameSpace__ecere__sys__UTF8Validate(const char *  source);
@@ -310,6 +312,67 @@ struct __ecereNameSpace__ecere__com__EnumClassData
 struct __ecereNameSpace__ecere__sys__OldList values;
 long long largest;
 } ecere_gcc_struct;
+
+static void __ecereNameSpace__ecere__com__cleanFinalDigits(char * number, int numDigits)
+{
+int len = strlen(number);
+int c;
+int last = 0;
+unsigned int checkFor1 = 1, checkFor9 = 1;
+int first9 = 0;
+const char * dot = strchr(number, '.');
+
+for(c = len - 1; c >= 0; c--)
+{
+char ch = number[c];
+
+if(ch != '0' && dot)
+{
+if(ch == '1' && number + c - dot >= numDigits - 1 && c == len - 1 && checkFor1)
+checkFor1 = 0;
+else if(ch == '9' && number + c - dot >= numDigits - 1 && c == len - 1 && checkFor9)
+first9 = c;
+else
+{
+last = ((last > c) ? last : c);
+checkFor9 = 0;
+checkFor1 = 0;
+}
+}
+if(ch == '.')
+{
+if(last == c)
+number[c] = 0;
+else
+{
+number[last + 1] = 0;
+if(first9)
+{
+while(--first9 > 0)
+{
+if(first9 != c)
+{
+ch = number[first9];
+if(!ch || ch == '.')
+;
+else if(number[first9] < '9')
+{
+int j;
+
+number[first9]++;
+for(j = first9 + 1; j < (dot - number); j++)
+number[j] = '0';
+number[j] = 0;
+break;
+}
+}
+}
+}
+}
+break;
+}
+}
+}
 
 struct __ecereNameSpace__ecere__com__Property;
 
@@ -707,68 +770,16 @@ else if(f && (((f < 0) ? -f : f) > 1E20 || ((f < 0) ? -f : f) < 1E-20))
 sprintf(string, "%.15e", f);
 else
 {
-int c;
-int last = 0;
-unsigned int checkFor1 = 1, checkFor9 = 1;
-int numDigits = 7, num = 1;
-int first9 = 0;
-char format[10];
-char * dot;
-int len;
+int numDigits = 9;
+float num = 0.01f;
+char format[128];
+double af = fabs(f);
 
-while(numDigits && (float)num < f)
+while(numDigits && num < af)
 numDigits--, num *= 10;
 sprintf(format, "%%.%df", numDigits);
 sprintf(string, format, f);
-dot = strchr(string, '.');
-len = strlen(string);
-c = len - 1;
-for(; c >= 0; c--)
-{
-char ch = string[c];
-
-if(ch != '0' && dot)
-{
-if(ch == '1' && string + c - dot >= 6 && c == len - 1 && checkFor1)
-checkFor1 = 0;
-else if(ch == '9' && string + c - dot >= 6 && c == len - 1 && checkFor9)
-first9 = c;
-else
-{
-last = ((last > c) ? last : c);
-checkFor9 = 0;
-checkFor1 = 0;
-}
-}
-if(ch == '.')
-{
-if(last == c)
-string[c] = 0;
-else
-{
-string[last + 1] = 0;
-if(first9)
-{
-while(--first9 > 0)
-{
-if(first9 != c)
-if(string[first9] < '9')
-{
-string[first9]++;
-break;
-}
-}
-if(first9 < c)
-{
-string[c - 1] = '1';
-first9 = c;
-}
-string[first9 + 1] = 0;
-}
-}
-break;
-}
-}
+__ecereNameSpace__ecere__com__cleanFinalDigits(string, numDigits);
 }
 return string;
 }
@@ -827,27 +838,16 @@ else if(f && (((f < 0) ? -f : f) > 1E20 || ((f < 0) ? -f : f) < 1E-20))
 sprintf(string, "%.15e", f);
 else
 {
-int c;
-int last = 0;
+int numDigits = 17;
+double num = 0.01;
+char format[128];
+double af = fabs(f);
 
-if(runtimePlatform == 1)
-sprintf(string, "%.15g", f);
-else
-sprintf(string, "%.13lf", f);
-c = strlen(string) - 1;
-for(; c >= 0; c--)
-{
-if(string[c] != '0')
-last = ((last > c) ? last : c);
-if(string[c] == '.')
-{
-if(last == c)
-string[c] = 0;
-else
-string[last + 1] = 0;
-break;
-}
-}
+while(numDigits && num < af)
+numDigits--, num *= 10;
+sprintf(format, "%%.%dlf", numDigits);
+sprintf(string, format, f);
+__ecereNameSpace__ecere__com__cleanFinalDigits(string, numDigits);
 }
 return string;
 }

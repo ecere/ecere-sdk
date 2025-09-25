@@ -870,6 +870,7 @@ struct ExtDecl * extended;
 
 static void ProcessInitializer(struct Initializer * init)
 {
+if(init)
 switch(init->type)
 {
 case 0:

@@ -153,7 +153,7 @@ public bool LoadSymbols(const char * fileName, ImportType importType, bool loadD
 
       for(;;)
       {
-         char line[1024];
+         char line[4096];
          if(!f.GetLine(line, sizeof(line))) break;
          TrimLSpaces(line, line);
 

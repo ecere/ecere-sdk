@@ -2055,6 +2055,7 @@ FullClassNameCat(name, regClass->fullName, 1);
 strcat(name, "_IsSet_");
 FullClassNameCat(name, prop->name, 0);
 stmt = MkExpressionStmt(MkListOne(MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=', MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer((((void *)0)), (((void *)0))), (((void *)0)))), MkExpIdentifier(MkIdentifier(name))))));
+stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier(nameM))), stmt, (((void *)0)));
 ListAdd(registerModuleBody->__anon1.compound.statements, stmt);
 }
 if(prop->symbol && ((struct Symbol *)prop->symbol)->propCategory)
@@ -3164,7 +3165,7 @@ ListAdd(args, MkExpString(string));
 }
 {
 char * string;
-char type[1024] = "";
+char type[2048] = "";
 
 if(setStaticMethod)
 function->declarator->symbol->type->__anon1.__anon2.staticMethod = 0;

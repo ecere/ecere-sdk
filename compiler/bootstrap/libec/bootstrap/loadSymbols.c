@@ -1321,7 +1321,7 @@ if(!((strcasecmp)(moduleName, "instance.sym") && (strcasecmp)(moduleName, "Binar
 ecereCOMModule = 1;
 for(; ; )
 {
-char line[1024];
+char line[4096];
 
 if(!__ecereMethod___ecereNameSpace__ecere__sys__File_GetLine(f, line, sizeof (line)))
 break;

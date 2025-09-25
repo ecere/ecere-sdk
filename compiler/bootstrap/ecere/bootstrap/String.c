@@ -2069,6 +2069,8 @@ void __ecereMethod___ecereNameSpace__ecere__sys__ZString_copy(struct __ecereName
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
 __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString(this, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->_string, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->len);
+if(((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->allocType == 0)
+(__ecereNameSpace__ecere__com__eInstance_DecRef(s), s = 0);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatx(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...)
