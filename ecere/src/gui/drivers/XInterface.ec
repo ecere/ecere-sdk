@@ -1410,12 +1410,12 @@ static void X11UpdateState(Window window, bool * unmaximized)
                   window.CreateSystemChildren();
             }
          }
-         else if(window.state != normal)
+         else if(window.state != normal && window.visible)
          {
             if(unmaximized && window.state == maximized)
                *unmaximized = true;
             // NOTE: State is being forced to normal here, without calling state property, ignoring OnStateChange return value
-            window.OnStateChange(normal, 0);
+            // window.OnStateChange(normal, 0);
             *&window.state = normal;
             if(!window.nativeDecorations)
                window.CreateSystemChildren();

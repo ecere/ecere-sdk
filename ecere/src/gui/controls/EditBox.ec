@@ -1811,14 +1811,17 @@ private:
       }
    }
 
-   void FindMaxLine()
+   void FindMaxLineEx(EditLine startLine)
    {
       EditLine line;
 
-      this.maxLength = 0;
-      this.maxLine = null;
+      if(!startLine)
+      {
+         this.maxLength = 0;
+         this.maxLine = null;
+      }
 
-      for(line = lines.first; line; line = line.next)
+      for(line = startLine ? startLine : lines.first; line; line = line.next)
       {
          if(line.length > this.maxLength)
          {
@@ -1828,6 +1831,11 @@ private:
       }
 
       if(style.autoSize) AutoSize();
+   }
+
+   void FindMaxLine()
+   {
+      FindMaxLineEx(null);
    }
 
    void SelDirty()
@@ -4938,6 +4946,7 @@ public:
          int addedSpaces = 0, addedTabs = 0, xAdjustment = 0;
          AddTextAction action = null;
          ReplaceTextAction replaceAction = null;
+         EditLine startLineForFindMax = (this.line == selLine && this.line == lines.last && x == selX) ? lines.last : null;
 
          this.pasteOperation = true;
 
@@ -5047,7 +5056,7 @@ public:
             {
                ret = false;
             }
-         FindMaxLine();
+         FindMaxLineEx(startLineForFindMax);
 
          undoBuffer.dontRecord--;
          if(action)
