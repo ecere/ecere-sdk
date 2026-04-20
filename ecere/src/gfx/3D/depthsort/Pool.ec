@@ -29,7 +29,10 @@ class InstancePool<class T>
    {
       uint i;
       for(i = 0; i < available; i++)
-         delete objects[i];
+      {
+         T o = (T)objects[i];
+         delete o;
+      }
       available = 0;
       delete objects;
       arrayAlloced = 0;
