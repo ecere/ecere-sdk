@@ -79,6 +79,7 @@ RESOURCES = \
 	locale/he.mo \
 	locale/ru.mo \
 	locale/zh_CN.mo \
+	locale/zh_TW.mo \
 	../crossplatform.mk
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
@@ -135,7 +136,7 @@ ifndef NOSTRIP
 	$(STRIP) $(STRIPOPT) $(TARGET)
 endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../crossplatform.mk ""
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/ru.mo locale/zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/ru.mo locale/zh_CN.mo locale/zh_TW.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

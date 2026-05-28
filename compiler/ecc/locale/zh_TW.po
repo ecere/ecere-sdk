@@ -1,0 +1,22 @@
+# Traditional Chinese (Taiwan) translation for ecc
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecc\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../\n"
+
+#: ./ecc.ec:456
+msgid "Syntax:\n   ecc [-t <target platform>] [-cpp <c preprocessor>] [-o <output>] [-module <module>] [-symbols <outputdir>] [-I<includedir>]* [-isystem <sysincludedir>]* [-D<definition>]* -c <input>\n"
+msgstr "語法:\n   ecc [-t <目標平台>] [-cpp <C 前置處理器>] [-o <輸出>] [-module <模組>] [-symbols <輸出目錄>] [-I<包含目錄>]* [-isystem <系統包含目錄>]* [-D<定義>]* -c <輸入>\n"
+

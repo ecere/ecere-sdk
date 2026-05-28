@@ -138,7 +138,8 @@
          "Files" : [
             "es.mo",
             "mr.mo",
-            "zh_CN.mo"
+            "zh_CN.mo",
+            "zh_TW.mo"
          ]
       }
    ]

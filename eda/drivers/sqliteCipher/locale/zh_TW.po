@@ -1,0 +1,50 @@
+# Traditional Chinese (Taiwan) translation for EDASQLiteCipher
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: EDASQLiteCipher\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../\n"
+
+#: ./../sqlite/EDASQLite.ec:474
+msgid "BEGIN FAILED!"
+msgstr "BEGIN 失敗！"
+
+#: ./../sqlite/EDASQLite.ec:485
+msgid "COMMIT FAILED!"
+msgstr "COMMIT 失敗！"
+
+#: ./EDASQLiteCipher.ec:68
+msgid "Can't open database (%s): %s -- password may be incorrect\n"
+msgstr "無法開啟資料庫 (%s): %s -- 密碼可能不正確\n"
+
+#: ./EDASQLiteCipher.ec:44
+msgid "Can't open database (%s): %s\n"
+msgstr "無法開啟資料庫 (%s): %s\n"
+
+#: ./../sqlite/EDASQLite.ec:196
+msgid "EDASQLite: Can't open database (%s): %s\n"
+msgstr "EDASQLite: 無法開啟資料庫 (%s): %s\n"
+
+#: ./EDASQLiteCipher.ec:56
+msgid "EDASQLiteCipher: database (%s) format not recognized, disabling cipher_use_hmac to support version 1.1.x databases\n"
+msgstr "EDASQLiteCipher: 無法辨識資料庫 (%s) 格式，停用 cipher_use_hmac 以支援 1.1.x 版資料庫\n"
+
+#: ./../sqlite/EDASQLite.ec:971
+msgid "WARNING: ALTER TABLE DOESN'T WORK WITH PRIMARY KEY FOR "
+msgstr "警告：ALTER TABLE 無法搭配主鍵使用於 "
+
+#: ./../sqlite/EDASQLite.ec:932
+msgid "WARNING: Table not yet created for class "
+msgstr "警告：尚未為類別建立資料表 "
+

@@ -103,10 +103,12 @@ RESOURCES2 = \
 	../../ecere/locale/pt_BR.mo \
 	../../ecere/locale/ru.mo \
 	../../ecere/locale/zh_CN.mo \
+	../../ecere/locale/zh_TW.mo \
 	locale/es.mo \
 	locale/he.mo \
 	locale/ru.mo \
-	locale/zh_CN.mo
+	locale/zh_CN.mo \
+	locale/zh_TW.mo
 
 LIBS += $(SHAREDLIB) $(EXECUTABLE) $(LINKOPT)
 
@@ -223,8 +225,8 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/elements/optionBoxSelected.png ../../ecere/res/vanilla/ecere/elements/optionBoxSelectedDown.png ../../ecere/res/vanilla/ecere/elements/optionBoxUp.png "ecere/elements"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/places/driveRemote.png ../../ecere/res/vanilla/ecere/places/folder.png ../../ecere/res/vanilla/ecere/places/folderRemote.png ../../ecere/res/vanilla/ecere/places/networkServer.png ../../ecere/res/vanilla/ecere/places/networkWorkgroup.png "ecere/places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/res/vanilla/ecere/status/folderOpen.png "ecere/status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/locale/es.mo ../../ecere/locale/hu.mo ../../ecere/locale/mr.mo ../../ecere/locale/nl.mo ../../ecere/locale/pt_BR.mo ../../ecere/locale/ru.mo ../../ecere/locale/zh_CN.mo "ecere/locale"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/ru.mo locale/zh_CN.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../../ecere/locale/es.mo ../../ecere/locale/hu.mo ../../ecere/locale/mr.mo ../../ecere/locale/nl.mo ../../ecere/locale/pt_BR.mo ../../ecere/locale/ru.mo ../../ecere/locale/zh_CN.mo ../../ecere/locale/zh_TW.mo "ecere/locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/he.mo locale/ru.mo locale/zh_CN.mo locale/zh_TW.mo "locale"
 else
 	$(AR) rcs $(TARGET) $(OBJECTS) $(LIBS)
 endif

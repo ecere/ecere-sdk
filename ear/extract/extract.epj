@@ -216,7 +216,8 @@
                   "../../ecere/locale/nl.mo",
                   "../../ecere/locale/pt_BR.mo",
                   "../../ecere/locale/ru.mo",
-                  "../../ecere/locale/zh_CN.mo"
+                  "../../ecere/locale/zh_CN.mo",
+                  "../../ecere/locale/zh_TW.mo"
                ]
             }
          ]
@@ -227,7 +228,8 @@
             "es.mo",
             "he.mo",
             "ru.mo",
-            "zh_CN.mo"
+            "zh_CN.mo",
+            "zh_TW.mo"
          ]
       }
    ]

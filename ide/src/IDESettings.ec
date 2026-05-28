@@ -2313,6 +2313,7 @@ Array<LanguageOption> languages
 { [
    { "English",            ":countryCode/gb.png", "" },
    { "汉语",                ":countryCode/cn.png", "zh_CN" },
+   { "繁體中文",           ":countryCode/tw.png", "zh_TW" },
    { "Español",            ":countryCode/es.png", "es" },
    { "Português (Brazil)", ":countryCode/br.png", "pt_BR" },
    { "Русский (43%)",      ":countryCode/ru.png", "ru" },

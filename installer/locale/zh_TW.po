@@ -1,0 +1,473 @@
+# Traditional Chinese (Taiwan) translation for Installer
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Installer\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../\n"
+
+#: ./src/installer.ec:4
+msgid " (Without MinGW)"
+msgstr " (不含 MinGW)"
+
+#: ./src/installer.ec:727
+msgid " Destination Folder"
+msgstr " 目的地資料夾"
+
+#: ./src/installer.ec:341
+msgid "API Reference"
+msgstr "API 參考手冊"
+
+#: ./src/installer.ec:631
+msgid "Add Ecere binaries location to the system environment path"
+msgstr "將 Ecere 執行檔位置加入系統環境路徑"
+
+#: ./src/installer.ec:412
+#: ./src/installer.ec:631
+msgid "Add Ecere binaries location to the user environment path"
+msgstr "將 Ecere 執行檔位置加入使用者環境路徑"
+
+#: ./src/installer.ec:413
+msgid "Add MinGW to the user environment path"
+msgstr "將 MinGW 加入使用者環境路徑"
+
+#: ./src/installer.ec:635
+msgid "Add TDM-GCC/MinGW-w64 to the system environment path"
+msgstr "將 TDM-GCC/MinGW-w64 加入系統環境路徑"
+
+#: ./src/installer.ec:635
+msgid "Add TDM-GCC/MinGW-w64 to the user environment path"
+msgstr "將 TDM-GCC/MinGW-w64 加入使用者環境路徑"
+
+#: ./src/installer.ec:627
+msgid "Add binaries location to the system environment paths"
+msgstr "將執行檔位置加入系統環境路徑"
+
+#: ./src/installer.ec:431
+#: ./src/installer.ec:627
+msgid "Add binaries location to the user environment paths"
+msgstr "將執行檔位置加入使用者環境路徑"
+
+#: ./src/installer.ec:365
+msgid "Additional Support"
+msgstr "額外支援"
+
+#: ./src/installer.ec:430
+msgid "Associate the Ecere IDE with Supported File Types"
+msgstr "將 Ecere IDE 與支援的檔案類型建立關聯"
+
+#: ./src/installer.ec:400
+msgid "Associate with 3D Studio Model Files (*.3ds)"
+msgstr "與 3D Studio 模型檔建立關聯 (*.3ds)"
+
+#: ./src/installer.ec:397
+msgid "Associate with C files (*.c, *.h)"
+msgstr "與 C 檔案建立關聯 (*.c, *.h)"
+
+#: ./src/installer.ec:398
+msgid "Associate with C++ Files (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)"
+msgstr "與 C++ 檔案建立關聯 (*.cpp, *.hpp, *.cc, *.hh, *.cxx, *.hxx)"
+
+#: ./src/installer.ec:395
+msgid "Associate with Ecere Project Files (*.epj)"
+msgstr "與 Ecere 專案檔建立關聯 (*.epj)"
+
+#: ./src/installer.ec:401
+msgid "Associate with Image Files (*.png, *.jpg, *.pcx, *.bmp, *.gif)"
+msgstr "與圖片檔建立關聯 (*.png, *.jpg, *.pcx, *.bmp, *.gif)"
+
+#: ./src/installer.ec:396
+msgid "Associate with eC Files (*.ec, *.eh)"
+msgstr "與 eC 檔案建立關聯 (*.ec, *.eh)"
+
+#: ./src/installer.ec:399
+msgid "Associate with text files (*.txt)"
+msgstr "與純文字檔建立關聯 (*.txt)"
+
+#: ./src/installer.ec:268
+msgid "Audio"
+msgstr "音訊"
+
+#: ./src/installer.ec:2
+msgid "August 4, 2016"
+msgstr "2016 年 8 月 4 日"
+
+#: ./src/installer.ec:820
+msgid "Avail. Space"
+msgstr "可用空間"
+
+#: ./src/installer.ec:298
+msgid "Binary Utils"
+msgstr "Binary Utils"
+
+#: ./src/installer.ec:347
+msgid "Binutils Docs"
+msgstr "Binutils 文件"
+
+#: ./src/installer.ec:593
+msgid "By installing the Ecere SDK, you agree to the"
+msgstr "安裝 Ecere SDK 即代表同意"
+
+#: ./../ide/src/licensing.ec:58
+msgid "By using it you agree to the terms and conditions of their individual licenses."
+msgstr "使用本軟體即代表同意其各別授權條款的規定。"
+
+#: ./src/installer.ec:321
+msgid "C++ Compiler"
+msgstr "C++ 編譯器"
+
+#: ./src/installer.ec:691
+#: ./src/installer.ec:1224
+msgid "Cancel"
+msgstr "取消"
+
+#: ./src/installer.ec:816
+msgid "Choose Components, Locations and Install Options"
+msgstr "選擇元件、位置及安裝選項"
+
+#: ./src/installer.ec:803
+msgid "Choose in which folder to install the Ecere SDK, which features\nof the SDK to install, as well as where to install program icons."
+msgstr "選擇要將 Ecere SDK 安裝到哪個資料夾、要安裝 SDK\n的哪些功能，以及程式圖示的安裝位置。"
+
+#: ./src/installer.ec:1416
+msgid "Close"
+msgstr "關閉"
+
+#: ./src/installer.ec:817
+msgid "Component"
+msgstr "元件"
+
+#: ./src/installer.ec:1441
+msgid "Configuring Ecere IDE..."
+msgstr "正在設定 Ecere IDE..."
+
+#: ./src/installer.ec:364
+msgid "Core SDK Files"
+msgstr "核心 SDK 檔案"
+
+#: ./src/installer.ec:310
+#: ./src/installer.ec:311
+msgid "Data Access"
+msgstr "資料存取"
+
+#: ./src/installer.ec:269
+msgid "Database"
+msgstr "資料庫"
+
+#: ./src/installer.ec:428
+msgid "Desktop Icon"
+msgstr "桌面圖示"
+
+#: ./src/installer.ec:818
+msgid "Destination Folder"
+msgstr "目的地資料夾"
+
+#: ./src/installer.ec:366
+msgid "Documentation"
+msgstr "說明文件"
+
+#: ./src/installer.ec:312
+#: ./src/installer.ec:313
+msgid "Ecere Audio"
+msgstr "Ecere Audio"
+
+#: ./src/installer.ec:340
+msgid "Ecere Book"
+msgstr "Ecere 手冊"
+
+#: ./src/installer.ec:342
+msgid "Ecere Coursework"
+msgstr "Ecere 課程教材"
+
+#: ./src/installer.ec:316
+msgid "Ecere Extras"
+msgstr "Ecere Extras"
+
+#: ./src/installer.ec:449
+#: ./src/installer.ec:1197
+msgid "Ecere Software Development Kit Setup - v0.44.15 \"Ryōan-ji\" Web Edition"
+msgstr "Ecere Software Development Kit 安裝程式 - v0.44.15 \"Ryōan-ji\" Web Edition"
+
+#: ./src/installer.ec:314
+#: ./src/installer.ec:315
+msgid "Ecere Vanilla"
+msgstr "Ecere Vanilla"
+
+#: ./../ide/src/IDESettings.ec:2017
+msgid "Error creating compiler configs directory at "
+msgstr "在下列位置建立編譯器組態目錄時發生錯誤："
+
+#: ./src/installer.ec:1842
+msgid "Finish"
+msgstr "完成"
+
+#: ./src/installer.ec:344
+msgid "G++ Docs"
+msgstr "G++ 文件"
+
+#: ./src/installer.ec:343
+msgid "GCC Docs"
+msgstr "GCC 文件"
+
+#: ./src/installer.ec:345
+msgid "GDB Docs"
+msgstr "GDB 文件"
+
+#: ./src/installer.ec:295
+msgid "GNU C Compiler"
+msgstr "GNU C 編譯器"
+
+#: ./../ide/src/IDESettings.ec:1470
+msgid "GNU Compiler Collection (GCC) / GNU Make"
+msgstr "GNU Compiler Collection (GCC) / GNU Make"
+
+#: ./src/installer.ec:296
+msgid "GNU Debugger"
+msgstr "GNU 偵錯器"
+
+#: ./src/installer.ec:299
+msgid "GNU Make"
+msgstr "GNU Make"
+
+#: ./src/installer.ec:318
+#: ./src/installer.ec:319
+msgid "GNU Regexp"
+msgstr "GNU Regexp"
+
+#: ./src/installer.ec:272
+msgid "GUI & Graphics"
+msgstr "圖形介面與繪圖"
+
+#: ./src/installer.ec:271
+msgid "Games"
+msgstr "遊戲"
+
+#: ./../ide/src/licensing.ec:166
+msgid "I agree"
+msgstr "同意"
+
+#: ./../ide/src/licensing.ec:153
+msgid "I don't agree"
+msgstr "不同意"
+
+#: ./src/installer.ec:680
+#: ./src/installer.ec:1218
+msgid "Install"
+msgstr "安裝"
+
+#: ./src/installer.ec:426
+msgid "Install for All Users"
+msgstr "為所有使用者安裝"
+
+#: ./src/installer.ec:1421
+msgid "Installation Cancelled"
+msgstr "安裝已取消"
+
+#: ./src/installer.ec:1420
+msgid "Installation Cancelled."
+msgstr "安裝已取消。"
+
+#: ./src/installer.ec:1846
+msgid "Installation Complete"
+msgstr "安裝完成"
+
+#: ./src/installer.ec:1845
+msgid "Installation Complete."
+msgstr "安裝完成。"
+
+#: ./src/installer.ec:225
+msgid "Installing %s..."
+msgstr "正在安裝 %s..."
+
+#: ./src/installer.ec:1735
+msgid "Installing Desktop Icon..."
+msgstr "正在安裝桌面圖示..."
+
+#: ./src/installer.ec:1765
+msgid "Installing Quicklaunch Icon..."
+msgstr "正在安裝快速啟動圖示..."
+
+#: ./src/installer.ec:1649
+msgid "Installing Start Menu Icons..."
+msgstr "正在安裝開始功能表圖示..."
+
+#: ./src/installer.ec:1250
+msgid "Installing the Ecere SDK"
+msgstr "正在安裝 Ecere SDK"
+
+#: ./../ide/src/licensing.ec:38
+msgid "License Agreements"
+msgstr "授權條款"
+
+#: ./src/installer.ec:346
+msgid "Make Docs"
+msgstr "Make 文件"
+
+#: ./../ide/src/IDESettings.ec:1473
+msgid "Microsoft Visual Studio 2005 (8.0) Compiler"
+msgstr "Microsoft Visual Studio 2005 (8.0) Compiler"
+
+#: ./../ide/src/IDESettings.ec:1474
+msgid "Microsoft Visual Studio 2008 (9.0) Compiler"
+msgstr "Microsoft Visual Studio 2008 (9.0) Compiler"
+
+#: ./../ide/src/IDESettings.ec:1476
+msgid "Microsoft Visual Studio 2010 (10.0) Compiler"
+msgstr "Microsoft Visual Studio 2010 (10.0) Compiler"
+
+#: ./src/installer.ec:297
+msgid "MinGW-w64 Runtime"
+msgstr "MinGW-w64 執行期函式庫"
+
+#: ./src/installer.ec:273
+msgid "Miscellaneous"
+msgstr "其他"
+
+#: ./src/installer.ec:274
+msgid "Networking"
+msgstr "網路"
+
+#: ./src/installer.ec:1237
+msgid "Please wait while the Ecere Software Development Kit is being installed."
+msgstr "正在安裝 Ecere Software Development Kit，請稍候。"
+
+#: ./../ide/src/IDESettings.ec:1472
+msgid "Portable C Compiler / GNU Make"
+msgstr "Portable C Compiler / GNU Make"
+
+#: ./src/installer.ec:429
+msgid "Quicklaunch Icon"
+msgstr "快速啟動圖示"
+
+#: ./src/installer.ec:1794
+msgid "Registering File Types..."
+msgstr "正在註冊檔案類型..."
+
+#: ./src/installer.ec:1554
+msgid "Registering uninstaller..."
+msgstr "正在註冊解除安裝程式..."
+
+#: ./src/installer.ec:819
+msgid "Req. Space"
+msgstr "所需空間"
+
+#: ./src/installer.ec:291
+#: ./src/installer.ec:292
+msgid "Runtime Library"
+msgstr "執行期函式庫"
+
+#: ./src/installer.ec:367
+msgid "Samples"
+msgstr "範例"
+
+#: ./src/installer.ec:459
+msgid "Select a new location"
+msgstr "選擇新位置"
+
+#: ./src/installer.ec:790
+msgid "Select icons to install, file\nassociations, and system\nenvironment modifications:"
+msgstr "選擇要安裝的圖示、檔案\n關聯，以及系統環境\n修改項目："
+
+#: ./src/installer.ec:769
+msgid "Select the default root\nfolder where to install\nall components:"
+msgstr "選擇安裝所有元件的\n預設根目錄\n資料夾："
+
+#: ./src/installer.ec:782
+msgid "Select the optional\ncomponents you wish\nto install:\n\nYou may customize the\ninstall location for each\nof them, or use the default\nbased on the main\ndestination folder."
+msgstr "請選擇\n要安裝的\n選用元件：\n\n可自訂每個元件的\n安裝位置，\n或沿用主要\n安裝資料夾的\n預設位置。"
+
+#: ./src/installer.ec:794
+msgid "Space Required: "
+msgstr "所需空間："
+
+#: ./src/installer.ec:427
+msgid "Start Menu Group"
+msgstr "開始功能表群組"
+
+#: ./src/installer.ec:1847
+msgid "Thank you for using the Ecere SDK."
+msgstr "感謝使用 Ecere SDK。"
+
+#: ./src/installer.ec:1422
+msgid "The installation was not completed."
+msgstr "安裝未完成。"
+
+#: ./../ide/src/licensing.ec:53
+msgid "This program is based on these free open source software components."
+msgstr "本程式以下列自由開放原始碼軟體元件為基礎。"
+
+#: ./src/installer.ec:276
+msgid "Threading"
+msgstr "執行緒"
+
+#: ./../ide/src/IDESettings.ec:1471
+msgid "Tiny C Compiler / GNU Make"
+msgstr "Tiny C Compiler / GNU Make"
+
+#: ./src/installer.ec:349
+msgid "UPX Docs"
+msgstr "UPX 文件"
+
+#: ./src/installer.ec:275
+msgid "WIA Scanning"
+msgstr "WIA 掃描"
+
+#: ./src/installer.ec:3
+msgid "built on "
+msgstr "建置於 "
+
+#: ./src/installer.ec:293
+#: ./src/installer.ec:294
+msgid "eC Compiler"
+msgstr "eC 編譯器"
+
+#: ./../ide/src/IDESettings.ec:877
+msgid "error: could not parse configuration file: "
+msgstr "錯誤：無法剖析組態檔："
+
+#: ./../ide/src/IDESettings.ec:851
+msgid "error: could not safely open file for writing configuration: "
+msgstr "錯誤：無法安全地開啟檔案以寫入組態："
+
+#: ./src/installer.ec:348
+msgid "gnurx Docs"
+msgstr "gnurx 文件"
+
+#: ./src/installer.ec:598
+msgid "terms and conditions"
+msgstr "授權條款"
+
+#: ./../ide/src/IDESettings.ec:945
+msgid "warning: SafeFile::open: does not yet support FileOpenMode::"
+msgstr "警告：SafeFile::open: 尚未支援 FileOpenMode::"
+
+#: ./../ide/src/IDESettings.ec:932
+msgid "warning: SafeFile::open: unable to obtain exclusive lock on temporary file for writing: "
+msgstr "警告：SafeFile::open: 無法取得暫存檔的獨佔鎖定以進行寫入："
+
+#: ./../ide/src/IDESettings.ec:934
+msgid "warning: SafeFile::open: unable to obtain shared lock on file for reading: "
+msgstr "警告：SafeFile::open: 無法取得檔案的共用鎖定以進行讀取："
+
+#: ./../ide/src/IDESettings.ec:939
+msgid "warning: SafeFile::open: unable to open file for reading: "
+msgstr "警告：SafeFile::open: 無法開啟檔案以進行讀取："
+
+#: ./../ide/src/IDESettings.ec:937
+msgid "warning: SafeFile::open: unable to open temporary file for writing: "
+msgstr "警告：SafeFile::open: 無法開啟暫存檔以進行寫入："
+
+#: ./../ide/src/IDESettings.ec:987
+msgid "warning: SafeFile::sync: failed to lock file for "
+msgstr "警告：SafeFile::sync: 無法鎖定檔案以進行 "
+
