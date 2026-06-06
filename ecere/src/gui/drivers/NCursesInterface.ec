@@ -352,9 +352,9 @@ class NCursesInterface : Interface
 
       printf( "\033(U\017");
       fflush(stdout);
-      intrflush(stdscr, false);
+      intrflush(stdscr, bool::false);
       nonl();
-      curs_set(false);
+      curs_set(bool::false);
       keypad(stdscr, true);
    #ifdef NCURSES_VERSION
       ESCDELAY = 0;
@@ -364,19 +364,19 @@ class NCursesInterface : Interface
                 BUTTON3_PRESSED | BUTTON3_RELEASED | BUTTON3_DOUBLE_CLICKED, null);
       mouseinterval(0);
    #endif
-      idlok(stdscr, false);
-      idcok(stdscr, false);
-      clearok(stdscr, false);
-      scrollok(stdscr, false);
+      idlok(stdscr, bool::false);
+      idcok(stdscr, bool::false);
+      clearok(stdscr, bool::false);
+      scrollok(stdscr, bool::false);
       cbreak();
-      caretVisible = false;
+      caretVisible = bool::false;
       leaveok(stdscr, true);
       timeout(0);
       noecho();
 
    	ncursesMutex = Mutex { };
 
-      ncursesTerminate = false;
+      ncursesTerminate = bool::false;
 
       ncursesThread = Thread { };
       incref ncursesThread;
@@ -401,7 +401,7 @@ class NCursesInterface : Interface
    bool ProcessInput(bool processAll)
    {
       Message msg;
-      bool result = false;
+      bool result = bool::false;
 
       // Process messages
       while(!ncursesTerminate && (msg = messages.first))
@@ -412,14 +412,14 @@ class NCursesInterface : Interface
             nCursesDesktop.KeyMessage(msg.vmid, msg.key, (char)msg.x);
          else
          {
-            if(nCursesDesktop.MouseMessage(msg.vmid, msg.x, msg.y, (Modifiers *)&msg.key, false, true))
+            if(nCursesDesktop.MouseMessage(msg.vmid, msg.x, msg.y, (Modifiers *)&msg.key, bool::false, true))
             {
                if(msg.vmid == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftDoubleClick)
-                  nCursesDesktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, msg.x, msg.y, (Modifiers *)&msg.key, false, false);
+                  nCursesDesktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnLeftButtonDown, msg.x, msg.y, (Modifiers *)&msg.key, bool::false, bool::false);
                else if(msg.vmid == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightDoubleClick)
-                  nCursesDesktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown, msg.x, msg.y, (Modifiers *)&msg.key, false, false);
+                  nCursesDesktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnRightButtonDown, msg.x, msg.y, (Modifiers *)&msg.key, bool::false, bool::false);
                else if(msg.vmid == __ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleDoubleClick)
-                  nCursesDesktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown, msg.x, msg.y, (Modifiers *)&msg.key, false, false);
+                  nCursesDesktop.MouseMessage(__ecereVMethodID___ecereNameSpace__ecere__gui__Window_OnMiddleButtonDown, msg.x, msg.y, (Modifiers *)&msg.key, bool::false, bool::false);
             }
          }
          delete msg;
@@ -435,10 +435,10 @@ class NCursesInterface : Interface
          messages.Free(null);
       else if(caretVisible)
       {
-         leaveok(stdscr, false);
+         leaveok(stdscr, bool::false);
          move(caretY,caretX);
          refresh();
-         curs_set(true);
+         curs_set(bool::true);
       }
       return result;
    }
@@ -487,13 +487,13 @@ class NCursesInterface : Interface
    {
       if(fullScreen)
       {
-         guiApp.SetDesktopPosition(0,0, COLS * textCellW, LINES * textCellH, false);
+         guiApp.SetDesktopPosition(0,0, COLS * textCellW, LINES * textCellH, bool::false);
          *textMode = true;
          mouseRange.right = MAXINT;
          mouseRange.bottom = MAXINT;
    	   return true;
       }
-      return false;
+      return bool::false;
    }
 
    // --- Window Creation ---
@@ -595,10 +595,10 @@ class NCursesInterface : Interface
       {
          caretX = x / textCellW;
          caretY = y / textCellH;
-         caretVisible = true;
+         caretVisible = bool::true;
       }
       else
-         caretVisible = false;
+         caretVisible = bool::false;
    }
 
    // --- Clipboard manipulation ---
@@ -610,7 +610,7 @@ class NCursesInterface : Interface
 
    bool AllocateClipboard(ClipBoard clipBoard, uint size)
    {
-      bool result = false;
+      bool result = bool::false;
       if((clipBoard.text = new char[size]))
          result = true;
       return result;
@@ -618,7 +618,7 @@ class NCursesInterface : Interface
 
    bool SaveClipboard(ClipBoard clipBoard)
    {
-      bool result = false;
+      bool result = bool::false;
       if(clipBoard.text)
       {
          delete clipBoardData;
@@ -631,7 +631,7 @@ class NCursesInterface : Interface
 
    bool LoadClipboard(ClipBoard clipBoard)
    {
-      bool result = false;
+      bool result = bool::false;
       if(clipBoardData)
       {
          clipBoard.text = clipBoardData;
@@ -649,26 +649,26 @@ class NCursesInterface : Interface
 
    bool AcquireInput(void * windowHandle, bool state)
    {
-      return false;
+      return bool::false;
    }
 
    bool GetMouseState(MouseButtons * buttons, int * x, int * y)
    {
-      bool result = false;
+      bool result = bool::false;
 
       return result;
    }
 
    bool GetJoystickState(int device, Joystick joystick)
    {
-      bool result = false;
+      bool result = bool::false;
 
       return result;
    }
 
    bool GetKeyState(Key key)
    {
-      return false;
+      return bool::false;
    }
 }
 

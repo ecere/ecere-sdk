@@ -6,7 +6,9 @@
 #define int64 _int64
 #define uint _uint
 #define set _set
+#define import _import
 #include <openssl/ssl.h>
+#undef import
 #if defined(__WIN32__) && OPENSSL_VERSION_NUMBER < 0x1010006fL
 #include <openssl/applink.c>
 #endif

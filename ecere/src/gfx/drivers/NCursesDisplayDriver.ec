@@ -341,7 +341,7 @@ class NCursesDisplayDriver : DisplayDriver
 
    Font LoadFont(DisplaySystem displaySystem, const char * faceName, float size, FontFlags flags, float outlineSize, float outlineFade)
    {
-      return (void *) true;
+      return (void *) bool::true;
    }
 
    void UnloadFont(DisplaySystem displaySystem, Font font)
@@ -426,7 +426,7 @@ class NCursesDisplayDriver : DisplayDriver
    void Update(Display display, Box updateBox)
    {
       CursesDisplay cursesDisplay = display.driverData;
-      curs_set(false);
+      curs_set(bool::false);
       leaveok(stdscr, true);
       refresh();
       if(updateBox == null)
