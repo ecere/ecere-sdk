@@ -242,6 +242,7 @@ endif
 # endif
 
 ecere: bootstrap deps
+	@$(call echo,Run make with DISABLE_SSL=y DISABLE_CURL=y to skip HTTP support if having trouble building with SSL or cURL dependencies -- OpenSSL 1.x headers/libraries currently needed)
 ifdef CROSS_TARGET
 	@$(call echo,Building 2nd stage ecere (host)...)
 else
