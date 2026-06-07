@@ -12,7 +12,14 @@ import "instance"
 
 // #define DEBUG_THREADS
 
+#define bool _bool
+#define true _true
+#define false _false
 #include <curses.h>
+#undef bool
+#undef true
+#undef false
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -355,7 +362,7 @@ class NCursesInterface : Interface
       intrflush(stdscr, bool::false);
       nonl();
       curs_set(bool::false);
-      keypad(stdscr, true);
+      keypad(stdscr, bool::true);
    #ifdef NCURSES_VERSION
       ESCDELAY = 0;
       mousemask(REPORT_MOUSE_POSITION |
@@ -370,7 +377,7 @@ class NCursesInterface : Interface
       scrollok(stdscr, bool::false);
       cbreak();
       caretVisible = bool::false;
-      leaveok(stdscr, true);
+      leaveok(stdscr, bool::true);
       timeout(0);
       noecho();
 
