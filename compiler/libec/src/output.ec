@@ -1016,6 +1016,9 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
             case FLOAT16:
                f.Puts("_Float16");
                break;
+            case BF16:
+               f.Puts("__bf16");
+               break;
             case VALIST:
                f.Puts("__builtin_va_list");
                break;
@@ -1083,6 +1086,18 @@ static void OutputSpecifier(Specifier spec, File f, bool typeName)
             f.Puts(" ");
             OutputIdentifier(spec.id, f);
          }
+         if(spec.baseSpecs)
+         {
+            Specifier s;
+
+            f.Puts(" : ");
+            for(s = spec.baseSpecs->first; s; s = s.next)
+            {
+               OutputSpecifier(s, f, false);
+               if(s.next) f.Puts(" ");
+            }
+         }
+
          if(spec.list)
          {
             Enumerator enumerator;
@@ -1324,6 +1339,11 @@ static void OutputDeclaration(Declaration decl, File f)
             OutputInstance(decl.inst, f);
          }
          break;
+      case pragmaDeclaration:
+         f.Puts("\n#");
+         f.Puts(decl.pragma);
+         f.Puts("\n");
+         return; // Skip semicolon
       case defineDeclaration:
          return; // Skip semicolon
    }

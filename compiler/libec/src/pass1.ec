@@ -523,6 +523,7 @@ void RegisterMembersAndProperties(Class regClass, bool isMember, const char * cl
                stmt = MkExpressionStmt(MkListOne(
                   MkExpOp(MkExpMember(MkExpIdentifier(MkIdentifier(nameM)), MkIdentifier("IsSet")), '=',
                   MkExpCast(MkTypeName(MkListOne(MkSpecifier(VOID)), MkDeclaratorPointer(MkPointer(null,null), null)), MkExpIdentifier(MkIdentifier(name))))));
+               stmt = MkIfStmt(MkListOne(MkExpIdentifier(MkIdentifier(nameM))), stmt, null);
                ListAdd(registerModuleBody.compound.statements, stmt);
             }
             if(prop.symbol && ((Symbol)prop.symbol).propCategory)
@@ -1871,7 +1872,7 @@ public void ProcessClassDefinitions()
                // Type
                {
                   char * string;
-                  char type[1024] = "";
+                  char type[2048] = "";
                   // We don't want functions to be marked as static methods
                   if(setStaticMethod)
                      function.declarator.symbol.type.staticMethod = false;

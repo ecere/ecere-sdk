@@ -3,7 +3,7 @@ L         [a-zA-Z_]
 H         [a-fA-F0-9]
 E         [Ee][+-]?{D}+
 P         [Pp][+-]?{D}+
-FS         (f|F|l|L|i|I|j|J)*
+FS         (f|F|l|L|i|I|j|J|f16)*
 IS         (u|U|l|L|i|I|j|J)*
 IDENT    {L}({L}|{D})*
 
@@ -140,6 +140,7 @@ default:
 "_Float128"          { return(FLOAT128); }
 "__float16"         { return(FLOAT16); }
 "_Float16"          { return(FLOAT16); }
+"__bf16"          { return(BF16); }
 "__builtin_va_list"  { return(VALIST); }
 "__builtin_va_arg"   { return(VAARG); }
 "Bool"               { return(BOOL); }
@@ -186,6 +187,8 @@ default:
 "__attribute__" { return ATTRIB; }
 "__attribute" { return __ATTRIB; }
 
+"_Alignas" { return _ALIGNAS; }
+
 "__inline__"               { return(EXT_STORAGE); }
 "_inline"                  { return(EXT_STORAGE); }
 "__inline"                 { return(EXT_STORAGE); }
@@ -214,6 +217,7 @@ default:
 "asm"                      { return(ASM); }
 "__asm"                    { return(ASM); }
 "__typeof"                 { return(TYPEOF); }
+"__typeof__"               { return(TYPEOF); }
 "watch"                    { return(WATCH); }
 "stopwatching"             { return(STOPWATCHING); }
 "firewatchers"             { return(FIREWATCHERS); }

@@ -166,6 +166,9 @@ public Declarator SpecDeclFromString(const char * string, OldList * specs, Decla
    Location oldLocation = yylloc;
    Declarator decl = null;
    File backFileInput = fileInput;
+   // The main parser may be calling ProcessTypeString() through ProcessExpressionType() through MkStructOrUnion()
+   // and this was modifying the main lexer used by the parser.
+   LexerBackup backup = pushLexer();
 
    //char * classOp, * type;
    if(!string)
@@ -236,5 +239,8 @@ public Declarator SpecDeclFromString(const char * string, OldList * specs, Decla
    yylloc = oldLocation;
 
    fileInput = backFileInput;
+
+   popLexer(backup);
+
    return decl;
 }

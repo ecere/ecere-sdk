@@ -3255,6 +3255,8 @@ public bool MatchTypes(Type source, Type dest, OldList conversions, Class owning
          return true;
       else if(dest.kind == float16Type && (source.kind == floatType || source.kind == doubleType))
          return true;
+      else if(dest.kind == bf16Type && (source.kind == floatType || source.kind == doubleType))
+         return true;
       else if(dest.kind == shortType && (source.kind == charType || source.kind == _BoolType))
          return true;
       else if(dest.kind == intType && (source.kind == shortType || source.kind == charType || source.kind == _BoolType || source.kind == intSizeType /* Exception here for size_t */))
@@ -7049,6 +7051,7 @@ static void GetTypeSpecs(Type type, OldList * specs)
       case int128Type: ListAdd(specs, MkSpecifier(INT128)); break;
       case float128Type: ListAdd(specs, MkSpecifier(FLOAT128)); break;
       case float16Type: ListAdd(specs, MkSpecifier(FLOAT16)); break;
+      case bf16Type: ListAdd(specs, MkSpecifier(BF16)); break;
       case intPtrType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intptr" : "uintptr")); break;
       case intSizeType: ListAdd(specs, MkSpecifierName(type.isSigned ? "intsize" : "uintsize")); break;
       case intType:
@@ -7107,8 +7110,9 @@ static void PrintTypeSpecs(Type type, char * string, bool fullName, bool printCo
          case intType:  strcat(string, type.isSigned ? "int" : "uint"); break;
          case int64Type:  strcat(string, type.isSigned ? "int64" : "uint64"); break;
          case int128Type:  strcat(string, type.isSigned ? "__int128" : "unsigned __int128"); break;
-         case float128Type:  strcat(string, type.isSigned ? "__float128" : "unsigned __float128"); break;
+         case float128Type:  strcat(string, type.isSigned ? "__float128" : "unsigned __float128"); break; // REVIEW: Can these be unsigned?
          case float16Type:  strcat(string, type.isSigned ? "__Float16" : "unsigned _Float16"); break;
+         case bf16Type:  strcat(string, type.isSigned ? "__bf16" : "unsigned __bf16"); break;
          case intPtrType:  strcat(string, type.isSigned ? "intptr" : "uintptr"); break;
          case intSizeType:  strcat(string, type.isSigned ? "intsize" : "uintsize"); break;
          case charType: strcat(string, type.isSigned ? "char" : "byte"); break;
@@ -13751,6 +13755,14 @@ void DeclareFunctionUtil(External neededBy, const String s)
    {
       char name[1024];
       name[0] = 0;
+
+      if(!function.dataType)
+      {
+         function.dataType = ProcessTypeString(function.dataTypeString, false);
+         if(!function.dataType.thisClass)
+            function.dataType.staticMethod = true;
+      }
+
       if(function.module.importType != staticImport && (!function.dataType || !function.dataType.dllExport))
          strcpy(name, "__ecereFunction_");
       FullClassNameCat(name, s, false); // Why is this using FullClassNameCat ?

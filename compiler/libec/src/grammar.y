@@ -179,7 +179,7 @@ default:
 %token XOR_ASSIGN OR_ASSIGN TYPE_NAME
 
 %token TYPEDEF EXTERN STATIC AUTO REGISTER
-%token CHAR SHORT INT UINT INT64 INT128 FLOAT128 FLOAT16 LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID VALIST
+%token CHAR SHORT INT UINT INT64 INT128 FLOAT128 FLOAT16 BF16 LONG SIGNED UNSIGNED FLOAT DOUBLE CONST VOLATILE VOID VALIST
 %token STRUCT UNION ENUM ELLIPSIS
 
 %token CASE DEFAULT IF SWITCH WHILE DO FOR GOTO CONTINUE BREAK RETURN
@@ -200,6 +200,7 @@ default:
 %token BUILTIN_OFFSETOF
 %token PRAGMA
 %token STATIC_ASSERT
+%token _ALIGNAS
 
 %destructor { FreeIdentifier($$); } identifier
 %destructor { FreePointer($$); } pointer
@@ -2163,6 +2164,9 @@ enum_class_error:
 	| enum_specifier '{' enumerator_list       { $$ = MkEnum(null, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
    | enum_specifier '{' error                 { $$ = MkEnum(null, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
 
+	| enum_specifier ':' inheritance_specifiers '{' enumerator_list       { $$ = MkEnum(null, $5); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+   | enum_specifier ':' inheritance_specifiers '{' error                 { $$ = MkEnum(null, null); $$.baseSpecs = $3; $$.loc = @$; POP_DEFAULT_ACCESS; }
+
 	| enum_decl '{' enumerator_list          { $$ = MkEnum($1, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
    | enum_decl '{' enumerator_list error    { $$ = MkEnum($1, $3); $$.loc = @$; POP_DEFAULT_ACCESS; }
    | enum_decl '{' error    { $$ = MkEnum($1, null); $$.loc = @$; POP_DEFAULT_ACCESS; }
@@ -2211,6 +2215,7 @@ type_specifier:
    | INT128          { $$ = MkSpecifier(INT128); }
    | FLOAT128        { $$ = MkSpecifier(FLOAT128); }
    | FLOAT16         { $$ = MkSpecifier(FLOAT16); }
+   | BF16            { $$ = MkSpecifier(BF16); }
    | VALIST          { $$ = MkSpecifier(VALIST); }
 	| LONG            { $$ = MkSpecifier(LONG); }
 	| FLOAT           { $$ = MkSpecifier(FLOAT); }
@@ -2243,6 +2248,7 @@ strict_type_specifier:
    | INT128          { $$ = MkSpecifier(INT128); }
    | FLOAT128        { $$ = MkSpecifier(FLOAT128); }
    | FLOAT16         { $$ = MkSpecifier(FLOAT16); }
+   | BF16            { $$ = MkSpecifier(BF16); }
    | VALIST          { $$ = MkSpecifier(VALIST); }
 	| LONG            { $$ = MkSpecifier(LONG); }
 	| FLOAT           { $$ = MkSpecifier(FLOAT); }
@@ -2912,6 +2918,17 @@ ext_decl:
          $$ = MkExtDeclString(CopyString(temp));
          delete $3;
       }
+   | _ALIGNAS '(' constant_expression ')'
+      {
+         TempFile f { };
+         f.Puts("_Alignas(");
+         OutputExpression($3, f);
+         f.Puts(")");
+         f.Putc(0);
+         $$ = MkExtDeclString((String)f.StealBuffer());
+         FreeExpression($3);
+         delete f;
+      }
    ;
 
 _attrib:
@@ -3174,6 +3191,7 @@ init_declarator_list:
    | INT128 ',' init_declarator                 { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__int128")), null)); ListAdd($$, $3); }
    | FLOAT128 ',' init_declarator               { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__float128")), null)); ListAdd($$, $3); }
    | FLOAT16 ',' init_declarator               { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("_Float16")), null)); ListAdd($$, $3); }
+   | BF16 ',' init_declarator               { $$ = MkList(); ListAdd($$, MkInitDeclarator(MkDeclaratorIdentifier(MkIdentifier("__bf16")), null)); ListAdd($$, $3); }
 	| base_strict_type ',' init_declarator
    {
       char * colon = RSearchString($1.name, "::", strlen($1.name), true, false);
@@ -3386,6 +3404,7 @@ declaration:
    | declaration_error ';'                            { $$ = $1; structDeclMode = defaultDeclMode; }
    | STATIC_ASSERT '(' expression ')' { $$ = MkExpDummy(); $$.loc = @$; FreeList($3, FreeExpression); }
    | STATIC_ASSERT '(' expression ',' string_literal ')' { $$ = MkExpDummy(); $$.loc = @$; FreeList($3, FreeExpression); delete $5; }
+   | PRAGMA { $$ = MkDeclarationPragma(yytext); $$.loc = @$; }
 	;
 
 external_guess_declaration:

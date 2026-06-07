@@ -886,6 +886,12 @@ void FreeDeclaration(Declaration decl)
             FreeIdentifier(decl.id);
          break;
       }
+      case pragmaDeclaration:
+      {
+         if(decl.pragma)
+            delete decl.pragma;
+         break;
+      }
    }
    delete decl;
 }

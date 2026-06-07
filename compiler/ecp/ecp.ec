@@ -175,7 +175,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                         {
                            Expression sizeExp = d.structDecl.exp, posExp = d.structDecl.posExp;
                            int bitSize = 0, bitPos = -1;
-                           char dataTypeString[1024];
+                           char dataTypeString[2048];
                            dataTypeString[0] = '\0';
 
                            if(sizeExp)
@@ -225,7 +225,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                         {
                            //if(!eClass_FindDataMember(regClass, declId.string))
                            {
-                              char typeString[1024];
+                              char typeString[2048];
                               typeString[0] = '\0';
                               dataType = ProcessType(decl.specifiers, d);
                               PrintType(dataType, typeString, false, true);
@@ -277,7 +277,7 @@ static void AddDefinitions(ClassDefine classDefine, DataMemberDefine parentMembe
                            //if(isMember || !eClass_FindDataMember(regClass, spec.id.string))
                            {
                               Identifier id = spec.id;
-                              char typeString[1024];
+                              char typeString[2048];
                               typeString[0] = '\0';
 
                               spec.id = null;
@@ -908,7 +908,7 @@ void PreCompPreProcessClassDefinitions()
                            if(symbol)
                            {
                               DataDefine dataDefine;
-                              char typeString[1024];
+                              char typeString[2048];
                               typeString[0] = '\0';
                               PrintType(symbol.type, typeString, false, true);
                               dataDefine = DataDefine
@@ -933,7 +933,7 @@ void PreCompPreProcessClassDefinitions()
                if(symbol)
                {
                   DataDefine dataDefine;
-                  char typeString[1024];
+                  char typeString[2048];
                   typeString[0] = '\0';
                   PrintType(symbol.type, typeString, false, true);
                   dataDefine = DataDefine
@@ -965,7 +965,7 @@ void PreCompPreProcessClassDefinitions()
       {
          FunctionDefinition function = external.function;
          FunctionDefine functionDefine;
-         char typeString[1024];
+         char typeString[2048];
          typeString[0] = '\0';
          PrintType(function.declarator.symbol.type, typeString, true, true);
          functionDefine = FunctionDefine
@@ -1319,7 +1319,9 @@ static void OutputSymbols(const char * fileName)
             FunctionDefine functionDefine = (FunctionDefine) definition;
             f.Printf("   %s\n", functionDefine.name);
             f.Printf("      [Type]\n");
-            f.Printf("         %s\n", functionDefine.dataType);
+            f.Printf("         ");
+            f.Print(functionDefine.dataType);
+            f.Printf("\n", functionDefine.dataType);
          }
          else if(definition.type == dataDefinition)
          {
@@ -1404,7 +1406,7 @@ class PrecompApp : Application
             {
                targetBits = !strcmp(arg + 1, "t32") ? 32 : 64;
             }
-            else if(arg[1] == 'D' || arg[1] == 'I')
+            else if(arg[1] == 'D' || arg[1] == 'I' || strstr(arg, "-std=") == arg || strstr(arg, "--target=") == arg)
             {
                char * buf;
                int size = cppOptionsLen + 1 + strlen(arg) * 2 + 1;
@@ -1457,7 +1459,9 @@ class PrecompApp : Application
                else
                   valid = false;
             }
-            else if(!strcmp(arg+1, "isystem") || !strcmp(arg+1, "isysroot") || !strcmp(arg+1, "s") || !strcmp(arg+1, "include") || !strcmp(arg, "--source-map-base"))
+            else if(!strcmp(arg+1, "isystem") || !strcmp(arg+1, "isysroot") || !strcmp(arg+1, "s") ||
+                    !strcmp(arg+1, "include") || !strcmp(arg, "--source-map-base") ||
+                    !strcmp(arg+1, "arch"))
             {
                if(c + 1 < argc)
                {

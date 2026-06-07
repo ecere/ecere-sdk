@@ -7,7 +7,7 @@ echo           https://github.com/westes/flex/archive/flex-2-5-5b.tar.gz
 echo
 echo           install dependencies:
 echo                 sudo pacman -S automake autoconf libtool
-echo                 git clone https://aur.archlinux.org/shtool.git && shtool && makepkg -si
+echo                 git clone https://aur.archlinux.org/shtool.git && cd shtool && makepkg -si
 echo
 echo           compile from source:
 echo                 ./autogen.sh
