@@ -222,7 +222,7 @@ typedef union YYSTYPE
 
 
 /* Line 2053 of yacc.c  */
-#line 224 "grammar.h"
+#line 226 "grammar.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
