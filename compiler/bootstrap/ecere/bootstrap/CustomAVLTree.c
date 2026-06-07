@@ -6,6 +6,10 @@
 #else
 #define __runtimePlatform 2
 #endif
+#if defined(__APPLE__) && defined(__SIZEOF_INT128__) // Fix for incomplete __darwin_arm_neon_state64
+typedef unsigned __int128 __uint128_t;
+typedef          __int128  __int128_t;
+#endif
 #if defined(__GNUC__) || defined(__clang__)
 #if defined(__clang__) && defined(__WIN32__)
 #define int64 long long

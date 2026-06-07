@@ -6,6 +6,10 @@
 #else
 #define __runtimePlatform 2
 #endif
+#if defined(__APPLE__) && defined(__SIZEOF_INT128__) // Fix for incomplete __darwin_arm_neon_state64
+typedef unsigned __int128 __uint128_t;
+typedef          __int128  __int128_t;
+#endif
 #if defined(__GNUC__) || defined(__clang__)
 #if defined(__clang__) && defined(__WIN32__)
 #define int64 long long
@@ -1526,6 +1530,7 @@ struct Expression * exp;
 struct Specifier * extStorage;
 struct Symbol * symbol;
 int declMode;
+char * pragma;
 } ecere_gcc_struct;
 
 struct External
@@ -2623,6 +2628,12 @@ if(decl->__anon1.__anon2.exp)
 FreeExpression(decl->__anon1.__anon2.exp);
 if(decl->__anon1.__anon2.id)
 FreeIdentifier(decl->__anon1.__anon2.id);
+break;
+}
+case 4:
+{
+if(decl->pragma)
+(__ecereNameSpace__ecere__com__eSystem_Delete(decl->pragma), decl->pragma = 0);
 break;
 }
 }

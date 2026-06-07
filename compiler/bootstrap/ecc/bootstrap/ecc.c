@@ -6,6 +6,10 @@
 #else
 #define __runtimePlatform 2
 #endif
+#if defined(__APPLE__) && defined(__SIZEOF_INT128__) // Fix for incomplete __darwin_arm_neon_state64
+typedef unsigned __int128 __uint128_t;
+typedef          __int128  __int128_t;
+#endif
 #if defined(__GNUC__) || defined(__clang__)
 #if defined(__clang__) && defined(__WIN32__)
 #define int64 long long
@@ -134,6 +138,8 @@ extern int strcmp(const char * , const char * );
 extern size_t strlen(const char * );
 
 extern char *  strcpy(char * , const char * );
+
+extern char *  strstr(const char * , const char * );
 
 extern char *  PassArg(char *  output, const char *  input);
 
@@ -920,7 +926,7 @@ else if(!strcmp(arg + 1, "t32") || !strcmp(arg + 1, "t64"))
 {
 targetBits = !strcmp(arg + 1, "t32") ? 32 : 64;
 }
-else if(arg[1] == 'D' || arg[1] == 'I')
+else if(arg[1] == 'D' || arg[1] == 'I' || strstr(arg, "-std=") == arg || strstr(arg, "--target=") == arg)
 {
 char * buf;
 int size = cppOptionsLen + 1 + strlen(arg) * 2 + 1;
@@ -983,7 +989,7 @@ c++;
 else
 valid = 0;
 }
-else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s") || !strcmp(arg + 1, "include") || !strcmp(arg, "--source-map-base"))
+else if(!strcmp(arg + 1, "isystem") || !strcmp(arg + 1, "isysroot") || !strcmp(arg + 1, "s") || !strcmp(arg + 1, "include") || !strcmp(arg, "--source-map-base") || !strcmp(arg + 1, "arch"))
 {
 if(c + 1 < ((struct __ecereNameSpace__ecere__com__Application *)(((char *)this + sizeof(struct __ecereNameSpace__ecere__com__Module) + sizeof(struct __ecereNameSpace__ecere__com__Instance))))->argc)
 {
@@ -1119,6 +1125,16 @@ __ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types
 struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
 
 __ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("byte"), __ecereInstance1->type = ProcessTypeString("unsigned char", 0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("__uint128_t"), __ecereInstance1->type = ProcessTypeString("unsigned __int128", 0), __ecereInstance1;
+}));
+__ecereMethod___ecereNameSpace__ecere__sys__BinaryTree_Add(&globalContext->types, (struct __ecereNameSpace__ecere__sys__BTNode *)__extension__ ({
+struct Symbol * __ecereInstance1 = __ecereNameSpace__ecere__com__eInstance_New(__ecereClass_Symbol);
+
+__ecereInstance1->string = __ecereNameSpace__ecere__sys__CopyString("__int128_t"), __ecereInstance1->type = ProcessTypeString("__int128", 0), __ecereInstance1;
 }));
 if(buildingBootStrap)
 {
@@ -1281,6 +1297,10 @@ __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#elif defined(_
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runtimePlatform 3\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#else\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#define __runtimePlatform 2\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__APPLE__) && defined(__SIZEOF_INT128__) // Fix for incomplete __darwin_arm_neon_state64\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef unsigned __int128 __uint128_t;\n");
+__ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "typedef          __int128  __int128_t;\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#endif\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__GNUC__) || defined(__clang__)\n");
 __ecereMethod___ecereNameSpace__ecere__sys__File_Printf(output, "#if defined(__clang__) && defined(__WIN32__)\n");

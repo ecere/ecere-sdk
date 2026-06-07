@@ -6,6 +6,10 @@
 #else
 #define __runtimePlatform 2
 #endif
+#if defined(__APPLE__) && defined(__SIZEOF_INT128__) // Fix for incomplete __darwin_arm_neon_state64
+typedef unsigned __int128 __uint128_t;
+typedef          __int128  __int128_t;
+#endif
 #if defined(__GNUC__) || defined(__clang__)
 #if defined(__clang__) && defined(__WIN32__)
 #define int64 long long
@@ -154,6 +158,20 @@ struct Declaration;
 struct InitDeclarator;
 
 extern char *  __ecereNameSpace__ecere__sys__CopyString(const char *  string);
+
+struct yy_buffer_state
+{
+void *  yy_input_file;
+char *  yy_ch_buf;
+char *  yy_buf_pos;
+unsigned int yy_buf_size;
+int yy_n_chars;
+int yy_is_our_buffer;
+int yy_is_interactive;
+int yy_at_bol;
+int yy_fill_buffer;
+int yy_buffer_status;
+} ecere_gcc_struct;
 
 extern size_t strlen(const char * );
 
@@ -308,11 +326,40 @@ extern void __ecereNameSpace__ecere__com__eInstance_IncRef(struct __ecereNameSpa
 
 extern struct __ecereNameSpace__ecere__com__Instance * fileInput;
 
+struct LexerBackup
+{
+struct Location yylloc;
+struct Location type_yylloc;
+struct Location expression_yylloc;
+int declMode;
+int defaultDeclMode;
+struct __ecereNameSpace__ecere__com__Instance * fileInput;
+struct yy_buffer_state *  include_stack[30];
+struct __ecereNameSpace__ecere__com__Instance * fileStack[30];
+char sourceFileStack[30][797];
+struct Location locStack[30];
+int declModeStack[30];
+int include_stack_ptr;
+struct yy_buffer_state *  buffer;
+int yy_n_chars;
+char *  yytext;
+char *  yy_c_buf_p;
+void *  yyin;
+char yy_hold_char;
+int yychar;
+int yy_init;
+int yy_start;
+} ecere_gcc_struct;
+
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Write;
 
 extern int __ecereVMethodID___ecereNameSpace__ecere__sys__File_Seek;
 
 extern void __ecereNameSpace__ecere__com__eInstance_DecRef(struct __ecereNameSpace__ecere__com__Instance * instance);
+
+extern struct __ecereNameSpace__ecere__com__Instance * pushLexer(void);
+
+extern void popLexer(struct __ecereNameSpace__ecere__com__Instance * backup);
 
 struct Declarator;
 
@@ -673,6 +720,7 @@ struct Declarator * SpecDeclFromString(const char * string, struct __ecereNameSp
 struct Location oldLocation = yylloc;
 struct Declarator * decl = (((void *)0));
 struct __ecereNameSpace__ecere__com__Instance * backFileInput = fileInput;
+struct __ecereNameSpace__ecere__com__Instance * backup = pushLexer();
 
 if(!string)
 string = "void()";
@@ -744,6 +792,7 @@ decl = baseDecl;
 }
 yylloc = oldLocation;
 fileInput = backFileInput;
+popLexer(backup);
 return decl;
 }
 

@@ -6,6 +6,10 @@
 #else
 #define __runtimePlatform 2
 #endif
+#if defined(__APPLE__) && defined(__SIZEOF_INT128__) // Fix for incomplete __darwin_arm_neon_state64
+typedef unsigned __int128 __uint128_t;
+typedef          __int128  __int128_t;
+#endif
 #if defined(__GNUC__) || defined(__clang__)
 #if defined(__clang__) && defined(__WIN32__)
 #define int64 long long
@@ -2069,6 +2073,8 @@ void __ecereMethod___ecereNameSpace__ecere__sys__ZString_copy(struct __ecereName
 __attribute__((unused)) struct __ecereNameSpace__ecere__sys__ZString * __ecerePointer___ecereNameSpace__ecere__sys__ZString = (struct __ecereNameSpace__ecere__sys__ZString *)(this ? (((char *)this) + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset) : 0);
 
 __ecereMethod___ecereNameSpace__ecere__sys__ZString_copyString(this, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->_string, ((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->len);
+if(((struct __ecereNameSpace__ecere__sys__ZString *)(((char *)s + __ecereClass___ecereNameSpace__ecere__sys__ZString->offset)))->allocType == 0)
+(__ecereNameSpace__ecere__com__eInstance_DecRef(s), s = 0);
 }
 
 void __ecereMethod___ecereNameSpace__ecere__sys__ZString_concatx(struct __ecereNameSpace__ecere__com__Instance * this, struct __ecereNameSpace__ecere__com__Class * class, const void * object, ...)
