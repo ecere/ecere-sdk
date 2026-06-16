@@ -327,7 +327,8 @@
             "locale/pt_BR.mo",
             "locale/ru.mo",
             "locale/vi.mo",
-            "locale/zh_CN.mo"
+            "locale/zh_CN.mo",
+            "locale/zh_TW.mo"
          ]
       },
       {
@@ -355,6 +356,7 @@
             "../extras/res/types/countryCode/gb.png",
             "../extras/res/types/countryCode/hu.png",
             "../extras/res/types/countryCode/cn.png",
+            "../extras/res/types/countryCode/tw.png",
             "../extras/res/types/countryCode/pt.png",
             "../extras/res/types/countryCode/vn.png",
             "../extras/res/types/countryCode/ru.png",

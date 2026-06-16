@@ -1,0 +1,22 @@
+# Traditional Chinese (Taiwan) translation for ecs
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ecs\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../\n"
+
+#: ./ecs.ec:1719
+msgid "Syntax:\n   ecs [-t <target platform>] <input>[, <input>]* -o <output>\n"
+msgstr "語法:\n   ecs [-t <目標平台>] <輸入>[, <輸入>]* -o <輸出>\n"
+
