@@ -1163,8 +1163,8 @@ private void setGenericInstanceMembers(Instance object, CMSSInstantiation instan
                            if(array)
                            {
                               IteratorPointer i;
-                              int c;
-                              for(c = 0, i = array.GetFirst(); i; i = array.GetNext(i), c++)
+                              //int c;
+                              for(/*c = 0, */i = array.GetFirst(); i; i = array.GetNext(i)/*, c++*/)
                               {
                                  uintptr data = (uintptr)array.GetData(i);
                                  ((Array<uintptr>)object).Add(data);

@@ -1758,7 +1758,7 @@ public:
             }
             else if(expType && expType.type == structClass)
             {
-               const void (* onFree)(void *, void *) = expType._vTbl[__ecereVMethodID_class_OnFree];
+               void (* const onFree)(void *, void *) = expType._vTbl[__ecereVMethodID_class_OnFree];
                onFree(expType, instData);
                delete instData;
             }
@@ -1940,7 +1940,7 @@ public:
          }
          else if(expType && expType.type == structClass)
          {
-            const void (* onFree)(void *, void *) = expType._vTbl[__ecereVMethodID_class_OnFree];
+            void (* const onFree)(void *, void *) = expType._vTbl[__ecereVMethodID_class_OnFree];
             onFree(expType, instData);
             delete instData;
          }
