@@ -1,0 +1,424 @@
+# Traditional Chinese (Taiwan) translation for ec
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: ec\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../\n"
+
+#: ./src/pass15.ec:3267
+#: ./src/pass15.ec:3293
+msgid "%s expected to be derived from method class\n"
+msgstr "%s 預期繼承自方法類別\n"
+
+#: ./src/pass15.ec:9996
+msgid "%s undefined; assuming extern returning int\n"
+msgstr "%s 未定義；假設為傳回 int 的外部函式\n"
+
+#: ./src/ecdefs.ec:1685
+msgid ":%d:%d: error: "
+msgstr ":%d:%d: 錯誤："
+
+#: ./src/ecdefs.ec:1733
+msgid ":%d:%d: warning: "
+msgstr ":%d:%d: 警告："
+
+#: ./src/pass15.ec:797
+msgid "Array size not constant int (%s)\n"
+msgstr "陣列大小不是常數整數 (%s)\n"
+
+#: ./src/pass15.ec:11786
+msgid "Assigning list initializer to non list\n"
+msgstr "將清單初始設定式指派給非清單\n"
+
+#: ./src/pass15.ec:11330
+#: ./src/pass15.ec:12560
+msgid "Couldn't determine type of array elements\n"
+msgstr "無法判斷陣列元素的型別\n"
+
+#: ./src/pass0.ec:525
+msgid "Couldn't find member %s to override\n"
+msgstr "找不到要覆寫的成員 %s\n"
+
+#: ./src/loadSymbols.ec:715
+msgid "Couldn't open %s\n"
+msgstr "無法開啟 %s\n"
+
+#: ./src/ast.ec:1687
+msgid "Expecting class specifier\n"
+msgstr "預期類別規範\n"
+
+#: ./src/pass15.ec:12772
+msgid "Expression is not a container\n"
+msgstr "運算式不是容器\n"
+
+#: ./src/lexer.ec:537
+msgid "Includes nested too deeply"
+msgstr "包含巢狀層次過深"
+
+#: ./src/pass1.ec:145
+msgid "Incompatible virtual function %s\n"
+msgstr "不相容的虛擬函式 %s\n"
+
+#: ./src/pass15.ec:13027
+#: ./src/pass15.ec:13100
+msgid "Invalid object specified and not inside a class\n"
+msgstr "指定了無效物件且不在類別內\n"
+
+#: ./src/pass15.ec:12935
+msgid "Invalid watched object\n"
+msgstr "無效的監看物件\n"
+
+#: ./src/firstPass.ec:85
+#: ./src/firstPass.ec:115
+#: ./src/firstPass.ec:178
+#: ./src/firstPass.ec:220
+msgid "Member with same name (%s) already exists in class %s\n"
+msgstr "同名成員（%s）已存在於類別 %s 中\n"
+
+#: ./src/firstPass.ec:108
+#: ./src/firstPass.ec:171
+#: ./src/firstPass.ec:213
+msgid "Member with same name (%s) already exists in member %s\n"
+msgstr "同名成員（%s）已存在於成員 %s 中\n"
+
+#: ./src/dbpass.ec:1099
+msgid "Multiple field index requires a name\n"
+msgstr "多欄位索引需要名稱\n"
+
+#: ./src/dbpass.ec:310
+msgid "No database table defined in this module or database_open already used.\n"
+msgstr "此模組中未定義資料庫資料表，或 database_open 已被使用。\n"
+
+#: ./src/pass15.ec:12948
+#: ./src/pass15.ec:13103
+msgid "No observer specified and not inside a class\n"
+msgstr "未指定觀察者且不在類別內\n"
+
+#: ./src/pass16.ec:2025
+#: ./src/pass16.ec:2098
+msgid "No set defined for property %s\n"
+msgstr "屬性 %s 未定義 set\n"
+
+#: ./src/pass0.ec:108
+msgid "Non-static %s making use of a static class\n"
+msgstr "非靜態 %s 使用了靜態類別\n"
+
+#: ./src/pass1.ec:1053
+#: ./src/pass15.ec:12930
+#: ./src/pass15.ec:13002
+#: ./src/pass15.ec:13089
+msgid "Property %s not found in class %s\n"
+msgstr "找不到屬性 %s（類別 %s）\n"
+
+#: ./src/pass0.ec:115
+msgid "Public %s making use of a private class\n"
+msgstr "公開 %s 使用了私有類別\n"
+
+#: ./src/pass15.ec:8115
+msgid "Recursion in defined expression %s\n"
+msgstr "已定義的運算式 %s 中存在遞迴\n"
+
+#: ./src/loadSymbols.ec:1015
+msgid "Redefinition of %s (defining as %s, already defined as %s)\n"
+msgstr "重複定義 %s (定義為 %s，但已定義為 %s)\n"
+
+#: ./src/ast.ec:823
+msgid "Redefinition of %s ignored\n"
+msgstr "已忽略 %s 的重複定義\n"
+
+#: ./src/firstPass.ec:463
+msgid "Redefinition of method %s in class %s\n"
+msgstr "重複定義方法 %s（類別 %s）\n"
+
+#: ./src/pass15.ec:4706
+#: ./src/pass15.ec:4817
+msgid "Unhandled type populating instance\n"
+msgstr "填入實體時遇到未處理的型別\n"
+
+#: ./src/pass15.ec:7720
+msgid "Unspecified type\n"
+msgstr "未指定的型別\n"
+
+#: ./src/pass15.ec:8764
+msgid "ambiguous units in relational operation\n"
+msgstr "關係運算中的單位不明確\n"
+
+#: ./src/pass15.ec:8774
+msgid "ambiguous units\n"
+msgstr "單位不明確\n"
+
+#: ./src/pass15.ec:10011
+msgid "callable object undefined; extern assuming returning int\n"
+msgstr "可呼叫物件未定義；假設為傳回 int 的外部函式\n"
+
+#: ./src/pass15.ec:9790
+msgid "called object %s is not a function\n"
+msgstr "被呼叫的物件 %s 不是函式\n"
+
+#: ./src/pass15.ec:8711
+#: ./src/pass15.ec:8717
+#: ./src/pass15.ec:8966
+msgid "cannot add two pointers\n"
+msgstr "無法相加兩個指標\n"
+
+#: ./src/pass15.ec:1658
+msgid "cannot dereference type\n"
+msgstr "無法解參考此型別\n"
+
+#: ./src/pass2.ec:2590
+msgid "cannot obtain address of property\n"
+msgstr "無法取得屬性的位址\n"
+
+#: ./src/pass0.ec:440
+#: ./src/pass0.ec:446
+msgid "class"
+msgstr "類別"
+
+#: ./src/pass0.ec:352
+#: ./src/pass0.ec:378
+msgid "class data member"
+msgstr "類別資料成員"
+
+#: ./src/pass0.ec:386
+msgid "class member instance"
+msgstr "類別成員實體"
+
+#: ./src/firstPass.ec:434
+msgid "constructor"
+msgstr "建構子"
+
+#: ./src/pass15.ec:11430
+msgid "couldn't determine type of %s; expected %s\n"
+msgstr "無法判斷 %s 的型別；預期為 %s\n"
+
+#: ./src/pass15.ec:9374
+#: ./src/pass15.ec:9386
+#: ./src/pass15.ec:11442
+#: ./src/pass15.ec:11614
+msgid "couldn't determine type of %s\n"
+msgstr "無法判斷 %s 的型別\n"
+
+#: ./src/pass15.ec:2038
+#: ./src/pass15.ec:10562
+msgid "couldn't find member %s in class %s\n"
+msgstr "找不到成員 %s (類別 %s)\n"
+
+#: ./src/pass15.ec:2034
+#: ./src/pass15.ec:2138
+msgid "couldn't find virtual method %s in class %s\n"
+msgstr "找不到虛擬方法 %s (類別 %s)\n"
+
+#: ./src/pass15.ec:9406
+msgid "deleting const qualified object\n"
+msgstr "正在刪除 const 限定的物件\n"
+
+#: ./src/firstPass.ec:434
+msgid "destructor"
+msgstr "解構子"
+
+#: ./src/pass15.ec:8958
+msgid "different levels of indirection\n"
+msgstr "不同層次的間接參考\n"
+
+#: ./src/pass15.ec:2877
+msgid "discarding const qualifier\n"
+msgstr "捨棄 const 限定詞\n"
+
+#: ./src/grammar.ec:3286
+#: ./src/grammar.ec:3287
+#: ./src/grammar.ec:3288
+#: ./src/grammar.ec:3289
+#: ./src/grammar.ec:3290
+#: ./src/grammar.ec:3302
+#: ./src/grammar.ec:3303
+#: ./src/grammar.ec:3304
+#: ./src/grammar.ec:3305
+#: ./src/grammar.ec:3306
+#: ./src/grammar.ec:3372
+#: ./src/grammar.ec:3373
+#: ./src/grammar.ec:3374
+#: ./src/grammar.ec:3375
+msgid "eC expects all declarations to precede statements in the block (C89 style)\n"
+msgstr "eC 要求區塊中的所有宣告必須在陳述式之前 (C89 風格)\n"
+
+#: ./src/grammar.ec:3026
+msgid "extra comma\n"
+msgstr "多餘的逗號\n"
+
+#: ./src/pass15.ec:8729
+#: ./src/pass15.ec:11569
+#: ./src/pass15.ec:11571
+msgid "incompatible expression %s (%s); expected %s\n"
+msgstr "不相容的運算式 %s (%s)；預期為 %s\n"
+
+#: ./src/pass15.ec:9060
+#: ./src/pass15.ec:9265
+msgid "incompatible expressions %s (%s) and %s (%s)\n"
+msgstr "不相容的運算式 %s (%s) 和 %s (%s)\n"
+
+#: ./src/pass15.ec:1990
+msgid "incompatible instance method %s\n"
+msgstr "不相容的實體方法 %s\n"
+
+#: ./src/pass15.ec:3369
+msgid "incompatible parameter %s (expected %s)\n"
+msgstr "不相容的參數 %s (預期為 %s)\n"
+
+#: ./src/pass15.ec:3306
+msgid "incompatible return type for function\n"
+msgstr "函式的傳回型別不相容\n"
+
+#: ./src/pass15.ec:10331
+msgid "invalid class specifier %s for object of class %s\n"
+msgstr "類別規範 %s 無效（物件類別：%s）\n"
+
+#: ./src/grammar.ec:1708
+#: ./src/grammar.ec:1709
+msgid "l-value expected\n"
+msgstr "預期左值\n"
+
+#: ./src/pass15.ec:10878
+msgid "member operator on non-structure type expression %s\n"
+msgstr "在非結構型別運算式 %s 上使用成員運算子\n"
+
+#: ./src/pass15.ec:3241
+#: ./src/pass15.ec:3256
+#: ./src/pass15.ec:3282
+msgid "method class must be derived from %s\n"
+msgstr "方法類別必須繼承自 %s\n"
+
+#: ./src/pass15.ec:3243
+msgid "method class should not take an object\n"
+msgstr "方法類別不應接受物件\n"
+
+#: ./src/pass2.ec:2592
+#: ./src/pass2.ec:2594
+msgid "no get defined for property %s of class %s\n"
+msgstr "屬性 %s（類別 %s）未定義 get\n"
+
+#: ./src/pass2.ec:945
+msgid "no set defined for property %s of class %s\n"
+msgstr "屬性 %s（類別 %s）未定義 set\n"
+
+#: ./src/pass15.ec:9963
+msgid "not enough arguments for function %s (%d given, expected %d)\n"
+msgstr "函式 %s 的參數不足（提供 %d 個，預期 %d 個）\n"
+
+#: ./src/pass15.ec:9959
+msgid "not enough arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "方法 %s::%s 的參數不足（提供 %d 個，預期 %d 個）\n"
+
+#: ./src/pass15.ec:3320
+msgid "not enough parameters\n"
+msgstr "參數不足\n"
+
+#: ./src/pass15.ec:8905
+msgid "operating on %s and %s with an untyped result, assuming %s\n"
+msgstr "對 %s 和 %s 進行運算的結果無型別，假設為 %s\n"
+
+#: ./src/pass15.ec:8602
+msgid "operator %s illegal on pointer\n"
+msgstr "運算子 %s 不能用於指標\n"
+
+#: ./src/pass15.ec:3269
+msgid "overriding class expected to be derived from method class\n"
+msgstr "覆寫類別預期繼承自方法類別\n"
+
+#: ./src/ast.ec:1163
+msgid "parameter name omitted\n"
+msgstr "省略了參數名稱\n"
+
+#: ./src/shortcuts.ec:223
+#: ./src/shortcuts.ec:229
+msgid "parsing type %s\n"
+msgstr "正在剖析型別 %s\n"
+
+#: ./src/firstPass.ec:315
+msgid "redefinition of class %s\n"
+msgstr "重複定義類別 %s\n"
+
+#: ./src/pass0.ec:677
+msgid "redefinition of constructor for class %s\n"
+msgstr "重複定義類別 %s 的建構子\n"
+
+#: ./src/pass0.ec:654
+msgid "redefinition of destructor for class %s\n"
+msgstr "重複定義類別 %s 的解構子\n"
+
+#: ./src/pass0.ec:1162
+msgid "set defined on type without storage for non-conversion property\n"
+msgstr "在無儲存空間的型別上定義了非轉換屬性的 set\n"
+
+#: ./src/ecdefs.ec:1754
+#: ./src/grammar.ec:3238
+#: ./src/grammar.ec:3239
+#: ./src/grammar.ec:3240
+#: ./src/grammar.ec:3241
+#: ./src/grammar.ec:3242
+#: ./src/grammar.ec:3243
+#: ./src/grammar.ec:3244
+msgid "syntax error\n"
+msgstr "語法錯誤\n"
+
+#: ./src/pass15.ec:9864
+msgid "too many arguments for function %s (%d given, expected %d)\n"
+msgstr "函式 %s 的參數過多（提供 %d 個，預期 %d 個）\n"
+
+#: ./src/pass15.ec:9860
+msgid "too many arguments for method %s::%s (%d given, expected %d)\n"
+msgstr "方法 %s::%s 的參數過多（提供 %d 個，預期 %d 個）\n"
+
+#: ./src/pass15.ec:2044
+msgid "too many initializers for instantiation of class %s\n"
+msgstr "類別 %s 的實體化初始設定式過多\n"
+
+#: ./src/pass15.ec:3383
+msgid "too many parameters\n"
+msgstr "參數過多\n"
+
+#: ./src/pass15.ec:10861
+msgid "undefined class %s\n"
+msgstr "未定義的類別 %s\n"
+
+#: ./src/pass15.ec:11605
+msgid "unresolved identifier %s::%s\n"
+msgstr "無法解析的識別碼 %s::%s\n"
+
+#: ./src/pass15.ec:11428
+msgid "unresolved identifier %s; expected %s\n"
+msgstr "無法解析的識別碼 %s；預期為 %s\n"
+
+#: ./src/pass15.ec:11440
+#: ./src/pass15.ec:11607
+msgid "unresolved identifier %s\n"
+msgstr "無法解析的識別碼 %s\n"
+
+#: ./src/pass15.ec:1984
+msgid "unresolved symbol used as an instance method %s\n"
+msgstr "無法解析的符號被用作實體方法 %s\n"
+
+#: ./src/ast.ec:2965
+msgid "unresolved template type (%s)\n"
+msgstr "無法解析的範本型別 (%s)\n"
+
+#: ./src/pass15.ec:8702
+#: ./src/pass15.ec:8944
+#: ./src/pass15.ec:8951
+msgid "void *: unknown size\n"
+msgstr "void *: 未知大小\n"
+
+#: ./src/firstPass.ec:434
+msgid "wrong class name specified for %s\n"
+msgstr "為 %s 指定了錯誤的類別名稱\n"
+

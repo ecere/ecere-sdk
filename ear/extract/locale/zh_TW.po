@@ -1,0 +1,91 @@
+# Traditional Chinese (Taiwan) translation for extract
+# Copyright (C) 2024 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: extract\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Peter Dave Hello <hsu@peterdavehello.org>\n"
+"Language-Team: \n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Basepath: ../\n"
+
+#: ./extract.ec:142
+msgid "Browse..."
+msgstr "瀏覽..."
+
+#: ./extract.ec:186
+msgid "Created"
+msgstr "建立時間"
+
+#: ./extract.ec:177
+msgid "Done."
+msgstr "完成。"
+
+#: ./extract.ec:298
+msgid "ECERE Archive - %s"
+msgstr "ECERE 封存檔 - %s"
+
+#: ./extract.ec:304
+msgid "ECERE Self-Extractable Archive"
+msgstr "ECERE 自解壓縮封存檔"
+
+#: ./extract.ec:152
+msgid "Exit"
+msgstr "結束"
+
+#: ./extract.ec:155
+msgid "Extract"
+msgstr "解壓縮"
+
+#: ./extract.ec:138
+msgid "Extract to"
+msgstr "解壓縮至"
+
+#: ./extract.ec:83
+msgid "Extracting %s..."
+msgstr "正在解壓縮 %s..."
+
+#: ./extract.ec:160
+msgid "Extracting Files..."
+msgstr "正在解壓縮檔案..."
+
+#: ./extract.ec:177
+msgid "Extraction Completed"
+msgstr "解壓縮完成"
+
+#: ./extract.ec:183
+msgid "File"
+msgstr "檔案"
+
+#: ./extract.ec:207
+msgid "Hide Files"
+msgstr "隱藏檔案"
+
+#: ./extract.ec:185
+msgid "Modified"
+msgstr "修改時間"
+
+#: ./extract.ec:187
+msgid "Select extraction directory"
+msgstr "選取解壓縮目錄"
+
+#: ./extract.ec:184
+msgid "Size"
+msgstr "大小"
+
+#: ./extract.ec:120
+msgid "Use paths from archive..."
+msgstr "使用封存檔中的路徑..."
+
+#: ./extract.ec:117
+#: ./extract.ec:195
+msgid "View Files"
+msgstr "檢視檔案"
+

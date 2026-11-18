@@ -130,6 +130,7 @@ RESOURCES1 = \
 	../ecere/locale/pt_BR.mo \
 	../ecere/locale/ru.mo \
 	../ecere/locale/zh_CN.mo \
+	../ecere/locale/zh_TW.mo \
 	../obj/win32/bin/documentor.exe \
 	../obj/win32/bin/ecere-ide.exe \
 	../obj/win32/bin/ear.exe \
@@ -5699,6 +5700,7 @@ RESOURCES296 = \
 	locale/pt_BR.mo \
 	locale/ru.mo \
 	locale/zh_CN.mo \
+	locale/zh_TW.mo \
 	../ide/res/icon.png \
 	ecere.png \
 	ryoanji.png \
@@ -5793,7 +5795,7 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../ecere/res/mimeTypes/file.png ../ecere/res/mimeTypes/brokenFile.png "ecere/mimetypes"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../ecere/res/places/driveRemote.png ../ecere/res/places/folder.png ../ecere/res/places/folderRemote.png ../ecere/res/places/networkServer.png ../ecere/res/places/networkWorkgroup.png ../ecere/res/places/brokenFolder.png "ecere/places"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../ecere/res/status/folderOpen.png "ecere/status"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../ecere/locale/es.mo ../ecere/locale/hu.mo ../ecere/locale/mr.mo ../ecere/locale/nl.mo ../ecere/locale/pt_BR.mo ../ecere/locale/ru.mo ../ecere/locale/zh_CN.mo "ecere/locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../ecere/locale/es.mo ../ecere/locale/hu.mo ../ecere/locale/mr.mo ../ecere/locale/nl.mo ../ecere/locale/pt_BR.mo ../ecere/locale/ru.mo ../ecere/locale/zh_CN.mo ../ecere/locale/zh_TW.mo "ecere/locale"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32/bin/ecere.dll ../obj/win32/lib/libecereVanilla.a ../obj/win32/bin/EcereAudio.dll "ecere-sdk"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32/bin/documentor.exe ../obj/win32/bin/ecere-ide.exe "ecere-sdk/ide"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../obj/win32/bin/ear.exe ../obj/win32/bin/ec.dll ../obj/win32/bin/ecc.exe ../obj/win32/bin/ecereCOM.dll ../obj/win32/bin/ecp.exe ../obj/win32/bin/ecs.exe ../obj/win32/bin/epj2make.exe "ecere-sdk/compiler"
@@ -6521,8 +6523,8 @@ endif
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libx3daudio1_3.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libx3daudio1_4.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libx3daudio1_5.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libx3daudio1_6.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libx3daudio1_7.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libx3daudiod1_7.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx1_0.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx1_1.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx1_2.a "tdm/mingwrt/x86_64-w64-mingw32/lib32"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx1_3.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx1_4.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofx1_5.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxapofxd1_5.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxaudio2_8.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxinput.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxinput1_1.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxinput1_2.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxinput1_3.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxinput1_4.a "tdm/mingwrt/x86_64-w64-mingw32/lib32"
 	$(EAR) aw$(EARFLAGS) $(TARGET) tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/libxinput9_1_0.a tdm/mingw64runtime-v4-git20150618-gcc5-tdm64-1/x86_64-w64-mingw32/lib32/txtmode.o "tdm/mingwrt/x86_64-w64-mingw32/lib32"
-	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo "locale"
-	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"
+	$(EAR) aw$(EARFLAGS) $(TARGET) locale/es.mo locale/pt_BR.mo locale/ru.mo locale/zh_CN.mo locale/zh_TW.mo "locale"
+	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/es.png ../extras/res/types/countryCode/gb.png ../extras/res/types/countryCode/hu.png ../extras/res/types/countryCode/cn.png ../extras/res/types/countryCode/tw.png ../extras/res/types/countryCode/pt.png ../extras/res/types/countryCode/vn.png ../extras/res/types/countryCode/ru.png ../extras/res/types/countryCode/in.png ../extras/res/types/countryCode/nl.png ../extras/res/types/countryCode/il.png "countryCode"
 	$(EAR) aw$(EARFLAGS) $(TARGET) ../extras/res/types/countryCode/br.png "countryCode"
 else
 ifdef WINDOWS_HOST
